@@ -328,3 +328,7 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+## Ignore key files for Street Smart for ArcGIS Pro
+/StreetSmartArcMap/StreetSmartArcMap/Resources/APIKey.xml
+/StreetSmartArcMap/Install

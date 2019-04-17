@@ -11,6 +11,7 @@ namespace StreetSmartArcMapAddin.Buttons
     {
         public OpenStreetSmartWindowButton()
         {
+            //
         }
 
         protected override void OnClick()

@@ -6,7 +6,7 @@
   <Image>Images\StreetSmartArcMapAddin.png</Image>
   <Author></Author>
   <Company>Cyclomedia</Company>
-  <Date>4/17/2019</Date>
+  <Date>4/18/2019</Date>
   <Targets>
     <Target name="Desktop" version="10.4" />
   </Targets>

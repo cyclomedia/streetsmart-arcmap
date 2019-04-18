@@ -14,6 +14,7 @@ using StreetSmart.Common.Interfaces.API;
 using StreetSmart.Common.Interfaces.Events;
 using StreetSmart.Common.Interfaces.GeoJson;
 using System.Threading.Tasks;
+using StreetSmartArcMap.Logic;
 
 namespace StreetSmartArcMap.DockableWindows
 {
@@ -23,64 +24,31 @@ namespace StreetSmartArcMap.DockableWindows
     /// </summary>
     public partial class StreetSmartDockableWindow : UserControl
     {
-        public IStreetSmartAPI StreetSmartAPI { get; private set; }
-        
+
         public StreetSmartDockableWindow(object hook)
         {
             InitializeComponent();
             this.Hook = hook;
 
-            StreetSmartAPI = StreetSmartAPIFactory.Create();
-            this.Controls.Add(StreetSmartAPI.GUI);
-
-            StreetSmartAPI.APIReady += ApiReady;
-        }
-
-        private async void ApiReady(object sender, EventArgs args)
-        {
-            await InitApi();
-        }
-
-        private async Task InitApi()
-        {
-            string epsgCode = "EPSG:28992";
-//            System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName or arcmap?
-            IAddressSettings addressSettings = AddressSettingsFactory.Create("nl", "CMDatabase");
-            IDomElement element = DomElementFactory.Create();
-            var _options = OptionsFactory.Create("gbo", "Gg200786001", "testdfdsfj", epsgCode, addressSettings, element);
-
-            try
+            // TODO: move to settings file
+            var options = new StreetSmartOptions()
             {
-                await StreetSmartAPI.Init(_options);
-
-                // Open image
-                IList<ViewerType> viewerTypes = new List<ViewerType> { ViewerType.Panorama };
-                IPanoramaViewerOptions panoramaOptions = PanoramaViewerOptionsFactory.Create(true, false, true, true, true, true);
-                panoramaOptions.MeasureTypeButtonToggle = false;
-                IViewerOptions viewerOptions = ViewerOptionsFactory.Create(viewerTypes, epsgCode, panoramaOptions);
-                try
-                {
-                    IList<IViewer> viewers = await StreetSmartAPI.Open("Lange Haven 145, Schiedam", viewerOptions);
-                }
-                catch (StreetSmartImageNotFoundException)
-                {
-                    MessageBox.Show("image openen >> kapot");
-                }
-            }
-            catch (StreetSmartLoginFailedException)
-            {
-                MessageBox.Show("api laden >> kapot");
-            }
+                EpsgCode = "EPSG:28992",
+                Locale = "nl",
+                Database = "CMDatabase",
+                Username = "gbo",
+                Password = "Gg200786001",
+                ApiKey = "testdfdsfj",
+            };
+            StreetSmartApiWrapper.Instance.InitApi(options);
+            this.Controls.Add(StreetSmartApiWrapper.Instance.StreetSmartGUI);
         }
+
 
         /// <summary>
         /// Host object of the dockable window
         /// </summary>
-        private object Hook
-        {
-            get;
-            set;
-        }
+        private object Hook { get; set; }
 
         /// <summary>
         /// Implementation class of the dockable window add-in. It is responsible for 
@@ -92,18 +60,19 @@ namespace StreetSmartArcMap.DockableWindows
 
             public AddinImpl()
             {
+                //
             }
 
             protected override IntPtr OnCreateChild()
             {
                 m_windowUI = new StreetSmartDockableWindow(this.Hook);
+
                 return m_windowUI.Handle;
             }
 
             protected override void Dispose(bool disposing)
             {
-                if (m_windowUI != null)
-                    m_windowUI.Dispose(disposing);
+                m_windowUI?.Dispose(disposing);
 
                 base.Dispose(disposing);
             }

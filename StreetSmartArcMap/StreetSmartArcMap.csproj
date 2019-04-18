@@ -233,6 +233,12 @@
   <ItemGroup>
     <Folder Include="Forms\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StreetSmartArcMap.Logic\StreetSmartArcMap.Logic.csproj">
+      <Project>{d4973164-4449-4be5-a777-31fbf855454b}</Project>
+      <Name>StreetSmartArcMap.Logic</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>
     <AddInTargetProduct>Desktop</AddInTargetProduct>

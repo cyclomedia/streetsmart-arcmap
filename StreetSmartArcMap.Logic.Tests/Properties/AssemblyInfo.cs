@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("StreetSmartArcMapAddin")]
+[assembly: AssemblyTitle("StreetSmartArcMap.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("StreetSmartArcMapAddin")]
+[assembly: AssemblyProduct("StreetSmartArcMap.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ffb838b9-7a85-4470-b88c-62d3b8bbd64c")]
+[assembly: Guid("34d4bb93-609c-4696-9bf9-c9f484072ff8")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -1,6 +1,6 @@
-﻿namespace TestArcMapAddin
+﻿namespace StreetSmartArcMap.DockableWindows
 {
-    partial class DockableWindow1
+    partial class StreetSmartDockableWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StreetSmartDockableWindow));
             this.SuspendLayout();
             // 
-            // DockableWindow1
+            // StreetSmartDockableWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Name = "DockableWindow1";
-            this.Size = new System.Drawing.Size(800, 600);
+            resources.ApplyResources(this, "$this");
+            this.Name = "StreetSmartDockableWindow";
             this.ResumeLayout(false);
 
         }

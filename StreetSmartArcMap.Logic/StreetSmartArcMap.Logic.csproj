@@ -11,6 +11,8 @@
     <AssemblyName>StreetSmartArcMap.Logic</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,11 +32,75 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="StreetSmart.WinForms">
-      <HintPath>..\StreetSmartArcMap\Install\StreetSmart.WinForms.dll</HintPath>
+    <Reference Include="ESRI.ArcGIS.ADF, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=x86">
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.ADF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.ADF.Connection.Local, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=x86">
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.ADF.Connection.Local.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.ArcMapUI, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.ArcMapUI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Carto, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.Carto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.DataSourcesGDB, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.DataSourcesGDB.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Editor, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.Editor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Framework, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.Framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Geodatabase, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.Geodatabase.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Geometry, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.Geometry.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.System, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.System.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.SystemUI, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.SystemUI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.TrackingAnalyst, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.TrackingAnalyst.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="StreetSmart.WinForms, Version=19.5.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
+      <HintPath>..\packages\StreetSmart.WinForms.19.5.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,15 +109,45 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\Web.cs" />
     <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="IStreetSmartOptions.cs" />
+    <Compile Include="Layers\CycloMediaGroupLayer.cs" />
+    <Compile Include="Layers\CycloMediaLayer.cs" />
+    <Compile Include="Model\Atlas\Height.cs" />
+    <Compile Include="Model\Atlas\Image.cs" />
+    <Compile Include="Model\Atlas\Images.cs" />
+    <Compile Include="Model\Atlas\ProductType.cs" />
+    <Compile Include="Model\Atlas\Recording.cs" />
+    <Compile Include="Model\Capabilities\BoundingBox.cs" />
+    <Compile Include="Model\Capabilities\FeatureType.cs" />
+    <Compile Include="Model\Capabilities\Name.cs" />
+    <Compile Include="Model\Capabilities\OutputFormats.cs" />
+    <Compile Include="Model\Capabilities\Point.cs" />
+    <Compile Include="Model\IMappedFeature.cs" />
+    <Compile Include="Model\Namespaces.cs" />
+    <Compile Include="Model\Shape\BaseShape.cs" />
+    <Compile Include="Model\Shape\IShape.cs" />
+    <Compile Include="Model\Shape\Point.cs" />
+    <Compile Include="Model\Shape\ShapeType.cs" />
+    <Compile Include="Model\Wfs\WfsFeature.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StreetSmartApiWrapper.cs" />
     <Compile Include="StreetSmartOptions.cs" />
+    <Compile Include="Utilities\ArcUtils.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\StreetSmart.WinForms.19.5.0\build\StreetSmart.WinForms.targets" Condition="Exists('..\packages\StreetSmart.WinForms.19.5.0\build\StreetSmart.WinForms.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\StreetSmart.WinForms.19.5.0\build\StreetSmart.WinForms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StreetSmart.WinForms.19.5.0\build\StreetSmart.WinForms.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

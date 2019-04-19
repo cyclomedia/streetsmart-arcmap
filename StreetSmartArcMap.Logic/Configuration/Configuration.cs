@@ -32,6 +32,13 @@ namespace StreetSmartArcMap.Logic.Configuration
         public string ApiPassword { get; set; }
         public string ApiKey { get; set; }
 
+        public string BaseUrl { get; set; }
+        public string RecordingsServiceUrl { get; set; }
+        public string SpatialReferencesUrl { get; set; }
+        public string SwfUrl { get; set; }
+
+        public string DefaultRecordingSrs { get; set; }
+
         #endregion
 
         #region Constructors
@@ -99,6 +106,13 @@ namespace StreetSmartArcMap.Logic.Configuration
                 ApiUsername = string.Empty,
                 ApiPassword = string.Empty,
                 ApiKey = string.Empty,
+
+                BaseUrl = "https://atlas.cyclomedia.com",
+                RecordingsServiceUrl = "https://atlas.cyclomedia.com/recordings/wfs",
+                SpatialReferencesUrl = "https://globespotter.cyclomedia.com/v31/api/config/srs/globespotterspatialreferences.xml",
+                SwfUrl = string.Empty,
+
+                DefaultRecordingSrs = 0,
             };
 
             result.Save();

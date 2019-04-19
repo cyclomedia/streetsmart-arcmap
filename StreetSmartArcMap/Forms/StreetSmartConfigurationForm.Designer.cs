@@ -35,13 +35,19 @@
             this.tcSettings = new System.Windows.Forms.TabControl();
             this.tbLogin = new System.Windows.Forms.TabPage();
             this.grLogin = new System.Windows.Forms.GroupBox();
+            this.txtLoginStatus = new System.Windows.Forms.Label();
+            this.lblLoginStatus = new System.Windows.Forms.Label();
             this.lblUsername = new System.Windows.Forms.Label();
             this.txtUsername = new System.Windows.Forms.TextBox();
+            this.txtKey = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
+            this.lblKey = new System.Windows.Forms.Label();
             this.lblPassword = new System.Windows.Forms.Label();
             this.tbSettings = new System.Windows.Forms.TabPage();
             this.grCoordinateSystems = new System.Windows.Forms.GroupBox();
+            this.cbRecordingSRS = new System.Windows.Forms.ComboBox();
             this.lblMeasuringSupported = new System.Windows.Forms.Label();
+            this.lblRecordingSRS = new System.Windows.Forms.Label();
             this.lblCycloramaSRS = new System.Windows.Forms.Label();
             this.cbCycloramaSRS = new System.Windows.Forms.ComboBox();
             this.tbConfiguration = new System.Windows.Forms.TabPage();
@@ -79,12 +85,6 @@
             this.rtbAbout = new System.Windows.Forms.RichTextBox();
             this.tbAgreement = new System.Windows.Forms.TabPage();
             this.txtAgreement = new System.Windows.Forms.TextBox();
-            this.txtKey = new System.Windows.Forms.TextBox();
-            this.lblKey = new System.Windows.Forms.Label();
-            this.lblLoginStatus = new System.Windows.Forms.Label();
-            this.txtLoginStatus = new System.Windows.Forms.Label();
-            this.cbRecordingSRS = new System.Windows.Forms.ComboBox();
-            this.lblRecordingSRS = new System.Windows.Forms.Label();
             this.plButtons.SuspendLayout();
             this.tcSettings.SuspendLayout();
             this.tbLogin.SuspendLayout();
@@ -162,7 +162,6 @@
             this.tcSettings.SelectedIndex = 0;
             this.tcSettings.Size = new System.Drawing.Size(408, 429);
             this.tcSettings.TabIndex = 16;
-            this.tcSettings.Visible = false;
             // 
             // tbLogin
             // 
@@ -193,6 +192,24 @@
             this.grLogin.TabStop = false;
             this.grLogin.Text = "Login";
             // 
+            // txtLoginStatus
+            // 
+            this.txtLoginStatus.AutoSize = true;
+            this.txtLoginStatus.Location = new System.Drawing.Point(180, 100);
+            this.txtLoginStatus.Name = "txtLoginStatus";
+            this.txtLoginStatus.Size = new System.Drawing.Size(53, 14);
+            this.txtLoginStatus.TabIndex = 8;
+            this.txtLoginStatus.Text = "Unknown";
+            // 
+            // lblLoginStatus
+            // 
+            this.lblLoginStatus.AutoSize = true;
+            this.lblLoginStatus.Location = new System.Drawing.Point(6, 100);
+            this.lblLoginStatus.Name = "lblLoginStatus";
+            this.lblLoginStatus.Size = new System.Drawing.Size(69, 14);
+            this.lblLoginStatus.TabIndex = 7;
+            this.lblLoginStatus.Text = "Login status:";
+            // 
             // lblUsername
             // 
             this.lblUsername.AutoSize = true;
@@ -213,6 +230,16 @@
             this.txtUsername.TabIndex = 1;
             this.txtUsername.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtUsername_KeyUp);
             // 
+            // txtKey
+            // 
+            this.txtKey.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtKey.Location = new System.Drawing.Point(179, 71);
+            this.txtKey.Name = "txtKey";
+            this.txtKey.PasswordChar = '*';
+            this.txtKey.Size = new System.Drawing.Size(203, 20);
+            this.txtKey.TabIndex = 2;
+            this.txtKey.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtKey_KeyUp);
+            // 
             // txtPassword
             // 
             this.txtPassword.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -222,6 +249,17 @@
             this.txtPassword.Size = new System.Drawing.Size(203, 20);
             this.txtPassword.TabIndex = 2;
             this.txtPassword.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtPassword_KeyUp);
+            // 
+            // lblKey
+            // 
+            this.lblKey.AutoSize = true;
+            this.lblKey.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblKey.Location = new System.Drawing.Point(6, 74);
+            this.lblKey.Name = "lblKey";
+            this.lblKey.Size = new System.Drawing.Size(29, 14);
+            this.lblKey.TabIndex = 6;
+            this.lblKey.Text = "Key:";
+            this.lblKey.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblPassword
             // 
@@ -260,6 +298,17 @@
             this.grCoordinateSystems.TabStop = false;
             this.grCoordinateSystems.Text = "Coordinate systems";
             // 
+            // cbRecordingSRS
+            // 
+            this.cbRecordingSRS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbRecordingSRS.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbRecordingSRS.FormattingEnabled = true;
+            this.cbRecordingSRS.Location = new System.Drawing.Point(179, 47);
+            this.cbRecordingSRS.Name = "cbRecordingSRS";
+            this.cbRecordingSRS.Size = new System.Drawing.Size(203, 22);
+            this.cbRecordingSRS.Sorted = true;
+            this.cbRecordingSRS.TabIndex = 22;
+            // 
             // lblMeasuringSupported
             // 
             this.lblMeasuringSupported.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -268,6 +317,17 @@
             this.lblMeasuringSupported.Size = new System.Drawing.Size(292, 22);
             this.lblMeasuringSupported.TabIndex = 21;
             this.lblMeasuringSupported.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblRecordingSRS
+            // 
+            this.lblRecordingSRS.AutoSize = true;
+            this.lblRecordingSRS.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRecordingSRS.Location = new System.Drawing.Point(6, 50);
+            this.lblRecordingSRS.Name = "lblRecordingSRS";
+            this.lblRecordingSRS.Size = new System.Drawing.Size(96, 14);
+            this.lblRecordingSRS.TabIndex = 19;
+            this.lblRecordingSRS.Text = "Recording viewer:";
+            this.lblRecordingSRS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblCycloramaSRS
             // 
@@ -650,67 +710,6 @@
             this.txtAgreement.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtAgreement.Size = new System.Drawing.Size(452, 410);
             this.txtAgreement.TabIndex = 0;
-            // 
-            // txtKey
-            // 
-            this.txtKey.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtKey.Location = new System.Drawing.Point(179, 71);
-            this.txtKey.Name = "txtKey";
-            this.txtKey.PasswordChar = '*';
-            this.txtKey.Size = new System.Drawing.Size(203, 20);
-            this.txtKey.TabIndex = 2;
-            this.txtKey.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtKey_KeyUp);
-            // 
-            // lblKey
-            // 
-            this.lblKey.AutoSize = true;
-            this.lblKey.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblKey.Location = new System.Drawing.Point(6, 74);
-            this.lblKey.Name = "lblKey";
-            this.lblKey.Size = new System.Drawing.Size(29, 14);
-            this.lblKey.TabIndex = 6;
-            this.lblKey.Text = "Key:";
-            this.lblKey.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblLoginStatus
-            // 
-            this.lblLoginStatus.AutoSize = true;
-            this.lblLoginStatus.Location = new System.Drawing.Point(6, 100);
-            this.lblLoginStatus.Name = "lblLoginStatus";
-            this.lblLoginStatus.Size = new System.Drawing.Size(69, 14);
-            this.lblLoginStatus.TabIndex = 7;
-            this.lblLoginStatus.Text = "Login status:";
-            // 
-            // txtLoginStatus
-            // 
-            this.txtLoginStatus.AutoSize = true;
-            this.txtLoginStatus.Location = new System.Drawing.Point(180, 100);
-            this.txtLoginStatus.Name = "txtLoginStatus";
-            this.txtLoginStatus.Size = new System.Drawing.Size(53, 14);
-            this.txtLoginStatus.TabIndex = 8;
-            this.txtLoginStatus.Text = "Unknown";
-            // 
-            // cbRecordingSRS
-            // 
-            this.cbRecordingSRS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbRecordingSRS.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbRecordingSRS.FormattingEnabled = true;
-            this.cbRecordingSRS.Location = new System.Drawing.Point(179, 47);
-            this.cbRecordingSRS.Name = "cbRecordingSRS";
-            this.cbRecordingSRS.Size = new System.Drawing.Size(203, 22);
-            this.cbRecordingSRS.Sorted = true;
-            this.cbRecordingSRS.TabIndex = 22;
-            // 
-            // lblRecordingSRS
-            // 
-            this.lblRecordingSRS.AutoSize = true;
-            this.lblRecordingSRS.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRecordingSRS.Location = new System.Drawing.Point(6, 50);
-            this.lblRecordingSRS.Name = "lblRecordingSRS";
-            this.lblRecordingSRS.Size = new System.Drawing.Size(96, 14);
-            this.lblRecordingSRS.TabIndex = 19;
-            this.lblRecordingSRS.Text = "Recording viewer:";
-            this.lblRecordingSRS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // StreetSmartConfigurationForm
             // 

@@ -56,7 +56,7 @@ namespace StreetSmartArcMap.Forms
             cbCycloramaSRS.Items.Clear();
             cbRecordingSRS.Items.Clear();
 
-            SpatialReferences spatialReferences = SpatialReferences.Instance;
+            //SpatialReferences spatialReferences = SpatialReferences.Instance;
         }
 
         public static void OpenCloseSwitch()

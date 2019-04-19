@@ -22,6 +22,8 @@ namespace StreetSmartArcMap.Buttons
 
         protected override async void OnClick()
         {
+            //var config = StreetSmartArcMap.Logic.Configuration.Configuration.Instance;
+
             if (!window.IsVisible())
                 window.Show(true);
 

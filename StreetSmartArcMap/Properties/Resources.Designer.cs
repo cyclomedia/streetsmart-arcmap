@@ -59,5 +59,23 @@ namespace StreetSmartArcMap.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login Failed.
+        /// </summary>
+        internal static string LoginFailed {
+            get {
+                return ResourceManager.GetString("LoginFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login Successfully.
+        /// </summary>
+        internal static string LoginSuccessfully {
+            get {
+                return ResourceManager.GetString("LoginSuccessfully", resourceCulture);
+            }
+        }
     }
 }

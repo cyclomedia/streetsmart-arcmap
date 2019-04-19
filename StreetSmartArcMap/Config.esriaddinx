@@ -5,7 +5,7 @@
   <Version>1.0.0.1</Version>
   <Image>Images\StreetSmartArcMapAddin.png</Image>
   <Author></Author>
-  <Company>Cyclomedia</Company>
+  <Company>CycloMedia</Company>
   <Date>4/18/2019</Date>
   <Targets>
     <Target name="Desktop" version="10.4" />
@@ -13,17 +13,19 @@
   <AddIn language="CLR" library="StreetSmartArcMap.dll" namespace="StreetSmartArcMap">
     <ArcMap>
       <DockableWindows>
-        <DockableWindow id="Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" class="StreetSmartArcMap.DockableWindows.StreetSmartDockableWindow+AddinImpl" caption="Street Smart" image="Images\StreetSmartDockableWindow.png">
+        <DockableWindow id="CycloMedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" class="StreetSmartArcMap.DockableWindows.StreetSmartDockableWindow+AddinImpl" caption="Street Smart" image="Images\StreetSmartDockableWindow.png">
           <InitialPlacement height="600" width="800" state="pinned" position="left" />
         </DockableWindow>
       </DockableWindows>
       <Commands>
-        <Button id="Cyclomedia_StreetSmartArcMap_OpenStreetSmartWindowButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartWindowButton" message="" caption="Open Street Smart" tip="Open the Street Smart window" category="Cyclomedia" image="Images\OpenStreetSmartWindowButton.png" />
+        <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartWindowButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartWindowButton" message="" caption="Open Street Smart" tip="Open the Street Smart window" category="CycloMedia" image="Images\OpenStreetSmartWindowButton.png" />
+        <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartOptionsButton" message="" caption="Open Street Smart options" tip="Open the Street Smart options window" category="CycloMedia" image="Images\GsCycloMediaOptions.png" />
       </Commands>
       <Toolbars>
         <Toolbar id="StreetSmartArcMapToolbar" caption="Street Smart">
           <Items>
-            <Button refID="Cyclomedia_StreetSmartArcMap_OpenStreetSmartWindowButton" />
+            <Button refID="CycloMedia_StreetSmartArcMap_OpenStreetSmartWindowButton" />
+            <Button refID="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" />
           </Items>
         </Toolbar>
       </Toolbars>

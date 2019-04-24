@@ -5,6 +5,8 @@ using System.IO;
 using ESRI.ArcGIS.Framework;
 using ESRI.ArcGIS.esriSystem;
 using StreetSmartArcMap.Logic;
+using StreetSmartArcMap.Logic.Configuration;
+using ESRI.ArcGIS.Carto;
 
 namespace StreetSmartArcMap.Buttons
 {
@@ -27,8 +29,9 @@ namespace StreetSmartArcMap.Buttons
             if (!window.IsVisible())
                 window.Show(true);
 
-            await StreetSmartApiWrapper.Instance.Open("EPSG:28992", "Lange Haven 145, Schiedam");
+            StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(Configuration.Instance.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits);
 
+            await StreetSmartApiWrapper.Instance.Open(Configuration.Instance.ApiSRS, "Lange Haven 145, Schiedam");
         }
 
         protected override void OnUpdate()

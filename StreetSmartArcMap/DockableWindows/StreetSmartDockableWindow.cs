@@ -16,6 +16,10 @@ using StreetSmart.Common.Interfaces.GeoJson;
 using System.Threading.Tasks;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Logic.Configuration;
+using ESRI.ArcGIS.Editor;
+using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.ArcMapUI;
+using ESRI.ArcGIS.esriSystem;
 
 namespace StreetSmartArcMap.DockableWindows
 {
@@ -31,10 +35,17 @@ namespace StreetSmartArcMap.DockableWindows
             InitializeComponent();
             this.Hook = hook;
 
-            var options = Configuration.Instance;
-            
-            StreetSmartApiWrapper.Instance.InitApi(options);
+            StreetSmartApiWrapper.Instance.InitApi(Configuration.Instance);
             this.Controls.Add(StreetSmartApiWrapper.Instance.StreetSmartGUI);
+
+
+            IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
+            docEvents.MapsChanged += DocEvents_MapsChanged;
+        }
+
+        private void DocEvents_MapsChanged()
+        {
+            StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(Configuration.Instance.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits); 
         }
 
 

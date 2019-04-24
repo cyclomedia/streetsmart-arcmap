@@ -34,9 +34,10 @@ namespace StreetSmartArcMap.Logic.Configuration
         public string BaseUrl { get; set; }
         public string RecordingsServiceUrl { get; set; }
         public string SpatialReferencesUrl { get; set; }
-        public string SwfUrl { get; set; }
 
         public string DefaultRecordingSrs { get; set; }
+
+        public int OverlayDrawDistanceInMeters { get; set; }
 
         #endregion
 
@@ -108,10 +109,10 @@ namespace StreetSmartArcMap.Logic.Configuration
 
                 BaseUrl = "https://atlas.cyclomedia.com",
                 RecordingsServiceUrl = "https://atlas.cyclomedia.com/recordings/wfs",
-                SpatialReferencesUrl = "https://streetsmart.cyclomedia.com/api/v18.10/assets/srs/SpatialReference.xml", // TODO: is this the actual URL?
-                SwfUrl = string.Empty,
+                SpatialReferencesUrl = "https://streetsmart.cyclomedia.com/api/v18.10/assets/srs/SpatialReference.xml",
 
-                DefaultRecordingSrs = string.Empty
+                DefaultRecordingSrs = string.Empty,
+                OverlayDrawDistanceInMeters = 30
             };
 
             result.Save();

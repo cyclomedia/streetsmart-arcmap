@@ -1,5 +1,6 @@
 ﻿using IntegrationArcMap.Utilities;
 using StreetSmartArcMap.Client;
+using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Logic.Configuration;
 using System;
 using System.Windows.Forms;
@@ -21,6 +22,7 @@ namespace StreetSmartArcMap.Forms
 
             LoadLoginData();
             LoadSpatialReferenceData();
+            LoadGeneralSettings();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -38,6 +40,11 @@ namespace StreetSmartArcMap.Forms
             Save(false);
         }
 
+        private void LoadGeneralSettings()
+        {
+            nudOverlayDrawDistance.Value = _config.OverlayDrawDistanceInMeters;
+        }
+
         private void LoadLoginData()
         {
             txtUsername.Text = _config.ApiUsername;
@@ -49,22 +56,35 @@ namespace StreetSmartArcMap.Forms
         {
             //Clear existing items
             cbCycloramaSRS.Items.Clear();
-            var selected = default(SpatialReference);
+            cbRecordingsSRS.Items.Clear();
+            var selectedCMSRS = default(SpatialReference);
+            var selectedRCSRS = default(SpatialReference);
             SpatialReferences spatialReferences = SpatialReferences.Instance;
             foreach (var spatialReference in spatialReferences)
             {
                 if (spatialReference.KnownInArcMap)
                 {
                     cbCycloramaSRS.Items.Add(spatialReference);
+                    cbRecordingsSRS.Items.Add(spatialReference);
+
                     if (spatialReference.SRSName == _config.ApiSRS)
                     {
-                        selected = spatialReference;
+                        selectedCMSRS = spatialReference;
                     }
+                    if (spatialReference.SRSName == _config.DefaultRecordingSrs)
+                    {
+                        selectedRCSRS = spatialReference;
+                    }
+                    
                 }
             }
-            if (selected != null)
+            if (selectedCMSRS != null)
             {
-                cbCycloramaSRS.SelectedItem = selected;
+                cbCycloramaSRS.SelectedItem = selectedCMSRS;
+            }
+            if (selectedRCSRS != null)
+            {
+                cbRecordingsSRS.SelectedItem = selectedRCSRS;
             }
         }
 
@@ -105,7 +125,21 @@ namespace StreetSmartArcMap.Forms
             var selectedSRS = (SpatialReference)cbCycloramaSRS.SelectedItem;
             _config.ApiSRS = selectedSRS?.SRSName ?? _config.ApiSRS;
 
+            var selectedRecordingSRS = (SpatialReference)cbRecordingsSRS.SelectedItem;
+            _config.DefaultRecordingSrs = selectedRecordingSRS?.SRSName ?? _config.DefaultRecordingSrs;
+
+            var overlayDrawDistance = (int)nudOverlayDrawDistance.Value;
+            if (overlayDrawDistance > -1 && overlayDrawDistance < 100)
+            {
+                _config.OverlayDrawDistanceInMeters = overlayDrawDistance;
+                StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(overlayDrawDistance, ArcMap.Document.FocusMap.MapUnits);
+            }
+
+            
+
             _config.Save();
+
+            // TODO: do we need to restart the API here?
 
             if (close)
                 Close();
@@ -166,5 +200,6 @@ namespace StreetSmartArcMap.Forms
         {
             _StreetSmartConfigurationForm = null;
         }
+
     }
 }

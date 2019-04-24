@@ -129,7 +129,7 @@ namespace StreetSmartArcMap.Forms
             _config.DefaultRecordingSrs = selectedRecordingSRS?.SRSName ?? _config.DefaultRecordingSrs;
 
             var overlayDrawDistance = (int)nudOverlayDrawDistance.Value;
-            if (overlayDrawDistance > -1 && overlayDrawDistance < 100)
+            if (overlayDrawDistance > -1 && overlayDrawDistance < 101)
             {
                 _config.OverlayDrawDistanceInMeters = overlayDrawDistance;
                 StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(overlayDrawDistance, ArcMap.Document.FocusMap.MapUnits);

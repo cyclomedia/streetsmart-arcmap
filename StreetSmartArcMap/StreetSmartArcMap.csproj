@@ -189,7 +189,90 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <AddInContent Include="Install\cef.pak" />
+    <AddInContent Include="Install\cef_100_percent.pak" />
+    <AddInContent Include="Install\cef_200_percent.pak" />
+    <AddInContent Include="Install\cef_extensions.pak" />
+    <AddInContent Include="Install\devtools_resources.pak" />
+    <AddInContent Include="Install\icudtl.dat" />
+    <AddInContent Include="Install\locales\am.pak" />
+    <AddInContent Include="Install\locales\ar.pak" />
+    <AddInContent Include="Install\locales\bg.pak" />
+    <AddInContent Include="Install\locales\bn.pak" />
+    <AddInContent Include="Install\locales\ca.pak" />
+    <AddInContent Include="Install\locales\cs.pak" />
+    <AddInContent Include="Install\locales\da.pak" />
+    <AddInContent Include="Install\locales\de.pak" />
+    <AddInContent Include="Install\locales\el.pak" />
+    <AddInContent Include="Install\locales\en-GB.pak" />
+    <AddInContent Include="Install\locales\en-US.pak" />
+    <AddInContent Include="Install\locales\es-419.pak" />
+    <AddInContent Include="Install\locales\es.pak" />
+    <AddInContent Include="Install\locales\et.pak" />
+    <AddInContent Include="Install\locales\fa.pak" />
+    <AddInContent Include="Install\locales\fi.pak" />
+    <AddInContent Include="Install\locales\fil.pak" />
+    <AddInContent Include="Install\locales\fr.pak" />
+    <AddInContent Include="Install\locales\gu.pak" />
+    <AddInContent Include="Install\locales\he.pak" />
+    <AddInContent Include="Install\locales\hi.pak" />
+    <AddInContent Include="Install\locales\hr.pak" />
+    <AddInContent Include="Install\locales\hu.pak" />
+    <AddInContent Include="Install\locales\id.pak" />
+    <AddInContent Include="Install\locales\it.pak" />
+    <AddInContent Include="Install\locales\ja.pak" />
+    <AddInContent Include="Install\locales\kn.pak" />
+    <AddInContent Include="Install\locales\ko.pak" />
+    <AddInContent Include="Install\locales\lt.pak" />
+    <AddInContent Include="Install\locales\lv.pak" />
+    <AddInContent Include="Install\locales\ml.pak" />
+    <AddInContent Include="Install\locales\mr.pak" />
+    <AddInContent Include="Install\locales\ms.pak" />
+    <AddInContent Include="Install\locales\nb.pak" />
+    <AddInContent Include="Install\locales\nl.pak" />
+    <AddInContent Include="Install\locales\pl.pak" />
+    <AddInContent Include="Install\locales\pt-BR.pak" />
+    <AddInContent Include="Install\locales\pt-PT.pak" />
+    <AddInContent Include="Install\locales\ro.pak" />
+    <AddInContent Include="Install\locales\ru.pak" />
+    <AddInContent Include="Install\locales\sk.pak" />
+    <AddInContent Include="Install\locales\sl.pak" />
+    <AddInContent Include="Install\locales\sr.pak" />
+    <AddInContent Include="Install\locales\sv.pak" />
+    <AddInContent Include="Install\locales\sw.pak" />
+    <AddInContent Include="Install\locales\ta.pak" />
+    <AddInContent Include="Install\locales\te.pak" />
+    <AddInContent Include="Install\locales\th.pak" />
+    <AddInContent Include="Install\locales\tr.pak" />
+    <AddInContent Include="Install\locales\uk.pak" />
+    <AddInContent Include="Install\locales\vi.pak" />
+    <AddInContent Include="Install\locales\zh-CN.pak" />
+    <AddInContent Include="Install\locales\zh-TW.pak" />
+    <AddInContent Include="Install\natives_blob.bin" />
+    <AddInContent Include="Install\snapshot_blob.bin" />
+    <AddInContent Include="Install\v8_context_snapshot.bin" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Install\CefSharp.BrowserSubprocess.Core.dll" />
+    <AddInContent Include="Install\CefSharp.BrowserSubprocess.exe" />
+    <AddInContent Include="Install\CefSharp.Core.dll" />
+    <AddInContent Include="Install\CefSharp.Core.xml" />
+    <AddInContent Include="Install\CefSharp.dll" />
+    <AddInContent Include="Install\CefSharp.WinForms.dll" />
+    <AddInContent Include="Install\CefSharp.WinForms.XML" />
+    <AddInContent Include="Install\CefSharp.XML" />
+    <AddInContent Include="Install\chrome_elf.dll" />
+    <AddInContent Include="Install\d3dcompiler_47.dll" />
+    <AddInContent Include="Install\libcef.dll" />
+    <AddInContent Include="Install\libEGL.dll" />
+    <AddInContent Include="Install\libGLESv2.dll" />
+    <AddInContent Include="Install\README.txt" />
+    <AddInContent Include="Install\ReleaseNotes.txt" />
+    <AddInContent Include="Install\StreetSmart.WinForms.dll" />
+    <AddInContent Include="Install\StreetSmart.WinForms.xml" />
+    <AddInContent Include="Install\swiftshader\libEGL.dll" />
+    <AddInContent Include="Install\swiftshader\libGLESv2.dll" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>
@@ -213,11 +296,4 @@
       <Host>ArcMap</Host>
     </ESRIAddInProperties>
   </ProjectExtensions>
-  <Import Project="..\packages\StreetSmart.WinForms.19.5.0\build\StreetSmart.WinForms.targets" Condition="Exists('..\packages\StreetSmart.WinForms.19.5.0\build\StreetSmart.WinForms.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\StreetSmart.WinForms.19.5.0\build\StreetSmart.WinForms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StreetSmart.WinForms.19.5.0\build\StreetSmart.WinForms.targets'))" />
-  </Target>
 </Project>

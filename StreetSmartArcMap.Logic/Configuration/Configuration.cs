@@ -1,16 +1,15 @@
-﻿using System.ComponentModel;
+﻿using StreetSmartArcMap.Logic.Utilities;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
-
-using StreetSmartArcMap.Logic.Utilities;
 
 using SystemIOFile = System.IO.File;
 
 namespace StreetSmartArcMap.Logic.Configuration
 {
     [XmlRoot("Configuration")]
-    public class Configuration : INotifyPropertyChanged
+    public class Configuration : INotifyPropertyChanged, IStreetSmartOptions
     {
         #region Events
 
@@ -109,10 +108,10 @@ namespace StreetSmartArcMap.Logic.Configuration
 
                 BaseUrl = "https://atlas.cyclomedia.com",
                 RecordingsServiceUrl = "https://atlas.cyclomedia.com/recordings/wfs",
-                SpatialReferencesUrl = "https://globespotter.cyclomedia.com/v31/api/config/srs/globespotterspatialreferences.xml",
+                SpatialReferencesUrl = "https://streetsmart.cyclomedia.com/api/v18.10/assets/srs/SpatialReference.xml", // TODO: is this the actual URL?
                 SwfUrl = string.Empty,
 
-                DefaultRecordingSrs = 0,
+                DefaultRecordingSrs = string.Empty
             };
 
             result.Save();

@@ -19,7 +19,7 @@
 using System.Globalization;
 using System.Xml.Linq;
 using StreetSmartArcMap.Logic.Model.Shape;
-using Point = IntegrationArcMap.Model.Shape.Point;
+using Point = StreetSmartArcMap.Logic.Model.Shape.Point;
 
 namespace StreetSmartArcMap.Logic.Model.Atlas
 {

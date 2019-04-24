@@ -1,13 +1,7 @@
 ﻿using IntegrationArcMap.Utilities;
+using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Logic.Configuration;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StreetSmartArcMap.Forms
@@ -26,6 +20,7 @@ namespace StreetSmartArcMap.Forms
             _config = Configuration.Instance;
 
             LoadLoginData();
+            LoadSpatialReferenceData();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -54,9 +49,28 @@ namespace StreetSmartArcMap.Forms
         {
             //Clear existing items
             cbCycloramaSRS.Items.Clear();
-            cbRecordingSRS.Items.Clear();
+            var selected = default(SpatialReference);
+            SpatialReferences spatialReferences = SpatialReferences.Instance;
+            foreach (var spatialReference in spatialReferences)
+            {
+                if (spatialReference.KnownInArcMap)
+                {
+                    cbCycloramaSRS.Items.Add(spatialReference);
+                    if (spatialReference.SRSName == _config.ApiSRS)
+                    {
+                        selected = spatialReference;
+                    }
+                }
+            }
+            if (selected != null)
+            {
+                cbCycloramaSRS.SelectedItem = selected;
+            }
+        }
 
-            //SpatialReferences spatialReferences = SpatialReferences.Instance;
+        public static bool IsActive()
+        {
+            return (_StreetSmartConfigurationForm != null);
         }
 
         public static void OpenCloseSwitch()
@@ -88,6 +102,11 @@ namespace StreetSmartArcMap.Forms
 
         private void Save(bool close)
         {
+            var selectedSRS = (SpatialReference)cbCycloramaSRS.SelectedItem;
+            _config.ApiSRS = selectedSRS?.SRSName ?? _config.ApiSRS;
+
+            _config.Save();
+
             if (close)
                 Close();
         }
@@ -141,6 +160,11 @@ namespace StreetSmartArcMap.Forms
         private void Login()
         {
             //txtLoginStatus.Text = Properties.Resources.LoginSuccessfully;
+        }
+
+        private void StreetSmartConfigurationForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _StreetSmartConfigurationForm = null;
         }
     }
 }

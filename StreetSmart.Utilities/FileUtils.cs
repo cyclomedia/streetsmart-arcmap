@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace StreetSmartArcMap.Logic.Utilities
 {
-    public class FileUtils
+    internal class FileUtils
     {
         #region Properties
 

@@ -1,18 +1,20 @@
 ﻿//using ESRI.ArcGIS.ArcMapUI;
 //using ESRI.ArcGIS.Carto;
+//using ESRI.ArcGIS.Display;
 //using ESRI.ArcGIS.Editor;
-//using ESRI.ArcGIS.esriSystem;
+////using ESRI.ArcGIS.esriSystem;
 //using ESRI.ArcGIS.Framework;
 //using ESRI.ArcGIS.Geometry;
 //using System;
 //using System.Collections.Generic;
+//using System.Diagnostics;
 //using System.Drawing;
 //using System.IO;
 //using System.Linq;
 //using System.Text;
 //using System.Threading.Tasks;
 
-//namespace StreetSmartArcMap.Logic.Utilities
+//namespace StreetSmart.Utilities
 //{
 //    class ArcUtils
 //    {

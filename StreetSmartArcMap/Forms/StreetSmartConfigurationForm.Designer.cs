@@ -45,9 +45,6 @@
             this.lblPassword = new System.Windows.Forms.Label();
             this.tbSettings = new System.Windows.Forms.TabPage();
             this.grCoordinateSystems = new System.Windows.Forms.GroupBox();
-            this.cbRecordingSRS = new System.Windows.Forms.ComboBox();
-            this.lblMeasuringSupported = new System.Windows.Forms.Label();
-            this.lblRecordingSRS = new System.Windows.Forms.Label();
             this.lblCycloramaSRS = new System.Windows.Forms.Label();
             this.cbCycloramaSRS = new System.Windows.Forms.ComboBox();
             this.tbConfiguration = new System.Windows.Forms.TabPage();
@@ -107,7 +104,7 @@
             this.plButtons.Controls.Add(this.btnCancel);
             this.plButtons.Controls.Add(this.btnApply);
             this.plButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.plButtons.Location = new System.Drawing.Point(0, 447);
+            this.plButtons.Location = new System.Drawing.Point(0, 468);
             this.plButtons.Name = "plButtons";
             this.plButtons.Size = new System.Drawing.Size(432, 35);
             this.plButtons.TabIndex = 15;
@@ -160,7 +157,7 @@
             this.tcSettings.Multiline = true;
             this.tcSettings.Name = "tcSettings";
             this.tcSettings.SelectedIndex = 0;
-            this.tcSettings.Size = new System.Drawing.Size(408, 429);
+            this.tcSettings.Size = new System.Drawing.Size(408, 450);
             this.tcSettings.TabIndex = 16;
             // 
             // tbLogin
@@ -170,7 +167,7 @@
             this.tbLogin.Location = new System.Drawing.Point(4, 23);
             this.tbLogin.Name = "tbLogin";
             this.tbLogin.Padding = new System.Windows.Forms.Padding(3);
-            this.tbLogin.Size = new System.Drawing.Size(400, 402);
+            this.tbLogin.Size = new System.Drawing.Size(400, 423);
             this.tbLogin.TabIndex = 0;
             this.tbLogin.Text = "Login";
             this.tbLogin.UseVisualStyleBackColor = true;
@@ -237,7 +234,7 @@
             this.txtKey.Name = "txtKey";
             this.txtKey.PasswordChar = '*';
             this.txtKey.Size = new System.Drawing.Size(203, 20);
-            this.txtKey.TabIndex = 2;
+            this.txtKey.TabIndex = 3;
             this.txtKey.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtKey_KeyUp);
             // 
             // txtPassword
@@ -279,16 +276,13 @@
             this.tbSettings.Location = new System.Drawing.Point(4, 23);
             this.tbSettings.Name = "tbSettings";
             this.tbSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tbSettings.Size = new System.Drawing.Size(400, 402);
+            this.tbSettings.Size = new System.Drawing.Size(400, 423);
             this.tbSettings.TabIndex = 1;
             this.tbSettings.Text = "Settings";
             this.tbSettings.UseVisualStyleBackColor = true;
             // 
             // grCoordinateSystems
             // 
-            this.grCoordinateSystems.Controls.Add(this.cbRecordingSRS);
-            this.grCoordinateSystems.Controls.Add(this.lblMeasuringSupported);
-            this.grCoordinateSystems.Controls.Add(this.lblRecordingSRS);
             this.grCoordinateSystems.Controls.Add(this.lblCycloramaSRS);
             this.grCoordinateSystems.Controls.Add(this.cbCycloramaSRS);
             this.grCoordinateSystems.Location = new System.Drawing.Point(6, 6);
@@ -297,37 +291,6 @@
             this.grCoordinateSystems.TabIndex = 21;
             this.grCoordinateSystems.TabStop = false;
             this.grCoordinateSystems.Text = "Coordinate systems";
-            // 
-            // cbRecordingSRS
-            // 
-            this.cbRecordingSRS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbRecordingSRS.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbRecordingSRS.FormattingEnabled = true;
-            this.cbRecordingSRS.Location = new System.Drawing.Point(179, 47);
-            this.cbRecordingSRS.Name = "cbRecordingSRS";
-            this.cbRecordingSRS.Size = new System.Drawing.Size(203, 22);
-            this.cbRecordingSRS.Sorted = true;
-            this.cbRecordingSRS.TabIndex = 22;
-            // 
-            // lblMeasuringSupported
-            // 
-            this.lblMeasuringSupported.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMeasuringSupported.Location = new System.Drawing.Point(160, 40);
-            this.lblMeasuringSupported.Name = "lblMeasuringSupported";
-            this.lblMeasuringSupported.Size = new System.Drawing.Size(292, 22);
-            this.lblMeasuringSupported.TabIndex = 21;
-            this.lblMeasuringSupported.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblRecordingSRS
-            // 
-            this.lblRecordingSRS.AutoSize = true;
-            this.lblRecordingSRS.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRecordingSRS.Location = new System.Drawing.Point(6, 50);
-            this.lblRecordingSRS.Name = "lblRecordingSRS";
-            this.lblRecordingSRS.Size = new System.Drawing.Size(96, 14);
-            this.lblRecordingSRS.TabIndex = 19;
-            this.lblRecordingSRS.Text = "Recording viewer:";
-            this.lblRecordingSRS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblCycloramaSRS
             // 
@@ -360,7 +323,7 @@
             this.tbConfiguration.Controls.Add(this.grSwfUrl);
             this.tbConfiguration.Location = new System.Drawing.Point(4, 23);
             this.tbConfiguration.Name = "tbConfiguration";
-            this.tbConfiguration.Size = new System.Drawing.Size(400, 402);
+            this.tbConfiguration.Size = new System.Drawing.Size(400, 423);
             this.tbConfiguration.TabIndex = 3;
             this.tbConfiguration.Text = "Configuration";
             this.tbConfiguration.UseVisualStyleBackColor = true;
@@ -402,7 +365,7 @@
             this.txtCycloramaVectorLayerLocation.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCycloramaVectorLayerLocation.Location = new System.Drawing.Point(82, 37);
             this.txtCycloramaVectorLayerLocation.Name = "txtCycloramaVectorLayerLocation";
-            this.txtCycloramaVectorLayerLocation.Size = new System.Drawing.Size(370, 20);
+            this.txtCycloramaVectorLayerLocation.Size = new System.Drawing.Size(312, 20);
             this.txtCycloramaVectorLayerLocation.TabIndex = 21;
             // 
             // grProxyServer
@@ -461,7 +424,7 @@
             this.txtProxyPassword.Location = new System.Drawing.Point(307, 105);
             this.txtProxyPassword.Name = "txtProxyPassword";
             this.txtProxyPassword.PasswordChar = '*';
-            this.txtProxyPassword.Size = new System.Drawing.Size(145, 20);
+            this.txtProxyPassword.Size = new System.Drawing.Size(87, 20);
             this.txtProxyPassword.TabIndex = 29;
             // 
             // lblProxyUserName
@@ -517,7 +480,7 @@
             this.txtProxyPort.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtProxyPort.Location = new System.Drawing.Point(307, 37);
             this.txtProxyPort.Name = "txtProxyPort";
-            this.txtProxyPort.Size = new System.Drawing.Size(145, 20);
+            this.txtProxyPort.Size = new System.Drawing.Size(87, 20);
             this.txtProxyPort.TabIndex = 23;
             // 
             // lblProxyAddress
@@ -585,7 +548,7 @@
             this.txtRecordingServiceLocation.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtRecordingServiceLocation.Location = new System.Drawing.Point(82, 37);
             this.txtRecordingServiceLocation.Name = "txtRecordingServiceLocation";
-            this.txtRecordingServiceLocation.Size = new System.Drawing.Size(370, 20);
+            this.txtRecordingServiceLocation.Size = new System.Drawing.Size(312, 20);
             this.txtRecordingServiceLocation.TabIndex = 21;
             // 
             // grBaseUrl
@@ -625,7 +588,7 @@
             this.txtBaseUrlLocation.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBaseUrlLocation.Location = new System.Drawing.Point(82, 37);
             this.txtBaseUrlLocation.Name = "txtBaseUrlLocation";
-            this.txtBaseUrlLocation.Size = new System.Drawing.Size(370, 20);
+            this.txtBaseUrlLocation.Size = new System.Drawing.Size(312, 20);
             this.txtBaseUrlLocation.TabIndex = 21;
             // 
             // grSwfUrl
@@ -665,7 +628,7 @@
             this.txtSwfUrlLocation.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSwfUrlLocation.Location = new System.Drawing.Point(82, 37);
             this.txtSwfUrlLocation.Name = "txtSwfUrlLocation";
-            this.txtSwfUrlLocation.Size = new System.Drawing.Size(370, 20);
+            this.txtSwfUrlLocation.Size = new System.Drawing.Size(312, 20);
             this.txtSwfUrlLocation.TabIndex = 21;
             // 
             // tbAbout
@@ -673,7 +636,7 @@
             this.tbAbout.Controls.Add(this.rtbAbout);
             this.tbAbout.Location = new System.Drawing.Point(4, 23);
             this.tbAbout.Name = "tbAbout";
-            this.tbAbout.Size = new System.Drawing.Size(400, 402);
+            this.tbAbout.Size = new System.Drawing.Size(400, 423);
             this.tbAbout.TabIndex = 4;
             this.tbAbout.Text = "About";
             this.tbAbout.UseVisualStyleBackColor = true;
@@ -694,7 +657,7 @@
             this.tbAgreement.Controls.Add(this.txtAgreement);
             this.tbAgreement.Location = new System.Drawing.Point(4, 23);
             this.tbAgreement.Name = "tbAgreement";
-            this.tbAgreement.Size = new System.Drawing.Size(400, 402);
+            this.tbAgreement.Size = new System.Drawing.Size(400, 423);
             this.tbAgreement.TabIndex = 5;
             this.tbAgreement.Text = "Agreement";
             this.tbAgreement.UseVisualStyleBackColor = true;
@@ -715,7 +678,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(432, 482);
+            this.ClientSize = new System.Drawing.Size(432, 503);
             this.Controls.Add(this.tcSettings);
             this.Controls.Add(this.plButtons);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -726,6 +689,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Street Smart for ArcMap";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.StreetSmartConfigurationForm_FormClosed);
             this.plButtons.ResumeLayout(false);
             this.tcSettings.ResumeLayout(false);
             this.tbLogin.ResumeLayout(false);
@@ -767,7 +731,6 @@
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.TabPage tbSettings;
         private System.Windows.Forms.GroupBox grCoordinateSystems;
-        private System.Windows.Forms.Label lblMeasuringSupported;
         private System.Windows.Forms.Label lblCycloramaSRS;
         private System.Windows.Forms.ComboBox cbCycloramaSRS;
         private System.Windows.Forms.TabPage tbConfiguration;
@@ -809,7 +772,5 @@
         private System.Windows.Forms.Label lblKey;
         private System.Windows.Forms.Label txtLoginStatus;
         private System.Windows.Forms.Label lblLoginStatus;
-        private System.Windows.Forms.ComboBox cbRecordingSRS;
-        private System.Windows.Forms.Label lblRecordingSRS;
     }
 }

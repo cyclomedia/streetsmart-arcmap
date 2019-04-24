@@ -13,6 +13,7 @@ using StreetSmart.Common.Interfaces.Events;
 using StreetSmart.Common.Interfaces.GeoJson;
 using System.Threading;
 using StreetSmart.WinForms;
+using System.Windows.Forms;
 
 namespace StreetSmartArcMap.Logic
 {
@@ -31,8 +32,6 @@ namespace StreetSmartArcMap.Logic
             }
         }
         #endregion Singleton contruction
-
-
 
         #region private properties
         private IPanoramaViewerOptions PanoramaOptions { get; set; }
@@ -63,9 +62,9 @@ namespace StreetSmartArcMap.Logic
         /// <returns></returns>
         private async Task Init()
         {
-            IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.Locale, StreetSmartOptions.Database);
+            IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
             IDomElement element = DomElementFactory.Create();
-            var apiOptions = OptionsFactory.Create(StreetSmartOptions.Username, StreetSmartOptions.Password, StreetSmartOptions.ApiKey, StreetSmartOptions.EpsgCode, addressSettings, element);
+            var apiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, StreetSmartOptions.ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
 
             try
             {
@@ -84,7 +83,7 @@ namespace StreetSmartArcMap.Logic
             }
             catch (StreetSmartLoginFailedException)
             {
-                //MessageBox.Show("api laden >> kapot");
+                MessageBox.Show("api laden >> login failed");
             }
         }
 

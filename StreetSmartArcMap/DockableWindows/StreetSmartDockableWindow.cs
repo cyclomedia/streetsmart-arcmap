@@ -15,6 +15,7 @@ using StreetSmart.Common.Interfaces.Events;
 using StreetSmart.Common.Interfaces.GeoJson;
 using System.Threading.Tasks;
 using StreetSmartArcMap.Logic;
+using StreetSmartArcMap.Logic.Configuration;
 
 namespace StreetSmartArcMap.DockableWindows
 {
@@ -30,16 +31,8 @@ namespace StreetSmartArcMap.DockableWindows
             InitializeComponent();
             this.Hook = hook;
 
-            // TODO: move to settings file
-            var options = new StreetSmartOptions()
-            {
-                EpsgCode = "EPSG:28992",
-                Locale = "nl",
-                Database = "CMDatabase",
-                Username = "gbo",
-                Password = "Gg200786001",
-                ApiKey = "testdfdsfj",
-            };
+            var options = Configuration.Instance;
+            
             StreetSmartApiWrapper.Instance.InitApi(options);
             this.Controls.Add(StreetSmartApiWrapper.Instance.StreetSmartGUI);
         }

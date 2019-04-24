@@ -40,6 +40,9 @@
       <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.ADF.Connection.Local.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ESRI.ArcGIS.ArcMap, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="ESRI.ArcGIS.ArcMapUI, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.ArcMapUI.dll</HintPath>
@@ -54,6 +57,9 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\packages\StreetSmart.ArcGIS.10.4.0\lib\net40\ESRI.ArcGIS.DataSourcesGDB.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Display, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Editor, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -101,6 +107,7 @@
       <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -109,7 +116,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client\Web.cs" />
     <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="IStreetSmartOptions.cs" />
     <Compile Include="Layers\CycloMediaGroupLayer.cs" />
@@ -132,14 +138,14 @@
     <Compile Include="Model\Shape\ShapeType.cs" />
     <Compile Include="Model\Wfs\WfsFeature.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="State.cs" />
     <Compile Include="StreetSmartApiWrapper.cs" />
-    <Compile Include="StreetSmartOptions.cs" />
-    <Compile Include="Utilities\ArcUtils.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\StreetSmart.WinForms.19.5.0\build\StreetSmart.WinForms.targets" Condition="Exists('..\packages\StreetSmart.WinForms.19.5.0\build\StreetSmart.WinForms.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

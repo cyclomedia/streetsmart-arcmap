@@ -1,15 +1,21 @@
-﻿using StreetSmartArcMap.Logic.Model;
+﻿using ESRI.ArcGIS.Geometry;
+using StreetSmartArcMap.Logic;
+using StreetSmartArcMap.Logic.Configuration;
+using StreetSmartArcMap.Logic.Model;
+using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace StreetSmartArcMap.Logic.Client
+namespace StreetSmartArcMap.Client
 {
     public class Web
     {
@@ -43,8 +49,8 @@ namespace StreetSmartArcMap.Logic.Client
         private static Web _web;
 
         private readonly CultureInfo _ci;
-        //private readonly Login _login;
-        private readonly Configuration.Configuration _config;
+        private readonly Login _login;
+        private readonly Configuration _config;
         //private readonly APIKey _apiKey;
 
         #endregion
@@ -73,8 +79,8 @@ namespace StreetSmartArcMap.Logic.Client
         private Web()
         {
             _ci = CultureInfo.InvariantCulture;
-            //_login = Login.Instance;
-            //_config = Config.Instance;
+            _login = Login.Instance;
+            _config = Configuration.Instance;
             //_apiKey = APIKey.Instance;
             ServicePointManager.DefaultConnectionLimit = DefaultConnectionLimit;
         }
@@ -86,41 +92,41 @@ namespace StreetSmartArcMap.Logic.Client
         // =========================================================================
         // Interface functions
         // =========================================================================
-        public List<XElement> GetByImageId(string imageId, CycloMediaLayer cycloMediaLayer)
-        {
-            string epsgCode = cycloMediaLayer.EpsgCode;
-            epsgCode = SpatialReferences.Instance.ToKnownSrsName(epsgCode);
-            string remoteLocation = string.Format(RecordingRequest, RecordingService, epsgCode, imageId);
-            var xml = (string)GetRequest(remoteLocation, GetXmlCallback, XmlConfig);
-            return ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
-        }
+        //public List<XElement> GetByImageId(string imageId, CycloMediaLayer cycloMediaLayer)
+        //{
+        //    string epsgCode = cycloMediaLayer.EpsgCode;
+        //    epsgCode = SpatialReferences.Instance.ToKnownSrsName(epsgCode);
+        //    string remoteLocation = string.Format(RecordingRequest, RecordingService, epsgCode, imageId);
+        //    var xml = (string)GetRequest(remoteLocation, GetXmlCallback, XmlConfig);
+        //    return ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
+        //}
 
-        public List<XElement> GetByBbox(IEnvelope envelope, CycloMediaLayer cycloMediaLayer)
-        {
-            string epsgCode = cycloMediaLayer.EpsgCode;
-            epsgCode = SpatialReferences.Instance.ToKnownSrsName(epsgCode);
-            List<XElement> result;
+        //public List<XElement> GetByBbox(IEnvelope envelope, CycloMediaLayer cycloMediaLayer)
+        //{
+        //    string epsgCode = cycloMediaLayer.EpsgCode;
+        //    epsgCode = SpatialReferences.Instance.ToKnownSrsName(epsgCode);
+        //    List<XElement> result;
 
-            if (cycloMediaLayer is WfsLayer)
-            {
-                var wfsLayer = cycloMediaLayer as WfsLayer;
-                string remoteLocation = string.Format(_ci, WfsBboxRequest, wfsLayer.Url, wfsLayer.Version, epsgCode,
-                                                      envelope.XMin, envelope.YMin, envelope.XMax, envelope.YMax,
-                                                      epsgCode, wfsLayer.TypeName);
-                var xml = (string)GetRequest(remoteLocation, GetXmlCallback, XmlConfig);
-                result = ParseXml(xml, (Namespaces.GmlNs + "featureMember"));
-            }
-            else
-            {
-                string postItem = string.Format(_ci, cycloMediaLayer.WfsRequest, epsgCode, envelope.XMin, envelope.YMin,
-                                                envelope.XMax,
-                                                envelope.YMax, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:00-00:00"));
-                var xml = (string)PostRequest(RecordingService, GetXmlCallback, postItem, XmlConfig);
-                result = ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
-            }
+        //    if (cycloMediaLayer is WfsLayer)
+        //    {
+        //        var wfsLayer = cycloMediaLayer as WfsLayer;
+        //        string remoteLocation = string.Format(_ci, WfsBboxRequest, wfsLayer.Url, wfsLayer.Version, epsgCode,
+        //                                              envelope.XMin, envelope.YMin, envelope.XMax, envelope.YMax,
+        //                                              epsgCode, wfsLayer.TypeName);
+        //        var xml = (string)GetRequest(remoteLocation, GetXmlCallback, XmlConfig);
+        //        result = ParseXml(xml, (Namespaces.GmlNs + "featureMember"));
+        //    }
+        //    else
+        //    {
+        //        string postItem = string.Format(_ci, cycloMediaLayer.WfsRequest, epsgCode, envelope.XMin, envelope.YMin,
+        //                                        envelope.XMax,
+        //                                        envelope.YMax, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:00-00:00"));
+        //        var xml = (string)PostRequest(RecordingService, GetXmlCallback, postItem, XmlConfig);
+        //        result = ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
         public List<XElement> GetByBbox(IEnvelope envelope, string wfsRequest)
         {
@@ -146,7 +152,7 @@ namespace StreetSmartArcMap.Logic.Client
 
         public Stream DownloadSpatialReferences()
         {
-            string url = _config.SwfUrl.Replace("viewer_api.swf", "config/srs/globespotterspatialreferences.xml");
+            string url = _config.SpatialReferencesUrl ?? Urls.SpatialReferencesUrl;
             return GetRequest(url, GetStreamCallback, XmlConfig) as Stream;
         }
 
@@ -344,25 +350,25 @@ namespace StreetSmartArcMap.Logic.Client
         {
             IWebProxy proxy;
 
-            if (_config.UseProxyServer)
-            {
-                var webProxy = new WebProxy(_config.ProxyAddress, _config.ProxyPort)
-                {
-                    BypassProxyOnLocal = _config.BypassProxyOnLocal,
-                    UseDefaultCredentials = _config.ProxyUseDefaultCredentials
-                };
+            //if (_config.UseProxyServer)
+            //{
+            //    var webProxy = new WebProxy(_config.ProxyAddress, _config.ProxyPort)
+            //    {
+            //        BypassProxyOnLocal = _config.BypassProxyOnLocal,
+            //        UseDefaultCredentials = _config.ProxyUseDefaultCredentials
+            //    };
 
-                if (!_config.ProxyUseDefaultCredentials)
-                {
-                    webProxy.Credentials = new NetworkCredential(_config.ProxyUsername, _config.ProxyPassword, _config.ProxyDomain);
-                }
+            //    if (!_config.ProxyUseDefaultCredentials)
+            //    {
+            //        webProxy.Credentials = new NetworkCredential(_config.ProxyUsername, _config.ProxyPassword, _config.ProxyDomain);
+            //    }
 
-                proxy = webProxy;
-            }
-            else
-            {
+            //    proxy = webProxy;
+            //}
+            //else
+            //{
                 proxy = WebRequest.GetSystemWebProxy();
-            }
+            //}
 
             var request = (HttpWebRequest)WebRequest.Create(remoteLocation);
             request.Credentials = new NetworkCredential(_login.Username, _login.Password);
@@ -373,7 +379,7 @@ namespace StreetSmartArcMap.Logic.Client
             request.Proxy = proxy;
             request.PreAuthenticate = true;
             request.ContentType = "text/xml";
-            request.Headers.Add("ApiKey", _apiKey.Value);
+            request.Headers.Add("ApiKey", _config.ApiKey);
 
             if (request.ServicePoint != null)
             {

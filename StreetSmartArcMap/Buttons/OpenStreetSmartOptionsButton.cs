@@ -11,5 +11,11 @@ namespace StreetSmartArcMap.Buttons
         {
             StreetSmartConfigurationForm.OpenCloseSwitch();
         }
+
+        protected override void OnUpdate()
+        {
+            this.Checked = StreetSmartConfigurationForm.IsActive();
+            base.OnUpdate();
+        }
     }
 }

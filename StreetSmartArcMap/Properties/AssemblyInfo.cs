@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("StreetSmartArcMapAddin")]
+[assembly: AssemblyTitle("Street Smart for ArcMap")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CycloMedia")]
-[assembly: AssemblyProduct("StreetSmartArcMapAddin")]
+[assembly: AssemblyProduct("Street Smart for ArcMap")]
 [assembly: AssemblyCopyright("Copyright © CycloMedia 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

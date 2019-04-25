@@ -3,7 +3,9 @@ using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Logic.Configuration;
 using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace StreetSmartArcMap.Forms
@@ -26,6 +28,7 @@ namespace StreetSmartArcMap.Forms
             LoadGeneralSettings();
 
             SetFont(this);
+            SetAbout();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -78,7 +81,7 @@ namespace StreetSmartArcMap.Forms
                     {
                         selectedRCSRS = spatialReference;
                     }
-                    
+
                 }
             }
             if (selectedCMSRS != null)
@@ -138,7 +141,7 @@ namespace StreetSmartArcMap.Forms
                 StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(overlayDrawDistance, ArcMap.Document.FocusMap.MapUnits);
             }
 
-            
+
 
             _config.Save();
 
@@ -208,7 +211,7 @@ namespace StreetSmartArcMap.Forms
         {
             Font font = SystemFonts.MenuFont;
 
-            foreach(Control child in parent.Controls)
+            foreach (Control child in parent.Controls)
             {
                 var fontProperty = child.GetType().GetProperty("Font");
 
@@ -217,7 +220,33 @@ namespace StreetSmartArcMap.Forms
                 if (child.Controls.Count > 0)
                     SetFont(child);
             }
-        } 
+        }
 
+        private void SetAbout()
+        {
+            // Assembly info
+            var assembly = Assembly.GetExecutingAssembly();
+            var info = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            // Street Smart API info
+            var type = typeof(StreetSmart.WinForms.StreetSmartGUI);
+            var apiAssembly = type.Assembly;
+            var apiInfo = FileVersionInfo.GetVersionInfo(apiAssembly.Location);
+
+            string[] text =
+            {
+                $"{info.ProductName} {assembly.GetName().Version}",
+                $"{apiInfo.ProductName} {apiAssembly.GetName().Version}",
+                info.LegalCopyright,
+                "https://www.cyclomedia.com"
+            };
+
+            rtbAbout.Text = string.Join(Environment.NewLine, text);
+        }
+
+        private void rtbAbout_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            Process.Start(e.LinkText);
+        }
     }
 }

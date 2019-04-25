@@ -16,24 +16,20 @@
  * License along with this library.
  */
 
-using ESRI.ArcGIS.Framework;
-using ESRI.ArcGIS.esriSystem;
-using StreetSmartArcMap.Logic;
-using StreetSmartArcMap.Forms;
-
-namespace StreetSmartArcMap.Buttons
+namespace StreetSmartArcMap.Client
 {
-    public class OpenStreetSmartOptionsButton : ESRI.ArcGIS.Desktop.AddIns.Button
+    public class Functionality
     {
-        protected override void OnClick()
-        {
-            StreetSmartConfigurationForm.OpenCloseSwitch();
-        }
+        #region properties
 
-        protected override void OnUpdate()
-        {
-            this.Checked = StreetSmartConfigurationForm.IsActive();
-            base.OnUpdate();
-        }
+        // =========================================================================
+        // Properties
+        // =========================================================================
+        /// <summary>
+        /// Name
+        /// </summary>
+        public string Name { get; set; }
+
+        #endregion
     }
 }

@@ -1,6 +1,6 @@
 ﻿/*
- * Integration in ArcMap for CycloMedia StreetSmart
- * Copyright (c) 2014, CycloMedia, All rights reserved.
+ * Integration in ArcMap for StreetSmart
+ * Copyright (c) 2019, CycloMedia, All rights reserved.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
+
 namespace StreetSmartArcMap.Logic
 {
     public interface IStreetSmartOptions
@@ -24,6 +25,5 @@ namespace StreetSmartArcMap.Logic
         string AddressDatabase { get; set; }
         string ApiUsername { get; set; }
         string ApiPassword { get; set; }
-        string ApiKey { get; set; }
     }
 }

@@ -1,4 +1,22 @@
-﻿using ESRI.ArcGIS.Geometry;
+﻿/*
+ * Integration in ArcMap for StreetSmart
+ * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.
+ */
+
+using ESRI.ArcGIS.Geometry;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Logic.Configuration;
 using StreetSmartArcMap.Logic.Model;
@@ -51,7 +69,7 @@ namespace StreetSmartArcMap.Client
         private readonly CultureInfo _ci;
         private readonly Login _login;
         private readonly Configuration _config;
-        //private readonly APIKey _apiKey;
+
 
         #endregion
 
@@ -159,7 +177,7 @@ namespace StreetSmartArcMap.Client
         public Stream DownloadGlobeSpotterConfiguration()
         {
             const string postItem = @"<Authorization />";
-            string authorizationService = string.Format(AuthorizationRequest, BaseUrl);
+            string authorizationService = string.Format(AuthorizationRequest, Urls.BaseUrl);
             return PostRequest(authorizationService, GetStreamCallback, postItem, XmlConfig) as Stream;
         }
 
@@ -379,7 +397,7 @@ namespace StreetSmartArcMap.Client
             request.Proxy = proxy;
             request.PreAuthenticate = true;
             request.ContentType = "text/xml";
-            request.Headers.Add("ApiKey", _config.ApiKey);
+            request.Headers.Add("ApiKey", Configuration.ApiKey);
 
             if (request.ServicePoint != null)
             {

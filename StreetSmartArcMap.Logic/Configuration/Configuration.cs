@@ -1,4 +1,22 @@
-﻿using StreetSmartArcMap.Logic.Utilities;
+﻿/*
+ * Integration in ArcMap for StreetSmart
+ * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.
+ */
+
+using StreetSmartArcMap.Logic.Utilities;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -29,7 +47,6 @@ namespace StreetSmartArcMap.Logic.Configuration
         public string ApiSRS { get; set; }
         public string ApiUsername { get; set; }
         public string ApiPassword { get; set; }
-        public string ApiKey { get; set; }
 
         public string BaseUrl { get; set; }
         public string RecordingsServiceUrl { get; set; }
@@ -38,6 +55,8 @@ namespace StreetSmartArcMap.Logic.Configuration
         public string DefaultRecordingSrs { get; set; }
 
         public int OverlayDrawDistanceInMeters { get; set; }
+
+        public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
 
         #endregion
 
@@ -105,7 +124,6 @@ namespace StreetSmartArcMap.Logic.Configuration
                 ApiSRS = string.Empty,
                 ApiUsername = string.Empty,
                 ApiPassword = string.Empty,
-                ApiKey = string.Empty,
 
                 BaseUrl = "https://atlas.cyclomedia.com",
                 RecordingsServiceUrl = "https://atlas.cyclomedia.com/recordings/wfs",

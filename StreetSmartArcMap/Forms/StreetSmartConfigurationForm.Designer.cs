@@ -33,17 +33,14 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
             this.tcSettings = new System.Windows.Forms.TabControl();
-            this.tbLogin = new System.Windows.Forms.TabPage();
+            this.tbSettings = new System.Windows.Forms.TabPage();
             this.grLogin = new System.Windows.Forms.GroupBox();
-            this.txtLoginStatus = new System.Windows.Forms.Label();
-            this.lblLoginStatus = new System.Windows.Forms.Label();
+            this.btnLogin = new System.Windows.Forms.Button();
+            this.lblLogin = new System.Windows.Forms.Label();
             this.lblUsername = new System.Windows.Forms.Label();
             this.txtUsername = new System.Windows.Forms.TextBox();
-            this.txtKey = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
-            this.lblKey = new System.Windows.Forms.Label();
             this.lblPassword = new System.Windows.Forms.Label();
-            this.tbSettings = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.nudOverlayDrawDistance = new System.Windows.Forms.NumericUpDown();
@@ -89,9 +86,8 @@
             this.txtAgreement = new System.Windows.Forms.TextBox();
             this.plButtons.SuspendLayout();
             this.tcSettings.SuspendLayout();
-            this.tbLogin.SuspendLayout();
-            this.grLogin.SuspendLayout();
             this.tbSettings.SuspendLayout();
+            this.grLogin.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudOverlayDrawDistance)).BeginInit();
             this.grCoordinateSystems.SuspendLayout();
@@ -154,7 +150,6 @@
             this.tcSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tcSettings.Controls.Add(this.tbLogin);
             this.tcSettings.Controls.Add(this.tbSettings);
             this.tcSettings.Controls.Add(this.tbConfiguration);
             this.tcSettings.Controls.Add(this.tbAbout);
@@ -167,52 +162,52 @@
             this.tcSettings.Size = new System.Drawing.Size(408, 450);
             this.tcSettings.TabIndex = 16;
             // 
-            // tbLogin
+            // tbSettings
             // 
-            this.tbLogin.Controls.Add(this.grLogin);
-            this.tbLogin.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbLogin.Location = new System.Drawing.Point(4, 23);
-            this.tbLogin.Name = "tbLogin";
-            this.tbLogin.Padding = new System.Windows.Forms.Padding(3);
-            this.tbLogin.Size = new System.Drawing.Size(400, 423);
-            this.tbLogin.TabIndex = 0;
-            this.tbLogin.Text = "Login";
-            this.tbLogin.UseVisualStyleBackColor = true;
+            this.tbSettings.Controls.Add(this.grLogin);
+            this.tbSettings.Controls.Add(this.groupBox1);
+            this.tbSettings.Controls.Add(this.grCoordinateSystems);
+            this.tbSettings.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbSettings.Location = new System.Drawing.Point(4, 23);
+            this.tbSettings.Name = "tbSettings";
+            this.tbSettings.Padding = new System.Windows.Forms.Padding(3);
+            this.tbSettings.Size = new System.Drawing.Size(400, 423);
+            this.tbSettings.TabIndex = 1;
+            this.tbSettings.Text = "Settings";
+            this.tbSettings.UseVisualStyleBackColor = true;
             // 
             // grLogin
             // 
-            this.grLogin.Controls.Add(this.txtLoginStatus);
-            this.grLogin.Controls.Add(this.lblLoginStatus);
+            this.grLogin.Controls.Add(this.btnLogin);
+            this.grLogin.Controls.Add(this.lblLogin);
             this.grLogin.Controls.Add(this.lblUsername);
             this.grLogin.Controls.Add(this.txtUsername);
-            this.grLogin.Controls.Add(this.txtKey);
             this.grLogin.Controls.Add(this.txtPassword);
-            this.grLogin.Controls.Add(this.lblKey);
             this.grLogin.Controls.Add(this.lblPassword);
             this.grLogin.Location = new System.Drawing.Point(6, 6);
             this.grLogin.Name = "grLogin";
-            this.grLogin.Size = new System.Drawing.Size(388, 128);
-            this.grLogin.TabIndex = 24;
+            this.grLogin.Size = new System.Drawing.Size(388, 108);
+            this.grLogin.TabIndex = 25;
             this.grLogin.TabStop = false;
-            this.grLogin.Text = "Login";
+            this.grLogin.Text = "Credentials";
             // 
-            // txtLoginStatus
+            // btnLogin
             // 
-            this.txtLoginStatus.AutoSize = true;
-            this.txtLoginStatus.Location = new System.Drawing.Point(180, 100);
-            this.txtLoginStatus.Name = "txtLoginStatus";
-            this.txtLoginStatus.Size = new System.Drawing.Size(53, 14);
-            this.txtLoginStatus.TabIndex = 8;
-            this.txtLoginStatus.Text = "Unknown";
+            this.btnLogin.Location = new System.Drawing.Point(122, 73);
+            this.btnLogin.Name = "btnLogin";
+            this.btnLogin.Size = new System.Drawing.Size(100, 23);
+            this.btnLogin.TabIndex = 9;
+            this.btnLogin.Text = "Test connection";
+            this.btnLogin.UseVisualStyleBackColor = true;
+            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
-            // lblLoginStatus
+            // lblLogin
             // 
-            this.lblLoginStatus.AutoSize = true;
-            this.lblLoginStatus.Location = new System.Drawing.Point(6, 100);
-            this.lblLoginStatus.Name = "lblLoginStatus";
-            this.lblLoginStatus.Size = new System.Drawing.Size(69, 14);
-            this.lblLoginStatus.TabIndex = 7;
-            this.lblLoginStatus.Text = "Login status:";
+            this.lblLogin.AutoSize = true;
+            this.lblLogin.Location = new System.Drawing.Point(228, 77);
+            this.lblLogin.Name = "lblLogin";
+            this.lblLogin.Size = new System.Drawing.Size(0, 14);
+            this.lblLogin.TabIndex = 8;
             // 
             // lblUsername
             // 
@@ -228,72 +223,38 @@
             // txtUsername
             // 
             this.txtUsername.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtUsername.Location = new System.Drawing.Point(179, 19);
+            this.txtUsername.Location = new System.Drawing.Point(122, 19);
             this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(203, 20);
+            this.txtUsername.Size = new System.Drawing.Size(260, 20);
             this.txtUsername.TabIndex = 1;
             this.txtUsername.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtUsername_KeyUp);
-            // 
-            // txtKey
-            // 
-            this.txtKey.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtKey.Location = new System.Drawing.Point(179, 71);
-            this.txtKey.Name = "txtKey";
-            this.txtKey.PasswordChar = '*';
-            this.txtKey.Size = new System.Drawing.Size(203, 20);
-            this.txtKey.TabIndex = 3;
-            this.txtKey.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtKey_KeyUp);
             // 
             // txtPassword
             // 
             this.txtPassword.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPassword.Location = new System.Drawing.Point(179, 45);
+            this.txtPassword.Location = new System.Drawing.Point(122, 47);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
-            this.txtPassword.Size = new System.Drawing.Size(203, 20);
+            this.txtPassword.Size = new System.Drawing.Size(260, 20);
             this.txtPassword.TabIndex = 2;
             this.txtPassword.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtPassword_KeyUp);
-            // 
-            // lblKey
-            // 
-            this.lblKey.AutoSize = true;
-            this.lblKey.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblKey.Location = new System.Drawing.Point(6, 74);
-            this.lblKey.Name = "lblKey";
-            this.lblKey.Size = new System.Drawing.Size(29, 14);
-            this.lblKey.TabIndex = 6;
-            this.lblKey.Text = "Key:";
-            this.lblKey.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblPassword
             // 
             this.lblPassword.AutoSize = true;
             this.lblPassword.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPassword.Location = new System.Drawing.Point(6, 48);
+            this.lblPassword.Location = new System.Drawing.Point(6, 50);
             this.lblPassword.Name = "lblPassword";
             this.lblPassword.Size = new System.Drawing.Size(60, 14);
             this.lblPassword.TabIndex = 6;
             this.lblPassword.Text = "Password:";
             this.lblPassword.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tbSettings
-            // 
-            this.tbSettings.Controls.Add(this.groupBox1);
-            this.tbSettings.Controls.Add(this.grCoordinateSystems);
-            this.tbSettings.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbSettings.Location = new System.Drawing.Point(4, 23);
-            this.tbSettings.Name = "tbSettings";
-            this.tbSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tbSettings.Size = new System.Drawing.Size(400, 423);
-            this.tbSettings.TabIndex = 1;
-            this.tbSettings.Text = "Settings";
-            this.tbSettings.UseVisualStyleBackColor = true;
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.nudOverlayDrawDistance);
-            this.groupBox1.Location = new System.Drawing.Point(6, 94);
+            this.groupBox1.Location = new System.Drawing.Point(6, 208);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(388, 52);
             this.groupBox1.TabIndex = 17;
@@ -327,7 +288,7 @@
             this.grCoordinateSystems.Controls.Add(this.cbRecordingsSRS);
             this.grCoordinateSystems.Controls.Add(this.lblCycloramaSRS);
             this.grCoordinateSystems.Controls.Add(this.cbCycloramaSRS);
-            this.grCoordinateSystems.Location = new System.Drawing.Point(6, 6);
+            this.grCoordinateSystems.Location = new System.Drawing.Point(6, 120);
             this.grCoordinateSystems.Name = "grCoordinateSystems";
             this.grCoordinateSystems.Size = new System.Drawing.Size(388, 82);
             this.grCoordinateSystems.TabIndex = 21;
@@ -350,9 +311,9 @@
             this.cbRecordingsSRS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbRecordingsSRS.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbRecordingsSRS.FormattingEnabled = true;
-            this.cbRecordingsSRS.Location = new System.Drawing.Point(162, 47);
+            this.cbRecordingsSRS.Location = new System.Drawing.Point(122, 47);
             this.cbRecordingsSRS.Name = "cbRecordingsSRS";
-            this.cbRecordingsSRS.Size = new System.Drawing.Size(220, 22);
+            this.cbRecordingsSRS.Size = new System.Drawing.Size(260, 22);
             this.cbRecordingsSRS.Sorted = true;
             this.cbRecordingsSRS.TabIndex = 22;
             // 
@@ -372,9 +333,9 @@
             this.cbCycloramaSRS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbCycloramaSRS.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbCycloramaSRS.FormattingEnabled = true;
-            this.cbCycloramaSRS.Location = new System.Drawing.Point(162, 19);
+            this.cbCycloramaSRS.Location = new System.Drawing.Point(122, 19);
             this.cbCycloramaSRS.Name = "cbCycloramaSRS";
-            this.cbCycloramaSRS.Size = new System.Drawing.Size(220, 22);
+            this.cbCycloramaSRS.Size = new System.Drawing.Size(260, 22);
             this.cbCycloramaSRS.Sorted = true;
             this.cbCycloramaSRS.TabIndex = 20;
             // 
@@ -757,10 +718,9 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.StreetSmartConfigurationForm_FormClosed);
             this.plButtons.ResumeLayout(false);
             this.tcSettings.ResumeLayout(false);
-            this.tbLogin.ResumeLayout(false);
+            this.tbSettings.ResumeLayout(false);
             this.grLogin.ResumeLayout(false);
             this.grLogin.PerformLayout();
-            this.tbSettings.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudOverlayDrawDistance)).EndInit();
@@ -791,12 +751,6 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.TabControl tcSettings;
-        private System.Windows.Forms.TabPage tbLogin;
-        private System.Windows.Forms.GroupBox grLogin;
-        private System.Windows.Forms.Label lblUsername;
-        private System.Windows.Forms.TextBox txtUsername;
-        private System.Windows.Forms.TextBox txtPassword;
-        private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.TabPage tbSettings;
         private System.Windows.Forms.GroupBox grCoordinateSystems;
         private System.Windows.Forms.Label lblCycloramaSRS;
@@ -836,14 +790,17 @@
         private System.Windows.Forms.RichTextBox rtbAbout;
         private System.Windows.Forms.TabPage tbAgreement;
         private System.Windows.Forms.TextBox txtAgreement;
-        private System.Windows.Forms.TextBox txtKey;
-        private System.Windows.Forms.Label lblKey;
-        private System.Windows.Forms.Label txtLoginStatus;
-        private System.Windows.Forms.Label lblLoginStatus;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cbRecordingsSRS;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nudOverlayDrawDistance;
+        private System.Windows.Forms.GroupBox grLogin;
+        private System.Windows.Forms.Button btnLogin;
+        private System.Windows.Forms.Label lblLogin;
+        private System.Windows.Forms.Label lblUsername;
+        private System.Windows.Forms.TextBox txtUsername;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.Label lblPassword;
     }
 }

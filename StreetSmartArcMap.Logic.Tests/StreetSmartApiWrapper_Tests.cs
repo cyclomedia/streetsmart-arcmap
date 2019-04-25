@@ -14,7 +14,6 @@ namespace StreetSmartArcMap.Logic.Tests
         {
             var sut = StreetSmartApiWrapper.Instance;
             var options = new Mock<IStreetSmartOptions>();
-            options.SetupGet(o => o.ApiKey).Returns("1");
 
             options.SetupGet(o => o.AddressDatabase).Returns("2");
             options.SetupGet(o => o.ApiSRS).Returns("3");

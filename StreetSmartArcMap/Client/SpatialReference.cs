@@ -26,179 +26,189 @@ using StreetSmartArcMap.Logic.Configuration;
 namespace StreetSmartArcMap.Client
 {
     public class SpatialReference
-  {
-    #region members
-
-    // =========================================================================
-    // Members
-    // =========================================================================
-    private ISpatialReference _spatialReference;
-
-    #endregion
-
-    #region properties
-
-    // =========================================================================
-    // Properties
-    // =========================================================================
-    // ReSharper disable InconsistentNaming
-    public string Name { get; set; }
-
-    public string SRSName { get; set; }
-
-    public string Units { get; set; }
-
-    public Bounds NativeBounds { get; set; }
-
-    public string ESRICompatibleName { get; set; }
-
-    public string CompatibleSRSNames { get; set; }
-    // ReSharper restore InconsistentNaming
-
-    [XmlIgnore]
-    public bool CanMeasuring
     {
-      get { return ((Units == "m") || (Units == "ft")); }
-    }
+        #region members
 
-    [XmlIgnore]
-    public ISpatialReference SpatialRef
-    {
-      get
-      {
-        if (_spatialReference == null)
+        // =========================================================================
+        // Members
+        // =========================================================================
+        private ISpatialReference _spatialReference;
+
+        #endregion
+
+        #region properties
+
+        // =========================================================================
+        // Properties
+        // =========================================================================
+        // ReSharper disable InconsistentNaming
+        public string Name { get; set; }
+
+        public string SRSName { get; set; }
+
+        public string Units { get; set; }
+
+        public Bounds NativeBounds { get; set; }
+
+        public string ESRICompatibleName { get; set; }
+
+        public string CompatibleSRSNames { get; set; }
+        // ReSharper restore InconsistentNaming
+
+        [XmlIgnore]
+        public bool CanMeasuring
         {
-          if (string.IsNullOrEmpty(SRSName))
-          {
-            _spatialReference = null;
-          }
-          else
-          {
-            int srs;
-            string strsrs = SRSName.Replace("EPSG:", string.Empty);
+            get { return ((Units == "m") || (Units == "ft")); }
+        }
 
-            if (int.TryParse(strsrs, out srs))
+        [XmlIgnore]
+        public ISpatialReference SpatialRef
+        {
+            get
             {
-              ISpatialReferenceFactory3 spatialRefFactory = (ISpatialReferenceFactory3)new SpatialReferenceEnvironment();
-
-              try
-              {
-                _spatialReference = spatialRefFactory.CreateProjectedCoordinateSystem(srs);
-              }
-              catch (ArgumentException)
-              {
-                try
+                if (_spatialReference == null)
                 {
-                  _spatialReference = spatialRefFactory.CreateGeographicCoordinateSystem(srs);
-                }
-                catch (ArgumentException)
-                {
-                  if (string.IsNullOrEmpty(CompatibleSRSNames))
-                  {
-                    _spatialReference = null;
-                  }
-                  else
-                  {
-                    strsrs = CompatibleSRSNames.Replace("EPSG:", string.Empty);
-
-                    if (int.TryParse(strsrs, out srs))
+                    if (string.IsNullOrEmpty(SRSName))
                     {
-                      try
-                      {
-                        _spatialReference = spatialRefFactory.CreateProjectedCoordinateSystem(srs);
-                      }
-                      catch (ArgumentException)
-                      {
-                        try
-                        {
-                          _spatialReference = spatialRefFactory.CreateGeographicCoordinateSystem(srs);
-                        }
-                        catch (ArgumentException)
-                        {
-                          _spatialReference = null;
-                        }
-                      }
+                        _spatialReference = null;
                     }
                     else
                     {
-                      _spatialReference = null;
+                        int srs;
+                        string strsrs = SRSName.Replace("EPSG:", string.Empty);
+
+                        if (int.TryParse(strsrs, out srs))
+                        {
+                            ISpatialReferenceFactory3 spatialRefFactory = (ISpatialReferenceFactory3)new SpatialReferenceEnvironment();
+
+                            try
+                            {
+                                _spatialReference = spatialRefFactory.CreateProjectedCoordinateSystem(srs);
+                            }
+                            catch (ArgumentException)
+                            {
+                                try
+                                {
+                                    _spatialReference = spatialRefFactory.CreateGeographicCoordinateSystem(srs);
+                                }
+                                catch (ArgumentException)
+                                {
+                                    if (string.IsNullOrEmpty(CompatibleSRSNames))
+                                    {
+                                        _spatialReference = null;
+                                    }
+                                    else
+                                    {
+                                        strsrs = CompatibleSRSNames.Replace("EPSG:", string.Empty);
+
+                                        if (int.TryParse(strsrs, out srs))
+                                        {
+                                            try
+                                            {
+                                                _spatialReference = spatialRefFactory.CreateProjectedCoordinateSystem(srs);
+                                            }
+                                            catch (ArgumentException)
+                                            {
+                                                try
+                                                {
+                                                    _spatialReference = spatialRefFactory.CreateGeographicCoordinateSystem(srs);
+                                                }
+                                                catch (ArgumentException)
+                                                {
+                                                    _spatialReference = null;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            _spatialReference = null;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            _spatialReference = null;
+                        }
                     }
-                  }
                 }
-              }
-            }
-            else
-            {
-              _spatialReference = null;
-            }
-          }
-        }
 
-        if (_spatialReference != null)
-        {
-          IActiveView activeView = ArcUtils.ActiveView;
-          IEnvelope envelope = activeView.Extent;
-          ISpatialReference spatEnv = envelope.SpatialReference;
-
-          Configuration config = Configuration.Instance;
-          string defaultRecordingSrs = config.DefaultRecordingSrs;
-          int spatEnvFactoryCode = 0;
-
-          if ((spatEnv != null) && ((string.IsNullOrEmpty(defaultRecordingSrs)) || (!int.TryParse(defaultRecordingSrs, out spatEnvFactoryCode))))
-          {
-            spatEnvFactoryCode = spatEnv.FactoryCode;
-          }
-
-          if ((spatEnv != null) && (spatEnvFactoryCode != _spatialReference.FactoryCode))
-          {
-            IEnvelope copyEnvelope = envelope.Envelope;
-            copyEnvelope.Project(_spatialReference);
-
-            if (copyEnvelope.IsEmpty)
-            {
-              _spatialReference = null;
-            }
-            else
-            {
-              if (NativeBounds != null)
-              {
-                double xMin = NativeBounds.MinX;
-                double yMin = NativeBounds.MinY;
-                double xMax = NativeBounds.MaxX;
-                double yMax = NativeBounds.MaxY;
-
-                if ((copyEnvelope.XMin < xMin) || (copyEnvelope.XMax > xMax) || (copyEnvelope.YMin < yMin) ||
-                    (copyEnvelope.YMax > yMax))
+                if (_spatialReference != null)
                 {
-                  _spatialReference = null;
+                    IActiveView activeView = ArcUtils.ActiveView;
+                    IEnvelope envelope = activeView.Extent;
+                    ISpatialReference spatEnv = envelope.SpatialReference;
+
+                    Configuration config = Configuration.Instance;
+                    string defaultRecordingSrs = config.DefaultRecordingSrs;
+                    int spatEnvFactoryCode = 0;
+
+                    if ((spatEnv != null) && ((string.IsNullOrEmpty(defaultRecordingSrs)) || (!int.TryParse(defaultRecordingSrs, out spatEnvFactoryCode))))
+                    {
+                        spatEnvFactoryCode = spatEnv.FactoryCode;
+                    }
+
+                    if ((spatEnv != null) && (spatEnvFactoryCode != _spatialReference.FactoryCode))
+                    {
+                        IEnvelope copyEnvelope = envelope.Envelope;
+                        copyEnvelope.Project(_spatialReference);
+
+                        if (copyEnvelope.IsEmpty)
+                        {
+                            _spatialReference = null;
+                        }
+                        else
+                        {
+                            if (NativeBounds != null)
+                            {
+                                double xMin = NativeBounds.MinX;
+                                double yMin = NativeBounds.MinY;
+                                double xMax = NativeBounds.MaxX;
+                                double yMax = NativeBounds.MaxY;
+
+                                if ((copyEnvelope.XMin < xMin) || (copyEnvelope.XMax > xMax) || (copyEnvelope.YMin < yMin) ||
+                                    (copyEnvelope.YMax > yMax))
+                                {
+                                    _spatialReference = null;
+                                }
+                            }
+                        }
+                    }
                 }
-              }
+
+                return _spatialReference;
             }
-          }
         }
 
-        return _spatialReference;
-      }
+        [XmlIgnore]
+        public bool KnownInArcMap
+        {
+            get { return SpatialRef != null; }
+        }
+
+        #endregion
+
+        #region functions (public)
+
+        // =========================================================================
+        // Functions (Public)
+        // =========================================================================
+        public override string ToString()
+        {
+            return string.Format("{0} ({1})", (string.IsNullOrEmpty(ESRICompatibleName) ? Name : ESRICompatibleName), SRSName);
+        }
+
+        public bool WithinBoundary(IEnvelope boundary)
+        {
+            if (boundary == null)
+                return true;
+
+            boundary.Project(this as ISpatialReference);
+
+            return !((boundary.XMin < NativeBounds.MinX) || (boundary.XMax > NativeBounds.MaxX) || (boundary.YMin < NativeBounds.MinY) || (boundary.YMax > NativeBounds.MaxY));
+        }
+
+        #endregion
     }
-
-    [XmlIgnore]
-    public bool KnownInArcMap
-    {
-      get { return SpatialRef != null; }
-    }
-
-    #endregion
-
-    #region functions (public)
-
-    // =========================================================================
-    // Functions (Public)
-    // =========================================================================
-    public override string ToString()
-    {
-      return string.Format("{0} ({1})", (string.IsNullOrEmpty(ESRICompatibleName) ? Name : ESRICompatibleName), SRSName);
-    }
-
-    #endregion
-  }
 }

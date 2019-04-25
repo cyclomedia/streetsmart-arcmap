@@ -277,6 +277,9 @@
     <AddInContent Include="Install\swiftshader\libEGL.dll" />
     <AddInContent Include="Install\swiftshader\libGLESv2.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Agreement.txt" />
+  </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>
     <AddInTargetProduct>Desktop</AddInTargetProduct>

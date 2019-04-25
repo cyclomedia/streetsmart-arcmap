@@ -24,7 +24,9 @@ using StreetSmartArcMap.Utilities;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
+using System.Resources;
 using System.Windows.Forms;
 
 namespace StreetSmartArcMap.Forms
@@ -51,11 +53,13 @@ namespace StreetSmartArcMap.Forms
 
             SetFont(this);
             SetAbout();
+            SetAgreement();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            Save(true);
+            if (VerifyAgreement())
+                Save(true);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -65,7 +69,20 @@ namespace StreetSmartArcMap.Forms
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            Save(false);
+            if (VerifyAgreement())
+                Save(false);
+        }
+
+        private bool VerifyAgreement()
+        {
+            if (!ckAgreement.Checked)
+            {
+                tcSettings.SelectTab(tbAgreement);
+
+                ckAgreement.Focus();
+            }
+
+            return ckAgreement.Checked;
         }
 
         private void LoadGeneralSettings()
@@ -167,7 +184,7 @@ namespace StreetSmartArcMap.Forms
                 StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(overlayDrawDistance, ArcMap.Document.FocusMap.MapUnits);
             }
 
-
+            _config.Agreement = ckAgreement.Checked;
 
             _config.Save();
 
@@ -213,8 +230,8 @@ namespace StreetSmartArcMap.Forms
         {
             lblLogin.Text = string.Empty;
 
-                Login();
-            }
+            Login();
+        }
 
         private void Login()
         {
@@ -233,17 +250,17 @@ namespace StreetSmartArcMap.Forms
 
         private void SetFont(Control parent)
         {
-          Font font = SystemFonts.MenuFont;
+            Font font = SystemFonts.MenuFont;
 
-          foreach (Control child in parent.Controls)
-          {
-            var fontProperty = child.GetType().GetProperty("Font");
+            foreach (Control child in parent.Controls)
+            {
+                var fontProperty = child.GetType().GetProperty("Font");
 
-            fontProperty?.SetValue(child, (Font) font.Clone());
+                fontProperty?.SetValue(child, (Font)font.Clone());
 
-            if (child.Controls.Count > 0)
-              SetFont(child);
-          }
+                if (child.Controls.Count > 0)
+                    SetFont(child);
+            }
         }
 
         private void SetAbout()
@@ -259,8 +276,8 @@ namespace StreetSmartArcMap.Forms
 
             string[] text =
             {
-                $"{info.ProductName} {assembly.GetName().Version}",
-                $"{apiInfo.ProductName} {apiAssembly.GetName().Version}",
+                $"{info.ProductName} {assembly.GetName().Version.ToString(3)}",
+                $"{apiInfo.ProductName} {apiAssembly.GetName().Version.ToString(3)}",
                 info.LegalCopyright,
                 "https://www.cyclomedia.com"
             };
@@ -272,5 +289,13 @@ namespace StreetSmartArcMap.Forms
         {
             Process.Start(e.LinkText);
         }
+
+        private void SetAgreement()
+        {
+            txtAgreement.Text = Properties.Resources.Agreement;
+
+            ckAgreement.Checked = Configuration.Instance.Agreement;
+        }
+
     }
 }

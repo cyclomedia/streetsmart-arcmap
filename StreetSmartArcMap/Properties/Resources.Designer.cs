@@ -61,6 +61,25 @@ namespace StreetSmartArcMap.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CycloMedia Technology B.V. (‘CycloMedia’) is registered in the Trade Register
+        ///of the Chamber of Commerce under number 16063843.
+        ///
+        ///USER TERMS AND CONDITIONS STREET SMART
+        ///The usage of Image Material and/or the Information Products and the Software 
+        ///as a Service Services (‘SaaS Services’) made available via Street Smart by 
+        ///means of an agreement with the organization for which you work, be it as an
+        ///employee or on assignment basis, is only permitted under the following terms
+        ///and conditions.
+        ///
+        ///Definition [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Agreement {
+            get {
+                return ResourceManager.GetString("Agreement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login Failed.
         /// </summary>
         internal static string LoginFailed {

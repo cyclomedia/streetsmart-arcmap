@@ -189,15 +189,15 @@
             this.grLogin.Size = new System.Drawing.Size(388, 108);
             this.grLogin.TabIndex = 25;
             this.grLogin.TabStop = false;
-            this.grLogin.Text = "Login";
+            this.grLogin.Text = "Credentials";
             // 
             // btnLogin
             // 
             this.btnLogin.Location = new System.Drawing.Point(122, 73);
             this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(75, 23);
+            this.btnLogin.Size = new System.Drawing.Size(100, 23);
             this.btnLogin.TabIndex = 9;
-            this.btnLogin.Text = "Test";
+            this.btnLogin.Text = "Test connection";
             this.btnLogin.UseVisualStyleBackColor = true;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 

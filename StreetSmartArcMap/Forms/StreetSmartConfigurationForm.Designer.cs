@@ -204,7 +204,7 @@
             // lblLogin
             // 
             this.lblLogin.AutoSize = true;
-            this.lblLogin.Location = new System.Drawing.Point(203, 77);
+            this.lblLogin.Location = new System.Drawing.Point(228, 77);
             this.lblLogin.Name = "lblLogin";
             this.lblLogin.Size = new System.Drawing.Size(0, 14);
             this.lblLogin.TabIndex = 8;

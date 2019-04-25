@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using ESRI.ArcGIS.esriSystem;
 using StreetSmart.Common.Factories;
 using StreetSmart.Common.Exceptions;
 using StreetSmart.Common.Interfaces.Data;
@@ -13,6 +13,7 @@ using StreetSmart.Common.Interfaces.Events;
 using StreetSmart.Common.Interfaces.GeoJson;
 using System.Threading;
 using StreetSmart.WinForms;
+using System.Windows.Forms;
 
 namespace StreetSmartArcMap.Logic
 {
@@ -32,15 +33,14 @@ namespace StreetSmartArcMap.Logic
         }
         #endregion Singleton contruction
 
-
-
         #region private properties
         private IPanoramaViewerOptions PanoramaOptions { get; set; }
         private IList<ViewerType> ViewerTypes { get; set; }
         private IStreetSmartAPI StreetSmartAPI { get; set; }
         private IStreetSmartOptions StreetSmartOptions { get; set; }
-
         private bool RequestOpen { get; set; }
+        private bool RequestOverlay { get; set; }
+        private int RequestOverlayDistance { get; set; }
         private string RequestQuery { get; set; }
         private string RequestSRS { get; set; }
         #endregion private properties
@@ -53,7 +53,7 @@ namespace StreetSmartArcMap.Logic
         /// <summary>
         /// Has the wrapper / API been initialized yet?
         /// </summary>
-        public bool Initialized => (PanoramaOptions != null && ViewerTypes != null);
+        public bool Initialised { get; private set; }
         #endregion public properties
 
         #region private functions
@@ -63,30 +63,36 @@ namespace StreetSmartArcMap.Logic
         /// <returns></returns>
         private async Task Init()
         {
-            IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.Locale, StreetSmartOptions.Database);
+            IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
             IDomElement element = DomElementFactory.Create();
-            var apiOptions = OptionsFactory.Create(StreetSmartOptions.Username, StreetSmartOptions.Password, StreetSmartOptions.ApiKey, StreetSmartOptions.EpsgCode, addressSettings, element);
+            var apiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, StreetSmartOptions.ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
 
             try
             {
                 await StreetSmartAPI.Init(apiOptions);
-
                 // Open image
                 ViewerTypes = new List<ViewerType> { ViewerType.Panorama };
                 PanoramaOptions = PanoramaViewerOptionsFactory.Create(true, false, true, true, true, true);
                 PanoramaOptions.MeasureTypeButtonToggle = false;
-
+                Initialised = true;
                 if (RequestOpen)
                 {
                     RequestOpen = false;
                     await Open(RequestSRS, RequestQuery);
                 }
+                if (RequestOverlay)
+                {
+                    RequestOverlay = false;
+                    StreetSmartAPI.SetOverlayDrawDistance(RequestOverlayDistance);
+                }
+
             }
             catch (StreetSmartLoginFailedException)
             {
-                //MessageBox.Show("api laden >> kapot");
+                MessageBox.Show("api laden >> login failed");
             }
         }
+
 
         /// <summary>
         /// Eventhandler is notified when the API is loaded
@@ -115,6 +121,26 @@ namespace StreetSmartArcMap.Logic
             StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
         }
         
+        public void SetOverlayDrawDistance(int distance, esriUnits mapUnits)
+        {
+            switch (mapUnits)
+            {
+                case esriUnits.esriFeet: distance = (int)Math.Round(distance * 3.280839895, 0);
+                    break;
+                default: break;
+            }
+
+            if (!Initialised)
+            { // wait until initialised
+                RequestOverlay = true;
+                RequestOverlayDistance = distance;
+            }
+            else
+            {
+                StreetSmartAPI.SetOverlayDrawDistance(distance);
+            }
+        }
+
         /// <summary>
         /// Opens a StreetSmart view on this location/imageID
         /// </summary>
@@ -125,7 +151,7 @@ namespace StreetSmartArcMap.Logic
         {
             try
             {
-                if (!Initialized)
+                if (!Initialised)
                 {
                     RequestOpen = true;
                     RequestQuery = query;

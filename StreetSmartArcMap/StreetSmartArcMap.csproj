@@ -31,6 +31,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,9 +53,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ESRI.ArcGIS.ADF.Connection.Local, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=x86" />
     <Reference Include="ESRI.ArcGIS.ADF.Local, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL" />
+    <Reference Include="ESRI.ArcGIS.Carto, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="ESRI.ArcGIS.Desktop.AddIns">
       <Private>False</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.Display, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Editor, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -63,14 +72,20 @@
     <Reference Include="ESRI.ArcGIS.Framework">
       <Private>False</Private>
     </Reference>
+    <Reference Include="ESRI.ArcGIS.Geometry, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="ESRI.ArcGIS.System">
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="ESRI.ArcGIS.SystemUI, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="StreetSmart.WinForms, Version=19.5.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Install\StreetSmart.WinForms.dll</HintPath>
+      <HintPath>..\packages\StreetSmart.WinForms.19.5.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -82,10 +97,23 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buttons\OpenStreetSmartOptionsButton.cs" />
     <Compile Include="Buttons\OpenStreetSmartWindowButton.cs" />
+    <Compile Include="Client\Bounds.cs" />
+    <Compile Include="Client\Login.cs" />
+    <Compile Include="Client\SpatialReference.cs" />
+    <Compile Include="Client\SpatialReferences.cs" />
+    <Compile Include="Client\Urls.cs" />
+    <Compile Include="Client\Web.cs" />
     <Compile Include="Config.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Config.esriaddinx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\StreetSmartConfigurationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\StreetSmartConfigurationForm.Designer.cs">
+      <DependentUpon>StreetSmartConfigurationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -93,6 +121,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\ArcUtils.cs" />
+    <Compile Include="Utilities\ImageExtensions.cs" />
+    <Compile Include="Utilities\WindowWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Config.esriaddinx">
@@ -135,6 +166,27 @@
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Images\OpenStreetSmartWindowButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DockableWindows\StreetSmartDockableWindow.resx">
+      <DependentUpon>StreetSmartDockableWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\StreetSmartConfigurationForm.resx">
+      <DependentUpon>StreetSmartConfigurationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\GsCycloMediaOptions.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StreetSmartArcMap.Logic\StreetSmartArcMap.Logic.csproj">
+      <Project>{d4973164-4449-4be5-a777-31fbf855454b}</Project>
+      <Name>StreetSmartArcMap.Logic</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Install\cef.pak" />
@@ -199,6 +251,7 @@
     <AddInContent Include="Install\natives_blob.bin" />
     <AddInContent Include="Install\snapshot_blob.bin" />
     <AddInContent Include="Install\v8_context_snapshot.bin" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Install\CefSharp.BrowserSubprocess.Core.dll" />
@@ -220,24 +273,6 @@
     <AddInContent Include="Install\StreetSmart.WinForms.xml" />
     <AddInContent Include="Install\swiftshader\libEGL.dll" />
     <AddInContent Include="Install\swiftshader\libGLESv2.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="DockableWindows\StreetSmartDockableWindow.resx">
-      <DependentUpon>StreetSmartDockableWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Forms\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\StreetSmartArcMap.Logic\StreetSmartArcMap.Logic.csproj">
-      <Project>{d4973164-4449-4be5-a777-31fbf855454b}</Project>
-      <Name>StreetSmartArcMap.Logic</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>

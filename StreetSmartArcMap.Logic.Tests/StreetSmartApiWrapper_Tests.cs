@@ -13,18 +13,18 @@ namespace StreetSmartArcMap.Logic.Tests
         public void StreetSmartApi_Should_Initialize()
         {
             var sut = StreetSmartApiWrapper.Instance;
-            var options = new StreetSmartOptions()
-            {
-                ApiKey = "1",
-                Database = "2",
-                EpsgCode = "3",
-                Locale = "4",
-                Password = "5",
-                Username = "6"
-            };
+            var options = new Mock<IStreetSmartOptions>();
+            options.SetupGet(o => o.ApiKey).Returns("1");
+
+            options.SetupGet(o => o.AddressDatabase).Returns("2");
+            options.SetupGet(o => o.ApiSRS).Returns("3");
+            options.SetupGet(o => o.AddressLocale).Returns("4");
+            options.SetupGet(o => o.ApiPassword).Returns("5");
+            options.SetupGet(o => o.ApiUsername).Returns("6");
+
             var apiMock = new Mock<IStreetSmartAPI>();
             apiMock.Setup(a => a.Init(It.IsAny<IOptions>()));
-            sut.InitApi(options, apiMock.Object);
+            sut.InitApi(options.Object, apiMock.Object);
         }
     }
 }

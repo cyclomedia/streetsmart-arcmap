@@ -51,7 +51,7 @@ namespace StreetSmartArcMap.Client
         private readonly CultureInfo _ci;
         private readonly Login _login;
         private readonly Configuration _config;
-        //private readonly APIKey _apiKey;
+
 
         #endregion
 
@@ -159,7 +159,7 @@ namespace StreetSmartArcMap.Client
         public Stream DownloadGlobeSpotterConfiguration()
         {
             const string postItem = @"<Authorization />";
-            string authorizationService = string.Format(AuthorizationRequest, BaseUrl);
+            string authorizationService = string.Format(AuthorizationRequest, Urls.BaseUrl);
             return PostRequest(authorizationService, GetStreamCallback, postItem, XmlConfig) as Stream;
         }
 
@@ -379,7 +379,7 @@ namespace StreetSmartArcMap.Client
             request.Proxy = proxy;
             request.PreAuthenticate = true;
             request.ContentType = "text/xml";
-            request.Headers.Add("ApiKey", _config.ApiKey);
+            request.Headers.Add("ApiKey", Configuration.ApiKey);
 
             if (request.ServicePoint != null)
             {

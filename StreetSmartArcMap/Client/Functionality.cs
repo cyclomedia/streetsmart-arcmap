@@ -1,5 +1,5 @@
 ﻿/*
- * Integration in ArcMap for CycloMedia StreetSmart
+ * Integration in ArcMap for Cycloramas
  * Copyright (c) 2014, CycloMedia, All rights reserved.
  * 
  * This library is free software; you can redistribute it and/or
@@ -15,14 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
-namespace StreetSmartArcMap.Logic
+
+namespace StreetSmartArcMap.Client
 {
-    public interface IStreetSmartOptions
+    public class Functionality
     {
-        string ApiSRS { get; set; }
-        string AddressLocale { get; set; }
-        string AddressDatabase { get; set; }
-        string ApiUsername { get; set; }
-        string ApiPassword { get; set; }
+        #region properties
+
+        // =========================================================================
+        // Properties
+        // =========================================================================
+        /// <summary>
+        /// Name
+        /// </summary>
+        public string Name { get; set; }
+
+        #endregion
     }
 }

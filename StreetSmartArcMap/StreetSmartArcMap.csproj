@@ -99,7 +99,10 @@
   <ItemGroup>
     <Compile Include="Buttons\OpenStreetSmartOptionsButton.cs" />
     <Compile Include="Buttons\OpenStreetSmartWindowButton.cs" />
+    <Compile Include="Client\ApplicationConfiguration.cs" />
     <Compile Include="Client\Bounds.cs" />
+    <Compile Include="Client\Functionality.cs" />
+    <Compile Include="Client\GlobeSpotterConfiguration.cs" />
     <Compile Include="Client\Login.cs" />
     <Compile Include="Client\SpatialReference.cs" />
     <Compile Include="Client\SpatialReferences.cs" />

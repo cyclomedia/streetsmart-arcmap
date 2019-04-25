@@ -2,6 +2,7 @@
 using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Logic.Configuration;
+using StreetSmartArcMap.Utilities;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,6 +13,8 @@ namespace StreetSmartArcMap.Forms
     {
         private static StreetSmartConfigurationForm _StreetSmartConfigurationForm;
 
+        private static Login _login;
+
         private Configuration _config;
         private bool _mssgBoxShow;
 
@@ -20,6 +23,7 @@ namespace StreetSmartArcMap.Forms
             InitializeComponent();
 
             _config = Configuration.Instance;
+            _login = Client.Login.Instance;
 
             LoadLoginData();
             LoadSpatialReferenceData();
@@ -52,7 +56,6 @@ namespace StreetSmartArcMap.Forms
         {
             txtUsername.Text = _config.ApiUsername;
             txtPassword.Text = _config.ApiPassword;
-            txtKey.Text = _config.ApiKey;
         }
 
         private void LoadSpatialReferenceData()
@@ -60,12 +63,17 @@ namespace StreetSmartArcMap.Forms
             //Clear existing items
             cbCycloramaSRS.Items.Clear();
             cbRecordingsSRS.Items.Clear();
+
             var selectedCMSRS = default(SpatialReference);
             var selectedRCSRS = default(SpatialReference);
+
+            var boundary = ArcUtils.ActiveView?.Extent;
+
             SpatialReferences spatialReferences = SpatialReferences.Instance;
+
             foreach (var spatialReference in spatialReferences)
             {
-                if (spatialReference.KnownInArcMap)
+                if (spatialReference.KnownInArcMap && spatialReference.WithinBoundary(boundary))
                 {
                     cbCycloramaSRS.Items.Add(spatialReference);
                     cbRecordingsSRS.Items.Add(spatialReference);
@@ -78,7 +86,7 @@ namespace StreetSmartArcMap.Forms
                     {
                         selectedRCSRS = spatialReference;
                     }
-                    
+
                 }
             }
             if (selectedCMSRS != null)
@@ -138,7 +146,7 @@ namespace StreetSmartArcMap.Forms
                 StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(overlayDrawDistance, ArcMap.Document.FocusMap.MapUnits);
             }
 
-            
+
 
             _config.Save();
 
@@ -150,10 +158,10 @@ namespace StreetSmartArcMap.Forms
 
         private void txtUsername_KeyUp(object sender, KeyEventArgs e)
         {
+            lblLogin.Text = string.Empty;
+
             if (((e.KeyCode == Keys.Enter) && (!string.IsNullOrEmpty(txtUsername.Text))) && (!_mssgBoxShow))
             {
-                txtLoginStatus.Text = string.Empty;
-
                 txtPassword.Focus();
             }
             else
@@ -166,23 +174,9 @@ namespace StreetSmartArcMap.Forms
 
         private void txtPassword_KeyUp(object sender, KeyEventArgs e)
         {
+            lblLogin.Text = string.Empty;
+
             if (((e.KeyCode == Keys.Enter) && (!string.IsNullOrEmpty(txtPassword.Text))) && (!_mssgBoxShow))
-            {
-                txtLoginStatus.Text = string.Empty;
-
-                txtKey.Focus();
-            }
-            else
-            {
-                _mssgBoxShow = false;
-            }
-
-            btnApply.Enabled = true;
-        }
-
-        private void txtKey_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (((e.KeyCode == Keys.Enter) && (!string.IsNullOrEmpty(txtKey.Text))) && (!_mssgBoxShow))
             {
                 Login();
             }
@@ -194,9 +188,21 @@ namespace StreetSmartArcMap.Forms
             btnApply.Enabled = true;
         }
 
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            lblLogin.Text = string.Empty;
+
+            Login();
+        }
+
         private void Login()
         {
-            //txtLoginStatus.Text = Properties.Resources.LoginSuccessfully;
+            _login.SetLoginCredentials(txtUsername.Text, txtPassword.Text);
+
+            if (_login.Check())
+                lblLogin.Text = Properties.Resources.LoginSuccessfully;
+            else
+                lblLogin.Text = Properties.Resources.LoginFailed;
         }
 
         private void StreetSmartConfigurationForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -208,7 +214,7 @@ namespace StreetSmartArcMap.Forms
         {
             Font font = SystemFonts.MenuFont;
 
-            foreach(Control child in parent.Controls)
+            foreach (Control child in parent.Controls)
             {
                 var fontProperty = child.GetType().GetProperty("Font");
 
@@ -217,7 +223,6 @@ namespace StreetSmartArcMap.Forms
                 if (child.Controls.Count > 0)
                     SetFont(child);
             }
-        } 
-
+        }
     }
 }

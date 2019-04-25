@@ -29,7 +29,6 @@ namespace StreetSmartArcMap.Logic.Configuration
         public string ApiSRS { get; set; }
         public string ApiUsername { get; set; }
         public string ApiPassword { get; set; }
-        public string ApiKey { get; set; }
 
         public string BaseUrl { get; set; }
         public string RecordingsServiceUrl { get; set; }
@@ -38,6 +37,8 @@ namespace StreetSmartArcMap.Logic.Configuration
         public string DefaultRecordingSrs { get; set; }
 
         public int OverlayDrawDistanceInMeters { get; set; }
+
+        public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
 
         #endregion
 
@@ -105,7 +106,6 @@ namespace StreetSmartArcMap.Logic.Configuration
                 ApiSRS = string.Empty,
                 ApiUsername = string.Empty,
                 ApiPassword = string.Empty,
-                ApiKey = string.Empty,
 
                 BaseUrl = "https://atlas.cyclomedia.com",
                 RecordingsServiceUrl = "https://atlas.cyclomedia.com/recordings/wfs",

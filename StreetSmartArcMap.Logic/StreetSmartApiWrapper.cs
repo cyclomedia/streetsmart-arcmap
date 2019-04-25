@@ -65,7 +65,7 @@ namespace StreetSmartArcMap.Logic
         {
             IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
             IDomElement element = DomElementFactory.Create();
-            var apiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, StreetSmartOptions.ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
+            var apiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, Configuration.Configuration.ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
 
             try
             {

@@ -670,12 +670,13 @@
             // 
             this.rtbAbout.BackColor = System.Drawing.SystemColors.Window;
             this.rtbAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbAbout.Location = new System.Drawing.Point(5, 5);
+            this.rtbAbout.Location = new System.Drawing.Point(3, 3);
             this.rtbAbout.Name = "rtbAbout";
             this.rtbAbout.ReadOnly = true;
-            this.rtbAbout.Size = new System.Drawing.Size(452, 68);
+            this.rtbAbout.Size = new System.Drawing.Size(394, 70);
             this.rtbAbout.TabIndex = 20;
             this.rtbAbout.Text = "";
+            this.rtbAbout.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbAbout_LinkClicked);
             // 
             // tbAgreement
             // 

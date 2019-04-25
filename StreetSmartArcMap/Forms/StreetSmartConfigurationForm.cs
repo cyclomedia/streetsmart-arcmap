@@ -22,7 +22,9 @@ using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Logic.Configuration;
 using StreetSmartArcMap.Utilities;
 using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace StreetSmartArcMap.Forms
@@ -48,6 +50,7 @@ namespace StreetSmartArcMap.Forms
             LoadGeneralSettings();
 
             SetFont(this);
+            SetAbout();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -210,8 +213,8 @@ namespace StreetSmartArcMap.Forms
         {
             lblLogin.Text = string.Empty;
 
-            Login();
-        }
+                Login();
+            }
 
         private void Login()
         {
@@ -230,17 +233,44 @@ namespace StreetSmartArcMap.Forms
 
         private void SetFont(Control parent)
         {
-            Font font = SystemFonts.MenuFont;
+          Font font = SystemFonts.MenuFont;
 
-            foreach (Control child in parent.Controls)
+          foreach (Control child in parent.Controls)
+          {
+            var fontProperty = child.GetType().GetProperty("Font");
+
+            fontProperty?.SetValue(child, (Font) font.Clone());
+
+            if (child.Controls.Count > 0)
+              SetFont(child);
+          }
+        }
+
+        private void SetAbout()
+        {
+            // Assembly info
+            var assembly = Assembly.GetExecutingAssembly();
+            var info = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            // Street Smart API info
+            var type = typeof(StreetSmart.WinForms.StreetSmartGUI);
+            var apiAssembly = type.Assembly;
+            var apiInfo = FileVersionInfo.GetVersionInfo(apiAssembly.Location);
+
+            string[] text =
             {
-                var fontProperty = child.GetType().GetProperty("Font");
+                $"{info.ProductName} {assembly.GetName().Version}",
+                $"{apiInfo.ProductName} {apiAssembly.GetName().Version}",
+                info.LegalCopyright,
+                "https://www.cyclomedia.com"
+            };
 
-                fontProperty?.SetValue(child, (Font)font.Clone());
+            rtbAbout.Text = string.Join(Environment.NewLine, text);
+        }
 
-                if (child.Controls.Count > 0)
-                    SetFont(child);
-            }
+        private void rtbAbout_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            Process.Start(e.LinkText);
         }
     }
 }

@@ -295,7 +295,7 @@
             this.groupBox1.Controls.Add(this.nudOverlayDrawDistance);
             this.groupBox1.Location = new System.Drawing.Point(6, 94);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(388, 58);
+            this.groupBox1.Size = new System.Drawing.Size(388, 52);
             this.groupBox1.TabIndex = 17;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "General";
@@ -311,7 +311,7 @@
             // 
             // nudOverlayDrawDistance
             // 
-            this.nudOverlayDrawDistance.Location = new System.Drawing.Point(179, 21);
+            this.nudOverlayDrawDistance.Location = new System.Drawing.Point(162, 19);
             this.nudOverlayDrawDistance.Name = "nudOverlayDrawDistance";
             this.nudOverlayDrawDistance.Size = new System.Drawing.Size(57, 20);
             this.nudOverlayDrawDistance.TabIndex = 0;
@@ -350,9 +350,9 @@
             this.cbRecordingsSRS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbRecordingsSRS.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbRecordingsSRS.FormattingEnabled = true;
-            this.cbRecordingsSRS.Location = new System.Drawing.Point(179, 47);
+            this.cbRecordingsSRS.Location = new System.Drawing.Point(162, 47);
             this.cbRecordingsSRS.Name = "cbRecordingsSRS";
-            this.cbRecordingsSRS.Size = new System.Drawing.Size(203, 22);
+            this.cbRecordingsSRS.Size = new System.Drawing.Size(220, 22);
             this.cbRecordingsSRS.Sorted = true;
             this.cbRecordingsSRS.TabIndex = 22;
             // 
@@ -372,9 +372,9 @@
             this.cbCycloramaSRS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbCycloramaSRS.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbCycloramaSRS.FormattingEnabled = true;
-            this.cbCycloramaSRS.Location = new System.Drawing.Point(179, 19);
+            this.cbCycloramaSRS.Location = new System.Drawing.Point(162, 19);
             this.cbCycloramaSRS.Name = "cbCycloramaSRS";
-            this.cbCycloramaSRS.Size = new System.Drawing.Size(203, 22);
+            this.cbCycloramaSRS.Size = new System.Drawing.Size(220, 22);
             this.cbCycloramaSRS.Sorted = true;
             this.cbCycloramaSRS.TabIndex = 20;
             // 

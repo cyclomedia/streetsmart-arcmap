@@ -3,6 +3,7 @@ using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Logic.Configuration;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace StreetSmartArcMap.Forms
@@ -23,6 +24,8 @@ namespace StreetSmartArcMap.Forms
             LoadLoginData();
             LoadSpatialReferenceData();
             LoadGeneralSettings();
+
+            SetFont(this);
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -200,6 +203,21 @@ namespace StreetSmartArcMap.Forms
         {
             _StreetSmartConfigurationForm = null;
         }
+
+        private void SetFont(Control parent)
+        {
+            Font font = SystemFonts.MenuFont;
+
+            foreach(Control child in parent.Controls)
+            {
+                var fontProperty = child.GetType().GetProperty("Font");
+
+                fontProperty?.SetValue(child, (Font)font.Clone());
+
+                if (child.Controls.Count > 0)
+                    SetFont(child);
+            }
+        } 
 
     }
 }

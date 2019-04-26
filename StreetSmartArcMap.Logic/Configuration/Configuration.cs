@@ -17,6 +17,7 @@
  */
 
 using StreetSmartArcMap.Logic.Utilities;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -58,6 +59,27 @@ namespace StreetSmartArcMap.Logic.Configuration
 
         public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
 
+        public static EventHandler<bool> AgreementChanged;
+
+        private bool _Agreement { get; set; }
+
+        public bool Agreement
+        {
+            get
+            {
+                return _Agreement ;
+            }
+            set
+            {
+                if (_Agreement != value)
+                {
+                    _Agreement = value;
+
+                    AgreementChanged?.Invoke(this, value);
+                }
+            }
+        }
+
         #endregion
 
         #region Constructors
@@ -85,7 +107,7 @@ namespace StreetSmartArcMap.Logic.Configuration
         }
 
         private static string FileName => Path.Combine(FileUtils.FileDir, "Configuration.xml");
-
+        
         #endregion
 
         #region Functions
@@ -130,7 +152,9 @@ namespace StreetSmartArcMap.Logic.Configuration
                 SpatialReferencesUrl = "https://streetsmart.cyclomedia.com/api/v18.10/assets/srs/SpatialReference.xml",
 
                 DefaultRecordingSrs = string.Empty,
-                OverlayDrawDistanceInMeters = 30
+                OverlayDrawDistanceInMeters = 30,
+
+                Agreement = false,
             };
 
             result.Save();

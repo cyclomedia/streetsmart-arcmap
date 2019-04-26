@@ -56,6 +56,7 @@ namespace StreetSmartArcMap.Logic
         private IList<ViewerType> ViewerTypes { get; set; }
         private IStreetSmartAPI StreetSmartAPI { get; set; }
         private IStreetSmartOptions StreetSmartOptions { get; set; }
+        private IOptions ApiOptions { get; set; }
         private bool RequestOpen { get; set; }
         private bool RequestOverlay { get; set; }
         private int RequestOverlayDistance { get; set; }
@@ -75,19 +76,27 @@ namespace StreetSmartArcMap.Logic
         #endregion public properties
 
         #region private functions
+
+        /// <summary>
+        /// Eventhandler is notified when the API is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void StreetSmartAPI_APIReady(object sender, EventArgs e)
+        {
+            await Init();
+        }
+
         /// <summary>
         /// Initialises the Street Smart API with configured settings
         /// </summary>
         /// <returns></returns>
         private async Task Init()
         {
-            IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
-            IDomElement element = DomElementFactory.Create();
-            var apiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, Configuration.Configuration.ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
-
             try
             {
-                await StreetSmartAPI.Init(apiOptions);
+                RestartStreetSmartAPI(StreetSmartOptions);
+
                 // Open image
                 ViewerTypes = new List<ViewerType> { ViewerType.Panorama };
                 PanoramaOptions = PanoramaViewerOptionsFactory.Create(true, false, true, true, true, true);
@@ -111,39 +120,50 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-
-        /// <summary>
-        /// Eventhandler is notified when the API is loaded
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void StreetSmartAPI_APIReady(object sender, EventArgs e)
-        {
-            await Init();
-        }
         #endregion private functions
 
 
         #region public functions
+
+        public void RestartStreetSmartAPI(IStreetSmartOptions options)
+        {
+            try
+            {
+                //Destroy if existing
+                if (Initialised)
+                    StreetSmartAPI.Destroy(ApiOptions).Wait(5000);
+
+                //Create new
+                IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
+                IDomElement element = DomElementFactory.Create();
+
+                ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, Configuration.Configuration.ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
+
+                StreetSmartAPI.Init(ApiOptions);
+            }
+            catch (Exception ex)
+            {
+                //
+            }
+        }
+
         public void InitApi(IStreetSmartOptions options, IStreetSmartAPI api = null)
         {
             if (api == null)
-            {
                 StreetSmartAPI = StreetSmartAPIFactory.Create();
-            }
             else
-            {
                 StreetSmartAPI = api;
-            }
+         
             StreetSmartOptions = options;
             StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
         }
-        
+
         public void SetOverlayDrawDistance(int distance, esriUnits mapUnits)
         {
             switch (mapUnits)
             {
-                case esriUnits.esriFeet: distance = (int)Math.Round(distance * 3.280839895, 0);
+                case esriUnits.esriFeet:
+                    distance = (int)Math.Round(distance * 3.280839895, 0);
                     break;
                 default: break;
             }

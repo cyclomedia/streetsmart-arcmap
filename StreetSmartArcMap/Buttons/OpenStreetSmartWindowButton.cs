@@ -25,38 +25,44 @@ using ESRI.ArcGIS.esriSystem;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Logic.Configuration;
 using ESRI.ArcGIS.Carto;
+using StreetSmartArcMap.AddIns;
 
 namespace StreetSmartArcMap.Buttons
 {
     public class OpenStreetSmartWindowButton : ESRI.ArcGIS.Desktop.AddIns.Button
     {
+        private Configuration Config => Configuration.Instance;
+
         private IDockableWindow window { get; set; }
+
         public OpenStreetSmartWindowButton()
         {
             //
-            var application = ArcMap.Application;
-            var dockWindowManager = application as IDockableWindowManager;
+            var dockWindowManager = ArcMap.Application as IDockableWindowManager;
+
             UID windowId = new UIDClass { Value = "Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" };
+
             window = dockWindowManager.GetDockableWindow(windowId);
         }
 
         protected override async void OnClick()
         {
-            //var config = StreetSmartArcMap.Logic.Configuration.Configuration.Instance;
+            if (Config.Agreement)
+            {
+                if (!window.IsVisible())
+                    window.Show(true);
 
-            if (!window.IsVisible())
-                window.Show(true);
+                StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(Configuration.Instance.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits);
 
-            StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(Configuration.Instance.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits);
-
-            await StreetSmartApiWrapper.Instance.Open(Configuration.Instance.ApiSRS, "Lange Haven 145, Schiedam");
+                await StreetSmartApiWrapper.Instance.Open(Configuration.Instance.ApiSRS, "Lange Haven 145, Schiedam");
+            }
         }
 
         protected override void OnUpdate()
         {
-            //
-        }
+            Enabled = GsExtension.GetExtension().IsEnabled;
 
-        
+            base.OnUpdate();
+        }
     }
 }

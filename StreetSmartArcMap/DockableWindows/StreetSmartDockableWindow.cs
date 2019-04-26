@@ -38,6 +38,7 @@ using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.ArcMapUI;
 using ESRI.ArcGIS.esriSystem;
+using StreetSmartArcMap.Forms;
 
 namespace StreetSmartArcMap.DockableWindows
 {
@@ -47,15 +48,17 @@ namespace StreetSmartArcMap.DockableWindows
     /// </summary>
     public partial class StreetSmartDockableWindow : UserControl
     {
+        private Configuration Config => Configuration.Instance;
+        private StreetSmartApiWrapper API => StreetSmartApiWrapper.Instance;
 
         public StreetSmartDockableWindow(object hook)
         {
             InitializeComponent();
             this.Hook = hook;
 
-            StreetSmartApiWrapper.Instance.InitApi(Configuration.Instance);
-            this.Controls.Add(StreetSmartApiWrapper.Instance.StreetSmartGUI);
+            API.InitApi(Config);
 
+            this.Controls.Add(API.StreetSmartGUI);
 
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
             docEvents.MapsChanged += DocEvents_MapsChanged;
@@ -63,9 +66,8 @@ namespace StreetSmartArcMap.DockableWindows
 
         private void DocEvents_MapsChanged()
         {
-            StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(Configuration.Instance.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits); 
+            API.SetOverlayDrawDistance(Configuration.Instance.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits);
         }
-
 
         /// <summary>
         /// Host object of the dockable window

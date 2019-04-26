@@ -2,24 +2,33 @@
   <Name>Street Smart for ArcMap</Name>
   <AddInID>{ffb838b9-7a85-4470-b88c-62d3b8bbd64c}</AddInID>
   <Description>Street Smart for ArcMap</Description>
-  <Version>1.0.0.1</Version>
+  <Version>1.0.0.0</Version>
   <Image>Images\StreetSmartArcMapAddin.png</Image>
   <Author></Author>
   <Company>CycloMedia</Company>
-  <Date>4/18/2019</Date>
+  <Date>4/25/2019</Date>
   <Targets>
     <Target name="Desktop" version="10.4" />
   </Targets>
-  <AddIn language="CLR" library="StreetSmartArcMap.dll" namespace="StreetSmartArcMap">
+  <AddIn language="CLR" library="StreetSmartArcMap.dll" namespace="StreetSmartArcMap.AddIns">
     <ArcMap>
+      <Extensions>
+        <Extension id="CycloMedia_StreetSmartArcMap_GsExtension"
+                   class="GsExtension"
+                   productName="Street Smart for ArcMap"
+                   showInExtensionDialog="true"
+                   autoLoad="true">
+          <Description>Street Smart for ArcMap. Copyright © CycloMedia 2019.</Description>
+        </Extension>
+      </Extensions>
       <DockableWindows>
         <DockableWindow id="CycloMedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" class="StreetSmartArcMap.DockableWindows.StreetSmartDockableWindow+AddinImpl" caption="Street Smart" image="Images\StreetSmartDockableWindow.png">
           <InitialPlacement height="600" width="800" state="pinned" position="left" />
         </DockableWindow>
       </DockableWindows>
       <Commands>
-        <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartWindowButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartWindowButton" message="" caption="Open Street Smart" tip="Open the Street Smart window" category="CycloMedia" image="Images\OpenStreetSmartWindowButton.png" />
-        <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartOptionsButton" message="" caption="Open Street Smart options" tip="Open the Street Smart options window" category="CycloMedia" image="Images\GsCycloMediaOptions.png" />
+        <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartWindowButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartWindowButton" message="" caption="Open Street Smart" tip="Open the Street Smart window" category="CycloMedia" image="Images\OpenStreetSmartWindowButton.png" onDemand="false" />
+        <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartOptionsButton" message="" caption="Open Street Smart options" tip="Open the Street Smart options window" category="CycloMedia" image="Images\GsCycloMediaOptions.png" onDemand="false" />
       </Commands>
       <Toolbars>
         <Toolbar id="StreetSmartArcMapToolbar" caption="Street Smart">

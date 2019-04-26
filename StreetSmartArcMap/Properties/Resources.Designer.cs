@@ -61,6 +61,61 @@ namespace StreetSmartArcMap.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CycloMedia Technology B.V. (‘CycloMedia’) is registered in the Trade Register
+        ///of the Chamber of Commerce under number 16063843.
+        ///
+        ///USER TERMS AND CONDITIONS STREET SMART
+        ///The usage of Image Material and/or the Information Products and the Software 
+        ///as a Service Services (‘SaaS Services’) made available via Street Smart by 
+        ///means of an agreement with the organization for which you work, be it as an
+        ///employee or on assignment basis, is only permitted under the following terms
+        ///and conditions.
+        ///
+        ///Definition [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Agreement {
+            get {
+                return ResourceManager.GetString("Agreement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to save anyway?.
+        /// </summary>
+        internal static string ConfigurationAsk {
+            get {
+                return ResourceManager.GetString("ConfigurationAsk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password does not have a value..
+        /// </summary>
+        internal static string InvalidApiPassword {
+            get {
+                return ResourceManager.GetString("InvalidApiPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cyclorama viewer does not have a value..
+        /// </summary>
+        internal static string InvalidApiSRS {
+            get {
+                return ResourceManager.GetString("InvalidApiSRS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username does not have a value..
+        /// </summary>
+        internal static string InvalidApiUsername {
+            get {
+                return ResourceManager.GetString("InvalidApiUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login Failed.
         /// </summary>
         internal static string LoginFailed {
@@ -75,6 +130,15 @@ namespace StreetSmartArcMap.Properties {
         internal static string LoginSuccessfully {
             get {
                 return ResourceManager.GetString("LoginSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Street Smart for ArcMap.
+        /// </summary>
+        internal static string Title {
+            get {
+                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
     }

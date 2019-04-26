@@ -98,6 +98,15 @@ namespace StreetSmartArcMap.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cyclorama viewer does not have a value..
+        /// </summary>
+        internal static string InvalidApiSRS {
+            get {
+                return ResourceManager.GetString("InvalidApiSRS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Username does not have a value..
         /// </summary>
         internal static string InvalidApiUsername {

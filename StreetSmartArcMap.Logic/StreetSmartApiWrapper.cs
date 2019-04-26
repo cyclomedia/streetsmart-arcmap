@@ -141,7 +141,7 @@ namespace StreetSmartArcMap.Logic
 
                 StreetSmartAPI.Init(ApiOptions);
             }
-            catch
+            catch (Exception ex)
             {
                 //
             }

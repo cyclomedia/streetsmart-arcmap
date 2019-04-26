@@ -285,6 +285,8 @@ namespace StreetSmartArcMap.Forms
                 message = Properties.Resources.InvalidApiUsername;
             else if (string.IsNullOrWhiteSpace(txtPassword.Text))
                 message = Properties.Resources.InvalidApiPassword;
+            else if (cbCycloramaSRS.SelectedItem == null)
+                message = "geen SelectedItem";
             else
                 return true;
 

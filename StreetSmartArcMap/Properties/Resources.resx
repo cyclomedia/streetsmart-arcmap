@@ -127,6 +127,9 @@
   <data name="InvalidApiPassword" xml:space="preserve">
     <value>Password does not have a value.</value>
   </data>
+  <data name="InvalidApiSRS" xml:space="preserve">
+    <value>Cyclorama viewer does not have a value.</value>
+  </data>
   <data name="InvalidApiUsername" xml:space="preserve">
     <value>Username does not have a value.</value>
   </data>

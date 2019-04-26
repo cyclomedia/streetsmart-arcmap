@@ -80,6 +80,33 @@ namespace StreetSmartArcMap.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to save anyway?.
+        /// </summary>
+        internal static string ConfigurationAsk {
+            get {
+                return ResourceManager.GetString("ConfigurationAsk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password does not have a value..
+        /// </summary>
+        internal static string InvalidApiPassword {
+            get {
+                return ResourceManager.GetString("InvalidApiPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username does not have a value..
+        /// </summary>
+        internal static string InvalidApiUsername {
+            get {
+                return ResourceManager.GetString("InvalidApiUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login Failed.
         /// </summary>
         internal static string LoginFailed {
@@ -94,6 +121,15 @@ namespace StreetSmartArcMap.Properties {
         internal static string LoginSuccessfully {
             get {
                 return ResourceManager.GetString("LoginSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Street Smart for ArcMap.
+        /// </summary>
+        internal static string Title {
+            get {
+                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
     }

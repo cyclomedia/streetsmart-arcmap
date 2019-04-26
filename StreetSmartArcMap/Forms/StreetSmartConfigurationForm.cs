@@ -32,16 +32,15 @@ namespace StreetSmartArcMap.Forms
     {
         private static StreetSmartConfigurationForm _StreetSmartConfigurationForm;
 
+        private Configuration Config => Configuration.Instance;
         private static Login _login;
 
-        private Configuration _config;
         private bool _mssgBoxShow;
 
         public StreetSmartConfigurationForm()
         {
             InitializeComponent();
 
-            _config = Configuration.Instance;
             _login = Client.Login.Instance;
 
             LoadLoginData();
@@ -56,7 +55,11 @@ namespace StreetSmartArcMap.Forms
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            Save(true);
+            Save();
+
+            StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
+
+            Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -66,18 +69,20 @@ namespace StreetSmartArcMap.Forms
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            Save(false);
+            Save();
+
+            StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
         }
 
         private void LoadGeneralSettings()
         {
-            nudOverlayDrawDistance.Value = _config.OverlayDrawDistanceInMeters;
+            nudOverlayDrawDistance.Value = Config.OverlayDrawDistanceInMeters;
         }
 
         private void LoadLoginData()
         {
-            txtUsername.Text = _config.ApiUsername;
-            txtPassword.Text = _config.ApiPassword;
+            txtUsername.Text = Config.ApiUsername;
+            txtPassword.Text = Config.ApiPassword;
         }
 
         private void LoadSpatialReferenceData()
@@ -100,11 +105,11 @@ namespace StreetSmartArcMap.Forms
                     cbCycloramaSRS.Items.Add(spatialReference);
                     cbRecordingsSRS.Items.Add(spatialReference);
 
-                    if (spatialReference.SRSName == _config.ApiSRS)
+                    if (spatialReference.SRSName == Config.ApiSRS)
                     {
                         selectedCMSRS = spatialReference;
                     }
-                    if (spatialReference.SRSName == _config.DefaultRecordingSrs)
+                    if (spatialReference.SRSName == Config.DefaultRecordingSrs)
                     {
                         selectedRCSRS = spatialReference;
                     }
@@ -158,30 +163,32 @@ namespace StreetSmartArcMap.Forms
             _StreetSmartConfigurationForm = null;
         }
 
-        private void Save(bool close)
+        private void Save()
         {
-            _config.ApiUsername = txtUsername.Text;
-            _config.ApiPassword = txtPassword.Text;
+            string message = null;
+
+            if (!VerifyConfiguration(out message) && MessageBox.Show($"{message} {Properties.Resources.ConfigurationAsk}", Properties.Resources.Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
+            {
+                return;
+            }
+
+            Config.ApiUsername = txtUsername.Text;
+            Config.ApiPassword = txtPassword.Text;
 
             var selectedSRS = (SpatialReference)cbCycloramaSRS.SelectedItem;
-            _config.ApiSRS = selectedSRS?.SRSName ?? _config.ApiSRS;
+            Config.ApiSRS = selectedSRS?.SRSName ?? Config.ApiSRS;
 
             var selectedRecordingSRS = (SpatialReference)cbRecordingsSRS.SelectedItem;
-            _config.DefaultRecordingSrs = selectedRecordingSRS?.SRSName ?? _config.DefaultRecordingSrs;
+            Config.DefaultRecordingSrs = selectedRecordingSRS?.SRSName ?? Config.DefaultRecordingSrs;
 
             var overlayDrawDistance = (int)nudOverlayDrawDistance.Value;
             if (overlayDrawDistance > -1 && overlayDrawDistance < 101)
             {
-                _config.OverlayDrawDistanceInMeters = overlayDrawDistance;
+                Config.OverlayDrawDistanceInMeters = overlayDrawDistance;
                 StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(overlayDrawDistance, ArcMap.Document.FocusMap.MapUnits);
             }
 
-            _config.Save();
-
-            // TODO: do we need to restart the API here?
-
-            if (close)
-                Close();
+            Config.Save();
         }
 
         private void txtUsername_KeyUp(object sender, KeyEventArgs e)
@@ -268,6 +275,20 @@ namespace StreetSmartArcMap.Forms
         private void SetAgreement()
         {
             txtAgreement.Text = Properties.Resources.Agreement;
+        }
+
+        public bool VerifyConfiguration(out string message)
+        {
+            message = null;
+
+            if (string.IsNullOrWhiteSpace(txtUsername.Text))
+                message = Properties.Resources.InvalidApiUsername;
+            else if (string.IsNullOrWhiteSpace(txtPassword.Text))
+                message = Properties.Resources.InvalidApiPassword;
+            else
+                return true;
+
+            return false;
         }
     }
 }

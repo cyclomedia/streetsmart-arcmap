@@ -121,10 +121,22 @@
   <data name="Agreement" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Agreement.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="ConfigurationAsk" xml:space="preserve">
+    <value>Do you want to save anyway?</value>
+  </data>
+  <data name="InvalidApiPassword" xml:space="preserve">
+    <value>Password does not have a value.</value>
+  </data>
+  <data name="InvalidApiUsername" xml:space="preserve">
+    <value>Username does not have a value.</value>
+  </data>
   <data name="LoginFailed" xml:space="preserve">
     <value>Login Failed</value>
   </data>
   <data name="LoginSuccessfully" xml:space="preserve">
     <value>Login Successfully</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Street Smart for ArcMap</value>
   </data>
 </root>

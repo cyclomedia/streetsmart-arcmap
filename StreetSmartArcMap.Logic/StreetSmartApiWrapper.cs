@@ -131,7 +131,7 @@ namespace StreetSmartArcMap.Logic
             {
                 //Destroy if existing
                 if (Initialised)
-                    StreetSmartAPI.Destroy(ApiOptions);
+                    StreetSmartAPI.Destroy(ApiOptions).Wait(5000);
 
                 //Create new
                 IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);

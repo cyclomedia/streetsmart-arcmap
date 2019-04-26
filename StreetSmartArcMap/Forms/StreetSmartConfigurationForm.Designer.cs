@@ -84,7 +84,6 @@
             this.rtbAbout = new System.Windows.Forms.RichTextBox();
             this.tbAgreement = new System.Windows.Forms.TabPage();
             this.txtAgreement = new System.Windows.Forms.TextBox();
-            this.ckAgreement = new System.Windows.Forms.CheckBox();
             this.plButtons.SuspendLayout();
             this.tcSettings.SuspendLayout();
             this.tbSettings.SuspendLayout();
@@ -681,7 +680,6 @@
             // 
             // tbAgreement
             // 
-            this.tbAgreement.Controls.Add(this.ckAgreement);
             this.tbAgreement.Controls.Add(this.txtAgreement);
             this.tbAgreement.Location = new System.Drawing.Point(4, 23);
             this.tbAgreement.Name = "tbAgreement";
@@ -700,18 +698,8 @@
             this.txtAgreement.Name = "txtAgreement";
             this.txtAgreement.ReadOnly = true;
             this.txtAgreement.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtAgreement.Size = new System.Drawing.Size(394, 393);
+            this.txtAgreement.Size = new System.Drawing.Size(394, 417);
             this.txtAgreement.TabIndex = 0;
-            // 
-            // ckAgreement
-            // 
-            this.ckAgreement.AutoSize = true;
-            this.ckAgreement.Location = new System.Drawing.Point(3, 402);
-            this.ckAgreement.Name = "ckAgreement";
-            this.ckAgreement.Size = new System.Drawing.Size(229, 18);
-            this.ckAgreement.TabIndex = 1;
-            this.ckAgreement.Text = "I have read and agree to the terms of use.";
-            this.ckAgreement.UseVisualStyleBackColor = true;
             // 
             // StreetSmartConfigurationForm
             // 
@@ -815,6 +803,5 @@
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Label lblPassword;
-        private System.Windows.Forms.CheckBox ckAgreement;
     }
 }

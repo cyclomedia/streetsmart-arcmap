@@ -23,10 +23,7 @@ using StreetSmartArcMap.Logic.Configuration;
 using StreetSmartArcMap.Utilities;
 using System;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
 using System.Reflection;
-using System.Resources;
 using System.Windows.Forms;
 
 namespace StreetSmartArcMap.Forms
@@ -51,15 +48,15 @@ namespace StreetSmartArcMap.Forms
             LoadSpatialReferenceData();
             LoadGeneralSettings();
 
-            SetFont(this);
+            FormStyling.SetFont(this);
+
             SetAbout();
             SetAgreement();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            if (VerifyAgreement())
-                Save(true);
+            Save(true);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -69,20 +66,7 @@ namespace StreetSmartArcMap.Forms
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            if (VerifyAgreement())
-                Save(false);
-        }
-
-        private bool VerifyAgreement()
-        {
-            if (!ckAgreement.Checked)
-            {
-                tcSettings.SelectTab(tbAgreement);
-
-                ckAgreement.Focus();
-            }
-
-            return ckAgreement.Checked;
+            Save(false);
         }
 
         private void LoadGeneralSettings()
@@ -150,7 +134,7 @@ namespace StreetSmartArcMap.Forms
                 CloseForm();
         }
 
-        private static void OpenForm()
+        public static void OpenForm()
         {
             if (_StreetSmartConfigurationForm == null)
             {
@@ -160,6 +144,11 @@ namespace StreetSmartArcMap.Forms
                 IWin32Window parent = new WindowWrapper(hWnd);
                 _StreetSmartConfigurationForm.Show(parent);
             }
+        }
+
+        private void ShowAgreement()
+        {
+            tcSettings.SelectTab(tbAgreement);
         }
 
         public static void CloseForm()
@@ -183,8 +172,6 @@ namespace StreetSmartArcMap.Forms
                 _config.OverlayDrawDistanceInMeters = overlayDrawDistance;
                 StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(overlayDrawDistance, ArcMap.Document.FocusMap.MapUnits);
             }
-
-            _config.Agreement = ckAgreement.Checked;
 
             _config.Save();
 
@@ -248,21 +235,6 @@ namespace StreetSmartArcMap.Forms
             _StreetSmartConfigurationForm = null;
         }
 
-        private void SetFont(Control parent)
-        {
-            Font font = SystemFonts.MenuFont;
-
-            foreach (Control child in parent.Controls)
-            {
-                var fontProperty = child.GetType().GetProperty("Font");
-
-                fontProperty?.SetValue(child, (Font)font.Clone());
-
-                if (child.Controls.Count > 0)
-                    SetFont(child);
-            }
-        }
-
         private void SetAbout()
         {
             // Assembly info
@@ -293,9 +265,6 @@ namespace StreetSmartArcMap.Forms
         private void SetAgreement()
         {
             txtAgreement.Text = Properties.Resources.Agreement;
-
-            ckAgreement.Checked = Configuration.Instance.Agreement;
         }
-
     }
 }

@@ -97,6 +97,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddIns\GsExtension.cs" />
     <Compile Include="Buttons\OpenStreetSmartOptionsButton.cs" />
     <Compile Include="Buttons\OpenStreetSmartWindowButton.cs" />
     <Compile Include="Client\ApplicationConfiguration.cs" />
@@ -112,6 +113,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Config.esriaddinx</DependentUpon>
     </Compile>
+    <Compile Include="Forms\AgreementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AgreementForm.Designer.cs">
+      <DependentUpon>AgreementForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\StreetSmartConfigurationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,6 +132,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utilities\ArcUtils.cs" />
+    <Compile Include="Utilities\FormStyling.cs" />
     <Compile Include="Utilities\ImageExtensions.cs" />
     <Compile Include="Utilities\WindowWrapper.cs" />
   </ItemGroup>
@@ -173,6 +181,9 @@
   <ItemGroup>
     <EmbeddedResource Include="DockableWindows\StreetSmartDockableWindow.resx">
       <DependentUpon>StreetSmartDockableWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AgreementForm.resx">
+      <DependentUpon>AgreementForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\StreetSmartConfigurationForm.resx">
       <DependentUpon>StreetSmartConfigurationForm.cs</DependentUpon>

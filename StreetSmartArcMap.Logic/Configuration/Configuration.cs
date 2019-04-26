@@ -17,6 +17,7 @@
  */
 
 using StreetSmartArcMap.Logic.Utilities;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -58,7 +59,26 @@ namespace StreetSmartArcMap.Logic.Configuration
 
         public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
 
-        public bool Agreement { get; set; }
+        public static EventHandler<bool> AgreementChanged;
+
+        private bool _Agreement { get; set; }
+
+        public bool Agreement
+        {
+            get
+            {
+                return _Agreement ;
+            }
+            set
+            {
+                if (_Agreement != value)
+                {
+                    _Agreement = value;
+
+                    AgreementChanged?.Invoke(this, value);
+                }
+            }
+        }
 
         #endregion
 

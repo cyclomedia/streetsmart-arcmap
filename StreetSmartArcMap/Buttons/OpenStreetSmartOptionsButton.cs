@@ -21,6 +21,7 @@ using ESRI.ArcGIS.esriSystem;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Forms;
 using StreetSmartArcMap.Logic.Configuration;
+using StreetSmartArcMap.AddIns;
 
 namespace StreetSmartArcMap.Buttons
 {
@@ -36,7 +37,9 @@ namespace StreetSmartArcMap.Buttons
 
         protected override void OnUpdate()
         {
-            base.Checked = StreetSmartConfigurationForm.IsActive();
+            Enabled = GsExtension.GetExtension().IsEnabled;
+            Checked = StreetSmartConfigurationForm.IsActive();
+
             base.OnUpdate();
         }
 

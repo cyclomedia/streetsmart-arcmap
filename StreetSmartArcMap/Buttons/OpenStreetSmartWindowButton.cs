@@ -25,6 +25,7 @@ using ESRI.ArcGIS.esriSystem;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Logic.Configuration;
 using ESRI.ArcGIS.Carto;
+using StreetSmartArcMap.AddIns;
 
 namespace StreetSmartArcMap.Buttons
 {
@@ -59,7 +60,9 @@ namespace StreetSmartArcMap.Buttons
 
         protected override void OnUpdate()
         {
-            //
+            Enabled = GsExtension.GetExtension().IsEnabled;
+
+            base.OnUpdate();
         }
     }
 }

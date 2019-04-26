@@ -27,8 +27,8 @@
         </DockableWindow>
       </DockableWindows>
       <Commands>
-        <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartWindowButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartWindowButton" message="" caption="Open Street Smart" tip="Open the Street Smart window" category="CycloMedia" image="Images\OpenStreetSmartWindowButton.png" />
-        <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartOptionsButton" message="" caption="Open Street Smart options" tip="Open the Street Smart options window" category="CycloMedia" image="Images\GsCycloMediaOptions.png" />
+        <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartWindowButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartWindowButton" message="" caption="Open Street Smart" tip="Open the Street Smart window" category="CycloMedia" image="Images\OpenStreetSmartWindowButton.png" onDemand="false" />
+        <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartOptionsButton" message="" caption="Open Street Smart options" tip="Open the Street Smart options window" category="CycloMedia" image="Images\GsCycloMediaOptions.png" onDemand="false" />
       </Commands>
       <Toolbars>
         <Toolbar id="StreetSmartArcMapToolbar" caption="Street Smart">

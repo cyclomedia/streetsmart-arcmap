@@ -47,15 +47,15 @@ namespace StreetSmartArcMap.DockableWindows
     /// </summary>
     public partial class StreetSmartDockableWindow : UserControl
     {
+        private StreetSmartApiWrapper API => StreetSmartApiWrapper.Instance;
 
         public StreetSmartDockableWindow(object hook)
         {
             InitializeComponent();
             this.Hook = hook;
 
-            StreetSmartApiWrapper.Instance.InitApi(Configuration.Instance);
-            this.Controls.Add(StreetSmartApiWrapper.Instance.StreetSmartGUI);
-
+            API.InitApi(Configuration.Instance);
+            this.Controls.Add(API.StreetSmartGUI);
 
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
             docEvents.MapsChanged += DocEvents_MapsChanged;
@@ -63,9 +63,8 @@ namespace StreetSmartArcMap.DockableWindows
 
         private void DocEvents_MapsChanged()
         {
-            StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(Configuration.Instance.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits); 
+            API.SetOverlayDrawDistance(Configuration.Instance.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits);
         }
-
 
         /// <summary>
         /// Host object of the dockable window

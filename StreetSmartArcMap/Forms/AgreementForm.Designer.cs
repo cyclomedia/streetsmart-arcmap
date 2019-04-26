@@ -43,14 +43,14 @@
             this.txtAgreement.Name = "txtAgreement";
             this.txtAgreement.ReadOnly = true;
             this.txtAgreement.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtAgreement.Size = new System.Drawing.Size(465, 411);
+            this.txtAgreement.Size = new System.Drawing.Size(560, 506);
             this.txtAgreement.TabIndex = 1;
             // 
             // ckAgreement
             // 
             this.ckAgreement.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ckAgreement.AutoSize = true;
-            this.ckAgreement.Location = new System.Drawing.Point(12, 437);
+            this.ckAgreement.Location = new System.Drawing.Point(12, 532);
             this.ckAgreement.Name = "ckAgreement";
             this.ckAgreement.Size = new System.Drawing.Size(224, 17);
             this.ckAgreement.TabIndex = 2;
@@ -61,7 +61,7 @@
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClose.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClose.Location = new System.Drawing.Point(402, 429);
+            this.btnClose.Location = new System.Drawing.Point(497, 524);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 25);
             this.btnClose.TabIndex = 11;
@@ -73,10 +73,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(489, 466);
+            this.ClientSize = new System.Drawing.Size(584, 561);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.ckAgreement);
             this.Controls.Add(this.txtAgreement);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "AgreementForm";
             this.Text = "Street Smart for ArcMap";
             this.Load += new System.EventHandler(this.AgreementForm_Load);

@@ -160,6 +160,9 @@ namespace StreetSmartArcMap.Forms
 
         private void Save(bool close)
         {
+            _config.ApiUsername = txtUsername.Text;
+            _config.ApiPassword = txtPassword.Text;
+
             var selectedSRS = (SpatialReference)cbCycloramaSRS.SelectedItem;
             _config.ApiSRS = selectedSRS?.SRSName ?? _config.ApiSRS;
 

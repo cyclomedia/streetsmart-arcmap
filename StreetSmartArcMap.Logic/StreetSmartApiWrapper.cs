@@ -37,6 +37,11 @@ namespace StreetSmartArcMap.Logic
 {
     public class StreetSmartApiWrapper
     {
+        #region private const
+        public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
+        #endregion
+
+
         #region Singleton construction
         private static StreetSmartApiWrapper _instance;
         public static StreetSmartApiWrapper Instance
@@ -137,7 +142,7 @@ namespace StreetSmartArcMap.Logic
                 IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
                 IDomElement element = DomElementFactory.Create();
 
-                ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, Configuration.Configuration.ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
+                ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
 
                 StreetSmartAPI.Init(ApiOptions);
             }

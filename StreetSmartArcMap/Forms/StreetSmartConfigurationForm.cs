@@ -19,7 +19,6 @@
 using IntegrationArcMap.Utilities;
 using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Logic;
-using StreetSmartArcMap.Logic.Configuration;
 using StreetSmartArcMap.Utilities;
 using System;
 using System.Diagnostics;
@@ -32,16 +31,13 @@ namespace StreetSmartArcMap.Forms
     {
         private static StreetSmartConfigurationForm _StreetSmartConfigurationForm;
 
-        private Configuration Config => Configuration.Instance;
-        private static Login _login;
+        private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
         private bool _mssgBoxShow;
 
         public StreetSmartConfigurationForm()
         {
             InitializeComponent();
-
-            _login = Client.Login.Instance;
 
             LoadLoginData();
             LoadSpatialReferenceData();
@@ -72,6 +68,16 @@ namespace StreetSmartArcMap.Forms
             Save();
 
             StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
+        }
+
+        public static void CheckOpenCredentials()
+        {
+            bool credentials = Client.Login.Instance.Check();
+
+            if (!credentials)
+            {
+                OpenForm();
+            }
         }
 
         private void LoadGeneralSettings()
@@ -232,9 +238,9 @@ namespace StreetSmartArcMap.Forms
 
         private void Login()
         {
-            _login.SetLoginCredentials(txtUsername.Text, txtPassword.Text);
+            Client.Login.Instance.SetLoginCredentials(txtUsername.Text, txtPassword.Text);
 
-            if (_login.Check())
+            if (Client.Login.Instance.Check())
                 lblLogin.Text = Properties.Resources.LoginSuccessfully;
             else
                 lblLogin.Text = Properties.Resources.LoginFailed;

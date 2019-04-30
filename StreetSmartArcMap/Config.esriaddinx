@@ -13,8 +13,8 @@
   <AddIn language="CLR" library="StreetSmartArcMap.dll" namespace="StreetSmartArcMap.AddIns">
     <ArcMap>
       <Extensions>
-        <Extension id="CycloMedia_StreetSmartArcMap_GsExtension"
-                   class="GsExtension"
+        <Extension id="CycloMedia_StreetSmartArcMap_StreetSmartExtension"
+                   class="StreetSmartExtension"
                    productName="Street Smart for ArcMap"
                    showInExtensionDialog="true"
                    autoLoad="true">

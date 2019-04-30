@@ -34,11 +34,11 @@ namespace StreetSmartArcMap.AddIns
     /// <summary>
     /// The extension of the cyclomedia layers
     /// </summary>
-    public class GsExtension : Extension
+    public class StreetSmartExtension : Extension
     {
         public static event OpenDocumentDelegate OpenDocumentEvent;
 
-        private static GsExtension _extension;
+        private static StreetSmartExtension _extension;
 
         public bool IsEnabled => State == ExtensionState.Enabled;
         private Configuration Config => Configuration.Instance;
@@ -65,7 +65,7 @@ namespace StreetSmartArcMap.AddIns
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message, "GsExtension.OnShutdown");
+                Trace.WriteLine(ex.Message, "StreetSmartExtension.OnShutdown");
             }
 
             Configuration.AgreementChanged -= OnAgreementChanged;
@@ -109,7 +109,7 @@ namespace StreetSmartArcMap.AddIns
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message, "GsExtension.OnSetState");
+                Trace.WriteLine(ex.Message, "StreetSmartExtension.OnSetState");
             }
 
             return base.OnSetState(State);
@@ -160,7 +160,7 @@ namespace StreetSmartArcMap.AddIns
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message, "GsExtension.OpenDocument");
+                Trace.WriteLine(ex.Message, "StreetSmartExtension.OpenDocument");
             }
         }
 
@@ -172,7 +172,7 @@ namespace StreetSmartArcMap.AddIns
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message, "GsExtension.CloseDocument");
+                Trace.WriteLine(ex.Message, "StreetSmartExtension.CloseDocument");
             }
         }
 
@@ -184,7 +184,7 @@ namespace StreetSmartArcMap.AddIns
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message, "GsExtension.ItemDeleted");
+                Trace.WriteLine(ex.Message, "StreetSmartExtension.ItemDeleted");
             }
         }
 
@@ -203,19 +203,19 @@ namespace StreetSmartArcMap.AddIns
 
         #endregion
 
-        internal static GsExtension GetExtension()
+        internal static StreetSmartExtension GetExtension()
         {
             if (_extension == null)
             {
                 try
                 {
-                    UID extId = new UIDClass { Value = ThisAddIn.IDs.GsExtension };
+                    UID extId = new UIDClass { Value = ThisAddIn.IDs.StreetSmartExtension };
 
-                    _extension = ArcMap.Application.FindExtensionByCLSID(extId) as GsExtension;
+                    _extension = ArcMap.Application.FindExtensionByCLSID(extId) as StreetSmartExtension;
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine(ex.Message, "GsExtension.GetExtension");
+                    Trace.WriteLine(ex.Message, "StreetSmartExtension.GetExtension");
                 }
             }
 

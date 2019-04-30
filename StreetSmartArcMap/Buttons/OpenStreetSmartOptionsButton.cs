@@ -37,7 +37,7 @@ namespace StreetSmartArcMap.Buttons
 
         protected override void OnUpdate()
         {
-            Enabled = GsExtension.GetExtension().IsEnabled;
+            Enabled = StreetSmartExtension.GetExtension().IsEnabled;
             Checked = StreetSmartConfigurationForm.IsActive();
 
             base.OnUpdate();

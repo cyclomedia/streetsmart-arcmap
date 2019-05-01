@@ -19,7 +19,7 @@ namespace StreetSmartArcMap.Buttons
         /// </summary>
         private const string LayerName = "Recent Recordings";
         private const string MenuItem = "esriArcMapUI.MxAddDataMenu";
-        private const string CommandItem = "CycloMedia_IntegrationArcMap_GsRecentDataLayer";
+        private const string CommandItem = "CycloMedia_StreetSmartArcMap_StreetSmartRecordingsLayer";
 
         private readonly LogClient _logClient;
 

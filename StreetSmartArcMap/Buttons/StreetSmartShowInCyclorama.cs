@@ -26,6 +26,7 @@ namespace StreetSmartArcMap.Buttons
 
         public StreetSmartShowInCyclorama()
         {
+            _logClient = new LogClient(typeof(StreetSmartShowInCyclorama));
         }
 
         protected override void OnClick()

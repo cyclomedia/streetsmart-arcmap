@@ -107,7 +107,6 @@ namespace StreetSmartArcMap.AddIns
                     {
                         docEvents.OpenDocument += OpenDocument;
                         docEvents.CloseDocument += CloseDocument;
-                        docEvents.ActiveViewChanged += OnActiveViewChanged;
                     }
                 }
                 else
@@ -145,6 +144,31 @@ namespace StreetSmartArcMap.AddIns
             {
                 docEvents.OpenDocument -= OpenDocument;
                 docEvents.CloseDocument -= CloseDocument;
+            }
+        }
+
+        private void CloseCycloMediaLayer(bool closeDocument)
+        {
+            if (CycloMediaGroupLayer != null)
+            {
+                if ((!ContainsCycloMediaLayer()) || closeDocument)
+                {
+                    RemoveLayers();
+                }
+            }
+
+            if (closeDocument)
+            {
+                var arcEvents = ArcUtils.ActiveViewEvents;
+
+                if (arcEvents != null)
+                {
+                    arcEvents.ItemDeleted -= ItemDeleted;
+                    arcEvents.AfterDraw -= Afterdraw;
+                }
+
+                CycloMediaLayer.LayerRemoveEvent -= OnLayerRemoved;
+                StreetSmartRecordingsLayer.RemoveFromMenu();
             }
         }
 
@@ -240,13 +264,14 @@ namespace StreetSmartArcMap.AddIns
             {
                 AddLayers();
             }
+            StreetSmartRecordingsLayer.AddToMenu();
         }
 
         private void CloseDocument()
         {
             try
             {
-                //
+                CloseCycloMediaLayer(true);
             }
             catch (Exception ex)
             {
@@ -258,7 +283,7 @@ namespace StreetSmartArcMap.AddIns
         {
             try
             {
-                //
+                CloseCycloMediaLayer(false);
             }
             catch (Exception ex)
             {
@@ -274,10 +299,17 @@ namespace StreetSmartArcMap.AddIns
             }
         }
 
-        private void OnActiveViewChanged()
+        private void OnLayerRemoved(CycloMediaLayer cycloMediaLayer)
         {
-            //
+            if (CycloMediaGroupLayer != null)
+            {
+                if (!CycloMediaGroupLayer.ContainsLayers)
+                {
+                    RemoveLayers();
+                }
+            }
         }
+
 
         #endregion other event handlers
 

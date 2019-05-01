@@ -1,10 +1,8 @@
-﻿using FluentAssertions;
-using Moq;
+﻿using Moq;
 using StreetSmart.Common.Interfaces.API;
 using StreetSmart.Common.Interfaces.Data;
-using StreetSmart.Common.Interfaces.DomElement;
-using StreetSmartArcMap.Logic;
 using Xunit;
+
 namespace StreetSmartArcMap.Logic.Tests
 {
     public class StreetSmartApiWrapper_Tests

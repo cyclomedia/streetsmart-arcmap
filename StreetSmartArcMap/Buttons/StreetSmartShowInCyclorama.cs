@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using StreetSmartArcMap.Layers;
-using System.Diagnostics;
-using StreetSmartArcMap.AddIns;
-using ESRI.ArcGIS.Framework;
-using ESRI.ArcGIS.ArcMapUI;
+﻿using ESRI.ArcGIS.ArcMapUI;
 using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Framework;
+using StreetSmartArcMap.AddIns;
 using StreetSmartArcMap.Client;
+using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Utilities;
+using System;
+using System.Diagnostics;
 
 namespace StreetSmartArcMap.Buttons
 {
@@ -19,12 +16,13 @@ namespace StreetSmartArcMap.Buttons
         private const string CommandItem = "CycloMedia_StreetSmartArcMap_StreetSmartShowInCyclorama";
 
         #region members
+
         private CycloMediaLayer _cycloMediaLayer;
         private VectorLayer _vectorLayer;
 
         private readonly LogClient _logClient;
 
-        #endregion
+        #endregion members
 
         public StreetSmartShowInCyclorama()
         {
@@ -115,6 +113,6 @@ namespace StreetSmartArcMap.Buttons
             ArcUtils.RemoveCommandItem(MenuItem, CommandItem);
         }
 
-        #endregion
+        #endregion add or remove button from the menu
     }
 }

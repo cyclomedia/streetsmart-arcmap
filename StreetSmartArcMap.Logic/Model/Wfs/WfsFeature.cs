@@ -1,27 +1,27 @@
 ﻿/*
  * Integration in ArcMap for Cycloramas
  * Copyright (c) 2019, CycloMedia, All rights reserved.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
 
-using System.Collections.Generic;
-using System.Xml.Linq;
-using StreetSmartArcMap.Logic.Model.Capabilities;
-using StreetSmartArcMap.Logic.Model.Shape;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
+using StreetSmartArcMap.Logic.Model.Capabilities;
+using StreetSmartArcMap.Logic.Model.Shape;
+using System.Collections.Generic;
+using System.Xml.Linq;
 using Point = StreetSmartArcMap.Logic.Model.Shape.Point;
 
 namespace StreetSmartArcMap.Logic.Model.Wfs
@@ -37,13 +37,14 @@ namespace StreetSmartArcMap.Logic.Model.Wfs
         // Members
         // =========================================================================
         private Dictionary<string, esriFieldType> _fields;
+
         private esriGeometryType _esriGeometryType;
         private string _shapeFieldName;
 
         private Dictionary<string, string> _values;
         private readonly FeatureType _featureType;
 
-        #endregion
+        #endregion members
 
         #region properties
 
@@ -98,7 +99,7 @@ namespace StreetSmartArcMap.Logic.Model.Wfs
         public string Id { get; private set; }
         public IShape Shape { get; private set; }
 
-        #endregion
+        #endregion properties
 
         #region constructor
 
@@ -125,7 +126,7 @@ namespace StreetSmartArcMap.Logic.Model.Wfs
             Update(mappedFeatureElement);
         }
 
-        #endregion
+        #endregion constructor
 
         #region functions
 
@@ -182,12 +183,15 @@ namespace StreetSmartArcMap.Logic.Model.Wfs
                                         case ShapeType.Line:
                                             _esriGeometryType = esriGeometryType.esriGeometryLine;
                                             break;
+
                                         case ShapeType.Point:
                                             _esriGeometryType = esriGeometryType.esriGeometryPoint;
                                             break;
+
                                         case ShapeType.Polygon:
                                             _esriGeometryType = esriGeometryType.esriGeometryPolygon;
                                             break;
+
                                         case ShapeType.None:
                                             _esriGeometryType = esriGeometryType.esriGeometryNull;
                                             break;
@@ -257,6 +261,6 @@ namespace StreetSmartArcMap.Logic.Model.Wfs
             }
         }
 
-        #endregion
+        #endregion functions
     }
 }

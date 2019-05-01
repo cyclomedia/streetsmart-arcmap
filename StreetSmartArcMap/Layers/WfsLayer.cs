@@ -401,16 +401,6 @@ namespace StreetSmartArcMap.Layers
             return name.Value;
         }
 
-        //public void AddToGlobespotter(string name, int minZoomLevel, bool useProxy, Color color)
-        //{
-        //    _name = name;
-        //    MinZoomLevel = minZoomLevel;
-        //    UseProxy = useProxy;
-        //    Color = color;
-        //    FrmGlobespotter.AddWfsLayer(this);
-        //    AddToLayers();
-        //}
-
         public bool ContainsSrsName(string srsName)
         {
             return FeatureType.OtherSrs.Aggregate((FeatureType.DefaultSrs == srsName),

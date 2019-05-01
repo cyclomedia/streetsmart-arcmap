@@ -1,20 +1,34 @@
-﻿using ESRI.ArcGIS.Geodatabase;
+﻿/*
+ * Integration in ArcMap for Cycloramas
+ * Copyright (c) 2019, CycloMedia, All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.
+ */
+
+using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using StreetSmartArcMap.Logic.Model.Shape;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 using Point = StreetSmartArcMap.Logic.Model.Shape.Point;
 
 namespace StreetSmartArcMap.Logic.Model.Atlas
 {
-    public class Recording: IMappedFeature
+    public class Recording : IMappedFeature
     {
         #region members
 
@@ -23,7 +37,7 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
         // =========================================================================
         private readonly CultureInfo _ci;
 
-        #endregion
+        #endregion members
 
         #region properties
 
@@ -53,8 +67,8 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                    {"Year", esriFieldType.esriFieldTypeInteger},
                    {"PIP", esriFieldType.esriFieldTypeString},
                    {"PIP1Yaw", esriFieldType.esriFieldTypeDouble},
-                   {"PIP2Yaw", esriFieldType.esriFieldTypeDouble}
-                   //{"HasDepthMap", esriFieldType.esriFieldTypeSmallInteger}
+                   {"PIP2Yaw", esriFieldType.esriFieldTypeDouble},
+                   {"HasDepthMap", esriFieldType.esriFieldTypeString}
                  };
             }
         }
@@ -95,8 +109,9 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
         public Images Images { get; private set; }
         public bool? IsAuthorized { get; private set; }
         public DateTime? ExpiredAt { get; private set; }
-        //public bool HasDepthMap { get; set; }
-        #endregion
+        public bool? HasDepthMap { get; set; }
+
+        #endregion properties
 
         #region constructor
 
@@ -121,7 +136,7 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
             Update(mappedFeatureElement);
         }
 
-        #endregion
+        #endregion constructor
 
         #region functions
 
@@ -152,7 +167,7 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                 XElement imagesElement = mappedFeatureElement.Element(Namespaces.AtlasNs + "Images");
                 XElement isAuthorizedElement = mappedFeatureElement.Element(Namespaces.AtlasNs + "isAuthorized");
                 XElement expiredAtElement = mappedFeatureElement.Element(Namespaces.AtlasNs + "expiredAt");
-                //XElement hasDepthMapElement = mappedFeatureElement.Element(Namespaces.AtlasNs + "hasDepthMap");
+                XElement hasDepthMapElement = mappedFeatureElement.Element(Namespaces.AtlasNs + "hasDepthMap");
 
                 ExpiredAt = (expiredAtElement == null) ? (DateTime?)null : DateTime.Parse(expiredAtElement.Value.Trim());
                 Id = (mappedFeatureAttribute == null) ? null : mappedFeatureAttribute.Value.Trim();
@@ -168,7 +183,7 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                 RecorderDirection = (recDirElement == null) ? (double?)null : double.Parse(recDirElement.Value.Trim(), _ci);
                 Images = (imagesElement == null) ? new Images() : new Images(imagesElement);
                 IsAuthorized = (isAuthorizedElement == null) ? (bool?)null : bool.Parse(isAuthorizedElement.Value.Trim());
-                //HasDepthMap = (hasDepthMapElement == null) ? (bool)false : bool.Parse(hasDepthMapElement.Value.Trim());
+                HasDepthMap = (hasDepthMapElement == null) ? (bool?)null : bool.Parse(hasDepthMapElement.Value.Trim());
 
                 ProductType = (prodTypeElement == null)
                                 ? ProductType.None
@@ -198,45 +213,59 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                 case "Id":
                     result = Id;
                     break;
+
                 case "ImageId":
                     result = ImageId;
                     break;
+
                 case "RecordedAt":
                     result = RecordedAt;
                     break;
+
                 case "Height":
                     result = (Height == null) ? (double?)null : Height.Value;
                     break;
+
                 case "LatitudePrecision":
                     result = LatitudePrecision;
                     break;
+
                 case "LongitudePrecision":
                     result = LongitudePrecision;
                     break;
+
                 case "HeightPrecision":
                     result = HeightPrecision;
                     break;
+
                 case "Orientation":
                     result = Orientation;
                     break;
+
                 case "OrientationPrecision":
                     result = OrientationPrecision;
                     break;
+
                 case "GroundLevelOffset":
                     result = GroundLevelOffset;
                     break;
+
                 case "RecorderDirection":
                     result = RecorderDirection;
                     break;
+
                 case "ProductType":
                     result = ProductType;
                     break;
+
                 case "IsAuthorized":
                     result = IsAuthorized.ToString();
                     break;
+
                 case "ExpiredAt":
                     result = ExpiredAt;
                     break;
+
                 case "Year":
                     if (RecordedAt != null)
                     {
@@ -244,18 +273,22 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                         result = thisDateTime.Year;
                     }
                     break;
+
                 case "PIP":
                     result = (Images.Count >= 2).ToString();
                     break;
+
                 case "PIP1Yaw":
                     result = (Images.Count >= 1) ? Images[0].Yaw : null;
                     break;
+
                 case "PIP2Yaw":
                     result = (Images.Count >= 2) ? Images[1].Yaw : null;
                     break;
-                //case "HasDepthMap":
-                //    result = HasDepthMap;
-                //    break;
+
+                case "HasDepthMap":
+                    result = HasDepthMap.ToString();
+                    break;
             }
 
             return result;
@@ -275,60 +308,79 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                     case "Id":
                         Id = (string)item;
                         break;
+
                     case "ImageId":
                         ImageId = (string)item;
                         break;
+
                     case "RecordedAt":
                         RecordedAt = (DateTime?)item;
                         break;
+
                     case "Height":
                         Height = new Height { Value = (double)item };
                         break;
+
                     case "LatitudePrecision":
                         LatitudePrecision = (double?)item;
                         break;
+
                     case "LongitudePrecision":
                         LongitudePrecision = (double?)item;
                         break;
+
                     case "HeightPrecision":
                         HeightPrecision = (double?)item;
                         break;
+
                     case "Orientation":
                         Orientation = (double?)item;
                         break;
+
                     case "OrientationPrecision":
                         OrientationPrecision = (double?)item;
                         break;
+
                     case "GroundLevelOffset":
                         GroundLevelOffset = (double?)item;
                         break;
+
                     case "RecorderDirection":
                         RecorderDirection = (double?)item;
                         break;
+
                     case "ProductType":
                         ProductType = (ProductType)Enum.Parse(typeof(ProductType), (string)item);
                         break;
+
                     case "IsAuthorized":
                         IsAuthorized = bool.Parse((string)item);
                         break;
+
                     case "ExpiredAt":
                         ExpiredAt = (DateTime?)item;
                         break;
+
                     case "Year":
                         // empty
                         break;
+
                     case "PIP":
                         // empty
                         break;
+
                     case "PIP1Yaw":
                         // empty
                         break;
+
                     case "PIP2Yaw":
                         // empty
                         break;
-                    //case "HasDepthMap":
-                    //    HasDepthMap = bool.Parse((string)item);
-                    //    break;
+
+                    case "HasDepthMap":
+                        HasDepthMap = bool.Parse((string)item);
+                        break;
+
                     case "Location":
                         var point = item as IPoint;
 
@@ -348,6 +400,6 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
             }
         }
 
-        #endregion
+        #endregion functions
     }
 }

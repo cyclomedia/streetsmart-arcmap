@@ -1,36 +1,31 @@
 ﻿/*
  * Integration in ArcMap for StreetSmart
  * Copyright (c) 2019, CycloMedia, All rights reserved.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ESRI.ArcGIS.esriSystem;
-using StreetSmart.Common.Factories;
 using StreetSmart.Common.Exceptions;
+using StreetSmart.Common.Factories;
+using StreetSmart.Common.Interfaces.API;
 using StreetSmart.Common.Interfaces.Data;
 using StreetSmart.Common.Interfaces.DomElement;
-using StreetSmart.Common.Interfaces.API;
-using StreetSmart.Common.Interfaces.Events;
-using StreetSmart.Common.Interfaces.GeoJson;
-using System.Threading;
 using StreetSmart.WinForms;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StreetSmartArcMap.Logic
@@ -38,12 +33,15 @@ namespace StreetSmartArcMap.Logic
     public class StreetSmartApiWrapper
     {
         #region private const
-        public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
-        #endregion
 
+        public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
+
+        #endregion private const
 
         #region Singleton construction
+
         private static StreetSmartApiWrapper _instance;
+
         public static StreetSmartApiWrapper Instance
         {
             get
@@ -54,9 +52,11 @@ namespace StreetSmartArcMap.Logic
                 return _instance;
             }
         }
-        #endregion Singleton contruction
+
+        #endregion Singleton construction
 
         #region private properties
+
         private IPanoramaViewerOptions PanoramaOptions { get; set; }
         private IList<ViewerType> ViewerTypes { get; set; }
         private IStreetSmartAPI StreetSmartAPI { get; set; }
@@ -67,17 +67,21 @@ namespace StreetSmartArcMap.Logic
         private int RequestOverlayDistance { get; set; }
         private string RequestQuery { get; set; }
         private string RequestSRS { get; set; }
+
         #endregion private properties
 
         #region public properties
+
         /// <summary>
         /// A reference to the GUI object to dock
         /// </summary>
         public StreetSmartGUI StreetSmartGUI => StreetSmartAPI?.GUI;
+
         /// <summary>
         /// Has the wrapper / API been initialized yet?
         /// </summary>
         public bool Initialised { get; private set; }
+
         #endregion public properties
 
         #region private functions
@@ -117,7 +121,6 @@ namespace StreetSmartArcMap.Logic
                     RequestOverlay = false;
                     StreetSmartAPI.SetOverlayDrawDistance(RequestOverlayDistance);
                 }
-
             }
             catch (StreetSmartLoginFailedException)
             {
@@ -126,7 +129,6 @@ namespace StreetSmartArcMap.Logic
         }
 
         #endregion private functions
-
 
         #region public functions
 
@@ -158,7 +160,7 @@ namespace StreetSmartArcMap.Logic
                 StreetSmartAPI = StreetSmartAPIFactory.Create();
             else
                 StreetSmartAPI = api;
-         
+
             StreetSmartOptions = options;
             StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
         }
@@ -170,6 +172,7 @@ namespace StreetSmartArcMap.Logic
                 case esriUnits.esriFeet:
                     distance = (int)Math.Round(distance * 3.280839895, 0);
                     break;
+
                 default: break;
             }
 
@@ -212,7 +215,7 @@ namespace StreetSmartArcMap.Logic
                 //MessageBox.Show("image openen >> kapot");
             }
         }
-        #endregion public functions
 
+        #endregion public functions
     }
 }

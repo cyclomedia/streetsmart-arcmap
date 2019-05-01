@@ -20,9 +20,11 @@ using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Desktop.AddIns;
 using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.Framework;
 using StreetSmartArcMap.Buttons;
 using StreetSmartArcMap.Forms;
 using StreetSmartArcMap.Layers;
+using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Utilities;
 using System;
 using System.Diagnostics;
@@ -130,6 +132,26 @@ namespace StreetSmartArcMap.AddIns
         #endregion event handlers
 
         #region functions
+
+        internal void ShowStreetSmart()
+        {
+            if (Config.Agreement)
+            {
+                var dockWindowManager = ArcMap.Application as IDockableWindowManager;
+                UID windowId = new UIDClass { Value = "Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" };
+                IDockableWindow window = dockWindowManager.GetDockableWindow(windowId);
+
+                if (!window.IsVisible())
+                    window.Show(true);
+
+                StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(Config.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits);
+            }
+        }
+
+        internal bool InsideScale()
+        {
+            return (CycloMediaGroupLayer != null) && CycloMediaGroupLayer.InsideScale;
+        }
 
         private void OnAgreementChanged(object sender, bool value)
         {

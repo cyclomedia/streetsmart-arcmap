@@ -38,11 +38,25 @@ namespace StreetSmartArcMap.DockableWindows
             this.Hook = hook;
 
             API.InitApi(Config);
-
+            API.OnViewerChangeEvent += API_OnViewerChangeEvent;
             this.Controls.Add(API.StreetSmartGUI);
 
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
             docEvents.MapsChanged += DocEvents_MapsChanged;
+        }
+        private delegate void viewerChangeDelegate(ViewersChangeEventArgs args);
+        private void API_OnViewerChangeEvent(ViewersChangeEventArgs args)
+        {
+            if (InvokeRequired)
+            {
+                var d = new viewerChangeDelegate(API_OnViewerChangeEvent);
+                Invoke(d, new object[] { args });
+            }
+            else
+            {
+                if (args.NumberOfViewers == 0)
+                    this.Visible = false;
+            }
         }
 
         private void DocEvents_MapsChanged()

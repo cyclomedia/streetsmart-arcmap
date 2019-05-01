@@ -116,7 +116,6 @@
   <ItemGroup>
     <Compile Include="AddIns\StreetSmartExtension.cs" />
     <Compile Include="Buttons\OpenStreetSmartOptionsButton.cs" />
-    <Compile Include="Buttons\OpenStreetSmartWindowButton.cs" />
     <Compile Include="Buttons\StreetSmartRecordingsLayer.cs" />
     <Compile Include="Buttons\StreetSmartShowInCyclorama.cs" />
     <Compile Include="Client\ApplicationConfiguration.cs" />
@@ -159,6 +158,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Tools\StreetSmartOpenLocation.cs" />
     <Compile Include="Utilities\ArcUtils.cs" />
     <Compile Include="Utilities\FormStyling.cs" />
     <Compile Include="Utilities\ImageExtensions.cs" />
@@ -325,6 +325,15 @@
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Images\StreetSmartRecordingsLayer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\StreetSmartOpenLocation_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\StreetSmartOpenLocation_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\StreetSmartOpenLocation.cur" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>

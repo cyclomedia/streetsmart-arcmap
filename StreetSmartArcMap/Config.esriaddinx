@@ -6,7 +6,7 @@
   <Image>Images\StreetSmartArcMapAddin.png</Image>
   <Author></Author>
   <Company>CycloMedia</Company>
-  <Date>4/30/2019</Date>
+  <Date>5/1/2019</Date>
   <Targets>
     <Target name="Desktop" version="10.4" />
   </Targets>
@@ -23,17 +23,17 @@
         </DockableWindow>
       </DockableWindows>
       <Commands>
-        <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartWindowButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartWindowButton" message="" caption="Open Street Smart" tip="Open the Street Smart window" category="CycloMedia" image="Images\OpenStreetSmartWindowButton.png" onDemand="false" />
         <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartOptionsButton" message="" caption="Open Street Smart options" tip="Open the Street Smart options window" category="CycloMedia" image="Images\GsCycloMediaOptions.png" onDemand="false" />
-        <Button id="CycloMedia_StreetSmartArcMap_StreetSmartShowInCyclorama" class="StreetSmartArcMap.Buttons.StreetSmartShowInCyclorama" message="" caption="Show in Cyclorama..." tip="Show in Cyclorama" category="Cyclomedia" image="Images\StreetSmartShowInCyclorama.png" onDemand="false" />
+        <Button id="CycloMedia_StreetSmartArcMap_StreetSmartShowInCyclorama" class="StreetSmartArcMap.Buttons.StreetSmartShowInCyclorama" message="" caption="Show in Cyclorama..." tip="Show in Cyclorama" category="CycloMedia" image="Images\StreetSmartShowInCyclorama.png" onDemand="false" />
         <Button id="CycloMedia_StreetSmartArcMap_StreetSmartRecordingsLayer" class="StreetSmartArcMap.Buttons.StreetSmartRecordingsLayer" message="" caption="Recent Recordings" tip="Add recent cyclorama layer to the map" category="CycloMedia" image="Images\StreetSmartRecordingsLayer.png" onDemand="false" />
+        <Tool id="CycloMedia_StreetSmartArcMap_StreetSmartOpenLocation" class="StreetSmartArcMap.Tools.StreetSmartOpenLocation" message="" caption="Open the location in a Cyclorama" tip="Open the location in a Cyclorama..." category="CycloMedia" image="Images\StreetSmartOpenLocation_2.png" onDemand="false" cursor="Images\StreetSmartOpenLocation.cur" />
       </Commands>
       <Toolbars>
         <Toolbar id="StreetSmartArcMapToolbar" caption="Street Smart">
           <Items>
-            <Button refID="CycloMedia_StreetSmartArcMap_OpenStreetSmartWindowButton" />
             <Button refID="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" />
-            <Button refID="CycloMedia_StreetSmartArcMap_StreetSmartRecordingsLayer"/>
+            <Button refID="CycloMedia_StreetSmartArcMap_StreetSmartRecordingsLayer" />
+            <Tool refID="CycloMedia_StreetSmartArcMap_StreetSmartOpenLocation"/>
           </Items>
         </Toolbar>
       </Toolbars>

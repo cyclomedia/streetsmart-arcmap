@@ -30,6 +30,8 @@ using System.Windows.Forms;
 
 namespace StreetSmartArcMap.Logic
 {
+    public delegate void ViewersChangeEventDelegate(ViewersChangeEventArgs args);
+
     public class StreetSmartApiWrapper
     {
         #region private const
@@ -57,7 +59,7 @@ namespace StreetSmartArcMap.Logic
 
         #region private properties
 
-        private IPanoramaViewerOptions PanoramaOptions { get; set; }
+        private IPanoramaViewerOptions DefaultPanoramaOptions { get; set; }
         private IList<ViewerType> ViewerTypes { get; set; }
         private IStreetSmartAPI StreetSmartAPI { get; set; }
         private IStreetSmartOptions StreetSmartOptions { get; set; }
@@ -84,7 +86,31 @@ namespace StreetSmartArcMap.Logic
 
         #endregion public properties
 
+        #region Events
+
+        public event ViewersChangeEventDelegate OnViewerChangeEvent;
+        #endregion Events
+
         #region private functions
+
+        private IPanoramaViewerOptions GetPanoramaOptions(bool addExtraViewer)
+        {
+            if (DefaultPanoramaOptions == null)
+            {
+                DefaultPanoramaOptions = PanoramaViewerOptionsFactory.Create(true, false, true, true, true, true);
+                DefaultPanoramaOptions.MeasureTypeButtonToggle = false;
+            }
+            if (addExtraViewer)
+            {
+                var panoramaOptions = PanoramaViewerOptionsFactory.Create(true, false, true, true, false, true);
+                panoramaOptions.MeasureTypeButtonToggle = false;
+                return panoramaOptions;
+            }
+            else
+            {
+                return DefaultPanoramaOptions;
+            }
+        }
 
         /// <summary>
         /// Eventhandler is notified when the API is loaded
@@ -108,8 +134,6 @@ namespace StreetSmartArcMap.Logic
 
                 // Open image
                 ViewerTypes = new List<ViewerType> { ViewerType.Panorama };
-                PanoramaOptions = PanoramaViewerOptionsFactory.Create(true, false, true, true, true, true);
-                PanoramaOptions.MeasureTypeButtonToggle = false;
                 Initialised = true;
                 if (RequestOpen)
                 {
@@ -163,6 +187,24 @@ namespace StreetSmartArcMap.Logic
 
             StreetSmartOptions = options;
             StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
+            StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
+            StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
+        }
+
+        private async void NotifyViewerChange()
+        {
+            var viewers = await StreetSmartAPI.GetViewers();
+            OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { NumberOfViewers = viewers.Count });
+        }
+
+        private void StreetSmartAPI_ViewerAdded(object sender, StreetSmart.Common.Interfaces.Events.IEventArgs<IViewer> e)
+        {
+            NotifyViewerChange();
+        }
+
+        private void StreetSmartAPI_ViewerRemoved(object sender, StreetSmart.Common.Interfaces.Events.IEventArgs<IViewer> e)
+        {
+            NotifyViewerChange();
         }
 
         public void SetOverlayDrawDistance(int distance, esriUnits mapUnits)
@@ -193,7 +235,7 @@ namespace StreetSmartArcMap.Logic
         /// <param name="srsCode"></param>
         /// <param name="query"></param>
         /// <returns></returns>
-        public async Task Open(string srsCode, string query)
+        public async Task Open(string srsCode, string query, bool addExtraViewer = false)
         {
             try
             {
@@ -206,8 +248,10 @@ namespace StreetSmartArcMap.Logic
                 else
                 {
                     RequestOpen = false;
-                    IViewerOptions options = ViewerOptionsFactory.Create(ViewerTypes, srsCode, PanoramaOptions);
+
+                    IViewerOptions options = ViewerOptionsFactory.Create(ViewerTypes, srsCode, GetPanoramaOptions(addExtraViewer));
                     IList<IViewer> viewers = await StreetSmartAPI.Open(query, options);
+                    NotifyViewerChange();
                 }
             }
             catch (StreetSmartImageNotFoundException)

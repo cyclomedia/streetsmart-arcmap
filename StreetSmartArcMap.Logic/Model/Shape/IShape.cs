@@ -1,46 +1,38 @@
 ﻿/*
- * Integration in ArcMap for StreetSmart
+ * Integration in ArcMap for Cycloramas
  * Copyright (c) 2019, CycloMedia, All rights reserved.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
 
-using System;
-using System.IO;
-
-namespace StreetSmartArcMap.Logic.Utilities
+namespace StreetSmartArcMap.Logic.Model.Shape
 {
-    public class FileUtils
+    /// <summary>
+    /// GSML2 shape elmenent interface definition.
+    /// </summary>
+    public interface IShape
     {
-        #region Properties
+        #region properties
 
-        public static string FileDir
-        {
-            get
-            {
-                string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                string result = Path.Combine(folder, "StreetSmartArcMap");
+        // =========================================================================
+        // Properties
+        // =========================================================================
+        string Id { get; set; }
 
-                if (!Directory.Exists(result))
-                {
-                    Directory.CreateDirectory(result);
-                }
+        string SrsName { get; set; }
+        ShapeType Type { get; set; }
 
-                return result;
-            }
-        }
-
-        #endregion Properties
+        #endregion properties
     }
 }

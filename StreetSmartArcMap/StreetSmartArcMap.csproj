@@ -54,15 +54,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ESRI.ArcGIS.ADF.Connection.Local, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=x86" />
+    <Reference Include="ESRI.ArcGIS.ADF.Core, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL" />
     <Reference Include="ESRI.ArcGIS.ADF.Local, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL" />
     <Reference Include="ESRI.ArcGIS.Carto, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.DataSourcesGDB, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Desktop.AddIns">
       <Private>False</Private>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Display, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.Editor, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -72,8 +76,14 @@
     <Reference Include="ESRI.ArcGIS.Framework">
       <Private>False</Private>
     </Reference>
+    <Reference Include="ESRI.ArcGIS.Geodatabase, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.GeoDatabaseDistributed, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="ESRI.ArcGIS.Geometry, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="ESRI.ArcGIS.System">
       <Private>False</Private>
@@ -81,6 +91,13 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ESRI.ArcGIS.SystemUI, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="StreetSmart.WinForms, Version=19.5.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
@@ -97,22 +114,28 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddIns\GsExtension.cs" />
+    <Compile Include="AddIns\StreetSmartExtension.cs" />
     <Compile Include="Buttons\OpenStreetSmartOptionsButton.cs" />
     <Compile Include="Buttons\OpenStreetSmartWindowButton.cs" />
+    <Compile Include="Buttons\StreetSmartRecordingsLayer.cs" />
+    <Compile Include="Buttons\StreetSmartShowInCyclorama.cs" />
     <Compile Include="Client\ApplicationConfiguration.cs" />
     <Compile Include="Client\Bounds.cs" />
     <Compile Include="Client\Functionality.cs" />
     <Compile Include="Client\GlobeSpotterConfiguration.cs" />
+    <Compile Include="Client\LogClient.cs" />
     <Compile Include="Client\Login.cs" />
     <Compile Include="Client\SpatialReference.cs" />
     <Compile Include="Client\SpatialReferences.cs" />
+    <Compile Include="Client\StoredLayer.cs" />
+    <Compile Include="Client\StoredLayers.cs" />
     <Compile Include="Client\Urls.cs" />
     <Compile Include="Client\Web.cs" />
     <Compile Include="Config.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Config.esriaddinx</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Forms\AgreementForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,6 +148,11 @@
     <Compile Include="Forms\StreetSmartConfigurationForm.Designer.cs">
       <DependentUpon>StreetSmartConfigurationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Layers\CycloMediaGroupLayer.cs" />
+    <Compile Include="Layers\CycloMediaLayer.cs" />
+    <Compile Include="Layers\RecordingLayer.cs" />
+    <Compile Include="Layers\VectorLayer.cs" />
+    <Compile Include="Layers\WfsLayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -191,6 +219,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -290,6 +319,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Agreement.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\StreetSmartShowInCyclorama.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\StreetSmartRecordingsLayer.png" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>

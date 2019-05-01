@@ -1,24 +1,24 @@
 ﻿/*
  * Integration in ArcMap for StreetSmart
  * Copyright (c) 2019, CycloMedia, All rights reserved.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
 
 using ESRI.ArcGIS.Geometry;
+using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Logic;
-using StreetSmartArcMap.Logic.Configuration;
 using StreetSmartArcMap.Logic.Model;
 using StreetSmartArcMap.Utilities;
 using System;
@@ -43,6 +43,7 @@ namespace StreetSmartArcMap.Client
         // Constants
         // =========================================================================
         private const string RecordingRequest = "{0}?service=WFS&version=1.1.0&request=GetFeature&srsname={1}&featureid={2}&TYPENAME=atlas:Recording";
+
         private const string WfsBboxRequest = "{0}?SERVICE=WFS&VERSION={1}&REQUEST=GetFeature&SRSNAME={2}&BBOX={3},{4},{5},{6},{7}&TYPENAME={8}";
         private const string CapabilityString = "{0}?REQUEST=GetCapabilities&VERSION={1}&SERVICE=WFS";
         private const string AuthorizationRequest = "{0}/configuration/configuration/API";
@@ -53,7 +54,7 @@ namespace StreetSmartArcMap.Client
         private const int LeaseTimeOut = 5000;
         private const int DefaultConnectionLimit = 5;
 
-        #endregion
+        #endregion constants
 
         #region members
 
@@ -61,6 +62,7 @@ namespace StreetSmartArcMap.Client
         // Members
         // =========================================================================
         private readonly int[] _waitTimeInternalServerError = { 5000, 0 };
+
         private readonly int[] _timeOutService = { 3000, 1000 };
         private readonly int[] _retryTimeService = { 3, 1 };
 
@@ -68,10 +70,9 @@ namespace StreetSmartArcMap.Client
 
         private readonly CultureInfo _ci;
         private readonly Login _login;
-        private readonly Configuration _config;
+        private readonly Configuration.Configuration _config;
 
-
-        #endregion
+        #endregion members
 
         #region properties
 
@@ -87,7 +88,7 @@ namespace StreetSmartArcMap.Client
             get { return _web ?? (_web = new Web()); }
         }
 
-        #endregion
+        #endregion properties
 
         #region Constructor
 
@@ -98,53 +99,53 @@ namespace StreetSmartArcMap.Client
         {
             _ci = CultureInfo.InvariantCulture;
             _login = Login.Instance;
-            _config = Configuration.Instance;
+            _config = Configuration.Configuration.Instance;
             //_apiKey = APIKey.Instance;
             ServicePointManager.DefaultConnectionLimit = DefaultConnectionLimit;
         }
 
-        #endregion
+        #endregion Constructor
 
         #region interface functions
 
         // =========================================================================
         // Interface functions
         // =========================================================================
-        //public List<XElement> GetByImageId(string imageId, CycloMediaLayer cycloMediaLayer)
-        //{
-        //    string epsgCode = cycloMediaLayer.EpsgCode;
-        //    epsgCode = SpatialReferences.Instance.ToKnownSrsName(epsgCode);
-        //    string remoteLocation = string.Format(RecordingRequest, RecordingService, epsgCode, imageId);
-        //    var xml = (string)GetRequest(remoteLocation, GetXmlCallback, XmlConfig);
-        //    return ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
-        //}
+        public List<XElement> GetByImageId(string imageId, CycloMediaLayer cycloMediaLayer)
+        {
+            string epsgCode = cycloMediaLayer.EpsgCode;
+            epsgCode = SpatialReferences.Instance.ToKnownSrsName(epsgCode);
+            string remoteLocation = string.Format(RecordingRequest, RecordingService, epsgCode, imageId);
+            var xml = (string)GetRequest(remoteLocation, GetXmlCallback, XmlConfig);
+            return ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
+        }
 
-        //public List<XElement> GetByBbox(IEnvelope envelope, CycloMediaLayer cycloMediaLayer)
-        //{
-        //    string epsgCode = cycloMediaLayer.EpsgCode;
-        //    epsgCode = SpatialReferences.Instance.ToKnownSrsName(epsgCode);
-        //    List<XElement> result;
+        public List<XElement> GetByBbox(IEnvelope envelope, CycloMediaLayer cycloMediaLayer)
+        {
+            string epsgCode = cycloMediaLayer.EpsgCode;
+            epsgCode = SpatialReferences.Instance.ToKnownSrsName(epsgCode);
+            List<XElement> result;
 
-        //    if (cycloMediaLayer is WfsLayer)
-        //    {
-        //        var wfsLayer = cycloMediaLayer as WfsLayer;
-        //        string remoteLocation = string.Format(_ci, WfsBboxRequest, wfsLayer.Url, wfsLayer.Version, epsgCode,
-        //                                              envelope.XMin, envelope.YMin, envelope.XMax, envelope.YMax,
-        //                                              epsgCode, wfsLayer.TypeName);
-        //        var xml = (string)GetRequest(remoteLocation, GetXmlCallback, XmlConfig);
-        //        result = ParseXml(xml, (Namespaces.GmlNs + "featureMember"));
-        //    }
-        //    else
-        //    {
-        //        string postItem = string.Format(_ci, cycloMediaLayer.WfsRequest, epsgCode, envelope.XMin, envelope.YMin,
-        //                                        envelope.XMax,
-        //                                        envelope.YMax, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:00-00:00"));
-        //        var xml = (string)PostRequest(RecordingService, GetXmlCallback, postItem, XmlConfig);
-        //        result = ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
-        //    }
+            if (cycloMediaLayer is WfsLayer)
+            {
+                var wfsLayer = cycloMediaLayer as WfsLayer;
+                string remoteLocation = string.Format(_ci, WfsBboxRequest, wfsLayer.Url, wfsLayer.Version, epsgCode,
+                                                      envelope.XMin, envelope.YMin, envelope.XMax, envelope.YMax,
+                                                      epsgCode, wfsLayer.TypeName);
+                var xml = (string)GetRequest(remoteLocation, GetXmlCallback, XmlConfig);
+                result = ParseXml(xml, (Namespaces.GmlNs + "featureMember"));
+            }
+            else
+            {
+                string postItem = string.Format(_ci, cycloMediaLayer.WfsRequest, epsgCode, envelope.XMin, envelope.YMin,
+                                                envelope.XMax,
+                                                envelope.YMax, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:00-00:00"));
+                var xml = (string)PostRequest(RecordingService, GetXmlCallback, postItem, XmlConfig);
+                result = ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
+            }
 
-        //    return result;
-        //}
+            return result;
+        }
 
         public List<XElement> GetByBbox(IEnvelope envelope, string wfsRequest)
         {
@@ -181,7 +182,7 @@ namespace StreetSmartArcMap.Client
             return PostRequest(authorizationService, GetStreamCallback, postItem, XmlConfig) as Stream;
         }
 
-        #endregion
+        #endregion interface functions
 
         #region parse XML
 
@@ -197,7 +198,7 @@ namespace StreetSmartArcMap.Client
             return elements.ToList();
         }
 
-        #endregion
+        #endregion parse XML
 
         #region wfs request functions
 
@@ -385,7 +386,7 @@ namespace StreetSmartArcMap.Client
             //}
             //else
             //{
-                proxy = WebRequest.GetSystemWebProxy();
+            proxy = WebRequest.GetSystemWebProxy();
             //}
 
             var request = (HttpWebRequest)WebRequest.Create(remoteLocation);
@@ -397,7 +398,7 @@ namespace StreetSmartArcMap.Client
             request.Proxy = proxy;
             request.PreAuthenticate = true;
             request.ContentType = "text/xml";
-            request.Headers.Add("ApiKey", Configuration.ApiKey);
+            request.Headers.Add("ApiKey", Configuration.Configuration.ApiKey);
 
             if (request.ServicePoint != null)
             {
@@ -408,7 +409,7 @@ namespace StreetSmartArcMap.Client
             return request;
         }
 
-        #endregion
+        #endregion wfs request functions
 
         #region call back functions
 
@@ -476,6 +477,6 @@ namespace StreetSmartArcMap.Client
             }
         }
 
-        #endregion
+        #endregion call back functions
     }
 }

@@ -1,5 +1,5 @@
 ﻿/*
- * Integration in ArcMap for StreetSmart
+ * Integration in ArcMap for Cycloramas
  * Copyright (c) 2019, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,31 +16,23 @@
  * License along with this library.
  */
 
-using System;
-using System.IO;
-
-namespace StreetSmartArcMap.Logic.Utilities
+namespace StreetSmartArcMap.Logic.Model.Shape
 {
-    public class FileUtils
+    #region enumeration (ShapeType)
+
+    // ===========================================================================
+    // Enumeration
+    // ===========================================================================
+    /// <summary>
+    /// Enumeration for shape types.
+    /// </summary>
+    public enum ShapeType
     {
-        #region Properties
-
-        public static string FileDir
-        {
-            get
-            {
-                string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                string result = Path.Combine(folder, "StreetSmartArcMap");
-
-                if (!Directory.Exists(result))
-                {
-                    Directory.CreateDirectory(result);
-                }
-
-                return result;
-            }
-        }
-
-        #endregion Properties
+        None = 0,
+        Point = 1,
+        Line = 2,
+        Polygon = 3
     }
+
+    #endregion enumeration (ShapeType)
 }

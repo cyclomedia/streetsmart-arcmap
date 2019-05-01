@@ -6,18 +6,14 @@
   <Image>Images\StreetSmartArcMapAddin.png</Image>
   <Author></Author>
   <Company>CycloMedia</Company>
-  <Date>4/25/2019</Date>
+  <Date>4/30/2019</Date>
   <Targets>
     <Target name="Desktop" version="10.4" />
   </Targets>
   <AddIn language="CLR" library="StreetSmartArcMap.dll" namespace="StreetSmartArcMap.AddIns">
     <ArcMap>
       <Extensions>
-        <Extension id="CycloMedia_StreetSmartArcMap_GsExtension"
-                   class="GsExtension"
-                   productName="Street Smart for ArcMap"
-                   showInExtensionDialog="true"
-                   autoLoad="true">
+        <Extension id="CycloMedia_StreetSmartArcMap_StreetSmartExtension" class="StreetSmartExtension" productName="Street Smart for ArcMap" showInExtensionDialog="true" autoLoad="true">
           <Description>Street Smart for ArcMap. Copyright © CycloMedia 2019.</Description>
         </Extension>
       </Extensions>
@@ -29,12 +25,15 @@
       <Commands>
         <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartWindowButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartWindowButton" message="" caption="Open Street Smart" tip="Open the Street Smart window" category="CycloMedia" image="Images\OpenStreetSmartWindowButton.png" onDemand="false" />
         <Button id="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartOptionsButton" message="" caption="Open Street Smart options" tip="Open the Street Smart options window" category="CycloMedia" image="Images\GsCycloMediaOptions.png" onDemand="false" />
+        <Button id="CycloMedia_StreetSmartArcMap_StreetSmartShowInCyclorama" class="StreetSmartArcMap.Buttons.StreetSmartShowInCyclorama" message="" caption="Show in Cyclorama..." tip="Show in Cyclorama" category="Cyclomedia" image="Images\StreetSmartShowInCyclorama.png" onDemand="false" />
+        <Button id="CycloMedia_StreetSmartArcMap_StreetSmartRecordingsLayer" class="StreetSmartArcMap.Buttons.StreetSmartRecordingsLayer" message="" caption="Recent Recordings" tip="Add recent cyclorama layer to the map" category="CycloMedia" image="Images\StreetSmartRecordingsLayer.png" onDemand="false" />
       </Commands>
       <Toolbars>
         <Toolbar id="StreetSmartArcMapToolbar" caption="Street Smart">
           <Items>
             <Button refID="CycloMedia_StreetSmartArcMap_OpenStreetSmartWindowButton" />
             <Button refID="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" />
+            <Button refID="CycloMedia_StreetSmartArcMap_StreetSmartRecordingsLayer"/>
           </Items>
         </Toolbar>
       </Toolbars>

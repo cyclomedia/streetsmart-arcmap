@@ -1,5 +1,5 @@
 ﻿/*
- * Integration in ArcMap for StreetSmart
+ * Integration in ArcMap for Cycloramas
  * Copyright (c) 2019, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,38 +16,45 @@
  * License along with this library.
  */
 
-using System;
-using System.Net;
-using System.Threading;
+using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Geometry;
+using StreetSmartArcMap.Logic.Model.Shape;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
-namespace StreetSmartArcMap.Logic
+namespace StreetSmartArcMap.Logic.Model
 {
-    public class State
+    /// <summary>
+    /// This is the interface for feature information
+    /// </summary>
+    public interface IMappedFeature
     {
         #region properties
 
         // =========================================================================
         // Properties
         // =========================================================================
-        public ManualResetEvent OperationComplete { get; private set; }
+        Dictionary<string, esriFieldType> Fields { get; }
 
-        public WebRequest Request { get; set; }
-        public object Result { get; set; }
-        public Exception OperationException { get; set; }
+        string ObjectId { get; }
+        XName Name { get; }
+        string ShapeFieldName { get; }
+        esriGeometryType EsriGeometryType { get; }
+        IShape Shape { get; }
 
         #endregion properties
 
-        #region constructor
+        #region functions
 
         // =========================================================================
-        // Constructor
+        // Functions
         // =========================================================================
-        public State()
-        {
-            OperationComplete = new ManualResetEvent(false);
-            OperationException = null;
-        }
+        object FieldToItem(string name);
 
-        #endregion constructor
+        void UpdateItem(string name, object item);
+
+        void Update(XElement mappedFeatureElement);
+
+        #endregion functions
     }
 }

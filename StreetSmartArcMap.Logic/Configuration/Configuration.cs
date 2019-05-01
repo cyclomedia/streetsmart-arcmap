@@ -1,166 +1,176 @@
-﻿/*
- * Integration in ArcMap for StreetSmart
- * Copyright (c) 2019, CycloMedia, All rights reserved.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library.
- */
+﻿///*
+// * Integration in ArcMap for StreetSmart
+// * Copyright (c) 2019, CycloMedia, All rights reserved.
+// * 
+// * This library is free software; you can redistribute it and/or
+// * modify it under the terms of the GNU Lesser General Public
+// * License as published by the Free Software Foundation; either
+// * version 3.0 of the License, or (at your option) any later version.
+// * 
+// * This library is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// * Lesser General Public License for more details.
+// * 
+// * You should have received a copy of the GNU Lesser General Public
+// * License along with this library.
+// */
 
-using StreetSmartArcMap.Logic.Utilities;
-using System;
-using System.ComponentModel;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Xml.Serialization;
+//using StreetSmartArcMap.Logic.Utilities;
+//using System;
+//using System.ComponentModel;
+//using System.IO;
+//using System.Runtime.CompilerServices;
+//using System.Xml.Serialization;
 
-using SystemIOFile = System.IO.File;
+//using SystemIOFile = System.IO.File;
 
-namespace StreetSmartArcMap.Logic.Configuration
-{
-    [XmlRoot("Configuration")]
-    public class Configuration : INotifyPropertyChanged, IStreetSmartOptions
-    {
-        #region Events
+//namespace StreetSmartArcMap.Logic.Configuration
+//{
+//    [XmlRoot("Configuration")]
+//    public class Configuration : INotifyPropertyChanged, IStreetSmartOptions
+//    {
+//        #region Events
 
-        public event PropertyChangedEventHandler PropertyChanged;
+//        public event PropertyChangedEventHandler PropertyChanged;
 
-        #endregion
+//        #endregion
 
-        #region Members
+//        #region Members
 
-        private static readonly XmlSerializer XmlConfiguration;
-        private static Configuration _configuration;
+//        private static readonly XmlSerializer XmlConfiguration;
+//        private static Configuration _configuration;
 
-        public string AddressLocale { get; set; }
-        public string AddressDatabase { get; set; }
-        public string AddressDefaultQuery { get; set; }
+//        public string AddressLocale { get; set; }
+//        public string AddressDatabase { get; set; }
+//        public string AddressDefaultQuery { get; set; }
 
-        public string ApiSRS { get; set; }
-        public string ApiUsername { get; set; }
-        public string ApiPassword { get; set; }
+//        public string ApiSRS { get; set; }
+//        public string ApiUsername { get; set; }
+//        public string ApiPassword { get; set; }
 
-        public string BaseUrl { get; set; }
-        public string RecordingsServiceUrl { get; set; }
-        public string SpatialReferencesUrl { get; set; }
+//        public string BaseUrl { get; set; }
+//        public string RecordingsServiceUrl { get; set; }
+//        public string SpatialReferencesUrl { get; set; }
 
-        public string DefaultRecordingSrs { get; set; }
+//        public string DefaultRecordingSrs { get; set; }
 
-        public int OverlayDrawDistanceInMeters { get; set; }
+//        public int OverlayDrawDistanceInMeters { get; set; }
 
-        public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
+//        public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
 
-        public static EventHandler<bool> AgreementChanged;
+//        public static EventHandler<bool> AgreementChanged;
 
-        private bool _Agreement { get; set; }
+//        private bool _Agreement { get; set; }
 
-        public bool Agreement
-        {
-            get
-            {
-                return _Agreement ;
-            }
-            set
-            {
-                if (_Agreement != value)
-                {
-                    _Agreement = value;
+//        public bool Agreement
+//        {
+//            get
+//            {
+//                return _Agreement ;
+//            }
+//            set
+//            {
+//                if (_Agreement != value)
+//                {
+//                    _Agreement = value;
 
-                    AgreementChanged?.Invoke(this, value);
-                }
-            }
-        }
+//                    AgreementChanged?.Invoke(this, value);
+//                }
+//            }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Constructors
+//        #region Constructors
 
-        static Configuration()
-        {
-            XmlConfiguration = new XmlSerializer(typeof(Configuration));
-        }
+//        static Configuration()
+//        {
+//            XmlConfiguration = new XmlSerializer(typeof(Configuration));
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Properties
+//        #region Properties
 
-        public static Configuration Instance
-        {
-            get
-            {
-                if (_configuration == null)
-                {
-                    Load();
-                }
+//        public static Configuration Instance
+//        {
+//            get
+//            {
+//                if (_configuration == null)
+//                {
+//                    Load();
+//                }
 
-                return _configuration ?? (_configuration = Create());
-            }
-        }
+//                return _configuration ?? (_configuration = Create());
+//            }
+//        }
 
-        private static string FileName => Path.Combine(FileUtils.FileDir, "Configuration.xml");
-        
-        #endregion
+//        private static string FileName => Path.Combine(FileUtils.FileDir, "Configuration.xml");
 
-        #region Functions
+//        public string LoggingLocation { get; set; }
+//        public bool UseLogging { get; set; }
+//        public bool CycloramaVectorLayerLocationDefault
+//        {
+//            get {
+//                return string.IsNullOrEmpty(CycloramaVectorLayerLocation);
+//            }
+//        }
 
-        public void Save()
-        {
-            OnPropertyChanged();
-            FileStream streamFile = SystemIOFile.Open(FileName, FileMode.Create);
-            XmlConfiguration.Serialize(streamFile, this);
-            streamFile.Close();
-        }
+//        public string CycloramaVectorLayerLocation { get; set; }
+//        #endregion
 
-        private static void Load()
-        {
-            if (SystemIOFile.Exists(FileName))
-            {
-                var streamFile = new FileStream(FileName, FileMode.OpenOrCreate);
-                _configuration = (Configuration)XmlConfiguration.Deserialize(streamFile);
-                streamFile.Close();
-            }
-        }
+//        #region Functions
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+//        public void Save()
+//        {
+//            OnPropertyChanged();
+//            FileStream streamFile = SystemIOFile.Open(FileName, FileMode.Create);
+//            XmlConfiguration.Serialize(streamFile, this);
+//            streamFile.Close();
+//        }
 
-        private static Configuration Create()
-        {
-            var result = new Configuration
-            {
-                AddressLocale = string.Empty,
-                AddressDatabase = string.Empty,
-                AddressDefaultQuery = string.Empty,
+//        private static void Load()
+//        {
+//            if (SystemIOFile.Exists(FileName))
+//            {
+//                var streamFile = new FileStream(FileName, FileMode.OpenOrCreate);
+//                _configuration = (Configuration)XmlConfiguration.Deserialize(streamFile);
+//                streamFile.Close();
+//            }
+//        }
 
-                ApiSRS = string.Empty,
-                ApiUsername = string.Empty,
-                ApiPassword = string.Empty,
+//        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+//        {
+//            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+//        }
 
-                BaseUrl = "https://atlas.cyclomedia.com",
-                RecordingsServiceUrl = "https://atlas.cyclomedia.com/recordings/wfs",
-                SpatialReferencesUrl = "https://streetsmart.cyclomedia.com/api/v18.10/assets/srs/SpatialReference.xml",
+//        private static Configuration Create()
+//        {
+//            var result = new Configuration
+//            {
+//                AddressLocale = string.Empty,
+//                AddressDatabase = string.Empty,
+//                AddressDefaultQuery = string.Empty,
 
-                DefaultRecordingSrs = string.Empty,
-                OverlayDrawDistanceInMeters = 30,
+//                ApiSRS = string.Empty,
+//                ApiUsername = string.Empty,
+//                ApiPassword = string.Empty,
 
-                Agreement = false,
-            };
+//                BaseUrl = "https://atlas.cyclomedia.com",
+//                RecordingsServiceUrl = "https://atlas.cyclomedia.com/recordings/wfs",
+//                SpatialReferencesUrl = "https://streetsmart.cyclomedia.com/api/v18.10/assets/srs/SpatialReference.xml",
 
-            result.Save();
-            return result;
-        }
+//                DefaultRecordingSrs = string.Empty,
+//                OverlayDrawDistanceInMeters = 30,
 
-        #endregion
-    }
-}
+//                Agreement = false,
+//            };
+
+//            result.Save();
+//            return result;
+//        }
+
+//        #endregion
+//    }
+//}

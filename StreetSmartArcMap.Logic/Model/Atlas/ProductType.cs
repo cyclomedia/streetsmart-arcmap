@@ -1,5 +1,5 @@
 ﻿/*
- * Integration in ArcMap for StreetSmart
+ * Integration in ArcMap for Cycloramas
  * Copyright (c) 2019, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -16,31 +16,24 @@
  * License along with this library.
  */
 
-using System;
-using System.IO;
-
-namespace StreetSmartArcMap.Logic.Utilities
+namespace StreetSmartArcMap.Logic.Model.Atlas
 {
-    public class FileUtils
+    #region enumeration (ProductType)
+
+    // ===========================================================================
+    // Enumeration
+    // ===========================================================================
+    /// <summary>
+    /// Enumeration for product types.
+    /// </summary>
+    public enum ProductType
     {
-        #region Properties
-
-        public static string FileDir
-        {
-            get
-            {
-                string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                string result = Path.Combine(folder, "StreetSmartArcMap");
-
-                if (!Directory.Exists(result))
-                {
-                    Directory.CreateDirectory(result);
-                }
-
-                return result;
-            }
-        }
-
-        #endregion Properties
+        None = -1,
+        Cyclorama = 1,
+        Aquarama = 2,
+        Aerial = 3,
+        Aerorama = 4
     }
+
+    #endregion enumeration (ProductType)
 }

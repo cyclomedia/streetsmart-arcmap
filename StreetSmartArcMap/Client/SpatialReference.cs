@@ -1,27 +1,26 @@
 ﻿/*
  * Integration in ArcMap for StreetSmart
  * Copyright (c) 2019, CycloMedia, All rights reserved.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
 
-using System;
-using System.Xml.Serialization;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Geometry;
 using StreetSmartArcMap.Utilities;
-using StreetSmartArcMap.Logic.Configuration;
+using System;
+using System.Xml.Serialization;
 
 namespace StreetSmartArcMap.Client
 {
@@ -34,7 +33,7 @@ namespace StreetSmartArcMap.Client
         // =========================================================================
         private ISpatialReference _spatialReference;
 
-        #endregion
+        #endregion members
 
         #region properties
 
@@ -140,7 +139,7 @@ namespace StreetSmartArcMap.Client
                     IEnvelope envelope = activeView.Extent;
                     ISpatialReference spatEnv = envelope.SpatialReference;
 
-                    Configuration config = Configuration.Instance;
+                    Configuration.Configuration config = Configuration.Configuration.Instance;
                     string defaultRecordingSrs = config.DefaultRecordingSrs;
                     int spatEnvFactoryCode = 0;
 
@@ -187,7 +186,7 @@ namespace StreetSmartArcMap.Client
             get { return SpatialRef != null; }
         }
 
-        #endregion
+        #endregion properties
 
         #region functions (public)
 
@@ -209,6 +208,6 @@ namespace StreetSmartArcMap.Client
             return !((boundary.XMin < NativeBounds.MinX) || (boundary.XMax > NativeBounds.MaxX) || (boundary.YMin < NativeBounds.MinY) || (boundary.YMax > NativeBounds.MaxY));
         }
 
-        #endregion
+        #endregion functions (public)
     }
 }

@@ -1,31 +1,31 @@
 ﻿/*
  * Integration in ArcMap for StreetSmart
  * Copyright (c) 2019, CycloMedia, All rights reserved.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3.0 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library.
  */
 
-using System;
-using System.Diagnostics;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Desktop.AddIns;
 using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.esriSystem;
-using StreetSmartArcMap.Client;
+using StreetSmartArcMap.Buttons;
 using StreetSmartArcMap.Forms;
+using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Utilities;
-using StreetSmartArcMap.Logic.Configuration;
+using System;
+using System.Diagnostics;
 
 namespace StreetSmartArcMap.AddIns
 {
@@ -34,20 +34,29 @@ namespace StreetSmartArcMap.AddIns
     /// <summary>
     /// The extension of the cyclomedia layers
     /// </summary>
-    public class GsExtension : Extension
+    public class StreetSmartExtension : Extension
     {
         public static event OpenDocumentDelegate OpenDocumentEvent;
 
-        private static GsExtension _extension;
+        private static StreetSmartExtension _extension;
+        public CycloMediaGroupLayer CycloMediaGroupLayer { get; private set; }
 
         public bool IsEnabled => State == ExtensionState.Enabled;
-        private Configuration Config => Configuration.Instance;
+        private Configuration.Configuration Config => Configuration.Configuration.Instance;
+
+        public bool Enabled
+        {
+            get
+            {
+                return (State == ExtensionState.Enabled);
+            }
+        }
 
         #region event handlers
 
         protected override void OnStartup()
         {
-            Configuration.AgreementChanged += OnAgreementChanged;
+            Configuration.Configuration.AgreementChanged += OnAgreementChanged;
 
             _extension = this;
 
@@ -65,10 +74,10 @@ namespace StreetSmartArcMap.AddIns
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message, "GsExtension.OnShutdown");
+                Trace.WriteLine(ex.Message, "StreetSmartExtension.OnShutdown");
             }
 
-            Configuration.AgreementChanged -= OnAgreementChanged;
+            Configuration.Configuration.AgreementChanged -= OnAgreementChanged;
 
             base.OnShutdown();
         }
@@ -98,9 +107,7 @@ namespace StreetSmartArcMap.AddIns
                     {
                         docEvents.OpenDocument += OpenDocument;
                         docEvents.CloseDocument += CloseDocument;
-                        docEvents.ActiveViewChanged += OnActiveViewChanged;
                     }
-
                 }
                 else
                 {
@@ -109,7 +116,7 @@ namespace StreetSmartArcMap.AddIns
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message, "GsExtension.OnSetState");
+                Trace.WriteLine(ex.Message, "StreetSmartExtension.OnSetState");
             }
 
             return base.OnSetState(State);
@@ -120,7 +127,7 @@ namespace StreetSmartArcMap.AddIns
             return State;
         }
 
-        #endregion
+        #endregion event handlers
 
         #region functions
 
@@ -140,7 +147,97 @@ namespace StreetSmartArcMap.AddIns
             }
         }
 
-        #endregion
+        private void CloseCycloMediaLayer(bool closeDocument)
+        {
+            if (CycloMediaGroupLayer != null)
+            {
+                if ((!ContainsCycloMediaLayer()) || closeDocument)
+                {
+                    RemoveLayers();
+                }
+            }
+
+            if (closeDocument)
+            {
+                var arcEvents = ArcUtils.ActiveViewEvents;
+
+                if (arcEvents != null)
+                {
+                    arcEvents.ItemDeleted -= ItemDeleted;
+                    arcEvents.AfterDraw -= Afterdraw;
+                }
+
+                CycloMediaLayer.LayerRemoveEvent -= OnLayerRemoved;
+                StreetSmartRecordingsLayer.RemoveFromMenu();
+            }
+        }
+
+        public void AddLayers()
+        {
+            AddLayers(null);
+        }
+
+        public void AddLayers(string name)
+        {
+            if (Enabled)
+            {
+                if (CycloMediaGroupLayer == null)
+                {
+                    StreetSmartShowInCyclorama.AddToMenu();
+                    StreetSmartConfigurationForm.CheckOpenCredentials();
+                    CycloMediaGroupLayer = new CycloMediaGroupLayer();
+                }
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    CycloMediaGroupLayer.AddLayer(name);
+                }
+            }
+        }
+
+        public void RemoveLayer(string name)
+        {
+            if (CycloMediaGroupLayer != null)
+            {
+                CycloMediaGroupLayer.RemoveLayer(name);
+            }
+        }
+
+        public void RemoveLayers()
+        {
+            if (CycloMediaGroupLayer != null)
+            {
+                StreetSmartShowInCyclorama.RemoveFromMenu();
+                //FrmCycloMediaOptions.CloseForm();
+                //FrmMeasurement.Close();
+                //FrmIdentify.Close();
+                CycloMediaGroupLayer cycloLayer = CycloMediaGroupLayer;
+                CycloMediaGroupLayer = null;
+                cycloLayer.Dispose();
+                //FrmGlobespotter.ShutDown(true);
+            }
+        }
+
+        private bool ContainsCycloMediaLayer()
+        {
+            // ReSharper disable UseIndexedProperty
+            bool result = false;
+            IMap map = ArcUtils.Map;
+            var layers = map.get_Layers();
+            ILayer layer;
+
+            while ((layer = layers.Next()) != null)
+            {
+                result = ((CycloMediaGroupLayer == null)
+                            ? (layer.Name == "CycloMedia")
+                            : CycloMediaGroupLayer.IsKnownName(layer.Name)) || result;
+            }
+
+            // ReSharper restore UseIndexedProperty
+            return result;
+        }
+
+        #endregion functions
 
         #region other event handlers
 
@@ -160,19 +257,25 @@ namespace StreetSmartArcMap.AddIns
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message, "GsExtension.OpenDocument");
+                Trace.WriteLine(ex.Message, "StreetSmartExtension.OpenDocument");
             }
+
+            if (ContainsCycloMediaLayer())
+            {
+                AddLayers();
+            }
+            StreetSmartRecordingsLayer.AddToMenu();
         }
 
         private void CloseDocument()
         {
             try
             {
-                //
+                CloseCycloMediaLayer(true);
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message, "GsExtension.CloseDocument");
+                Trace.WriteLine(ex.Message, "StreetSmartExtension.CloseDocument");
             }
         }
 
@@ -180,11 +283,11 @@ namespace StreetSmartArcMap.AddIns
         {
             try
             {
-                //
+                CloseCycloMediaLayer(false);
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.Message, "GsExtension.ItemDeleted");
+                Trace.WriteLine(ex.Message, "StreetSmartExtension.ItemDeleted");
             }
         }
 
@@ -196,26 +299,33 @@ namespace StreetSmartArcMap.AddIns
             }
         }
 
-        private void OnActiveViewChanged()
+        private void OnLayerRemoved(CycloMediaLayer cycloMediaLayer)
         {
-            //
+            if (CycloMediaGroupLayer != null)
+            {
+                if (!CycloMediaGroupLayer.ContainsLayers)
+                {
+                    RemoveLayers();
+                }
+            }
         }
 
-        #endregion
 
-        internal static GsExtension GetExtension()
+        #endregion other event handlers
+
+        internal static StreetSmartExtension GetExtension()
         {
             if (_extension == null)
             {
                 try
                 {
-                    UID extId = new UIDClass { Value = ThisAddIn.IDs.GsExtension };
+                    UID extId = new UIDClass { Value = ThisAddIn.IDs.StreetSmartExtension };
 
-                    _extension = ArcMap.Application.FindExtensionByCLSID(extId) as GsExtension;
+                    _extension = ArcMap.Application.FindExtensionByCLSID(extId) as StreetSmartExtension;
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine(ex.Message, "GsExtension.GetExtension");
+                    Trace.WriteLine(ex.Message, "StreetSmartExtension.GetExtension");
                 }
             }
 

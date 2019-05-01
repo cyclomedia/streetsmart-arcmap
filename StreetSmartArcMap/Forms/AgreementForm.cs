@@ -1,5 +1,4 @@
-﻿using StreetSmartArcMap.Logic.Configuration;
-using StreetSmartArcMap.Utilities;
+﻿using StreetSmartArcMap.Utilities;
 using System;
 using System.Windows.Forms;
 
@@ -7,7 +6,7 @@ namespace StreetSmartArcMap.Forms
 {
     public partial class AgreementForm : Form
     {
-        private Configuration Config => Configuration.Instance;
+        private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
         public AgreementForm()
         {

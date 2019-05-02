@@ -155,13 +155,13 @@ namespace StreetSmartArcMap.Logic
 
         #region public functions
 
-        public void RestartStreetSmartAPI(IStreetSmartOptions options)
+        public async void RestartStreetSmartAPI(IStreetSmartOptions options)
         {
             try
             {
                 //Destroy if existing
                 if (Initialised)
-                    StreetSmartAPI.Destroy(ApiOptions).Wait(10000);
+                    await StreetSmartAPI.Destroy(ApiOptions);
 
                 //Create new
                 if (StreetSmartOptions != null)
@@ -171,8 +171,12 @@ namespace StreetSmartArcMap.Logic
 
                     ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
 
-                    StreetSmartAPI.Init(ApiOptions).Wait(10000);
+                    await StreetSmartAPI.Init(ApiOptions);
                 }
+
+                //Open request
+                if (Initialised && RequestQuery != null)
+                    await Open(RequestSRS, RequestQuery);
             }
             catch
             {
@@ -241,10 +245,11 @@ namespace StreetSmartArcMap.Logic
         {
             try
             {
+                RequestQuery = query;
+
                 if (!Initialised)
                 {
                     RequestOpen = true;
-                    RequestQuery = query;
                     RequestSRS = srsCode;
                 }
                 else

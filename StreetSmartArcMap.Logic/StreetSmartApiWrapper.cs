@@ -135,16 +135,15 @@ namespace StreetSmartArcMap.Logic
                 // Open image
                 ViewerTypes = new List<ViewerType> { ViewerType.Panorama };
                 Initialised = true;
-                if (RequestOpen)
-                {
-                    RequestOpen = false;
-                    await Open(RequestSRS, RequestQuery);
-                }
+
                 if (RequestOverlay)
                 {
                     RequestOverlay = false;
                     StreetSmartAPI.SetOverlayDrawDistance(RequestOverlayDistance);
                 }
+
+                if (RequestOpen)
+                    await Open(RequestSRS, RequestQuery);
             }
             catch (StreetSmartLoginFailedException)
             {
@@ -162,7 +161,7 @@ namespace StreetSmartArcMap.Logic
             {
                 //Destroy if existing
                 if (Initialised)
-                    StreetSmartAPI.Destroy(ApiOptions).Wait(5000);
+                    StreetSmartAPI.Destroy(ApiOptions).Wait(10000);
 
                 //Create new
                 if (StreetSmartOptions != null)
@@ -172,7 +171,7 @@ namespace StreetSmartArcMap.Logic
 
                     ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
 
-                    StreetSmartAPI.Init(ApiOptions);
+                    StreetSmartAPI.Init(ApiOptions).Wait(10000);
                 }
             }
             catch (Exception ex)

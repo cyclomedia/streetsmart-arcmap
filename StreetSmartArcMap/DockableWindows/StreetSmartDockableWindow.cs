@@ -44,18 +44,31 @@ namespace StreetSmartArcMap.DockableWindows
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
             docEvents.MapsChanged += DocEvents_MapsChanged;
         }
+
         private delegate void viewerChangeDelegate(ViewersChangeEventArgs args);
+
         private void API_OnViewerChangeEvent(ViewersChangeEventArgs args)
         {
             if (InvokeRequired)
+                Invoke(new Action(() => API_OnViewerChangeEvent(args)));
+            else
+                SetVisibility(args.NumberOfViewers > 0);
+        }
+
+        internal void SetVisibility(bool visible)
+        {
+            if (visible)
             {
-                var d = new viewerChangeDelegate(API_OnViewerChangeEvent);
-                Invoke(d, new object[] { args });
+                Visible = true;
             }
             else
             {
-                if (args.NumberOfViewers == 0)
-                    this.Visible = false;
+                var dockWindowManager = ArcMap.Application as ESRI.ArcGIS.Framework.IDockableWindowManager;
+                ESRI.ArcGIS.esriSystem.UID windowId = new ESRI.ArcGIS.esriSystem.UIDClass { Value = "Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" };
+                ESRI.ArcGIS.Framework.IDockableWindow window = dockWindowManager.GetDockableWindow(windowId);
+
+                if (window.IsVisible())
+                    window.Show(false);
             }
         }
 
@@ -85,7 +98,7 @@ namespace StreetSmartArcMap.DockableWindows
             protected override IntPtr OnCreateChild()
             {
                 m_windowUI = new StreetSmartDockableWindow(this.Hook);
-
+                
                 return m_windowUI.Handle;
             }
 

@@ -120,8 +120,13 @@ namespace StreetSmartArcMap.Tools
         {
             try
             {
+                var enabled = Enabled;
+
                 var extension = StreetSmartExtension.GetExtension();
                 Enabled = ((ArcMap.Application != null) && extension.Enabled && extension.CycloMediaGroupLayer != null && extension.CycloMediaGroupLayer.Layers.Any(l => l is RecordingLayer));
+                
+                if (enabled && !Enabled)
+                    OnDeactivate();
             }
             catch (Exception ex)
             {

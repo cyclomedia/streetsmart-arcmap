@@ -795,7 +795,10 @@ namespace StreetSmartArcMap.Layers
 
                                                 foreach (var fieldId in fieldIds)
                                                 {
-                                                    feature.set_Value(fieldId.Key, mappedFeature.FieldToItem(fieldId.Value));
+                                                    if (fieldId.Key < 0)
+                                                        throw new ApplicationException($"Unable to set fields. Key '{fieldId.Key}' with value '{fieldId.Value}' is invalid.");
+                                                    else
+                                                        feature.set_Value(fieldId.Key, mappedFeature.FieldToItem(fieldId.Value));
                                                 }
 
                                                 feature.Store();

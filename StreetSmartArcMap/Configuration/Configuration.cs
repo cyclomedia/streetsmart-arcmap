@@ -40,7 +40,7 @@ namespace StreetSmartArcMap.Configuration
 
         #region Members
 
-        private static readonly XmlSerializer XmlConfiguration;
+        private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(Configuration));
         private static Configuration _configuration;
 
         public string AddressLocale { get; set; }
@@ -61,6 +61,7 @@ namespace StreetSmartArcMap.Configuration
 
         public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
 
+        private static bool IsLoading { get; set; }
         public static EventHandler<bool> AgreementChanged;
 
         private bool _Agreement { get; set; }
@@ -69,7 +70,7 @@ namespace StreetSmartArcMap.Configuration
         {
             get
             {
-                return _Agreement ;
+                return _Agreement;
             }
             set
             {
@@ -77,7 +78,8 @@ namespace StreetSmartArcMap.Configuration
                 {
                     _Agreement = value;
 
-                    AgreementChanged?.Invoke(this, value);
+                    if (!IsLoading)
+                        AgreementChanged?.Invoke(this, value);
                 }
             }
         }
@@ -88,7 +90,7 @@ namespace StreetSmartArcMap.Configuration
 
         static Configuration()
         {
-            XmlConfiguration = new XmlSerializer(typeof(Configuration));
+            //
         }
 
         #endregion
@@ -100,9 +102,7 @@ namespace StreetSmartArcMap.Configuration
             get
             {
                 if (_configuration == null)
-                {
                     Load();
-                }
 
                 return _configuration ?? (_configuration = Create());
             }
@@ -114,7 +114,8 @@ namespace StreetSmartArcMap.Configuration
         public bool UseLogging { get; set; }
         public bool CycloramaVectorLayerLocationDefault
         {
-            get {
+            get
+            {
                 return string.IsNullOrEmpty(CycloramaVectorLayerLocation);
             }
         }
@@ -128,18 +129,27 @@ namespace StreetSmartArcMap.Configuration
         public void Save()
         {
             OnPropertyChanged();
-            FileStream streamFile = SystemIOFile.Open(FileName, FileMode.Create);
-            XmlConfiguration.Serialize(streamFile, this);
-            streamFile.Close();
+
+            using (var input = SystemIOFile.Open(FileName, FileMode.Create))
+            {
+                Serializer.Serialize(input, this);
+            }
         }
 
         private static void Load()
         {
             if (SystemIOFile.Exists(FileName))
             {
-                var streamFile = new FileStream(FileName, FileMode.OpenOrCreate);
-                _configuration = (Configuration)XmlConfiguration.Deserialize(streamFile);
-                streamFile.Close();
+                using (var input = new FileStream(FileName, FileMode.Open))
+                {
+                    IsLoading = true;
+
+                    var configuration = Serializer.Deserialize(input);
+
+                    _configuration = (Configuration)configuration;
+
+                    IsLoading = false;
+                }
             }
         }
 
@@ -171,6 +181,7 @@ namespace StreetSmartArcMap.Configuration
             };
 
             result.Save();
+
             return result;
         }
 

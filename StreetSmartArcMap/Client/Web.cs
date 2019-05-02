@@ -367,46 +367,53 @@ namespace StreetSmartArcMap.Client
 
         private WebRequest OpenWebRequest(string remoteLocation, string webRequest, int length)
         {
-            IWebProxy proxy;
-
-            //if (_config.UseProxyServer)
-            //{
-            //    var webProxy = new WebProxy(_config.ProxyAddress, _config.ProxyPort)
-            //    {
-            //        BypassProxyOnLocal = _config.BypassProxyOnLocal,
-            //        UseDefaultCredentials = _config.ProxyUseDefaultCredentials
-            //    };
-
-            //    if (!_config.ProxyUseDefaultCredentials)
-            //    {
-            //        webProxy.Credentials = new NetworkCredential(_config.ProxyUsername, _config.ProxyPassword, _config.ProxyDomain);
-            //    }
-
-            //    proxy = webProxy;
-            //}
-            //else
-            //{
-            proxy = WebRequest.GetSystemWebProxy();
-            //}
-
-            var request = (HttpWebRequest)WebRequest.Create(remoteLocation);
-            request.Credentials = new NetworkCredential(_login.Username, _login.Password);
-            request.Method = webRequest;
-            request.ContentLength = length;
-            request.KeepAlive = true;
-            request.Pipelined = true;
-            request.Proxy = proxy;
-            request.PreAuthenticate = true;
-            request.ContentType = "text/xml";
-            request.Headers.Add("ApiKey", Configuration.Configuration.ApiKey);
-
-            if (request.ServicePoint != null)
+            try
             {
-                request.ServicePoint.ConnectionLeaseTimeout = LeaseTimeOut;
-                request.ServicePoint.MaxIdleTime = LeaseTimeOut;
-            }
+                IWebProxy proxy;
 
-            return request;
+                //if (_config.UseProxyServer)
+                //{
+                //    var webProxy = new WebProxy(_config.ProxyAddress, _config.ProxyPort)
+                //    {
+                //        BypassProxyOnLocal = _config.BypassProxyOnLocal,
+                //        UseDefaultCredentials = _config.ProxyUseDefaultCredentials
+                //    };
+
+                //    if (!_config.ProxyUseDefaultCredentials)
+                //    {
+                //        webProxy.Credentials = new NetworkCredential(_config.ProxyUsername, _config.ProxyPassword, _config.ProxyDomain);
+                //    }
+
+                //    proxy = webProxy;
+                //}
+                //else
+                //{
+                proxy = WebRequest.GetSystemWebProxy();
+                //}
+
+                var request = (HttpWebRequest)WebRequest.Create(remoteLocation);
+                request.Credentials = new NetworkCredential(_login.Username, _login.Password);
+                request.Method = webRequest;
+                request.ContentLength = length;
+                request.KeepAlive = true;
+                request.Pipelined = true;
+                request.Proxy = proxy;
+                request.PreAuthenticate = true;
+                request.ContentType = "text/xml";
+                request.Headers.Add("ApiKey", Configuration.Configuration.ApiKey);
+
+                if (request.ServicePoint != null)
+                {
+                    request.ServicePoint.ConnectionLeaseTimeout = LeaseTimeOut;
+                    request.ServicePoint.MaxIdleTime = LeaseTimeOut;
+                }
+
+                return request;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Unable to open web request.", ex);
+            }
         }
 
         #endregion wfs request functions

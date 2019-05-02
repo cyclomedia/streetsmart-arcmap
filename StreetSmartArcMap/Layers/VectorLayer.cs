@@ -1299,7 +1299,7 @@ namespace StreetSmartArcMap.Layers
                             }
                             else
                             {
-                                SketchFinishedEvent();
+                                SketchFinishedEvent?.Invoke();
                             }
                         }
                     }

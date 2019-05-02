@@ -795,7 +795,8 @@ namespace StreetSmartArcMap.Layers
 
                                                 foreach (var fieldId in fieldIds)
                                                 {
-                                                    feature.set_Value(fieldId.Key, mappedFeature.FieldToItem(fieldId.Value));
+                                                    if (fieldId.Key > -1)
+                                                        feature.set_Value(fieldId.Key, mappedFeature.FieldToItem(fieldId.Value));
                                                 }
 
                                                 feature.Store();

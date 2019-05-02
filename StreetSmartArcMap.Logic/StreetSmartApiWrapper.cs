@@ -165,12 +165,15 @@ namespace StreetSmartArcMap.Logic
                     StreetSmartAPI.Destroy(ApiOptions).Wait(5000);
 
                 //Create new
-                IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
-                IDomElement element = DomElementFactory.Create();
+                if (StreetSmartOptions != null)
+                {
+                    IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
+                    IDomElement element = DomElementFactory.Create();
 
-                ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
+                    ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
 
-                StreetSmartAPI.Init(ApiOptions);
+                    StreetSmartAPI.Init(ApiOptions);
+                }
             }
             catch (Exception ex)
             {

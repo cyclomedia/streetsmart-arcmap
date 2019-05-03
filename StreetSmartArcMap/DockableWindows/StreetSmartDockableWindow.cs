@@ -20,6 +20,7 @@ using ESRI.ArcGIS.ArcMapUI;
 using StreetSmartArcMap.Logic;
 using System;
 using System.Windows.Forms;
+using StreetSmartArcMap.Logic.Model;
 
 namespace StreetSmartArcMap.DockableWindows
 {
@@ -39,8 +40,9 @@ namespace StreetSmartArcMap.DockableWindows
 
             API.InitApi(Config);
             API.OnViewerChangeEvent += API_OnViewerChangeEvent;
+            API.OnViewingConeChanged += API_OnViewingConeChanged;
             this.Controls.Add(API.StreetSmartGUI);
-
+            
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
             docEvents.MapsChanged += DocEvents_MapsChanged;
         }
@@ -70,6 +72,11 @@ namespace StreetSmartArcMap.DockableWindows
                 if (window.IsVisible())
                     window.Show(false);
             }
+        }
+
+        private void API_OnViewingConeChanged(object sender, ViewingCone e)
+        {
+            //
         }
 
         private void DocEvents_MapsChanged()

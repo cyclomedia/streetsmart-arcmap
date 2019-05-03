@@ -116,6 +116,7 @@
     <Compile Include="Model\Namespaces.cs" />
     <Compile Include="Model\Shape\Point.cs" />
     <Compile Include="Model\Shape\ShapeType.cs" />
+    <Compile Include="Model\ViewingCone.cs" />
     <Compile Include="Model\Wfs\WfsFeature.cs" />
     <Compile Include="ViewersChangeEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

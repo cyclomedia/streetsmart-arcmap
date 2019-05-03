@@ -150,6 +150,12 @@ namespace StreetSmartArcMap.Forms
                             string imageId = item.Text;
                             await StreetSmartApiWrapper.Instance.Open(Configuration.Configuration.Instance.ApiSRS, imageId, ModifierKeys == Keys.Shift);
                         }
+
+                        //Zoom to location on map
+                        IEnvelope envelope = activeView.Extent;
+                        envelope.CenterAt(point);
+                        activeView.Extent = envelope;
+                        activeView.Refresh();
                     }
                 }
             }
@@ -158,11 +164,11 @@ namespace StreetSmartArcMap.Forms
         private void backgroundImageSearch_DoWork(object sender, DoWorkEventArgs e)
         {
             Web web = Web.Instance;
-            string imageId = txtImageId.Text;
+            string imageId = txtImageId.Text.Trim();
             StreetSmartExtension extension = StreetSmartExtension.GetExtension();
             CycloMediaGroupLayer groupLayer = extension.CycloMediaGroupLayer;
             IList<CycloMediaLayer> layers = groupLayer.Layers;
-            
+
             foreach (var layer in layers)
             {
                 try
@@ -185,7 +191,7 @@ namespace StreetSmartArcMap.Forms
 
                 if (featureMemberElements != null)
                 {
-                    string imageId = txtImageId.Text;
+                    string imageId = txtImageId.Text.Trim();
                     StreetSmartExtension extension = StreetSmartExtension.GetExtension();
                     CycloMediaGroupLayer groupLayer = extension.CycloMediaGroupLayer;
                     IList<CycloMediaLayer> layers = groupLayer.Layers;

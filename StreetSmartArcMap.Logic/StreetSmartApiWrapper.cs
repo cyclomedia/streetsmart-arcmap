@@ -258,6 +258,7 @@ namespace StreetSmartArcMap.Logic
 
                     IViewerOptions options = ViewerOptionsFactory.Create(ViewerTypes, srsCode, GetPanoramaOptions(addExtraViewer));
                     IList<IViewer> viewers = await StreetSmartAPI.Open(query, options);
+
                     NotifyViewerChange();
                 }
             }

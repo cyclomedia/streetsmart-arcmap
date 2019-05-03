@@ -219,10 +219,7 @@ namespace StreetSmartArcMap.AddIns
 
         public void RemoveLayer(string name)
         {
-            if (CycloMediaGroupLayer != null)
-            {
-                CycloMediaGroupLayer.RemoveLayer(name);
-            }
+            CycloMediaGroupLayer?.RemoveLayer(name);
         }
 
         public void RemoveLayers()
@@ -230,13 +227,9 @@ namespace StreetSmartArcMap.AddIns
             if (CycloMediaGroupLayer != null)
             {
                 StreetSmartShowInCyclorama.RemoveFromMenu();
-                //FrmCycloMediaOptions.CloseForm();
-                //FrmMeasurement.Close();
-                //FrmIdentify.Close();
-                CycloMediaGroupLayer cycloLayer = CycloMediaGroupLayer;
+
+                CycloMediaGroupLayer?.Dispose();
                 CycloMediaGroupLayer = null;
-                cycloLayer.Dispose();
-                //FrmGlobespotter.ShutDown(true);
             }
         }
 

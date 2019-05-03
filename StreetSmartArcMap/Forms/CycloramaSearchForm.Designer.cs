@@ -69,7 +69,6 @@
             this.txtImageId.Name = "txtImageId";
             this.txtImageId.Size = new System.Drawing.Size(279, 20);
             this.txtImageId.TabIndex = 18;
-            this.txtImageId.Text = "5D69537V";
             // 
             // lvResults
             // 

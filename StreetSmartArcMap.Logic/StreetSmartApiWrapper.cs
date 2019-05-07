@@ -43,7 +43,6 @@ namespace StreetSmartArcMap.Logic
         #endregion private const
 
         #region Singleton construction
-
         private static StreetSmartApiWrapper _instance;
 
         public static StreetSmartApiWrapper Instance
@@ -60,7 +59,7 @@ namespace StreetSmartArcMap.Logic
         #endregion Singleton construction
 
         #region private properties
-
+        private bool Loading = false;
         private IPanoramaViewerOptions DefaultPanoramaOptions { get; set; }
         private IList<ViewerType> ViewerTypes { get; set; }
         private IStreetSmartAPI StreetSmartAPI { get; set; }
@@ -225,21 +224,21 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        private void Viewer_ImageChange(object sender, EventArgs e)
+        private async void Viewer_ImageChange(object sender, EventArgs e)
         {
             if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
             {
-                var cone = CreateCone(sender as IPanoramaViewer).Result;
+                var cone = await CreateCone(sender as IPanoramaViewer);
 
                 OnViewingConeChanged?.Invoke(sender, cone);
             }
         }
 
-        private void Viewer_ViewChange(object sender, IEventArgs<IOrientation> e)
+        private async void Viewer_ViewChange(object sender, IEventArgs<IOrientation> e)
         {
             if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
             {
-                var cone = CreateCone(sender as IPanoramaViewer).Result;
+                var cone = await CreateCone(sender as IPanoramaViewer);
 
                 OnViewingConeChanged?.Invoke(sender, cone);
             }
@@ -250,6 +249,10 @@ namespace StreetSmartArcMap.Logic
             if (viewer == null)
                 throw new ApplicationException();
 
+            while (Loading)
+            {
+                await Task.Delay(100);
+            }
             var recording = await viewer.GetRecording();
 
             return new ViewingCone
@@ -308,10 +311,10 @@ namespace StreetSmartArcMap.Logic
                 else
                 {
                     RequestOpen = false;
-
+                    Loading = true;
                     IViewerOptions options = ViewerOptionsFactory.Create(ViewerTypes, srsCode, GetPanoramaOptions(addExtraViewer));
                     IList<IViewer> viewers = await StreetSmartAPI.Open(query, options);
-
+                    Loading = false;
                     NotifyViewerChange();
                 }
             }

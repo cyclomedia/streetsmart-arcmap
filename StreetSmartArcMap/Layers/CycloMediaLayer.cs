@@ -78,6 +78,7 @@ namespace StreetSmartArcMap.Layers
         private Thread _refreshDataThread;
         private bool _isVisibleInGlobespotter;
 
+
         #endregion members
 
         #region properties

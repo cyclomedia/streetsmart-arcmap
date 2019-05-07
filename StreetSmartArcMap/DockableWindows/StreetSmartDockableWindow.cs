@@ -21,6 +21,8 @@ using StreetSmartArcMap.Logic;
 using System;
 using System.Windows.Forms;
 using StreetSmartArcMap.Logic.Model;
+using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Geometry;
 
 namespace StreetSmartArcMap.DockableWindows
 {
@@ -77,6 +79,17 @@ namespace StreetSmartArcMap.DockableWindows
         private void API_OnViewingConeChanged(object sender, ViewingCone e)
         {
             //
+            var config = Configuration.Configuration.Instance;
+            int srs = int.Parse(config.ApiSRS.Substring(config.ApiSRS.IndexOf(":") + 1));
+            var activeGraphicsLayer = ArcMap.Document?.ActiveView?.FocusMap?.BasicGraphicsLayer;
+            var point = new Point()
+            {
+                X = e.Coordinate.X.Value,
+                Y = e.Coordinate.Y.Value,
+                Z = e.Coordinate.Z.Value,
+                SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs)
+            };
+            
         }
 
         private void DocEvents_MapsChanged()

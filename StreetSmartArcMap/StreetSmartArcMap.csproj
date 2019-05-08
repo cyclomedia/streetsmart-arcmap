@@ -113,6 +113,10 @@
     <Compile Include="Client\StoredLayers.cs" />
     <Compile Include="Client\Urls.cs" />
     <Compile Include="Client\Web.cs" />
+    <Compile Include="Config.fr.cs">
+      <DependentUpon>Config.fr.esriaddinx</DependentUpon>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="Config.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Config.esriaddinx</DependentUpon>
@@ -222,6 +226,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Resources.fr.resx" />
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Images\GsCycloMediaOptions.png" />
@@ -295,6 +300,10 @@
     <AddInContent Include="Install\natives_blob.bin" />
     <AddInContent Include="Install\snapshot_blob.bin" />
     <AddInContent Include="Install\v8_context_snapshot.bin" />
+    <AddInContent Include="Config.fr.esriaddinx">
+      <Generator>ArcGISAddInHostGenerator</Generator>
+      <LastGenOutput>Config.fr.cs</LastGenOutput>
+    </AddInContent>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

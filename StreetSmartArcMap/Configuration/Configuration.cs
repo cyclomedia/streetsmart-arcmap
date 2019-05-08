@@ -84,6 +84,8 @@ namespace StreetSmartArcMap.Configuration
             }
         }
 
+        public string Culture { get; set; }
+
         #endregion
 
         #region Constructors
@@ -109,6 +111,11 @@ namespace StreetSmartArcMap.Configuration
         }
 
         private static string FileName => Path.Combine(FileUtils.FileDir, "Configuration.xml");
+
+        internal void SetUICulture()
+        {
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(Culture);
+        }
 
         public string LoggingLocation { get; set; }
         public bool UseLogging { get; set; }
@@ -178,6 +185,7 @@ namespace StreetSmartArcMap.Configuration
                 OverlayDrawDistanceInMeters = 30,
 
                 Agreement = false,
+                Culture = "en-US",
             };
 
             result.Save();

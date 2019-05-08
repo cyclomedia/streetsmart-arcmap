@@ -21,7 +21,9 @@ using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -42,6 +44,7 @@ namespace StreetSmartArcMap.Forms
             LoadLoginData();
             LoadSpatialReferenceData();
             LoadGeneralSettings();
+            LoadCulture();
 
             FormStyling.SetFont(this);
 
@@ -83,6 +86,20 @@ namespace StreetSmartArcMap.Forms
         private void LoadGeneralSettings()
         {
             nudOverlayDrawDistance.Value = Config.OverlayDrawDistanceInMeters;
+        }
+
+        private void LoadCulture()
+        {
+            var items = new CultureInfo[]
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("fr")
+            };
+            cbCulture.Items.AddRange(items);
+
+            var current = System.Threading.Thread.CurrentThread.CurrentUICulture;
+            if (cbCulture.Items.Contains(current))
+                cbCulture.SelectedItem = current;
         }
 
         private void LoadLoginData()
@@ -193,6 +210,9 @@ namespace StreetSmartArcMap.Forms
                 Config.OverlayDrawDistanceInMeters = overlayDrawDistance;
                 StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(overlayDrawDistance, ArcMap.Document.FocusMap.MapUnits);
             }
+
+            var selectedCulture = (CultureInfo)cbCulture.SelectedItem;
+            Config.Culture = selectedCulture?.Name ?? Config.Culture;
 
             Config.Save();
         }

@@ -42,7 +42,7 @@
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.lblPassword = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.grGeneral = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.nudOverlayDrawDistance = new System.Windows.Forms.NumericUpDown();
             this.grCoordinateSystems = new System.Windows.Forms.GroupBox();
@@ -69,35 +69,39 @@
             this.lblProxyAddress = new System.Windows.Forms.Label();
             this.ckUseProxyServer = new System.Windows.Forms.CheckBox();
             this.txtProxyAddress = new System.Windows.Forms.TextBox();
-            this.grRecordingService = new System.Windows.Forms.GroupBox();
-            this.lblRecordingService = new System.Windows.Forms.Label();
-            this.ckDefaultRecordingService = new System.Windows.Forms.CheckBox();
-            this.txtRecordingService = new System.Windows.Forms.TextBox();
+            this.grAPI = new System.Windows.Forms.GroupBox();
+            this.lblAPI = new System.Windows.Forms.Label();
+            this.ckDefaultAPI = new System.Windows.Forms.CheckBox();
+            this.txtAPI = new System.Windows.Forms.TextBox();
             this.tbAbout = new System.Windows.Forms.TabPage();
             this.rtbAbout = new System.Windows.Forms.RichTextBox();
             this.tbAgreement = new System.Windows.Forms.TabPage();
             this.txtAgreement = new System.Windows.Forms.TextBox();
+            this.grLocalization = new System.Windows.Forms.GroupBox();
+            this.lblCulture = new System.Windows.Forms.Label();
+            this.cbCulture = new System.Windows.Forms.ComboBox();
             this.plButtons.SuspendLayout();
             this.tcSettings.SuspendLayout();
             this.tbSettings.SuspendLayout();
             this.grLogin.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.grGeneral.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudOverlayDrawDistance)).BeginInit();
             this.grCoordinateSystems.SuspendLayout();
             this.tbConfiguration.SuspendLayout();
             this.grConfiguration.SuspendLayout();
             this.grProxyServer.SuspendLayout();
-            this.grRecordingService.SuspendLayout();
+            this.grAPI.SuspendLayout();
             this.tbAbout.SuspendLayout();
             this.tbAgreement.SuspendLayout();
+            this.grLocalization.SuspendLayout();
             this.SuspendLayout();
             // 
             // plButtons
             // 
-            resources.ApplyResources(this.plButtons, "plButtons");
             this.plButtons.Controls.Add(this.btnOk);
             this.plButtons.Controls.Add(this.btnCancel);
             this.plButtons.Controls.Add(this.btnApply);
+            resources.ApplyResources(this.plButtons, "plButtons");
             this.plButtons.Name = "plButtons";
             // 
             // btnOk
@@ -134,22 +138,23 @@
             // 
             // tbSettings
             // 
-            resources.ApplyResources(this.tbSettings, "tbSettings");
+            this.tbSettings.Controls.Add(this.grLocalization);
             this.tbSettings.Controls.Add(this.grLogin);
-            this.tbSettings.Controls.Add(this.groupBox1);
+            this.tbSettings.Controls.Add(this.grGeneral);
             this.tbSettings.Controls.Add(this.grCoordinateSystems);
+            resources.ApplyResources(this.tbSettings, "tbSettings");
             this.tbSettings.Name = "tbSettings";
             this.tbSettings.UseVisualStyleBackColor = true;
             // 
             // grLogin
             // 
-            resources.ApplyResources(this.grLogin, "grLogin");
             this.grLogin.Controls.Add(this.btnLogin);
             this.grLogin.Controls.Add(this.lblLogin);
             this.grLogin.Controls.Add(this.lblUsername);
             this.grLogin.Controls.Add(this.txtUsername);
             this.grLogin.Controls.Add(this.txtPassword);
             this.grLogin.Controls.Add(this.lblPassword);
+            resources.ApplyResources(this.grLogin, "grLogin");
             this.grLogin.Name = "grLogin";
             this.grLogin.TabStop = false;
             // 
@@ -187,13 +192,13 @@
             resources.ApplyResources(this.lblPassword, "lblPassword");
             this.lblPassword.Name = "lblPassword";
             // 
-            // groupBox1
+            // grGeneral
             // 
-            resources.ApplyResources(this.groupBox1, "groupBox1");
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.nudOverlayDrawDistance);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.TabStop = false;
+            this.grGeneral.Controls.Add(this.label2);
+            this.grGeneral.Controls.Add(this.nudOverlayDrawDistance);
+            resources.ApplyResources(this.grGeneral, "grGeneral");
+            this.grGeneral.Name = "grGeneral";
+            this.grGeneral.TabStop = false;
             // 
             // label2
             // 
@@ -212,11 +217,11 @@
             // 
             // grCoordinateSystems
             // 
-            resources.ApplyResources(this.grCoordinateSystems, "grCoordinateSystems");
             this.grCoordinateSystems.Controls.Add(this.label1);
             this.grCoordinateSystems.Controls.Add(this.cbRecordingsSRS);
             this.grCoordinateSystems.Controls.Add(this.lblCycloramaSRS);
             this.grCoordinateSystems.Controls.Add(this.cbCycloramaSRS);
+            resources.ApplyResources(this.grCoordinateSystems, "grCoordinateSystems");
             this.grCoordinateSystems.Name = "grCoordinateSystems";
             this.grCoordinateSystems.TabStop = false;
             // 
@@ -248,19 +253,19 @@
             // 
             // tbConfiguration
             // 
-            resources.ApplyResources(this.tbConfiguration, "tbConfiguration");
             this.tbConfiguration.Controls.Add(this.grConfiguration);
             this.tbConfiguration.Controls.Add(this.grProxyServer);
-            this.tbConfiguration.Controls.Add(this.grRecordingService);
+            this.tbConfiguration.Controls.Add(this.grAPI);
+            resources.ApplyResources(this.tbConfiguration, "tbConfiguration");
             this.tbConfiguration.Name = "tbConfiguration";
             this.tbConfiguration.UseVisualStyleBackColor = true;
             // 
             // grConfiguration
             // 
-            resources.ApplyResources(this.grConfiguration, "grConfiguration");
             this.grConfiguration.Controls.Add(this.lblConfiguration);
             this.grConfiguration.Controls.Add(this.chConfiguration);
             this.grConfiguration.Controls.Add(this.txtConfiguration);
+            resources.ApplyResources(this.grConfiguration, "grConfiguration");
             this.grConfiguration.Name = "grConfiguration";
             this.grConfiguration.TabStop = false;
             // 
@@ -282,7 +287,6 @@
             // 
             // grProxyServer
             // 
-            resources.ApplyResources(this.grProxyServer, "grProxyServer");
             this.grProxyServer.Controls.Add(this.lblProxyDomain);
             this.grProxyServer.Controls.Add(this.txtProxyDomain);
             this.grProxyServer.Controls.Add(this.lblProxyPassword);
@@ -296,6 +300,7 @@
             this.grProxyServer.Controls.Add(this.lblProxyAddress);
             this.grProxyServer.Controls.Add(this.ckUseProxyServer);
             this.grProxyServer.Controls.Add(this.txtProxyAddress);
+            resources.ApplyResources(this.grProxyServer, "grProxyServer");
             this.grProxyServer.Name = "grProxyServer";
             this.grProxyServer.TabStop = false;
             // 
@@ -367,51 +372,51 @@
             resources.ApplyResources(this.txtProxyAddress, "txtProxyAddress");
             this.txtProxyAddress.Name = "txtProxyAddress";
             // 
-            // grRecordingService
+            // grAPI
             // 
-            resources.ApplyResources(this.grRecordingService, "grRecordingService");
-            this.grRecordingService.Controls.Add(this.lblRecordingService);
-            this.grRecordingService.Controls.Add(this.ckDefaultRecordingService);
-            this.grRecordingService.Controls.Add(this.txtRecordingService);
-            this.grRecordingService.Name = "grRecordingService";
-            this.grRecordingService.TabStop = false;
+            this.grAPI.Controls.Add(this.lblAPI);
+            this.grAPI.Controls.Add(this.ckDefaultAPI);
+            this.grAPI.Controls.Add(this.txtAPI);
+            resources.ApplyResources(this.grAPI, "grAPI");
+            this.grAPI.Name = "grAPI";
+            this.grAPI.TabStop = false;
             // 
-            // lblRecordingService
+            // lblAPI
             // 
-            resources.ApplyResources(this.lblRecordingService, "lblRecordingService");
-            this.lblRecordingService.Name = "lblRecordingService";
+            resources.ApplyResources(this.lblAPI, "lblAPI");
+            this.lblAPI.Name = "lblAPI";
             // 
-            // ckDefaultRecordingService
+            // ckDefaultAPI
             // 
-            resources.ApplyResources(this.ckDefaultRecordingService, "ckDefaultRecordingService");
-            this.ckDefaultRecordingService.Name = "ckDefaultRecordingService";
-            this.ckDefaultRecordingService.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.ckDefaultAPI, "ckDefaultAPI");
+            this.ckDefaultAPI.Name = "ckDefaultAPI";
+            this.ckDefaultAPI.UseVisualStyleBackColor = true;
             // 
-            // txtRecordingService
+            // txtAPI
             // 
-            resources.ApplyResources(this.txtRecordingService, "txtRecordingService");
-            this.txtRecordingService.Name = "txtRecordingService";
+            resources.ApplyResources(this.txtAPI, "txtAPI");
+            this.txtAPI.Name = "txtAPI";
             // 
             // tbAbout
             // 
-            resources.ApplyResources(this.tbAbout, "tbAbout");
             this.tbAbout.Controls.Add(this.rtbAbout);
+            resources.ApplyResources(this.tbAbout, "tbAbout");
             this.tbAbout.Name = "tbAbout";
             this.tbAbout.UseVisualStyleBackColor = true;
             // 
             // rtbAbout
             // 
-            resources.ApplyResources(this.rtbAbout, "rtbAbout");
             this.rtbAbout.BackColor = System.Drawing.SystemColors.Window;
             this.rtbAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.rtbAbout, "rtbAbout");
             this.rtbAbout.Name = "rtbAbout";
             this.rtbAbout.ReadOnly = true;
             this.rtbAbout.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbAbout_LinkClicked);
             // 
             // tbAgreement
             // 
-            resources.ApplyResources(this.tbAgreement, "tbAgreement");
             this.tbAgreement.Controls.Add(this.txtAgreement);
+            resources.ApplyResources(this.tbAgreement, "tbAgreement");
             this.tbAgreement.Name = "tbAgreement";
             this.tbAgreement.UseVisualStyleBackColor = true;
             // 
@@ -420,6 +425,29 @@
             resources.ApplyResources(this.txtAgreement, "txtAgreement");
             this.txtAgreement.Name = "txtAgreement";
             this.txtAgreement.ReadOnly = true;
+            // 
+            // grLocalization
+            // 
+            this.grLocalization.Controls.Add(this.lblCulture);
+            this.grLocalization.Controls.Add(this.cbCulture);
+            resources.ApplyResources(this.grLocalization, "grLocalization");
+            this.grLocalization.Name = "grLocalization";
+            this.grLocalization.TabStop = false;
+            // 
+            // lblCulture
+            // 
+            resources.ApplyResources(this.lblCulture, "lblCulture");
+            this.lblCulture.Name = "lblCulture";
+            // 
+            // cbCulture
+            // 
+            resources.ApplyResources(this.cbCulture, "cbCulture");
+            this.cbCulture.DisplayMember = "NativeName";
+            this.cbCulture.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbCulture.FormattingEnabled = true;
+            this.cbCulture.Name = "cbCulture";
+            this.cbCulture.Sorted = true;
+            this.cbCulture.ValueMember = "Name";
             // 
             // StreetSmartConfigurationForm
             // 
@@ -440,8 +468,8 @@
             this.tbSettings.ResumeLayout(false);
             this.grLogin.ResumeLayout(false);
             this.grLogin.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.grGeneral.ResumeLayout(false);
+            this.grGeneral.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudOverlayDrawDistance)).EndInit();
             this.grCoordinateSystems.ResumeLayout(false);
             this.grCoordinateSystems.PerformLayout();
@@ -450,11 +478,13 @@
             this.grConfiguration.PerformLayout();
             this.grProxyServer.ResumeLayout(false);
             this.grProxyServer.PerformLayout();
-            this.grRecordingService.ResumeLayout(false);
-            this.grRecordingService.PerformLayout();
+            this.grAPI.ResumeLayout(false);
+            this.grAPI.PerformLayout();
             this.tbAbout.ResumeLayout(false);
             this.tbAgreement.ResumeLayout(false);
             this.tbAgreement.PerformLayout();
+            this.grLocalization.ResumeLayout(false);
+            this.grLocalization.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -485,17 +515,17 @@
         private System.Windows.Forms.Label lblProxyAddress;
         private System.Windows.Forms.CheckBox ckUseProxyServer;
         private System.Windows.Forms.TextBox txtProxyAddress;
-        private System.Windows.Forms.GroupBox grRecordingService;
-        private System.Windows.Forms.Label lblRecordingService;
-        private System.Windows.Forms.CheckBox ckDefaultRecordingService;
-        private System.Windows.Forms.TextBox txtRecordingService;
+        private System.Windows.Forms.GroupBox grAPI;
+        private System.Windows.Forms.Label lblAPI;
+        private System.Windows.Forms.CheckBox ckDefaultAPI;
+        private System.Windows.Forms.TextBox txtAPI;
         private System.Windows.Forms.TabPage tbAbout;
         private System.Windows.Forms.RichTextBox rtbAbout;
         private System.Windows.Forms.TabPage tbAgreement;
         private System.Windows.Forms.TextBox txtAgreement;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cbRecordingsSRS;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grGeneral;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown nudOverlayDrawDistance;
         private System.Windows.Forms.GroupBox grLogin;
@@ -509,5 +539,8 @@
         private System.Windows.Forms.Label lblConfiguration;
         private System.Windows.Forms.CheckBox chConfiguration;
         private System.Windows.Forms.TextBox txtConfiguration;
+        private System.Windows.Forms.GroupBox grLocalization;
+        private System.Windows.Forms.Label lblCulture;
+        private System.Windows.Forms.ComboBox cbCulture;
     }
 }

@@ -126,6 +126,12 @@
   <data name="btnApply.Text" xml:space="preserve">
     <value>Apply*</value>
   </data>
+  <data name="tbSettings.Text" xml:space="preserve">
+    <value>Settings*</value>
+  </data>
+  <data name="grLogin.Text" xml:space="preserve">
+    <value>Credentials*</value>
+  </data>
   <data name="btnLogin.Text" xml:space="preserve">
     <value>Test connection*</value>
   </data>
@@ -142,8 +148,8 @@
   <data name="lblPassword.Text" xml:space="preserve">
     <value>Password*:</value>
   </data>
-  <data name="grLogin.Text" xml:space="preserve">
-    <value>Credentials*</value>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>General*</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
     <value>144, 14</value>
@@ -151,8 +157,8 @@
   <data name="label2.Text" xml:space="preserve">
     <value>Overlay draw distance (m)*:</value>
   </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>General*</value>
+  <data name="grCoordinateSystems.Text" xml:space="preserve">
+    <value>Coordinate systems*</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>96, 14</value>
@@ -166,11 +172,11 @@
   <data name="lblCycloramaSRS.Text" xml:space="preserve">
     <value>Cyclorama viewer*:</value>
   </data>
-  <data name="grCoordinateSystems.Text" xml:space="preserve">
-    <value>Coordinate systems*</value>
+  <data name="tbConfiguration.Text" xml:space="preserve">
+    <value>Configuration*</value>
   </data>
-  <data name="tbSettings.Text" xml:space="preserve">
-    <value>Settings*</value>
+  <data name="grConfiguration.Text" xml:space="preserve">
+    <value>Recording Service URL*</value>
   </data>
   <data name="lblConfiguration.Size" type="System.Drawing.Size, System.Drawing">
     <value>55, 14</value>
@@ -184,8 +190,8 @@
   <data name="chConfiguration.Text" xml:space="preserve">
     <value>Use default*</value>
   </data>
-  <data name="grConfiguration.Text" xml:space="preserve">
-    <value>Recording Service URL*</value>
+  <data name="grProxyServer.Text" xml:space="preserve">
+    <value>Proxy server*</value>
   </data>
   <data name="lblProxyDomain.Size" type="System.Drawing.Size, System.Drawing">
     <value>49, 14</value>
@@ -235,26 +241,20 @@
   <data name="ckUseProxyServer.Text" xml:space="preserve">
     <value>Use a proxy server*</value>
   </data>
-  <data name="grProxyServer.Text" xml:space="preserve">
-    <value>Proxy server*</value>
+  <data name="grAPI.Text" xml:space="preserve">
+    <value>API URL*</value>
   </data>
-  <data name="lblRecordingService.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="lblAPI.Size" type="System.Drawing.Size, System.Drawing">
     <value>55, 14</value>
   </data>
-  <data name="lblRecordingService.Text" xml:space="preserve">
+  <data name="lblAPI.Text" xml:space="preserve">
     <value>Location*:</value>
   </data>
-  <data name="ckDefaultRecordingService.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="ckDefaultAPI.Size" type="System.Drawing.Size, System.Drawing">
     <value>85, 18</value>
   </data>
-  <data name="ckDefaultRecordingService.Text" xml:space="preserve">
+  <data name="ckDefaultAPI.Text" xml:space="preserve">
     <value>Use default*</value>
-  </data>
-  <data name="grRecordingService.Text" xml:space="preserve">
-    <value>Recording Service URL*</value>
-  </data>
-  <data name="tbConfiguration.Text" xml:space="preserve">
-    <value>Configuration*</value>
   </data>
   <data name="tbAbout.Text" xml:space="preserve">
     <value>About*</value>

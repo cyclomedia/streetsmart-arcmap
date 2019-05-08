@@ -51,10 +51,10 @@
             this.lblCycloramaSRS = new System.Windows.Forms.Label();
             this.cbCycloramaSRS = new System.Windows.Forms.ComboBox();
             this.tbConfiguration = new System.Windows.Forms.TabPage();
-            this.grCycloramaVectorLayerLocation = new System.Windows.Forms.GroupBox();
-            this.lblLocationCycloramaVectorLayerLocation = new System.Windows.Forms.Label();
-            this.ckDefaultCycloramaVectorLayerLocation = new System.Windows.Forms.CheckBox();
-            this.txtCycloramaVectorLayerLocation = new System.Windows.Forms.TextBox();
+            this.grConfiguration = new System.Windows.Forms.GroupBox();
+            this.lblConfiguration = new System.Windows.Forms.Label();
+            this.chConfiguration = new System.Windows.Forms.CheckBox();
+            this.txtConfiguration = new System.Windows.Forms.TextBox();
             this.grProxyServer = new System.Windows.Forms.GroupBox();
             this.lblProxyDomain = new System.Windows.Forms.Label();
             this.txtProxyDomain = new System.Windows.Forms.TextBox();
@@ -70,17 +70,9 @@
             this.ckUseProxyServer = new System.Windows.Forms.CheckBox();
             this.txtProxyAddress = new System.Windows.Forms.TextBox();
             this.grRecordingService = new System.Windows.Forms.GroupBox();
-            this.lblLocationRecordingService = new System.Windows.Forms.Label();
+            this.lblRecordingService = new System.Windows.Forms.Label();
             this.ckDefaultRecordingService = new System.Windows.Forms.CheckBox();
-            this.txtRecordingServiceLocation = new System.Windows.Forms.TextBox();
-            this.grBaseUrl = new System.Windows.Forms.GroupBox();
-            this.lblLocationBaseUrl = new System.Windows.Forms.Label();
-            this.ckDefaultBaseUrl = new System.Windows.Forms.CheckBox();
-            this.txtBaseUrlLocation = new System.Windows.Forms.TextBox();
-            this.grSwfUrl = new System.Windows.Forms.GroupBox();
-            this.lblLocationSwfUrl = new System.Windows.Forms.Label();
-            this.ckDefaultSwfUrl = new System.Windows.Forms.CheckBox();
-            this.txtSwfUrlLocation = new System.Windows.Forms.TextBox();
+            this.txtRecordingService = new System.Windows.Forms.TextBox();
             this.tbAbout = new System.Windows.Forms.TabPage();
             this.rtbAbout = new System.Windows.Forms.RichTextBox();
             this.tbAgreement = new System.Windows.Forms.TabPage();
@@ -93,11 +85,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudOverlayDrawDistance)).BeginInit();
             this.grCoordinateSystems.SuspendLayout();
             this.tbConfiguration.SuspendLayout();
-            this.grCycloramaVectorLayerLocation.SuspendLayout();
+            this.grConfiguration.SuspendLayout();
             this.grProxyServer.SuspendLayout();
             this.grRecordingService.SuspendLayout();
-            this.grBaseUrl.SuspendLayout();
-            this.grSwfUrl.SuspendLayout();
             this.tbAbout.SuspendLayout();
             this.tbAgreement.SuspendLayout();
             this.SuspendLayout();
@@ -259,38 +249,36 @@
             // tbConfiguration
             // 
             resources.ApplyResources(this.tbConfiguration, "tbConfiguration");
-            this.tbConfiguration.Controls.Add(this.grCycloramaVectorLayerLocation);
+            this.tbConfiguration.Controls.Add(this.grConfiguration);
             this.tbConfiguration.Controls.Add(this.grProxyServer);
             this.tbConfiguration.Controls.Add(this.grRecordingService);
-            this.tbConfiguration.Controls.Add(this.grBaseUrl);
-            this.tbConfiguration.Controls.Add(this.grSwfUrl);
             this.tbConfiguration.Name = "tbConfiguration";
             this.tbConfiguration.UseVisualStyleBackColor = true;
             // 
-            // grCycloramaVectorLayerLocation
+            // grConfiguration
             // 
-            resources.ApplyResources(this.grCycloramaVectorLayerLocation, "grCycloramaVectorLayerLocation");
-            this.grCycloramaVectorLayerLocation.Controls.Add(this.lblLocationCycloramaVectorLayerLocation);
-            this.grCycloramaVectorLayerLocation.Controls.Add(this.ckDefaultCycloramaVectorLayerLocation);
-            this.grCycloramaVectorLayerLocation.Controls.Add(this.txtCycloramaVectorLayerLocation);
-            this.grCycloramaVectorLayerLocation.Name = "grCycloramaVectorLayerLocation";
-            this.grCycloramaVectorLayerLocation.TabStop = false;
+            resources.ApplyResources(this.grConfiguration, "grConfiguration");
+            this.grConfiguration.Controls.Add(this.lblConfiguration);
+            this.grConfiguration.Controls.Add(this.chConfiguration);
+            this.grConfiguration.Controls.Add(this.txtConfiguration);
+            this.grConfiguration.Name = "grConfiguration";
+            this.grConfiguration.TabStop = false;
             // 
-            // lblLocationCycloramaVectorLayerLocation
+            // lblConfiguration
             // 
-            resources.ApplyResources(this.lblLocationCycloramaVectorLayerLocation, "lblLocationCycloramaVectorLayerLocation");
-            this.lblLocationCycloramaVectorLayerLocation.Name = "lblLocationCycloramaVectorLayerLocation";
+            resources.ApplyResources(this.lblConfiguration, "lblConfiguration");
+            this.lblConfiguration.Name = "lblConfiguration";
             // 
-            // ckDefaultCycloramaVectorLayerLocation
+            // chConfiguration
             // 
-            resources.ApplyResources(this.ckDefaultCycloramaVectorLayerLocation, "ckDefaultCycloramaVectorLayerLocation");
-            this.ckDefaultCycloramaVectorLayerLocation.Name = "ckDefaultCycloramaVectorLayerLocation";
-            this.ckDefaultCycloramaVectorLayerLocation.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.chConfiguration, "chConfiguration");
+            this.chConfiguration.Name = "chConfiguration";
+            this.chConfiguration.UseVisualStyleBackColor = true;
             // 
-            // txtCycloramaVectorLayerLocation
+            // txtConfiguration
             // 
-            resources.ApplyResources(this.txtCycloramaVectorLayerLocation, "txtCycloramaVectorLayerLocation");
-            this.txtCycloramaVectorLayerLocation.Name = "txtCycloramaVectorLayerLocation";
+            resources.ApplyResources(this.txtConfiguration, "txtConfiguration");
+            this.txtConfiguration.Name = "txtConfiguration";
             // 
             // grProxyServer
             // 
@@ -382,16 +370,16 @@
             // grRecordingService
             // 
             resources.ApplyResources(this.grRecordingService, "grRecordingService");
-            this.grRecordingService.Controls.Add(this.lblLocationRecordingService);
+            this.grRecordingService.Controls.Add(this.lblRecordingService);
             this.grRecordingService.Controls.Add(this.ckDefaultRecordingService);
-            this.grRecordingService.Controls.Add(this.txtRecordingServiceLocation);
+            this.grRecordingService.Controls.Add(this.txtRecordingService);
             this.grRecordingService.Name = "grRecordingService";
             this.grRecordingService.TabStop = false;
             // 
-            // lblLocationRecordingService
+            // lblRecordingService
             // 
-            resources.ApplyResources(this.lblLocationRecordingService, "lblLocationRecordingService");
-            this.lblLocationRecordingService.Name = "lblLocationRecordingService";
+            resources.ApplyResources(this.lblRecordingService, "lblRecordingService");
+            this.lblRecordingService.Name = "lblRecordingService";
             // 
             // ckDefaultRecordingService
             // 
@@ -399,60 +387,10 @@
             this.ckDefaultRecordingService.Name = "ckDefaultRecordingService";
             this.ckDefaultRecordingService.UseVisualStyleBackColor = true;
             // 
-            // txtRecordingServiceLocation
+            // txtRecordingService
             // 
-            resources.ApplyResources(this.txtRecordingServiceLocation, "txtRecordingServiceLocation");
-            this.txtRecordingServiceLocation.Name = "txtRecordingServiceLocation";
-            // 
-            // grBaseUrl
-            // 
-            resources.ApplyResources(this.grBaseUrl, "grBaseUrl");
-            this.grBaseUrl.Controls.Add(this.lblLocationBaseUrl);
-            this.grBaseUrl.Controls.Add(this.ckDefaultBaseUrl);
-            this.grBaseUrl.Controls.Add(this.txtBaseUrlLocation);
-            this.grBaseUrl.Name = "grBaseUrl";
-            this.grBaseUrl.TabStop = false;
-            // 
-            // lblLocationBaseUrl
-            // 
-            resources.ApplyResources(this.lblLocationBaseUrl, "lblLocationBaseUrl");
-            this.lblLocationBaseUrl.Name = "lblLocationBaseUrl";
-            // 
-            // ckDefaultBaseUrl
-            // 
-            resources.ApplyResources(this.ckDefaultBaseUrl, "ckDefaultBaseUrl");
-            this.ckDefaultBaseUrl.Name = "ckDefaultBaseUrl";
-            this.ckDefaultBaseUrl.UseVisualStyleBackColor = true;
-            // 
-            // txtBaseUrlLocation
-            // 
-            resources.ApplyResources(this.txtBaseUrlLocation, "txtBaseUrlLocation");
-            this.txtBaseUrlLocation.Name = "txtBaseUrlLocation";
-            // 
-            // grSwfUrl
-            // 
-            resources.ApplyResources(this.grSwfUrl, "grSwfUrl");
-            this.grSwfUrl.Controls.Add(this.lblLocationSwfUrl);
-            this.grSwfUrl.Controls.Add(this.ckDefaultSwfUrl);
-            this.grSwfUrl.Controls.Add(this.txtSwfUrlLocation);
-            this.grSwfUrl.Name = "grSwfUrl";
-            this.grSwfUrl.TabStop = false;
-            // 
-            // lblLocationSwfUrl
-            // 
-            resources.ApplyResources(this.lblLocationSwfUrl, "lblLocationSwfUrl");
-            this.lblLocationSwfUrl.Name = "lblLocationSwfUrl";
-            // 
-            // ckDefaultSwfUrl
-            // 
-            resources.ApplyResources(this.ckDefaultSwfUrl, "ckDefaultSwfUrl");
-            this.ckDefaultSwfUrl.Name = "ckDefaultSwfUrl";
-            this.ckDefaultSwfUrl.UseVisualStyleBackColor = true;
-            // 
-            // txtSwfUrlLocation
-            // 
-            resources.ApplyResources(this.txtSwfUrlLocation, "txtSwfUrlLocation");
-            this.txtSwfUrlLocation.Name = "txtSwfUrlLocation";
+            resources.ApplyResources(this.txtRecordingService, "txtRecordingService");
+            this.txtRecordingService.Name = "txtRecordingService";
             // 
             // tbAbout
             // 
@@ -508,16 +446,12 @@
             this.grCoordinateSystems.ResumeLayout(false);
             this.grCoordinateSystems.PerformLayout();
             this.tbConfiguration.ResumeLayout(false);
-            this.grCycloramaVectorLayerLocation.ResumeLayout(false);
-            this.grCycloramaVectorLayerLocation.PerformLayout();
+            this.grConfiguration.ResumeLayout(false);
+            this.grConfiguration.PerformLayout();
             this.grProxyServer.ResumeLayout(false);
             this.grProxyServer.PerformLayout();
             this.grRecordingService.ResumeLayout(false);
             this.grRecordingService.PerformLayout();
-            this.grBaseUrl.ResumeLayout(false);
-            this.grBaseUrl.PerformLayout();
-            this.grSwfUrl.ResumeLayout(false);
-            this.grSwfUrl.PerformLayout();
             this.tbAbout.ResumeLayout(false);
             this.tbAgreement.ResumeLayout(false);
             this.tbAgreement.PerformLayout();
@@ -537,10 +471,6 @@
         private System.Windows.Forms.Label lblCycloramaSRS;
         private System.Windows.Forms.ComboBox cbCycloramaSRS;
         private System.Windows.Forms.TabPage tbConfiguration;
-        private System.Windows.Forms.GroupBox grCycloramaVectorLayerLocation;
-        private System.Windows.Forms.Label lblLocationCycloramaVectorLayerLocation;
-        private System.Windows.Forms.CheckBox ckDefaultCycloramaVectorLayerLocation;
-        private System.Windows.Forms.TextBox txtCycloramaVectorLayerLocation;
         private System.Windows.Forms.GroupBox grProxyServer;
         private System.Windows.Forms.Label lblProxyDomain;
         private System.Windows.Forms.TextBox txtProxyDomain;
@@ -556,17 +486,9 @@
         private System.Windows.Forms.CheckBox ckUseProxyServer;
         private System.Windows.Forms.TextBox txtProxyAddress;
         private System.Windows.Forms.GroupBox grRecordingService;
-        private System.Windows.Forms.Label lblLocationRecordingService;
+        private System.Windows.Forms.Label lblRecordingService;
         private System.Windows.Forms.CheckBox ckDefaultRecordingService;
-        private System.Windows.Forms.TextBox txtRecordingServiceLocation;
-        private System.Windows.Forms.GroupBox grBaseUrl;
-        private System.Windows.Forms.Label lblLocationBaseUrl;
-        private System.Windows.Forms.CheckBox ckDefaultBaseUrl;
-        private System.Windows.Forms.TextBox txtBaseUrlLocation;
-        private System.Windows.Forms.GroupBox grSwfUrl;
-        private System.Windows.Forms.Label lblLocationSwfUrl;
-        private System.Windows.Forms.CheckBox ckDefaultSwfUrl;
-        private System.Windows.Forms.TextBox txtSwfUrlLocation;
+        private System.Windows.Forms.TextBox txtRecordingService;
         private System.Windows.Forms.TabPage tbAbout;
         private System.Windows.Forms.RichTextBox rtbAbout;
         private System.Windows.Forms.TabPage tbAgreement;
@@ -583,5 +505,9 @@
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Label lblPassword;
+        private System.Windows.Forms.GroupBox grConfiguration;
+        private System.Windows.Forms.Label lblConfiguration;
+        private System.Windows.Forms.CheckBox chConfiguration;
+        private System.Windows.Forms.TextBox txtConfiguration;
     }
 }

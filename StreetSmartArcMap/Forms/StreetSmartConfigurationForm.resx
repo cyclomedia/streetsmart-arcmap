@@ -117,21 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="nudOverlayDrawDistance.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="ckDefaultSwfUrl.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 15</value>
-  </data>
-  <data name="&gt;&gt;grCycloramaVectorLayerLocation.Name" xml:space="preserve">
-    <value>grCycloramaVectorLayerLocation</value>
-  </data>
   <data name="txtProxyAddress.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
   </data>
-  <data name="lblProxyAddress.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 37</value>
+  <data name="&gt;&gt;grCoordinateSystems.Name" xml:space="preserve">
+    <value>grCoordinateSystems</value>
   </data>
-  <data name="tcSettings.Size" type="System.Drawing.Size, System.Drawing">
-    <value>408, 450</value>
+  <data name="lblCycloramaSRS.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="lblPassword.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
@@ -142,54 +140,44 @@
   <data name="&gt;&gt;txtProxyPort.Name" xml:space="preserve">
     <value>txtProxyPort</value>
   </data>
-  <data name="&gt;&gt;cbRecordingsSRS.Parent" xml:space="preserve">
-    <value>grCoordinateSystems</value>
+  <data name="txtPassword.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="nudOverlayDrawDistance.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+  <data name="grConfiguration.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 85</value>
   </data>
-  <data name="&gt;&gt;grCycloramaVectorLayerLocation.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;grBaseUrl.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;txtUsername.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="lblConfiguration.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
   </data>
+  <data name="chConfiguration.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 19</value>
+  </data>
+  <data name="btnOk.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt</value>
+  </data>
   <data name="ckDefaultRecordingService.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="grSwfUrl.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
-  </data>
   <data name="ckUseDefaultProxyCredentials.Location" type="System.Drawing.Point, System.Drawing">
-    <value>33, 83</value>
+    <value>6, 93</value>
   </data>
-  <data name="grBaseUrl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>456, 65</value>
+  <data name="&gt;&gt;tbAgreement.ZOrder" xml:space="preserve">
+    <value>3</value>
   </data>
-  <data name="tbConfiguration.Size" type="System.Drawing.Size, System.Drawing">
-    <value>400, 423</value>
-  </data>
-  <data name="cbRecordingsSRS.Location" type="System.Drawing.Point, System.Drawing">
-    <value>122, 47</value>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
   </data>
   <data name="lblCycloramaSRS.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 22</value>
   </data>
   <data name="lblProxyPort.Size" type="System.Drawing.Size, System.Drawing">
-    <value>79, 20</value>
+    <value>29, 14</value>
   </data>
-  <data name="lblLocationSwfUrl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>79, 20</value>
-  </data>
-  <data name="txtRecordingServiceLocation.Size" type="System.Drawing.Size, System.Drawing">
-    <value>312, 20</value>
+  <data name="tbAbout.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 23</value>
   </data>
   <data name="&gt;&gt;ckBypassProxyOnLocal.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -197,38 +185,29 @@
   <data name="grLogin.TabIndex" type="System.Int32, mscorlib">
     <value>25</value>
   </data>
-  <data name="&gt;&gt;txtBaseUrlLocation.Parent" xml:space="preserve">
-    <value>grBaseUrl</value>
-  </data>
   <data name="txtPassword.PasswordChar" type="System.Char, mscorlib" xml:space="preserve">
     <value>*</value>
   </data>
-  <data name="lblLocationCycloramaVectorLayerLocation.Size" type="System.Drawing.Size, System.Drawing">
-    <value>79, 20</value>
+  <data name="&gt;&gt;txtUsername.ZOrder" xml:space="preserve">
+    <value>3</value>
   </data>
-  <data name="ckBypassProxyOnLocal.TabIndex" type="System.Int32, mscorlib">
-    <value>25</value>
+  <data name="tbAgreement.Text" xml:space="preserve">
+    <value>Agreement</value>
   </data>
   <data name="&gt;&gt;btnOk.Name" xml:space="preserve">
     <value>btnOk</value>
   </data>
-  <data name="lblProxyPort.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
-  </data>
-  <data name="&gt;&gt;grBaseUrl.Name" xml:space="preserve">
-    <value>grBaseUrl</value>
+  <data name="&gt;&gt;ckDefaultRecordingService.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="grRecordingService.Size" type="System.Drawing.Size, System.Drawing">
-    <value>456, 65</value>
-  </data>
-  <data name="&gt;&gt;lblLocationSwfUrl.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>388, 73</value>
   </data>
   <data name="&gt;&gt;cbRecordingsSRS.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="cbRecordingsSRS.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
+  <data name="chConfiguration.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="&gt;&gt;tbAgreement.Name" xml:space="preserve">
     <value>tbAgreement</value>
@@ -239,14 +218,18 @@
   <data name="&gt;&gt;lblProxyDomain.Parent" xml:space="preserve">
     <value>grProxyServer</value>
   </data>
-  <data name="tbAgreement.Text" xml:space="preserve">
-    <value>Agreement</value>
+  <data name="lblConfiguration.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
   </data>
   <data name="txtProxyPort.TabIndex" type="System.Int32, mscorlib">
     <value>23</value>
   </data>
   <data name="plButtons.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 468</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="txtAgreement.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="txtPassword.Location" type="System.Drawing.Point, System.Drawing">
     <value>122, 47</value>
@@ -260,17 +243,11 @@
   <data name="&gt;&gt;btnCancel.Parent" xml:space="preserve">
     <value>plButtons</value>
   </data>
-  <data name="txtPassword.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
-  </data>
   <data name="&gt;&gt;lblProxyPort.Parent" xml:space="preserve">
     <value>grProxyServer</value>
   </data>
   <data name="plButtons.Size" type="System.Drawing.Size, System.Drawing">
     <value>432, 35</value>
-  </data>
-  <data name="lblPassword.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleLeft</value>
   </data>
   <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
@@ -280,9 +257,6 @@
   </data>
   <data name="tcSettings.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
-  </data>
-  <data name="grSwfUrl.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 133</value>
   </data>
   <data name="lblProxyPassword.TabIndex" type="System.Int32, mscorlib">
     <value>30</value>
@@ -299,26 +273,26 @@
   <data name="&gt;&gt;txtPassword.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="txtCycloramaVectorLayerLocation.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
-  </data>
-  <data name="txtProxyPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>87, 20</value>
-  </data>
-  <data name="&gt;&gt;txtPassword.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
   <data name="btnApply.Text" xml:space="preserve">
     <value>Apply</value>
   </data>
-  <data name="ckDefaultCycloramaVectorLayerLocation.Size" type="System.Drawing.Size, System.Drawing">
-    <value>81, 18</value>
+  <data name="&gt;&gt;lblProxyAddress.Name" xml:space="preserve">
+    <value>lblProxyAddress</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Street Smart for ArcMap</value>
+  </data>
+  <data name="tbSettings.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;lblProxyAddress.ZOrder" xml:space="preserve">
     <value>10</value>
   </data>
-  <data name="&gt;&gt;lblPassword.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="lblConfiguration.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="lblProxyPort.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="txtUsername.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -332,41 +306,41 @@
   <data name="&gt;&gt;txtProxyAddress.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;lblLocationSwfUrl.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="txtProxyPort.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
   </data>
   <data name="&gt;&gt;tbConfiguration.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="ckDefaultSwfUrl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>81, 18</value>
-  </data>
-  <data name="&gt;&gt;txtCycloramaVectorLayerLocation.Name" xml:space="preserve">
-    <value>txtCycloramaVectorLayerLocation</value>
-  </data>
-  <data name="&gt;&gt;grCycloramaVectorLayerLocation.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="tbSettings.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
   </data>
   <data name="lblCycloramaSRS.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
   </data>
-  <data name="txtProxyDomain.Location" type="System.Drawing.Point, System.Drawing">
-    <value>82, 129</value>
+  <data name="txtConfiguration.Size" type="System.Drawing.Size, System.Drawing">
+    <value>260, 20</value>
   </data>
-  <data name="txtSwfUrlLocation.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
+  <data name="lblProxyPassword.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="txtProxyDomain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>122, 169</value>
+  </data>
+  <data name="&gt;&gt;txtAgreement.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="lblConfiguration.Text" xml:space="preserve">
+    <value>Location:</value>
   </data>
   <data name="&gt;&gt;txtProxyAddress.ZOrder" xml:space="preserve">
     <value>12</value>
   </data>
-  <data name="lblLocationBaseUrl.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>432, 503</value>
   </data>
-  <data name="&gt;&gt;lblLocationBaseUrl.Name" xml:space="preserve">
-    <value>lblLocationBaseUrl</value>
+  <data name="&gt;&gt;chConfiguration.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="tbConfiguration.Text" xml:space="preserve">
     <value>Configuration</value>
@@ -374,22 +348,18 @@
   <data name="&gt;&gt;cbCycloramaSRS.Parent" xml:space="preserve">
     <value>grCoordinateSystems</value>
   </data>
+  <data name="lblConfiguration.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 46</value>
+  </data>
   <data name="grRecordingService.Text" xml:space="preserve">
-    <value>Recording Service</value>
+    <value>Recording Service URL</value>
   </data>
   <data name="&gt;&gt;tbSettings.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="txtSwfUrlLocation.Size" type="System.Drawing.Size, System.Drawing">
-    <value>312, 20</value>
-  </data>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="txtCycloramaVectorLayerLocation.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="cbCycloramaSRS.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
@@ -405,14 +375,17 @@
   <data name="txtUsername.Location" type="System.Drawing.Point, System.Drawing">
     <value>122, 19</value>
   </data>
-  <data name="txtAgreement.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="&gt;&gt;chConfiguration.Name" xml:space="preserve">
+    <value>chConfiguration</value>
   </data>
   <data name="lblProxyDomain.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
   </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>140, 14</value>
+  <data name="txtRecordingService.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt</value>
+  </data>
+  <data name="cbCycloramaSRS.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
   </data>
   <data name="&gt;&gt;tbAgreement.Parent" xml:space="preserve">
     <value>tcSettings</value>
@@ -429,29 +402,23 @@
   <data name="&gt;&gt;rtbAbout.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="lblProxyUserName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>79, 20</value>
+  <data name="ckUseProxyServer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 18</value>
   </data>
-  <data name="grSwfUrl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>456, 65</value>
+  <data name="lblProxyUserName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 14</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="txtProxyPort.Size" type="System.Drawing.Size, System.Drawing">
-    <value>87, 20</value>
+    <value>59, 20</value>
   </data>
-  <data name="txtAgreement.Multiline" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="txtRecordingService.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
   </data>
-  <data name="&gt;&gt;txtUsername.Name" xml:space="preserve">
-    <value>txtUsername</value>
-  </data>
-  <data name="lblLocationCycloramaVectorLayerLocation.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
-  </data>
-  <data name="&gt;&gt;grCycloramaVectorLayerLocation.Parent" xml:space="preserve">
-    <value>tbConfiguration</value>
+  <data name="&gt;&gt;nudOverlayDrawDistance.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;lblProxyPort.ZOrder" xml:space="preserve">
     <value>8</value>
@@ -460,24 +427,18 @@
     <value>6, 50</value>
   </data>
   <data name="txtProxyAddress.Location" type="System.Drawing.Point, System.Drawing">
-    <value>82, 37</value>
+    <value>122, 43</value>
   </data>
-  <data name="lblLocationSwfUrl.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 37</value>
-  </data>
-  <data name="grSwfUrl.Text" xml:space="preserve">
-    <value>swf</value>
-  </data>
-  <data name="ckDefaultBaseUrl.AutoSize" type="System.Boolean, mscorlib">
+  <data name="lblRecordingService.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="&gt;&gt;grConfiguration.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="tbAbout.Text" xml:space="preserve">
     <value>About</value>
   </data>
-  <data name="&gt;&gt;txtProxyDomain.Name" xml:space="preserve">
-    <value>txtProxyDomain</value>
-  </data>
-  <data name="txtRecordingServiceLocation.Font" type="System.Drawing.Font, System.Drawing">
+  <data name="lblRecordingService.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
   </data>
   <data name="&gt;&gt;lblProxyUserName.Type" xml:space="preserve">
@@ -486,11 +447,11 @@
   <data name="tbAgreement.Size" type="System.Drawing.Size, System.Drawing">
     <value>400, 423</value>
   </data>
-  <data name="txtRecordingServiceLocation.Location" type="System.Drawing.Point, System.Drawing">
-    <value>82, 37</value>
+  <data name="&gt;&gt;txtRecordingService.Name" xml:space="preserve">
+    <value>txtRecordingService</value>
   </data>
   <data name="lblProxyDomain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>79, 20</value>
+    <value>45, 14</value>
   </data>
   <data name="txtPassword.Size" type="System.Drawing.Size, System.Drawing">
     <value>260, 20</value>
@@ -504,17 +465,14 @@
   <data name="ckUseDefaultProxyCredentials.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;lblLocationRecordingService.Name" xml:space="preserve">
-    <value>lblLocationRecordingService</value>
+  <data name="&gt;&gt;txtUsername.Parent" xml:space="preserve">
+    <value>grLogin</value>
   </data>
-  <data name="cbCycloramaSRS.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
+  <data name="txtConfiguration.Location" type="System.Drawing.Point, System.Drawing">
+    <value>122, 43</value>
   </data>
-  <data name="&gt;&gt;ckDefaultSwfUrl.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
-    <value>183, 5</value>
+  <data name="grConfiguration.Text" xml:space="preserve">
+    <value>Recording Service URL</value>
   </data>
   <data name="&gt;&gt;grLogin.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -525,26 +483,29 @@
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="lblRecordingService.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
   <data name="&gt;&gt;btnLogin.Parent" xml:space="preserve">
     <value>grLogin</value>
   </data>
-  <data name="&gt;&gt;txtUsername.ZOrder" xml:space="preserve">
-    <value>3</value>
+  <data name="&gt;&gt;lblRecordingService.Parent" xml:space="preserve">
+    <value>grRecordingService</value>
   </data>
-  <data name="&gt;&gt;txtCycloramaVectorLayerLocation.Parent" xml:space="preserve">
-    <value>grCycloramaVectorLayerLocation</value>
+  <data name="lblConfiguration.Size" type="System.Drawing.Size, System.Drawing">
+    <value>51, 14</value>
+  </data>
+  <data name="lblRecordingService.Text" xml:space="preserve">
+    <value>Location:</value>
   </data>
   <data name="cbCycloramaSRS.Size" type="System.Drawing.Size, System.Drawing">
     <value>260, 22</value>
   </data>
-  <data name="&gt;&gt;ckDefaultCycloramaVectorLayerLocation.Name" xml:space="preserve">
-    <value>ckDefaultCycloramaVectorLayerLocation</value>
+  <data name="txtAgreement.Size" type="System.Drawing.Size, System.Drawing">
+    <value>394, 417</value>
   </data>
   <data name="btnApply.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
-  </data>
-  <data name="&gt;&gt;lblLocationCycloramaVectorLayerLocation.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="&gt;&gt;lblUsername.Name" xml:space="preserve">
     <value>lblUsername</value>
@@ -552,17 +513,14 @@
   <data name="&gt;&gt;grProxyServer.Parent" xml:space="preserve">
     <value>tbConfiguration</value>
   </data>
-  <data name="lblLocationSwfUrl.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
+  <data name="&gt;&gt;rtbAbout.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RichTextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;lblProxyPort.Name" xml:space="preserve">
     <value>lblProxyPort</value>
   </data>
-  <data name="&gt;&gt;nudOverlayDrawDistance.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="lblLocationCycloramaVectorLayerLocation.Text" xml:space="preserve">
-    <value>Location:</value>
+  <data name="&gt;&gt;btnCancel.Name" xml:space="preserve">
+    <value>btnCancel</value>
   </data>
   <data name="tbAgreement.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -573,38 +531,38 @@
   <data name="txtProxyPassword.PasswordChar" type="System.Char, mscorlib" xml:space="preserve">
     <value>*</value>
   </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="grBaseUrl.TabIndex" type="System.Int32, mscorlib">
-    <value>23</value>
-  </data>
-  <data name="&gt;&gt;lblLocationSwfUrl.Parent" xml:space="preserve">
-    <value>grSwfUrl</value>
+  <data name="&gt;&gt;grCoordinateSystems.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="cbRecordingsSRS.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
-  <data name="&gt;&gt;grBaseUrl.Parent" xml:space="preserve">
-    <value>tbConfiguration</value>
-  </data>
   <data name="lblProxyPort.TabIndex" type="System.Int32, mscorlib">
     <value>24</value>
+  </data>
+  <data name="lblProxyUserName.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="grCoordinateSystems.TabIndex" type="System.Int32, mscorlib">
     <value>21</value>
   </data>
   <data name="lblProxyUserName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 105</value>
+    <value>6, 120</value>
+  </data>
+  <data name="&gt;&gt;txtConfiguration.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="&gt;&gt;nudOverlayDrawDistance.Name" xml:space="preserve">
     <value>nudOverlayDrawDistance</value>
   </data>
-  <data name="lblLocationRecordingService.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
+  <data name="&gt;&gt;txtConfiguration.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="lblProxyAddress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>79, 20</value>
+  <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="lblRecordingService.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
   </data>
   <data name="lblUsername.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -618,14 +576,20 @@
   <data name="lblProxyPassword.Text" xml:space="preserve">
     <value>Password:</value>
   </data>
-  <data name="lblProxyUserName.Text" xml:space="preserve">
-    <value>Username:</value>
+  <data name="tbConfiguration.Size" type="System.Drawing.Size, System.Drawing">
+    <value>400, 423</value>
+  </data>
+  <data name="&gt;&gt;lblRecordingService.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="lblProxyPort.Location" type="System.Drawing.Point, System.Drawing">
-    <value>228, 37</value>
+    <value>282, 46</value>
   </data>
   <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtRecordingService.Size" type="System.Drawing.Size, System.Drawing">
+    <value>260, 20</value>
   </data>
   <data name="&gt;&gt;lblProxyPort.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -639,35 +603,29 @@
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>92, 14</value>
   </data>
+  <data name="txtAgreement.Multiline" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="&gt;&gt;plButtons.Parent" xml:space="preserve">
     <value>$this</value>
-  </data>
-  <data name="lblLocationCycloramaVectorLayerLocation.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
   </data>
   <data name="&gt;&gt;ckUseProxyServer.Parent" xml:space="preserve">
     <value>grProxyServer</value>
   </data>
+  <data name="&gt;&gt;txtRecordingService.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="rtbAbout.Text" xml:space="preserve">
     <value />
   </data>
-  <data name="lblLocationSwfUrl.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
+  <data name="&gt;&gt;tbAbout.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="btnOk.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 25</value>
-  </data>
-  <data name="&gt;&gt;lblLocationBaseUrl.Type" xml:space="preserve">
+  <data name="&gt;&gt;lblProxyAddress.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;lblPassword.Name" xml:space="preserve">
-    <value>lblPassword</value>
-  </data>
-  <data name="ckDefaultSwfUrl.Text" xml:space="preserve">
-    <value>Use default</value>
-  </data>
-  <data name="&gt;&gt;ckDefaultCycloramaVectorLayerLocation.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;grLogin.Parent" xml:space="preserve">
+    <value>tbSettings</value>
   </data>
   <data name="&gt;&gt;ckBypassProxyOnLocal.Name" xml:space="preserve">
     <value>ckBypassProxyOnLocal</value>
@@ -681,8 +639,8 @@
   <data name="&gt;&gt;lblLogin.Name" xml:space="preserve">
     <value>lblLogin</value>
   </data>
-  <data name="&gt;&gt;lblLocationRecordingService.Parent" xml:space="preserve">
-    <value>grRecordingService</value>
+  <data name="&gt;&gt;btnOk.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="&gt;&gt;txtProxyPassword.Parent" xml:space="preserve">
     <value>grProxyServer</value>
@@ -705,17 +663,14 @@
   <data name="&gt;&gt;grLogin.Name" xml:space="preserve">
     <value>grLogin</value>
   </data>
-  <data name="lblLocationRecordingService.Text" xml:space="preserve">
-    <value>Location:</value>
+  <data name="&gt;&gt;lblRecordingService.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="ckDefaultBaseUrl.Text" xml:space="preserve">
-    <value>Use default</value>
+  <data name="nudOverlayDrawDistance.Size" type="System.Drawing.Size, System.Drawing">
+    <value>57, 20</value>
   </data>
-  <data name="&gt;&gt;txtRecordingServiceLocation.Name" xml:space="preserve">
-    <value>txtRecordingServiceLocation</value>
-  </data>
-  <data name="ckUseProxyServer.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 15</value>
+  <data name="lblProxyAddress.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>Recordings layer:</value>
@@ -741,9 +696,6 @@
   <data name="rtbAbout.Size" type="System.Drawing.Size, System.Drawing">
     <value>394, 70</value>
   </data>
-  <data name="&gt;&gt;grCoordinateSystems.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 208</value>
   </data>
@@ -756,26 +708,20 @@
   <data name="lblLogin.Location" type="System.Drawing.Point, System.Drawing">
     <value>228, 77</value>
   </data>
-  <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 25</value>
-  </data>
   <data name="&gt;&gt;lblLogin.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;ckDefaultSwfUrl.Parent" xml:space="preserve">
-    <value>grSwfUrl</value>
-  </data>
-  <data name="btnLogin.Text" xml:space="preserve">
-    <value>Test connection</value>
-  </data>
-  <data name="tbSettings.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
+  <data name="&gt;&gt;chConfiguration.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;txtProxyDomain.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="grBaseUrl.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="tcSettings.Size" type="System.Drawing.Size, System.Drawing">
+    <value>408, 450</value>
+  </data>
+  <data name="&gt;&gt;lblCycloramaSRS.Name" xml:space="preserve">
+    <value>lblCycloramaSRS</value>
   </data>
   <data name="&gt;&gt;tbSettings.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -784,40 +730,37 @@
     <value>2</value>
   </data>
   <data name="ckDefaultRecordingService.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 15</value>
-  </data>
-  <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="lblProxyPassword.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
+    <value>6, 19</value>
   </data>
   <data name="&gt;&gt;grCoordinateSystems.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="ckDefaultCycloramaVectorLayerLocation.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="grLogin.Text" xml:space="preserve">
     <value>Credentials</value>
   </data>
-  <data name="ckUseProxyServer.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="&gt;&gt;txtRecordingService.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbRecordingsSRS.Location" type="System.Drawing.Point, System.Drawing">
+    <value>122, 47</value>
+  </data>
+  <data name="&gt;&gt;lblPassword.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label2.Name" xml:space="preserve">
     <value>label2</value>
   </data>
-  <data name="lblLocationBaseUrl.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
+  <data name="cbRecordingsSRS.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
   </data>
-  <data name="lblLocationCycloramaVectorLayerLocation.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
+  <data name="lblConfiguration.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
   </data>
   <data name="lblPassword.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;ckDefaultRecordingService.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="lblProxyDomain.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="txtProxyPassword.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
@@ -825,53 +768,41 @@
   <data name="lblProxyDomain.Text" xml:space="preserve">
     <value>Domain:</value>
   </data>
-  <data name="&gt;&gt;txtAgreement.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="ckDefaultBaseUrl.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="chConfiguration.Size" type="System.Drawing.Size, System.Drawing">
     <value>81, 18</value>
   </data>
   <data name="lblProxyDomain.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 129</value>
+    <value>6, 172</value>
   </data>
   <data name="grProxyServer.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 263</value>
+    <value>6, 164</value>
   </data>
-  <data name="&gt;&gt;tbAbout.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="lblPassword.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
   </data>
-  <data name="&gt;&gt;txtCycloramaVectorLayerLocation.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="rtbAbout.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
   </data>
-  <data name="grCoordinateSystems.Text" xml:space="preserve">
-    <value>Coordinate systems</value>
+  <data name="tbSettings.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 23</value>
   </data>
-  <data name="lblLocationBaseUrl.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
+  <data name="&gt;&gt;grConfiguration.Parent" xml:space="preserve">
+    <value>tbConfiguration</value>
   </data>
-  <data name="&gt;&gt;grBaseUrl.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;tbSettings.Parent" xml:space="preserve">
+    <value>tcSettings</value>
   </data>
-  <data name="lblLocationSwfUrl.Text" xml:space="preserve">
-    <value>Location:</value>
+  <data name="lblRecordingService.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 46</value>
   </data>
   <data name="&gt;&gt;rtbAbout.Parent" xml:space="preserve">
     <value>tbAbout</value>
-  </data>
-  <data name="lblLocationRecordingService.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Overlay draw distance (m):</value>
   </data>
   <data name="tcSettings.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 12</value>
-  </data>
-  <data name="ckDefaultSwfUrl.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="&gt;&gt;ckDefaultBaseUrl.ZOrder" xml:space="preserve">
-    <value>1</value>
   </data>
   <data name="grCoordinateSystems.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 120</value>
@@ -880,7 +811,7 @@
     <value>162, 19</value>
   </data>
   <data name="lblProxyPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>79, 20</value>
+    <value>60, 14</value>
   </data>
   <data name="&gt;&gt;lblProxyUserName.Name" xml:space="preserve">
     <value>lblProxyUserName</value>
@@ -891,41 +822,41 @@
   <data name="cbRecordingsSRS.Size" type="System.Drawing.Size, System.Drawing">
     <value>260, 22</value>
   </data>
-  <data name="lblProxyDomain.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
+  <data name="ckBypassProxyOnLocal.Text" xml:space="preserve">
+    <value>Bypass proxy server for local addresses</value>
+  </data>
+  <data name="&gt;&gt;grConfiguration.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;txtAgreement.Name" xml:space="preserve">
+    <value>txtAgreement</value>
   </data>
   <data name="lblProxyAddress.Text" xml:space="preserve">
     <value>Address:</value>
   </data>
-  <data name="&gt;&gt;txtBaseUrlLocation.Name" xml:space="preserve">
-    <value>txtBaseUrlLocation</value>
-  </data>
-  <data name="&gt;&gt;txtSwfUrlLocation.Name" xml:space="preserve">
-    <value>txtSwfUrlLocation</value>
-  </data>
   <data name="label1.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;txtConfiguration.Name" xml:space="preserve">
+    <value>txtConfiguration</value>
   </data>
   <data name="&gt;&gt;lblProxyUserName.Parent" xml:space="preserve">
     <value>grProxyServer</value>
   </data>
-  <data name="grBaseUrl.Text" xml:space="preserve">
-    <value>Base url</value>
+  <data name="&gt;&gt;txtProxyUsername.Parent" xml:space="preserve">
+    <value>grProxyServer</value>
   </data>
-  <data name="&gt;&gt;ckDefaultBaseUrl.Parent" xml:space="preserve">
-    <value>grBaseUrl</value>
-  </data>
-  <data name="txtProxyDomain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>145, 20</value>
-  </data>
-  <data name="&gt;&gt;nudOverlayDrawDistance.Type" xml:space="preserve">
-    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="btnLogin.Text" xml:space="preserve">
+    <value>Test connection</value>
   </data>
   <data name="&gt;&gt;btnApply.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;txtBaseUrlLocation.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="&gt;&gt;lblRecordingService.Name" xml:space="preserve">
+    <value>lblRecordingService</value>
+  </data>
+  <data name="lblRecordingService.Size" type="System.Drawing.Size, System.Drawing">
+    <value>51, 14</value>
   </data>
   <data name="&gt;&gt;txtProxyAddress.Parent" xml:space="preserve">
     <value>grProxyServer</value>
@@ -933,29 +864,23 @@
   <data name="ckDefaultRecordingService.TabIndex" type="System.Int32, mscorlib">
     <value>20</value>
   </data>
-  <data name="grCycloramaVectorLayerLocation.TabIndex" type="System.Int32, mscorlib">
-    <value>26</value>
-  </data>
   <data name="grProxyServer.Text" xml:space="preserve">
     <value>Proxy server</value>
   </data>
   <data name="lblCycloramaSRS.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleRight</value>
   </data>
-  <data name="&gt;&gt;lblLocationCycloramaVectorLayerLocation.Type" xml:space="preserve">
+  <data name="txtProxyAddress.Size" type="System.Drawing.Size, System.Drawing">
+    <value>154, 20</value>
+  </data>
+  <data name="lblProxyAddress.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 46</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="txtProxyAddress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>145, 20</value>
-  </data>
-  <data name="lblProxyUserName.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
-  </data>
-  <data name="grCycloramaVectorLayerLocation.Size" type="System.Drawing.Size, System.Drawing">
-    <value>456, 65</value>
-  </data>
-  <data name="txtAgreement.Size" type="System.Drawing.Size, System.Drawing">
-    <value>394, 417</value>
+  <data name="lblProxyPassword.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt</value>
   </data>
   <data name="tbSettings.Size" type="System.Drawing.Size, System.Drawing">
     <value>400, 423</value>
@@ -963,44 +888,35 @@
   <data name="grCoordinateSystems.Size" type="System.Drawing.Size, System.Drawing">
     <value>388, 82</value>
   </data>
-  <data name="&gt;&gt;txtSwfUrlLocation.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="&gt;&gt;tbConfiguration.Name" xml:space="preserve">
     <value>tbConfiguration</value>
-  </data>
-  <data name="&gt;&gt;lblLocationCycloramaVectorLayerLocation.Name" xml:space="preserve">
-    <value>lblLocationCycloramaVectorLayerLocation</value>
   </data>
   <data name="&gt;&gt;lblLogin.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="txtBaseUrlLocation.Size" type="System.Drawing.Size, System.Drawing">
-    <value>312, 20</value>
-  </data>
   <data name="ckBypassProxyOnLocal.Location" type="System.Drawing.Point, System.Drawing">
-    <value>33, 61</value>
+    <value>6, 69</value>
   </data>
   <data name="lblProxyAddress.TabIndex" type="System.Int32, mscorlib">
     <value>22</value>
   </data>
-  <data name="&gt;&gt;tbSettings.Name" xml:space="preserve">
-    <value>tbSettings</value>
-  </data>
-  <data name="&gt;&gt;btnApply.Parent" xml:space="preserve">
-    <value>plButtons</value>
+  <data name="ckUseProxyServer.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 19</value>
   </data>
   <data name="&gt;&gt;lblProxyPassword.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;txtProxyUsername.Parent" xml:space="preserve">
-    <value>grProxyServer</value>
+  <data name="ckUseProxyServer.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="tbAbout.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
   </data>
   <data name="&gt;&gt;plButtons.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="ckBypassProxyOnLocal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>226, 18</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 50</value>
@@ -1008,14 +924,11 @@
   <data name="&gt;&gt;cbCycloramaSRS.Name" xml:space="preserve">
     <value>cbCycloramaSRS</value>
   </data>
-  <data name="&gt;&gt;lblCycloramaSRS.Name" xml:space="preserve">
-    <value>lblCycloramaSRS</value>
+  <data name="txtProxyPassword.TabIndex" type="System.Int32, mscorlib">
+    <value>29</value>
   </data>
   <data name="&gt;&gt;tbAgreement.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;ckDefaultCycloramaVectorLayerLocation.Parent" xml:space="preserve">
-    <value>grCycloramaVectorLayerLocation</value>
   </data>
   <data name="&gt;&gt;txtProxyPassword.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1029,11 +942,8 @@
   <data name="lblLogin.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
   </data>
-  <data name="tbSettings.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;ckDefaultCycloramaVectorLayerLocation.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="&gt;&gt;btnApply.Parent" xml:space="preserve">
+    <value>plButtons</value>
   </data>
   <data name="&gt;&gt;txtProxyDomain.Parent" xml:space="preserve">
     <value>grProxyServer</value>
@@ -1053,26 +963,20 @@
   <data name="&gt;&gt;ckUseDefaultProxyCredentials.Parent" xml:space="preserve">
     <value>grProxyServer</value>
   </data>
-  <data name="ckBypassProxyOnLocal.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="&gt;&gt;ckDefaultBaseUrl.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="txtProxyDomain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>260, 20</value>
   </data>
   <data name="&gt;&gt;label2.Parent" xml:space="preserve">
     <value>groupBox1</value>
   </data>
-  <data name="&gt;&gt;txtCycloramaVectorLayerLocation.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="ckUseProxyServer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 18</value>
+  <data name="&gt;&gt;chConfiguration.Parent" xml:space="preserve">
+    <value>grConfiguration</value>
   </data>
   <data name="&gt;&gt;lblCycloramaSRS.Parent" xml:space="preserve">
     <value>grCoordinateSystems</value>
   </data>
-  <data name="&gt;&gt;ckDefaultSwfUrl.Name" xml:space="preserve">
-    <value>ckDefaultSwfUrl</value>
+  <data name="&gt;&gt;lblProxyDomain.Name" xml:space="preserve">
+    <value>lblProxyDomain</value>
   </data>
   <data name="&gt;&gt;lblUsername.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -1083,47 +987,26 @@
   <data name="&gt;&gt;rtbAbout.Name" xml:space="preserve">
     <value>rtbAbout</value>
   </data>
-  <data name="lblLocationRecordingService.Size" type="System.Drawing.Size, System.Drawing">
-    <value>79, 20</value>
-  </data>
-  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
-  </data>
   <data name="lblProxyPort.Text" xml:space="preserve">
     <value>Port:</value>
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>General</value>
   </data>
-  <data name="&gt;&gt;nudOverlayDrawDistance.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="btnOk.Text" xml:space="preserve">
     <value>OK</value>
   </data>
-  <data name="&gt;&gt;grCoordinateSystems.Parent" xml:space="preserve">
-    <value>tbSettings</value>
+  <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
   </data>
-  <data name="&gt;&gt;tbAgreement.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="tbAbout.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;txtBaseUrlLocation.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="txtProxyPort.Location" type="System.Drawing.Point, System.Drawing">
+    <value>323, 43</value>
   </data>
   <data name="&gt;&gt;lblProxyAddress.Parent" xml:space="preserve">
     <value>grProxyServer</value>
   </data>
   <data name="&gt;&gt;txtPassword.Name" xml:space="preserve">
     <value>txtPassword</value>
-  </data>
-  <data name="txtBaseUrlLocation.Location" type="System.Drawing.Point, System.Drawing">
-    <value>82, 37</value>
-  </data>
-  <data name="ckBypassProxyOnLocal.Text" xml:space="preserve">
-    <value>Bypass proxy server for local addresses</value>
   </data>
   <data name="&gt;&gt;btnLogin.Name" xml:space="preserve">
     <value>btnLogin</value>
@@ -1134,11 +1017,8 @@
   <data name="&gt;&gt;ckUseDefaultProxyCredentials.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>264, 5</value>
-  </data>
-  <data name="txtCycloramaVectorLayerLocation.Location" type="System.Drawing.Point, System.Drawing">
-    <value>82, 37</value>
+  <data name="lblProxyAddress.Size" type="System.Drawing.Size, System.Drawing">
+    <value>52, 14</value>
   </data>
   <data name="&gt;&gt;ckBypassProxyOnLocal.Parent" xml:space="preserve">
     <value>grProxyServer</value>
@@ -1149,11 +1029,11 @@
   <data name="btnApply.Location" type="System.Drawing.Point, System.Drawing">
     <value>345, 5</value>
   </data>
-  <data name="ckDefaultBaseUrl.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
+  <data name="lblConfiguration.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt</value>
   </data>
-  <data name="tbSettings.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 23</value>
+  <data name="&gt;&gt;lblConfiguration.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="lblPassword.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -1164,20 +1044,26 @@
   <data name="&gt;&gt;txtAgreement.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="txtProxyPassword.TabIndex" type="System.Int32, mscorlib">
-    <value>29</value>
+  <data name="txtConfiguration.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt</value>
   </data>
-  <data name="lblCycloramaSRS.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="&gt;&gt;tbConfiguration.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
-  <data name="txtSwfUrlLocation.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
+  <data name="txtProxyUsername.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt</value>
   </data>
-  <data name="txtProxyPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>307, 105</value>
+  <data name="&gt;&gt;txtUsername.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>140, 14</value>
+  </data>
+  <data name="&gt;&gt;cbRecordingsSRS.Parent" xml:space="preserve">
+    <value>grCoordinateSystems</value>
   </data>
   <data name="grProxyServer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>456, 157</value>
+    <value>388, 205</value>
   </data>
   <data name="txtPassword.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -1197,14 +1083,11 @@
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="tbSettings.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
-  </data>
   <data name="&gt;&gt;btnOk.Parent" xml:space="preserve">
     <value>plButtons</value>
   </data>
   <data name="grRecordingService.TabIndex" type="System.Int32, mscorlib">
-    <value>24</value>
+    <value>23</value>
   </data>
   <data name="&gt;&gt;lblLogin.Parent" xml:space="preserve">
     <value>grLogin</value>
@@ -1212,23 +1095,20 @@
   <data name="&gt;&gt;tbAbout.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="txtBaseUrlLocation.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
-  </data>
   <data name="grRecordingService.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 68</value>
+    <value>6, 6</value>
   </data>
-  <data name="&gt;&gt;grLogin.Parent" xml:space="preserve">
-    <value>tbSettings</value>
+  <data name="txtUsername.Size" type="System.Drawing.Size, System.Drawing">
+    <value>260, 20</value>
   </data>
   <data name="&gt;&gt;ckBypassProxyOnLocal.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
-  <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
+  <data name="&gt;&gt;nudOverlayDrawDistance.Parent" xml:space="preserve">
+    <value>groupBox1</value>
   </data>
-  <data name="txtProxyUsername.Location" type="System.Drawing.Point, System.Drawing">
-    <value>82, 105</value>
+  <data name="lblProxyUserName.Text" xml:space="preserve">
+    <value>Username:</value>
   </data>
   <data name="grLogin.Size" type="System.Drawing.Size, System.Drawing">
     <value>388, 108</value>
@@ -1242,8 +1122,8 @@
   <data name="&gt;&gt;lblPassword.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
-  <data name="&gt;&gt;lblLocationRecordingService.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;txtRecordingService.Parent" xml:space="preserve">
+    <value>grRecordingService</value>
   </data>
   <data name="&gt;&gt;tcSettings.Parent" xml:space="preserve">
     <value>$this</value>
@@ -1252,10 +1132,10 @@
     <value>Password:</value>
   </data>
   <data name="lblProxyPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>228, 105</value>
+    <value>6, 146</value>
   </data>
-  <data name="ckDefaultSwfUrl.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
+  <data name="txtConfiguration.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
   </data>
   <data name="btnCancel.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
@@ -1263,17 +1143,14 @@
   <data name="&gt;&gt;grProxyServer.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="lblLocationBaseUrl.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 37</value>
+  <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 25</value>
   </data>
-  <data name="&gt;&gt;txtRecordingServiceLocation.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="txtProxyUsername.Location" type="System.Drawing.Point, System.Drawing">
+    <value>122, 117</value>
   </data>
   <data name="&gt;&gt;tbAbout.Name" xml:space="preserve">
     <value>tbAbout</value>
-  </data>
-  <data name="ckDefaultCycloramaVectorLayerLocation.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 15</value>
   </data>
   <data name="&gt;&gt;txtProxyPort.Parent" xml:space="preserve">
     <value>grProxyServer</value>
@@ -1281,41 +1158,38 @@
   <data name="lblLogin.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="txtSwfUrlLocation.Location" type="System.Drawing.Point, System.Drawing">
-    <value>82, 37</value>
-  </data>
   <data name="lblProxyAddress.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
   </data>
-  <data name="&gt;&gt;grCoordinateSystems.Name" xml:space="preserve">
-    <value>grCoordinateSystems</value>
+  <data name="chConfiguration.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
-  <data name="ckDefaultCycloramaVectorLayerLocation.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
+  <data name="btnOk.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 25</value>
   </data>
-  <data name="&gt;&gt;txtRecordingServiceLocation.Parent" xml:space="preserve">
-    <value>grRecordingService</value>
+  <data name="txtAgreement.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
   </data>
   <data name="&gt;&gt;ckUseProxyServer.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;ckUseDefaultProxyCredentials.ZOrder" xml:space="preserve">
-    <value>6</value>
+  <data name="&gt;&gt;tcSettings.Name" xml:space="preserve">
+    <value>tcSettings</value>
   </data>
   <data name="&gt;&gt;btnApply.Name" xml:space="preserve">
     <value>btnApply</value>
   </data>
-  <data name="&gt;&gt;btnCancel.Name" xml:space="preserve">
-    <value>btnCancel</value>
+  <data name="&gt;&gt;ckUseDefaultProxyCredentials.ZOrder" xml:space="preserve">
+    <value>6</value>
   </data>
   <data name="btnLogin.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
   </data>
-  <data name="btnOk.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
+  <data name="&gt;&gt;txtProxyDomain.Name" xml:space="preserve">
+    <value>txtProxyDomain</value>
   </data>
-  <data name="&gt;&gt;grSwfUrl.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="tbSettings.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt</value>
   </data>
   <data name="cbCycloramaSRS.Location" type="System.Drawing.Point, System.Drawing">
     <value>122, 19</value>
@@ -1326,26 +1200,14 @@
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="txtAgreement.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Bottom, Left, Right</value>
+  <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>264, 5</value>
   </data>
-  <data name="lblProxyPassword.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
-  </data>
-  <data name="ckDefaultBaseUrl.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 15</value>
-  </data>
-  <data name="lblProxyAddress.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
+  <data name="grCoordinateSystems.Text" xml:space="preserve">
+    <value>Coordinate systems</value>
   </data>
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>21</value>
-  </data>
-  <data name="txtCycloramaVectorLayerLocation.Size" type="System.Drawing.Size, System.Drawing">
-    <value>312, 20</value>
-  </data>
-  <data name="txtUsername.Size" type="System.Drawing.Size, System.Drawing">
-    <value>260, 20</value>
   </data>
   <data name="&gt;&gt;txtProxyUsername.Name" xml:space="preserve">
     <value>txtProxyUsername</value>
@@ -1353,20 +1215,26 @@
   <data name="plButtons.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Bottom</value>
   </data>
+  <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
+    <value>183, 5</value>
+  </data>
   <data name="&gt;&gt;cbRecordingsSRS.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnLogin.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;lblProxyAddress.Name" xml:space="preserve">
-    <value>lblProxyAddress</value>
+  <data name="grConfiguration.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
+  </data>
+  <data name="&gt;&gt;lblConfiguration.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;grConfiguration.Name" xml:space="preserve">
+    <value>grConfiguration</value>
   </data>
   <data name="grProxyServer.TabIndex" type="System.Int32, mscorlib">
     <value>25</value>
-  </data>
-  <data name="&gt;&gt;txtUsername.Parent" xml:space="preserve">
-    <value>grLogin</value>
   </data>
   <data name="&gt;&gt;lblProxyPassword.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -1374,23 +1242,20 @@
   <data name="txtAgreement.ScrollBars" type="System.Windows.Forms.ScrollBars, System.Windows.Forms">
     <value>Both</value>
   </data>
-  <data name="txtRecordingServiceLocation.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
+  <data name="&gt;&gt;btnApply.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
-  <data name="&gt;&gt;lblLocationCycloramaVectorLayerLocation.Parent" xml:space="preserve">
-    <value>grCycloramaVectorLayerLocation</value>
+  <data name="chConfiguration.Text" xml:space="preserve">
+    <value>Use default</value>
   </data>
   <data name="&gt;&gt;grProxyServer.Name" xml:space="preserve">
     <value>grProxyServer</value>
   </data>
-  <data name="ckDefaultCycloramaVectorLayerLocation.Text" xml:space="preserve">
-    <value>Use default</value>
-  </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>StreetSmartConfigurationForm</value>
   </data>
-  <data name="&gt;&gt;txtRecordingServiceLocation.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="txtProxyPassword.Size" type="System.Drawing.Size, System.Drawing">
+    <value>260, 20</value>
   </data>
   <data name="&gt;&gt;txtProxyPassword.ZOrder" xml:space="preserve">
     <value>3</value>
@@ -1401,29 +1266,23 @@
   <data name="tbConfiguration.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
-  <data name="txtBaseUrlLocation.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
-  </data>
   <data name="txtUsername.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
   </data>
-  <data name="ckBypassProxyOnLocal.Size" type="System.Drawing.Size, System.Drawing">
-    <value>226, 18</value>
+  <data name="txtProxyPassword.Location" type="System.Drawing.Point, System.Drawing">
+    <value>122, 143</value>
   </data>
-  <data name="grCycloramaVectorLayerLocation.Text" xml:space="preserve">
-    <value>Cyclorama vector layer location</value>
+  <data name="&gt;&gt;grCoordinateSystems.Parent" xml:space="preserve">
+    <value>tbSettings</value>
   </data>
   <data name="&gt;&gt;lblProxyPassword.Name" xml:space="preserve">
     <value>lblProxyPassword</value>
   </data>
-  <data name="&gt;&gt;txtSwfUrlLocation.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;txtAgreement.Parent" xml:space="preserve">
     <value>tbAgreement</value>
-  </data>
-  <data name="lblLocationRecordingService.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 37</value>
   </data>
   <data name="&gt;&gt;btnOk.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1431,17 +1290,14 @@
   <data name="&gt;&gt;txtProxyPassword.Name" xml:space="preserve">
     <value>txtProxyPassword</value>
   </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>432, 503</value>
+  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt</value>
   </data>
-  <data name="&gt;&gt;txtAgreement.Name" xml:space="preserve">
-    <value>txtAgreement</value>
+  <data name="ckBypassProxyOnLocal.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
   </data>
   <data name="tbAgreement.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 23</value>
-  </data>
-  <data name="&gt;&gt;btnOk.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="&gt;&gt;cbCycloramaSRS.ZOrder" xml:space="preserve">
     <value>3</value>
@@ -1455,10 +1311,10 @@
   <data name="tbConfiguration.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 23</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Street Smart for ArcMap</value>
+  <data name="ckBypassProxyOnLocal.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="&gt;&gt;ckDefaultSwfUrl.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;nudOverlayDrawDistance.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
   <data name="btnLogin.Location" type="System.Drawing.Point, System.Drawing">
@@ -1470,47 +1326,29 @@
   <data name="btnApply.TabIndex" type="System.Int32, mscorlib">
     <value>12</value>
   </data>
-  <data name="&gt;&gt;btnApply.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="grCycloramaVectorLayerLocation.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 198</value>
-  </data>
-  <data name="&gt;&gt;tbSettings.Parent" xml:space="preserve">
-    <value>tcSettings</value>
+  <data name="&gt;&gt;tbSettings.Name" xml:space="preserve">
+    <value>tbSettings</value>
   </data>
   <data name="lblProxyPort.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
   </data>
-  <data name="&gt;&gt;tbConfiguration.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;lblLocationSwfUrl.Name" xml:space="preserve">
-    <value>lblLocationSwfUrl</value>
+  <data name="lblProxyUserName.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
   </data>
   <data name="&gt;&gt;tbConfiguration.Parent" xml:space="preserve">
     <value>tcSettings</value>
   </data>
-  <data name="tbAbout.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 23</value>
+  <data name="lblUsername.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 22</value>
   </data>
   <data name="&gt;&gt;txtPassword.Parent" xml:space="preserve">
     <value>grLogin</value>
   </data>
-  <data name="lblLocationSwfUrl.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
-  </data>
-  <data name="&gt;&gt;grSwfUrl.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="&gt;&gt;ckUseProxyServer.Name" xml:space="preserve">
     <value>ckUseProxyServer</value>
   </data>
-  <data name="&gt;&gt;lblLocationRecordingService.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;rtbAbout.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RichTextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;lblPassword.Name" xml:space="preserve">
+    <value>lblPassword</value>
   </data>
   <data name="lblUsername.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
@@ -1518,14 +1356,11 @@
   <data name="&gt;&gt;txtProxyUsername.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;lblLocationBaseUrl.Parent" xml:space="preserve">
-    <value>grBaseUrl</value>
+  <data name="&gt;&gt;txtPassword.ZOrder" xml:space="preserve">
+    <value>4</value>
   </data>
-  <data name="&gt;&gt;lblProxyDomain.Name" xml:space="preserve">
-    <value>lblProxyDomain</value>
-  </data>
-  <data name="lblProxyUserName.TabIndex" type="System.Int32, mscorlib">
-    <value>28</value>
+  <data name="grConfiguration.Size" type="System.Drawing.Size, System.Drawing">
+    <value>388, 73</value>
   </data>
   <data name="lblLogin.Size" type="System.Drawing.Size, System.Drawing">
     <value>0, 14</value>
@@ -1533,26 +1368,14 @@
   <data name="&gt;&gt;cbRecordingsSRS.Name" xml:space="preserve">
     <value>cbRecordingsSRS</value>
   </data>
-  <data name="txtProxyPort.Location" type="System.Drawing.Point, System.Drawing">
-    <value>307, 37</value>
-  </data>
-  <data name="lblLocationRecordingService.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
-  </data>
-  <data name="txtProxyUsername.Size" type="System.Drawing.Size, System.Drawing">
-    <value>145, 20</value>
+  <data name="txtRecordingService.Location" type="System.Drawing.Point, System.Drawing">
+    <value>122, 43</value>
   </data>
   <data name="&gt;&gt;txtProxyUsername.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
-  <data name="&gt;&gt;grSwfUrl.Name" xml:space="preserve">
-    <value>grSwfUrl</value>
-  </data>
   <data name="rtbAbout.TabIndex" type="System.Int32, mscorlib">
     <value>20</value>
-  </data>
-  <data name="&gt;&gt;grSwfUrl.Parent" xml:space="preserve">
-    <value>tbConfiguration</value>
   </data>
   <data name="&gt;&gt;ckDefaultRecordingService.Parent" xml:space="preserve">
     <value>grRecordingService</value>
@@ -1560,50 +1383,29 @@
   <data name="&gt;&gt;grProxyServer.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;lblProxyAddress.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;lblLocationBaseUrl.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="plButtons.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
   </data>
-  <data name="&gt;&gt;tcSettings.Name" xml:space="preserve">
-    <value>tcSettings</value>
+  <data name="&gt;&gt;lblConfiguration.Parent" xml:space="preserve">
+    <value>grConfiguration</value>
   </data>
   <data name="ckUseDefaultProxyCredentials.TabIndex" type="System.Int32, mscorlib">
     <value>26</value>
   </data>
-  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
-    <value>17</value>
+  <data name="txtProxyUsername.Size" type="System.Drawing.Size, System.Drawing">
+    <value>260, 20</value>
   </data>
-  <data name="rtbAbout.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="chConfiguration.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
   </data>
-  <data name="lblLocationCycloramaVectorLayerLocation.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 37</value>
-  </data>
-  <data name="lblLocationBaseUrl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>79, 20</value>
+  <data name="&gt;&gt;txtUsername.Name" xml:space="preserve">
+    <value>txtUsername</value>
   </data>
   <data name="&gt;&gt;tbAbout.Parent" xml:space="preserve">
     <value>tcSettings</value>
   </data>
-  <data name="lblUsername.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 22</value>
-  </data>
-  <data name="&gt;&gt;txtSwfUrlLocation.Parent" xml:space="preserve">
-    <value>grSwfUrl</value>
-  </data>
-  <data name="txtProxyUsername.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
-  </data>
-  <data name="lblLocationBaseUrl.Text" xml:space="preserve">
-    <value>Location:</value>
-  </data>
-  <data name="nudOverlayDrawDistance.Size" type="System.Drawing.Size, System.Drawing">
-    <value>57, 20</value>
+  <data name="&gt;&gt;txtConfiguration.Parent" xml:space="preserve">
+    <value>grConfiguration</value>
   </data>
   <data name="ckUseDefaultProxyCredentials.Text" xml:space="preserve">
     <value>Use default credentials</value>
@@ -1611,8 +1413,8 @@
   <data name="lblProxyUserName.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
   </data>
-  <data name="&gt;&gt;ckDefaultBaseUrl.Name" xml:space="preserve">
-    <value>ckDefaultBaseUrl</value>
+  <data name="&gt;&gt;lblConfiguration.Name" xml:space="preserve">
+    <value>lblConfiguration</value>
   </data>
   <data name="&gt;&gt;grLogin.ZOrder" xml:space="preserve">
     <value>0</value>

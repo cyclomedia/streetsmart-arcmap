@@ -182,6 +182,13 @@ namespace StreetSmartArcMap.DockableWindows
                         }
                     }
                 }
+
+                // TODO: check if the cones are within this extent. If not, it's too close to the edge and we need to rescale.
+                //var extent = (IEnvelope2)ArcMap.Document.ActiveView.Extent;
+                //extent.Expand(0.8, 0.8, true);
+                
+                
+
                 env.Expand(1.1, 1.1, true);
                 ArcMap.Document.ActiveView.Extent.Union(env);
                 IActiveView activeView = ArcUtils.ActiveView;

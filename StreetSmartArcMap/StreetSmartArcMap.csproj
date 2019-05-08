@@ -348,6 +348,9 @@
   <ItemGroup>
     <AddInContent Include="Images\CycloramaSearch.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Agreement.fr.txt" />
+  </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>
     <AddInTargetProduct>Desktop</AddInTargetProduct>

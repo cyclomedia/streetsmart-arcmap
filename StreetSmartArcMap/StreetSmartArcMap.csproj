@@ -199,11 +199,20 @@
     <EmbeddedResource Include="DockableWindows\StreetSmartDockableWindow.resx">
       <DependentUpon>StreetSmartDockableWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AgreementForm.fr.resx">
+      <DependentUpon>AgreementForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AgreementForm.resx">
       <DependentUpon>AgreementForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CycloramaSearchForm.fr.resx">
+      <DependentUpon>CycloramaSearchForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\CycloramaSearchForm.resx">
       <DependentUpon>CycloramaSearchForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\StreetSmartConfigurationForm.fr.resx">
+      <DependentUpon>StreetSmartConfigurationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\StreetSmartConfigurationForm.resx">
       <DependentUpon>StreetSmartConfigurationForm.cs</DependentUpon>

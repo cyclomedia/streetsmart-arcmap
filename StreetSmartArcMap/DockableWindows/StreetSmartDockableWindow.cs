@@ -20,10 +20,8 @@ using ESRI.ArcGIS.ADF.Connection.Local;
 using ESRI.ArcGIS.ArcMapUI;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Display;
-using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using StreetSmartArcMap.AddIns;
-using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Logic.Model;
 using StreetSmartArcMap.Utilities;
@@ -43,15 +41,35 @@ namespace StreetSmartArcMap.DockableWindows
     {
         #region Constants
 
-        private const double Size = 96.0;
         private const byte Alpha = 192;
 
         #endregion Constants
 
+        #region Private members
+
+        /// <summary>
+        /// A dictionary of the cone belonging to a certain viewer (ID)
+        /// </summary>
         private Dictionary<string, ViewingCone> ConePerViewerDict = new Dictionary<string, ViewingCone>();
 
+        /// <summary>
+        /// the configuration object
+        /// </summary>
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
+
+        /// <summary>
+        /// The StreetSmartAPI Instance
+        /// </summary>
         private StreetSmartApiWrapper API => StreetSmartApiWrapper.Instance;
+
+        /// <summary>
+        /// Host object of the dockable window
+        /// </summary>
+        private object Hook { get; set; }
+
+        #endregion Private members
+
+        #region Constructor
 
         public StreetSmartDockableWindow(object hook)
         {
@@ -73,7 +91,9 @@ namespace StreetSmartArcMap.DockableWindows
             }
         }
 
-        
+        #endregion Constructor
+
+        #region Event handlers
 
         private void AvEvents_AfterDraw(IDisplay Display, esriViewDrawPhase phase)
         {
@@ -89,8 +109,6 @@ namespace StreetSmartArcMap.DockableWindows
                 }
             }
         }
-
-        private delegate void viewerChangeDelegate(ViewersChangeEventArgs args);
 
         private void API_OnViewerChangeEvent(ViewersChangeEventArgs args)
         {
@@ -111,7 +129,8 @@ namespace StreetSmartArcMap.DockableWindows
                             missingViewers.Add(kvp.Key);
                         }
                     }
-                    foreach (var removeViewer in missingViewers) {
+                    foreach (var removeViewer in missingViewers)
+                    {
                         ConePerViewerDict.Remove(removeViewer);
                     }
                 }
@@ -121,30 +140,14 @@ namespace StreetSmartArcMap.DockableWindows
             }
         }
 
-        internal void SetVisibility(bool visible)
-        {
-            if (visible)
-            {
-                Visible = true;
-            }
-            else
-            {
-                var dockWindowManager = ArcMap.Application as ESRI.ArcGIS.Framework.IDockableWindowManager;
-                ESRI.ArcGIS.esriSystem.UID windowId = new ESRI.ArcGIS.esriSystem.UIDClass { Value = "Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" };
-                ESRI.ArcGIS.Framework.IDockableWindow window = dockWindowManager.GetDockableWindow(windowId);
-
-                if (window.IsVisible())
-                    window.Show(false);
-            }
-        }
-
         private void API_OnViewingConeChanged(ViewingConeChangeEventArgs args)
         {
             if (InvokeRequired)
             {
                 Invoke(new Action(() => API_OnViewingConeChanged(args)));
             }
-            else {
+            else
+            {
                 var cone = args.ViewingCone;
                 var viewerId = args.ViewerId;
                 lock (ConePerViewerDict)
@@ -186,8 +189,6 @@ namespace StreetSmartArcMap.DockableWindows
                 // TODO: check if the cones are within this extent. If not, it's too close to the edge and we need to rescale.
                 //var extent = (IEnvelope2)ArcMap.Document.ActiveView.Extent;
                 //extent.Expand(0.8, 0.8, true);
-                
-                
 
                 env.Expand(1.1, 1.1, true);
                 ArcMap.Document.ActiveView.Extent.Union(env);
@@ -195,6 +196,32 @@ namespace StreetSmartArcMap.DockableWindows
 
                 var display = ArcMap.Document?.ActiveView?.ScreenDisplay;
                 display.Invalidate(ArcMap.Document.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
+            }
+        }
+
+        private void DocEvents_MapsChanged()
+        {
+            API.SetOverlayDrawDistance(Config.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits);
+        }
+
+        #endregion Event handlers
+
+        #region Functions (Private)
+
+        private void SetVisibility(bool visible)
+        {
+            if (visible)
+            {
+                Visible = true;
+            }
+            else
+            {
+                var dockWindowManager = ArcMap.Application as ESRI.ArcGIS.Framework.IDockableWindowManager;
+                ESRI.ArcGIS.esriSystem.UID windowId = new ESRI.ArcGIS.esriSystem.UIDClass { Value = "Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" };
+                ESRI.ArcGIS.Framework.IDockableWindow window = dockWindowManager.GetDockableWindow(windowId);
+
+                if (window.IsVisible())
+                    window.Show(false);
             }
         }
 
@@ -227,7 +254,7 @@ namespace StreetSmartArcMap.DockableWindows
                         mappoint.Project(ArcUtils.SpatialReference);
 
                         var esriColor = Converter.ToRGBColor(cone.Color);
-                        esriColor.Transparency = Alpha; // TODO: does this work?
+                        esriColor.Transparency = 192; // this was a constant, used only once. TODO: does this work?
                         var symbol = new SimpleFillSymbol()
                         {
                             Color = esriColor,
@@ -241,7 +268,7 @@ namespace StreetSmartArcMap.DockableWindows
                         double angle = (270 + (cone.Orientation.Yaw ?? 0.0)) % 360 * Math.PI / 180;
                         double angle1 = angle - angleh;
                         double angle2 = angle + angleh;
-                        int size = (int)Size / 2;
+                        int size = 48; // was: const (value 96) / 2
 
                         var screenPoint1 = new WinPoint(screenX + (int)(size * Math.Cos(angle1)), screenY + (int)(size * Math.Sin(angle1)));
                         var screenPoint2 = new WinPoint(screenX + (int)(size * Math.Cos(angle2)), screenY + (int)(size * Math.Sin(angle2)));
@@ -261,15 +288,7 @@ namespace StreetSmartArcMap.DockableWindows
             }
         }
 
-        private void DocEvents_MapsChanged()
-        {
-            API.SetOverlayDrawDistance(Config.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits);
-        }
-
-        /// <summary>
-        /// Host object of the dockable window
-        /// </summary>
-        private object Hook { get; set; }
+        #endregion Functions (Private)
 
         /// <summary>
         /// Implementation class of the dockable window add-in. It is responsible for

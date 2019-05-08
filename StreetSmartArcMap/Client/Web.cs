@@ -79,14 +79,10 @@ namespace StreetSmartArcMap.Client
         // =========================================================================
         // Properties
         // =========================================================================
-        private string BaseUrl => _config.BaseUrl;
 
-        private string RecordingService => $"{BaseUrl}/recordings/wfs";
+        public Configuration.Configuration Config => Configuration.Configuration.Instance;
 
-        public static Web Instance
-        {
-            get { return _web ?? (_web = new Web()); }
-        }
+        public static Web Instance => _web ?? (_web = new Web());
 
         #endregion properties
 
@@ -115,7 +111,7 @@ namespace StreetSmartArcMap.Client
         {
             string epsgCode = cycloMediaLayer.EpsgCode;
             epsgCode = SpatialReferences.Instance.ToKnownSrsName(epsgCode);
-            string remoteLocation = string.Format(RecordingRequest, RecordingService, epsgCode, imageId);
+            string remoteLocation = string.Format(RecordingRequest, Config.RecordingsServiceUrlToUse, epsgCode, imageId);
             var xml = (string)GetRequest(remoteLocation, GetXmlCallback, XmlConfig);
             return ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
         }
@@ -140,7 +136,7 @@ namespace StreetSmartArcMap.Client
                 string postItem = string.Format(_ci, cycloMediaLayer.WfsRequest, epsgCode, envelope.XMin, envelope.YMin,
                                                 envelope.XMax,
                                                 envelope.YMax, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:00-00:00"));
-                var xml = (string)PostRequest(RecordingService, GetXmlCallback, postItem, XmlConfig);
+                var xml = (string)PostRequest(Config.RecordingsServiceUrlToUse, GetXmlCallback, postItem, XmlConfig);
                 result = ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
             }
 
@@ -152,7 +148,7 @@ namespace StreetSmartArcMap.Client
             string epsgCode = ArcUtils.EpsgCode;
             string postItem = string.Format(_ci, wfsRequest, epsgCode, envelope.XMin, envelope.YMin, envelope.XMax,
                                             envelope.YMax, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:00-00:00"));
-            var xml = (string)PostRequest(RecordingService, GetXmlCallback, postItem, XmlConfig);
+            var xml = (string)PostRequest(Config.RecordingsServiceUrlToUse, GetXmlCallback, postItem, XmlConfig);
             return ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
         }
 
@@ -171,8 +167,7 @@ namespace StreetSmartArcMap.Client
 
         public Stream DownloadSpatialReferences()
         {
-            string url = _config.SpatialReferencesUrl ?? Urls.SpatialReferencesUrl;
-            return GetRequest(url, GetStreamCallback, XmlConfig) as Stream;
+            return GetRequest(Config.SpatialReferencesUrlToUse, GetStreamCallback, XmlConfig) as Stream;
         }
 
         public Stream DownloadGlobeSpotterConfiguration()

@@ -51,9 +51,17 @@ namespace StreetSmartArcMap.Configuration
         public string ApiUsername { get; set; }
         public string ApiPassword { get; set; }
 
+        public bool UseDefaultBaseUrl { get; set; }
         public string BaseUrl { get; set; }
-        public string RecordingsServiceUrl { get; set; }
+        public string BaseUrlToUse => UseDefaultBaseUrl || string.IsNullOrWhiteSpace(BaseUrl) ? Urls.BaseUrl : BaseUrl;
+
+        public bool UseDefaultRecordingsServiceUrl { get; set; }
+        public string RecordingsServiceUrl { get; set; } //$"{BaseUrl}/recordings/wfs"
+        public string RecordingsServiceUrlToUse => UseDefaultRecordingsServiceUrl || string.IsNullOrWhiteSpace(RecordingsServiceUrl) ? Urls.RecordingsServiceUrl : RecordingsServiceUrl;
+
+        public bool UseDefaultSpatialReferencesUrl { get; set; }
         public string SpatialReferencesUrl { get; set; }
+        public string SpatialReferencesUrlToUse => UseDefaultSpatialReferencesUrl || string.IsNullOrWhiteSpace(SpatialReferencesUrl) ? Urls.SpatialReferencesUrl : SpatialReferencesUrl;
 
         public string DefaultRecordingSrs { get; set; }
 
@@ -170,9 +178,9 @@ namespace StreetSmartArcMap.Configuration
                 ApiUsername = string.Empty,
                 ApiPassword = string.Empty,
 
-                BaseUrl = "https://atlas.cyclomedia.com",
-                RecordingsServiceUrl = "https://atlas.cyclomedia.com/recordings/wfs",
-                SpatialReferencesUrl = "https://streetsmart.cyclomedia.com/api/v18.10/assets/srs/SpatialReference.xml",
+                BaseUrl = Urls.BaseUrl,
+                RecordingsServiceUrl = Urls.RecordingsServiceUrl,
+                SpatialReferencesUrl = Urls.SpatialReferencesUrl,
 
                 DefaultRecordingSrs = string.Empty,
                 OverlayDrawDistanceInMeters = 30,

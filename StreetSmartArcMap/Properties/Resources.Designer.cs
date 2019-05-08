@@ -71,7 +71,8 @@ namespace StreetSmartArcMap.Properties {
         ///employee or on assignment basis, is only permitted under the following terms
         ///and conditions.
         ///
-        ///Definition [rest of string was truncated]&quot;;.
+        ///Definitions
+        ///Image Ma [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Agreement {
             get {
@@ -85,6 +86,24 @@ namespace StreetSmartArcMap.Properties {
         internal static string ConfigurationAsk {
             get {
                 return ResourceManager.GetString("ConfigurationAsk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to StreetSmart integration error..
+        /// </summary>
+        internal static string ErrorIntegration {
+            get {
+                return ResourceManager.GetString("ErrorIntegration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are not authorized to view the image..
+        /// </summary>
+        internal static string ErrorNotAuthorized {
+            get {
+                return ResourceManager.GetString("ErrorNotAuthorized", resourceCulture);
             }
         }
         
@@ -139,6 +158,24 @@ namespace StreetSmartArcMap.Properties {
         internal static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to With Depth Map.
+        /// </summary>
+        internal static string WithDepthMap {
+            get {
+                return ResourceManager.GetString("WithDepthMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Without Depth Map.
+        /// </summary>
+        internal static string WithoutDepthMap {
+            get {
+                return ResourceManager.GetString("WithoutDepthMap", resourceCulture);
             }
         }
     }

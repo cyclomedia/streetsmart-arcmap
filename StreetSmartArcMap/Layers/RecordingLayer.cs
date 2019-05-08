@@ -167,8 +167,8 @@ namespace StreetSmartArcMap.Layers
                     };
                     var className = string.Format("{0}", true);
                     uniqueValueRenderer.AddValue(className, string.Empty, hasDepthMarker as ISymbol);
-                    // TODO: Translate
-                    uniqueValueRenderer.Label[className] = "With Depth Map";
+
+                    uniqueValueRenderer.Label[className] = Properties.Resources.WithDepthMap;
                     var hasNoDepthMarker = new SimpleMarkerSymbol()
                     {
                         Color = Converter.ToRGBColor(Color.FromArgb(170, 128, 176, 255)),
@@ -177,8 +177,8 @@ namespace StreetSmartArcMap.Layers
 
                     className = string.Format("{0}", false);
                     uniqueValueRenderer.AddValue(className, string.Empty, hasNoDepthMarker as ISymbol);
-                    // TODO: Translate
-                    uniqueValueRenderer.Label[className] = "Without Depth Map";
+
+                    uniqueValueRenderer.Label[className] = Properties.Resources.WithoutDepthMap;
                     activeView.ContentsChanged();
                 }
             }

@@ -53,7 +53,6 @@ namespace StreetSmartArcMap.Layers
         // Properties
         // =========================================================================
         public string Name { get { return "CycloMedia"; } }
-
         public IGroupLayer GroupLayer
         {
             get { return _groupLayer ?? (_groupLayer = GetGroupLayer()); }
@@ -276,6 +275,7 @@ namespace StreetSmartArcMap.Layers
                     CreateFeatureLayers();
                     var layer = _groupLayer as ILayer;
                     map.AddLayer(layer);
+
                 }
             }
             else

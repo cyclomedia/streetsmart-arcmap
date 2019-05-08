@@ -124,6 +124,7 @@
     <Compile Include="StreetSmartApiWrapper.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Utilities\MakeTransparant.cs" />
+    <Compile Include="ViewingConeChangeEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

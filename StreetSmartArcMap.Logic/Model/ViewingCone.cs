@@ -10,6 +10,7 @@ namespace StreetSmartArcMap.Logic.Model
 {
     public class ViewingCone
     {
+        public string ViewerId { get; set; }
         public string ImageId { get; set; }
         public ICoordinate Coordinate { get; set; }
         public IOrientation Orientation { get; set; }

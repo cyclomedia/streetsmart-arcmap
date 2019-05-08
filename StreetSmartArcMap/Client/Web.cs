@@ -366,25 +366,25 @@ namespace StreetSmartArcMap.Client
             {
                 IWebProxy proxy;
 
-                //if (_config.UseProxyServer)
-                //{
-                //    var webProxy = new WebProxy(_config.ProxyAddress, _config.ProxyPort)
-                //    {
-                //        BypassProxyOnLocal = _config.BypassProxyOnLocal,
-                //        UseDefaultCredentials = _config.ProxyUseDefaultCredentials
-                //    };
+                if (Config.UseProxyServer)
+                {
+                    var webProxy = new WebProxy(Config.ProxyAddress, Config.ProxyPort)
+                    {
+                        BypassProxyOnLocal = Config.BypassProxyOnLocal,
+                        UseDefaultCredentials = Config.ProxyUseDefaultCredentials
+                    };
 
-                //    if (!_config.ProxyUseDefaultCredentials)
-                //    {
-                //        webProxy.Credentials = new NetworkCredential(_config.ProxyUsername, _config.ProxyPassword, _config.ProxyDomain);
-                //    }
+                    if (!Config.ProxyUseDefaultCredentials)
+                    {
+                        webProxy.Credentials = new NetworkCredential(Config.ProxyUsername, Config.ProxyPassword, Config.ProxyDomain);
+                    }
 
-                //    proxy = webProxy;
-                //}
-                //else
-                //{
-                proxy = WebRequest.GetSystemWebProxy();
-                //}
+                    proxy = webProxy;
+                }
+                else
+                {
+                    proxy = WebRequest.GetSystemWebProxy();
+                }
 
                 var request = (HttpWebRequest)WebRequest.Create(remoteLocation);
                 request.Credentials = new NetworkCredential(_login.Username, _login.Password);

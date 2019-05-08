@@ -130,6 +130,15 @@ namespace StreetSmartArcMap.Configuration
 
         public string CycloramaVectorLayerLocation { get; set; }
         public SpatialReference SpatialReference { get; set; }
+
+        public bool UseProxyServer { get; internal set; }
+        public string ProxyAddress { get; internal set; }
+        public bool ProxyPort { get; internal set; }
+        public bool BypassProxyOnLocal { get; internal set; }
+        public bool ProxyUseDefaultCredentials { get; internal set; }
+        public string ProxyUsername { get; internal set; }
+        public string ProxyPassword { get; internal set; }
+        public string ProxyDomain { get; internal set; }
         #endregion
 
         #region Functions

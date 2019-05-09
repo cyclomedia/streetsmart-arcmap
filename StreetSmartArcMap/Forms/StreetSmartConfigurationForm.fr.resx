@@ -117,41 +117,164 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Agreement" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Agreement.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="btnOk.Text" xml:space="preserve">
+    <value>OK*</value>
   </data>
-  <data name="ConfigurationAsk" xml:space="preserve">
-    <value>Do you want to save anyway?</value>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Cancel*</value>
   </data>
-  <data name="ErrorIntegration" xml:space="preserve">
-    <value>StreetSmart integration error.</value>
+  <data name="btnApply.Text" xml:space="preserve">
+    <value>Apply*</value>
   </data>
-  <data name="ErrorNotAuthorized" xml:space="preserve">
-    <value>You are not authorized to view the image.</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="lblCulture.Size" type="System.Drawing.Size, System.Drawing">
+    <value>62, 14</value>
   </data>
-  <data name="InvalidApiPassword" xml:space="preserve">
-    <value>Password does not have a value.</value>
+  <data name="lblCulture.Text" xml:space="preserve">
+    <value>Language*:</value>
   </data>
-  <data name="InvalidApiSRS" xml:space="preserve">
-    <value>Cyclorama viewer does not have a value.</value>
+  <data name="grLocalization.Text" xml:space="preserve">
+    <value>Localization*</value>
   </data>
-  <data name="InvalidApiUsername" xml:space="preserve">
-    <value>Username does not have a value.</value>
+  <data name="btnLogin.Size" type="System.Drawing.Size, System.Drawing">
+    <value>110, 23</value>
   </data>
-  <data name="LoginFailed" xml:space="preserve">
-    <value>Login Failed</value>
+  <data name="btnLogin.Text" xml:space="preserve">
+    <value>Test connection*</value>
   </data>
-  <data name="LoginSuccessfully" xml:space="preserve">
-    <value>Login Successfully</value>
+  <data name="lblUsername.Size" type="System.Drawing.Size, System.Drawing">
+    <value>63, 14</value>
   </data>
-  <data name="Title" xml:space="preserve">
-    <value>Street Smart for ArcMap</value>
+  <data name="lblUsername.Text" xml:space="preserve">
+    <value>Username*:</value>
   </data>
-  <data name="WithDepthMap" xml:space="preserve">
-    <value>With Depth Map</value>
+  <data name="lblPassword.Size" type="System.Drawing.Size, System.Drawing">
+    <value>64, 14</value>
   </data>
-  <data name="WithoutDepthMap" xml:space="preserve">
-    <value>Without Depth Map</value>
+  <data name="lblPassword.Text" xml:space="preserve">
+    <value>Password*:</value>
+  </data>
+  <data name="grLogin.Text" xml:space="preserve">
+    <value>Credentials*</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>144, 14</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Overlay draw distance (m)*:</value>
+  </data>
+  <data name="grGeneral.Text" xml:space="preserve">
+    <value>General*</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>96, 14</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Recordings layer*:</value>
+  </data>
+  <data name="lblCycloramaSRS.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 14</value>
+  </data>
+  <data name="lblCycloramaSRS.Text" xml:space="preserve">
+    <value>Cyclorama viewer*:</value>
+  </data>
+  <data name="grCoordinateSystems.Text" xml:space="preserve">
+    <value>Coordinate systems*</value>
+  </data>
+  <data name="tbSettings.Text" xml:space="preserve">
+    <value>Settings*</value>
+  </data>
+  <data name="lblConfiguration.Size" type="System.Drawing.Size, System.Drawing">
+    <value>55, 14</value>
+  </data>
+  <data name="lblConfiguration.Text" xml:space="preserve">
+    <value>Location*:</value>
+  </data>
+  <data name="chConfiguration.Size" type="System.Drawing.Size, System.Drawing">
+    <value>85, 18</value>
+  </data>
+  <data name="chConfiguration.Text" xml:space="preserve">
+    <value>Use default*</value>
+  </data>
+  <data name="grConfiguration.Text" xml:space="preserve">
+    <value>Recording Service URL*</value>
+  </data>
+  <data name="lblProxyDomain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>49, 14</value>
+  </data>
+  <data name="lblProxyDomain.Text" xml:space="preserve">
+    <value>Domain*:</value>
+  </data>
+  <data name="lblProxyPassword.Size" type="System.Drawing.Size, System.Drawing">
+    <value>64, 14</value>
+  </data>
+  <data name="lblProxyPassword.Text" xml:space="preserve">
+    <value>Password*:</value>
+  </data>
+  <data name="lblProxyUserName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>63, 14</value>
+  </data>
+  <data name="lblProxyUserName.Text" xml:space="preserve">
+    <value>Username*:</value>
+  </data>
+  <data name="ckUseDefaultProxyCredentials.Size" type="System.Drawing.Size, System.Drawing">
+    <value>141, 18</value>
+  </data>
+  <data name="ckUseDefaultProxyCredentials.Text" xml:space="preserve">
+    <value>Use default credentials*</value>
+  </data>
+  <data name="ckBypassProxyOnLocal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>230, 18</value>
+  </data>
+  <data name="ckBypassProxyOnLocal.Text" xml:space="preserve">
+    <value>Bypass proxy server for local addresses*</value>
+  </data>
+  <data name="lblProxyPort.Size" type="System.Drawing.Size, System.Drawing">
+    <value>33, 14</value>
+  </data>
+  <data name="lblProxyPort.Text" xml:space="preserve">
+    <value>Port*:</value>
+  </data>
+  <data name="lblProxyAddress.Size" type="System.Drawing.Size, System.Drawing">
+    <value>56, 14</value>
+  </data>
+  <data name="lblProxyAddress.Text" xml:space="preserve">
+    <value>Address*:</value>
+  </data>
+  <data name="ckUseProxyServer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>124, 18</value>
+  </data>
+  <data name="ckUseProxyServer.Text" xml:space="preserve">
+    <value>Use a proxy server*</value>
+  </data>
+  <data name="grProxyServer.Text" xml:space="preserve">
+    <value>Proxy server*</value>
+  </data>
+  <data name="lblAPI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>55, 14</value>
+  </data>
+  <data name="lblAPI.Text" xml:space="preserve">
+    <value>Location*:</value>
+  </data>
+  <data name="ckDefaultAPI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>85, 18</value>
+  </data>
+  <data name="ckDefaultAPI.Text" xml:space="preserve">
+    <value>Use default*</value>
+  </data>
+  <data name="grAPI.Text" xml:space="preserve">
+    <value>API URL*</value>
+  </data>
+  <data name="tbConfiguration.Text" xml:space="preserve">
+    <value>Configuration*</value>
+  </data>
+  <data name="tbAbout.Text" xml:space="preserve">
+    <value>About*</value>
+  </data>
+  <data name="tbAgreement.Text" xml:space="preserve">
+    <value>Agreement*</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Street Smart for ArcMap*</value>
   </data>
 </root>

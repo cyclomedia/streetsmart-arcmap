@@ -37,6 +37,7 @@ namespace StreetSmartArcMap.Client
     /// <summary>
     /// The recording service url
     /// </summary>
+    //TODO: remove and use Web.RecordingsService.
     public static string RecordingsServiceUrl = "https://atlas.cyclomedia.com/recordings/wfs";
 
     /// <summary>

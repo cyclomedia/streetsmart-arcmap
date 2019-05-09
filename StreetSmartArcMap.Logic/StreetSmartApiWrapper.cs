@@ -169,7 +169,7 @@ namespace StreetSmartArcMap.Logic
                     IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
                     IDomElement element = DomElementFactory.Create();
 
-                    ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
+                    ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.Culture, addressSettings, element);
 
                     await StreetSmartAPI.Init(ApiOptions);
                 }

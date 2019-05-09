@@ -55,7 +55,7 @@ namespace StreetSmartArcMap.Forms
         {
             InitializeComponent();
 
-            FormStyling.SetFont(this);
+            FormStyling.SetStyling(this);
         }
 
         #endregion

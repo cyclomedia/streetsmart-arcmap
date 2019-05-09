@@ -199,15 +199,25 @@
     <EmbeddedResource Include="DockableWindows\StreetSmartDockableWindow.resx">
       <DependentUpon>StreetSmartDockableWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AgreementForm.fr.resx">
+      <DependentUpon>AgreementForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AgreementForm.resx">
       <DependentUpon>AgreementForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CycloramaSearchForm.fr.resx">
+      <DependentUpon>CycloramaSearchForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CycloramaSearchForm.resx">
       <DependentUpon>CycloramaSearchForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\StreetSmartConfigurationForm.fr.resx">
+      <DependentUpon>StreetSmartConfigurationForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\StreetSmartConfigurationForm.resx">
       <DependentUpon>StreetSmartConfigurationForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.fr.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -329,6 +339,9 @@
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Images\CycloramaSearch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Agreement.fr.txt" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>

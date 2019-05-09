@@ -35,7 +35,7 @@ namespace StreetSmartArcMap.Configuration
     public class Configuration : INotifyPropertyChanged, IStreetSmartOptions
     {
 
-        public const string DefaultCulture = "en";
+        public const string DefaultCulture = "en-GB";
         #region Events
 
         public event PropertyChangedEventHandler PropertyChanged;

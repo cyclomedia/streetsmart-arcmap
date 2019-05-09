@@ -25,5 +25,6 @@ namespace StreetSmartArcMap.Logic
         string AddressDatabase { get; set; }
         string ApiUsername { get; set; }
         string ApiPassword { get; set; }
+        string Culture { get; set; }
     }
 }

@@ -34,6 +34,8 @@ namespace StreetSmartArcMap.Configuration
     [XmlRoot("Configuration")]
     public class Configuration : INotifyPropertyChanged, IStreetSmartOptions
     {
+
+        public const string DefaultCulture = "en";
         #region Events
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -168,11 +170,11 @@ namespace StreetSmartArcMap.Configuration
 
         private static void SetCulture(Configuration config)
         {
-            if (!string.IsNullOrWhiteSpace(config.Culture))
-            {
-                Thread.CurrentThread.CurrentCulture = new CultureInfo(config.Culture);
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(config.Culture);
-            }
+            if (string.IsNullOrWhiteSpace(config.Culture))
+                config.Culture = DefaultCulture;
+
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(config.Culture);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(config.Culture);
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -200,7 +202,7 @@ namespace StreetSmartArcMap.Configuration
                 OverlayDrawDistanceInMeters = 30,
 
                 Agreement = false,
-                Culture = "en",
+                Culture = DefaultCulture,
             };
 
             result.Save();

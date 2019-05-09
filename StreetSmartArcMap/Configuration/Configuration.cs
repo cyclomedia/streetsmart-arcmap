@@ -53,14 +53,17 @@ namespace StreetSmartArcMap.Configuration
 
         public bool UseDefaultBaseUrl { get; set; }
         public string BaseUrl { get; set; }
+        [XmlIgnore()]
         public string BaseUrlToUse => UseDefaultBaseUrl || string.IsNullOrWhiteSpace(BaseUrl) ? Urls.BaseUrl : BaseUrl;
 
         public bool UseDefaultRecordingsServiceUrl { get; set; }
         public string RecordingsServiceUrl { get; set; } //$"{BaseUrl}/recordings/wfs"
+        [XmlIgnore()]
         public string RecordingsServiceUrlToUse => UseDefaultRecordingsServiceUrl || string.IsNullOrWhiteSpace(RecordingsServiceUrl) ? Urls.RecordingsServiceUrl : RecordingsServiceUrl;
 
         public bool UseDefaultSpatialReferencesUrl { get; set; }
         public string SpatialReferencesUrl { get; set; }
+        [XmlIgnore()]
         public string SpatialReferencesUrlToUse => UseDefaultSpatialReferencesUrl || string.IsNullOrWhiteSpace(SpatialReferencesUrl) ? Urls.SpatialReferencesUrl : SpatialReferencesUrl;
 
         public string DefaultRecordingSrs { get; set; }

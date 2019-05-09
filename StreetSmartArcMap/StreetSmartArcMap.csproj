@@ -117,6 +117,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Config.esriaddinx</DependentUpon>
     </Compile>
+    <Compile Include="Config.fr.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Config.fr.esriaddinx</DependentUpon>
+    </Compile>
     <Compile Include="Configuration\Configuration.cs" />
     <Compile Include="Forms\AgreementForm.cs">
       <SubType>Form</SubType>
@@ -160,6 +164,10 @@
     </AddInContent>
   </ItemGroup>
   <ItemGroup>
+    <AddInContent Include="Config.fr.esriaddinx">
+      <Generator>ArcGISAddInHostGenerator</Generator>
+      <LastGenOutput>Config.fr.Designer.cs</LastGenOutput>
+    </AddInContent>
     <AddInContent Include="Images\StreetSmartArcMapAddin.png" />
   </ItemGroup>
   <ItemGroup>

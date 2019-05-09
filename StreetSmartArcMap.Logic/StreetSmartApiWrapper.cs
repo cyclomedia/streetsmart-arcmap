@@ -150,6 +150,8 @@ namespace StreetSmartArcMap.Logic
 
                 if (RequestOpen)
                     await Open(RequestSRS, RequestQuery);
+
+                OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = new List<string>() });
             }
             catch (StreetSmartLoginFailedException)
             {

@@ -75,14 +75,19 @@ namespace StreetSmartArcMap.DockableWindows
         {
             InitializeComponent();
             this.Hook = hook;
+            this.VisibleChanged += StreetSmartDockableWindow_VisibleChanged;
 
             API.InitApi(Config);
             API.OnViewerChangeEvent += API_OnViewerChangeEvent;
             API.OnViewingConeChanged += API_OnViewingConeChanged;
             this.Controls.Add(API.StreetSmartGUI);
-
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
             docEvents.MapsChanged += DocEvents_MapsChanged;
+        }
+
+        private void StreetSmartDockableWindow_VisibleChanged(object sender, EventArgs e)
+        {
+            SetVisibility();
         }
 
         #endregion Constructor
@@ -135,8 +140,6 @@ namespace StreetSmartArcMap.DockableWindows
                     avEvents.AfterDraw -= AvEvents_AfterDraw;
                     avEvents.AfterDraw += AvEvents_AfterDraw;
                 }
-
-                //SetMapExtentToCones();
             }
         }
 
@@ -217,6 +220,8 @@ namespace StreetSmartArcMap.DockableWindows
                 {
                     ConePerViewerDict[viewerId] = cone;
                 }
+
+                RedrawMapExtent();
             }
         }
 
@@ -228,6 +233,11 @@ namespace StreetSmartArcMap.DockableWindows
         #endregion Event handlers
 
         #region Functions (Private)
+
+        internal void SetVisibility()
+        {
+            SetVisibility(ConePerViewerDict != null && ConePerViewerDict.Count > 0);
+        }
 
         private void SetVisibility(bool visible)
         {

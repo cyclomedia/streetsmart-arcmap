@@ -71,15 +71,12 @@ namespace StreetSmartArcMap.Tools
                     {
                         if ((recording.IsAuthorized == null) || ((bool)recording.IsAuthorized))
                         {
-
-                            if (keyPressed == Keys.ShiftKey)
-                            {
-
-                            }
-
                             var extension = StreetSmartExtension.GetExtension();
                             extension.ShowStreetSmart();
+
                             await StreetSmartApiWrapper.Instance.Open(Configuration.Configuration.Instance.ApiSRS, imageId, (keyPressed == Keys.ShiftKey));
+
+                            ArcMap.Document?.ActiveView?.ScreenDisplay?.Invalidate(ArcMap.Document.ActiveView.Extent, true, (short)ESRI.ArcGIS.Display.esriScreenCache.esriNoScreenCache);
                         }
                         else
                         {
@@ -124,7 +121,7 @@ namespace StreetSmartArcMap.Tools
 
                 var extension = StreetSmartExtension.GetExtension();
                 Enabled = ((ArcMap.Application != null) && extension.Enabled && extension.CycloMediaGroupLayer != null && extension.CycloMediaGroupLayer.Layers.Any(l => l is RecordingLayer));
-                
+
                 if (enabled && !Enabled)
                     OnDeactivate();
             }

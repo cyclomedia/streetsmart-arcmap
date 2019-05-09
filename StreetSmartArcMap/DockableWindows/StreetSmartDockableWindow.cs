@@ -83,12 +83,6 @@ namespace StreetSmartArcMap.DockableWindows
 
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
             docEvents.MapsChanged += DocEvents_MapsChanged;
-
-            var avEvents = ArcUtils.ActiveViewEvents;
-            if (avEvents != null)
-            {
-                avEvents.AfterDraw += AvEvents_AfterDraw;
-            }
         }
 
         #endregion Constructor
@@ -105,7 +99,7 @@ namespace StreetSmartArcMap.DockableWindows
             {
                 if (phase == esriViewDrawPhase.esriViewForeground)
                 {
-                    redrawCones();
+                    RedrawCones();
                 }
             }
         }
@@ -119,6 +113,7 @@ namespace StreetSmartArcMap.DockableWindows
             else
             {
                 SetVisibility(args.Viewers.Count > 0);
+
                 var missingViewers = new List<string>();
                 lock (ConePerViewerDict)
                 {
@@ -134,10 +129,78 @@ namespace StreetSmartArcMap.DockableWindows
                         ConePerViewerDict.Remove(removeViewer);
                     }
                 }
-                // force a repaint
-                var display = ArcMap.Document?.ActiveView?.ScreenDisplay;
-                display.Invalidate(ArcMap.Document.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
+                var avEvents = ArcUtils.ActiveViewEvents;
+                if (avEvents != null)
+                {
+                    avEvents.AfterDraw -= AvEvents_AfterDraw;
+                    avEvents.AfterDraw += AvEvents_AfterDraw;
+                }
+
+                //SetMapExtentToCones();
             }
+        }
+
+        private IEnvelope2 CalculateConesEnvelope()
+        {
+            double xmin = double.MaxValue;
+            double xmax = double.MinValue;
+            double ymin = double.MaxValue;
+            double ymax = double.MinValue;
+
+            lock (ConePerViewerDict)
+            {
+                foreach (var kvp in ConePerViewerDict)
+                {
+                    var coordinate = kvp.Value.Coordinate;
+
+                    if (coordinate.X > xmax)
+                        xmax = coordinate.X.Value;
+                    if (coordinate.X < xmin)
+                        xmin = coordinate.X.Value;
+                    if (coordinate.Y > ymax)
+                        ymax = coordinate.Y.Value;
+                    if (coordinate.Y < ymin)
+                        ymin = coordinate.Y.Value;
+                }
+            }
+
+            IEnvelope2 envelope = (IEnvelope2)new Envelope()
+            {
+                XMin = xmin,
+                XMax = xmax,
+                YMin = ymin,
+                YMax = ymax,
+            };
+
+            envelope.SpatialReference = ArcUtils.SpatialReference;
+            envelope.Expand(1.1, 1.1, true);
+
+            if (ArcMap.Document.ActivatedView.Extent.XMin < xmin)
+                xmin = ArcMap.Document.ActivatedView.Extent.XMin;
+            if (ArcMap.Document.ActivatedView.Extent.XMax > xmax)
+                xmax = ArcMap.Document.ActivatedView.Extent.XMax;
+            if (ArcMap.Document.ActivatedView.Extent.YMin < ymin)
+                ymin = ArcMap.Document.ActivatedView.Extent.YMin;
+            if (ArcMap.Document.ActivatedView.Extent.YMax > ymax)
+                ymax = ArcMap.Document.ActivatedView.Extent.YMax;
+
+            return envelope;
+        }
+
+        private void SetMapExtentToCones(bool redraw = true)
+        {
+            var view = ArcMap.Document.ActiveView;
+
+            if (view != null)
+                view.Extent = CalculateConesEnvelope();
+
+            if (redraw)
+                RedrawMapExtent();
+        }
+
+        private void RedrawMapExtent()
+        {
+            ArcMap.Document?.ActiveView?.ScreenDisplay?.Invalidate(ArcMap.Document.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
         }
 
         private void API_OnViewingConeChanged(ViewingConeChangeEventArgs args)
@@ -154,48 +217,6 @@ namespace StreetSmartArcMap.DockableWindows
                 {
                     ConePerViewerDict[viewerId] = cone;
                 }
-                IEnvelope2 env = (IEnvelope2)new Envelope()
-                {
-                    XMin = double.MaxValue,
-                    XMax = double.MinValue,
-                    YMin = double.MaxValue,
-                    YMax = double.MinValue
-                };
-                env.SpatialReference = ArcUtils.SpatialReference;
-                lock (ConePerViewerDict)
-                {
-                    foreach (var kvp in ConePerViewerDict)
-                    {
-                        var coordinate = kvp.Value.Coordinate;
-                        if (coordinate.X > env.XMax)
-                        {
-                            env.XMax = coordinate.X.Value;
-                        }
-                        if (coordinate.X < env.XMin)
-                        {
-                            env.XMin = coordinate.X.Value;
-                        }
-                        if (coordinate.Y > env.YMax)
-                        {
-                            env.YMax = coordinate.Y.Value;
-                        }
-                        if (coordinate.Y < env.YMin)
-                        {
-                            env.YMin = coordinate.Y.Value;
-                        }
-                    }
-                }
-
-                // TODO: check if the cones are within this extent. If not, it's too close to the edge and we need to rescale.
-                //var extent = (IEnvelope2)ArcMap.Document.ActiveView.Extent;
-                //extent.Expand(0.8, 0.8, true);
-
-                env.Expand(1.1, 1.1, true);
-                ArcMap.Document.ActiveView.Extent.Union(env);
-                IActiveView activeView = ArcUtils.ActiveView;
-
-                var display = ArcMap.Document?.ActiveView?.ScreenDisplay;
-                display.Invalidate(ArcMap.Document.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
             }
         }
 
@@ -225,7 +246,7 @@ namespace StreetSmartArcMap.DockableWindows
             }
         }
 
-        private void redrawCones()
+        private void RedrawCones()
         {
             var config = Configuration.Configuration.Instance;
             int srs = int.Parse(config.ApiSRS.Substring(config.ApiSRS.IndexOf(":") + 1));
@@ -234,6 +255,7 @@ namespace StreetSmartArcMap.DockableWindows
             if (extension.InsideScale())
             {
                 var display = ArcMap.Document?.ActiveView?.ScreenDisplay;
+                display.Filter = new TransparencyDisplayFilterClass { Transparency = Alpha };
                 var displayTransformation = display.DisplayTransformation;
                 display.StartDrawing(display.hDC, (short)esriScreenCache.esriNoScreenCache);
 
@@ -253,11 +275,9 @@ namespace StreetSmartArcMap.DockableWindows
                         // Project the API SRS to the current map SRS.
                         mappoint.Project(ArcUtils.SpatialReference);
 
-                        var esriColor = Converter.ToRGBColor(cone.Color);
-                        esriColor.Transparency = 192; // this was a constant, used only once. TODO: does this work?
                         var symbol = new SimpleFillSymbol()
                         {
-                            Color = esriColor,
+                            Color = Converter.ToRGBColor(cone.Color),
                             Style = esriSimpleFillStyle.esriSFSSolid
                         };
 

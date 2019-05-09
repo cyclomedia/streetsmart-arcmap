@@ -103,8 +103,6 @@ namespace StreetSmartArcMap.AddIns
 
                 if (IsEnabled)
                 {
-                    Config.SetUICulture();
-                    
                     var docEvents = ArcUtils.MxDocumentEvents;
 
                     if (docEvents != null)

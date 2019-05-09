@@ -22,6 +22,7 @@ using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
@@ -46,7 +47,14 @@ namespace StreetSmartArcMap.Forms
             LoadGeneralSettings();
             LoadCulture();
 
-            FormStyling.SetFont(this);
+            LoadResources();
+        }
+
+        private void LoadResources()
+        {
+            lblLogin.Text = string.Empty;
+
+            FormStyling.SetStyling(this);
 
             SetAbout();
             SetAgreement();
@@ -55,6 +63,8 @@ namespace StreetSmartArcMap.Forms
         private void btnOk_Click(object sender, EventArgs e)
         {
             Save();
+
+            LoadResources();
 
             StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
 
@@ -69,6 +79,8 @@ namespace StreetSmartArcMap.Forms
         private void btnApply_Click(object sender, EventArgs e)
         {
             Save();
+
+            LoadResources();
 
             StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
         }
@@ -92,12 +104,12 @@ namespace StreetSmartArcMap.Forms
         {
             var items = new CultureInfo[]
             {
-                new CultureInfo("en-US"),
+                new CultureInfo("en"),
                 new CultureInfo("fr")
             };
             cbCulture.Items.AddRange(items);
 
-            var current = System.Threading.Thread.CurrentThread.CurrentUICulture;
+            var current = new CultureInfo(Config.Culture);
             if (cbCulture.Items.Contains(current))
                 cbCulture.SelectedItem = current;
         }
@@ -215,6 +227,8 @@ namespace StreetSmartArcMap.Forms
             Config.Culture = selectedCulture?.Name ?? Config.Culture;
 
             Config.Save();
+
+            FormStyling.SetStyling(this);
         }
 
         private void txtUsername_KeyUp(object sender, KeyEventArgs e)

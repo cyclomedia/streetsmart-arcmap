@@ -11,6 +11,8 @@ namespace StreetSmartArcMap.Forms
         public AgreementForm()
         {
             InitializeComponent();
+
+            FormStyling.SetStyling(this);
         }
 
         private void AgreementForm_Load(object sender, EventArgs e)

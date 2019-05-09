@@ -26,6 +26,8 @@ using System.Xml.Serialization;
 
 using SystemIOFile = System.IO.File;
 using StreetSmartArcMap.Client;
+using System.Threading;
+using System.Globalization;
 
 namespace StreetSmartArcMap.Configuration
 {
@@ -112,11 +114,6 @@ namespace StreetSmartArcMap.Configuration
 
         private static string FileName => Path.Combine(FileUtils.FileDir, "Configuration.xml");
 
-        internal void SetUICulture()
-        {
-            System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(Culture);
-        }
-
         public string LoggingLocation { get; set; }
         public bool UseLogging { get; set; }
         public bool CycloramaVectorLayerLocationDefault
@@ -141,6 +138,8 @@ namespace StreetSmartArcMap.Configuration
             {
                 Serializer.Serialize(input, this);
             }
+
+            SetCulture(this);
         }
 
         private static void Load()
@@ -155,8 +154,24 @@ namespace StreetSmartArcMap.Configuration
 
                     _configuration = (Configuration)configuration;
 
+                    SetCulture(_configuration);
+
                     IsLoading = false;
                 }
+            }
+        }
+
+        public void SetCulture()
+        {
+            SetCulture(this);
+        }
+
+        private static void SetCulture(Configuration config)
+        {
+            if (!string.IsNullOrWhiteSpace(config.Culture))
+            {
+                Thread.CurrentThread.CurrentCulture = new CultureInfo(config.Culture);
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo(config.Culture);
             }
         }
 
@@ -185,7 +200,7 @@ namespace StreetSmartArcMap.Configuration
                 OverlayDrawDistanceInMeters = 30,
 
                 Agreement = false,
-                Culture = "en-US",
+                Culture = "en",
             };
 
             result.Save();

@@ -35,6 +35,9 @@
             this.btnApply = new System.Windows.Forms.Button();
             this.tcSettings = new System.Windows.Forms.TabControl();
             this.tbSettings = new System.Windows.Forms.TabPage();
+            this.grLocalization = new System.Windows.Forms.GroupBox();
+            this.lblCulture = new System.Windows.Forms.Label();
+            this.cbCulture = new System.Windows.Forms.ComboBox();
             this.grLogin = new System.Windows.Forms.GroupBox();
             this.btnLogin = new System.Windows.Forms.Button();
             this.lblLogin = new System.Windows.Forms.Label();
@@ -77,12 +80,10 @@
             this.rtbAbout = new System.Windows.Forms.RichTextBox();
             this.tbAgreement = new System.Windows.Forms.TabPage();
             this.txtAgreement = new System.Windows.Forms.TextBox();
-            this.grLocalization = new System.Windows.Forms.GroupBox();
-            this.lblCulture = new System.Windows.Forms.Label();
-            this.cbCulture = new System.Windows.Forms.ComboBox();
             this.plButtons.SuspendLayout();
             this.tcSettings.SuspendLayout();
             this.tbSettings.SuspendLayout();
+            this.grLocalization.SuspendLayout();
             this.grLogin.SuspendLayout();
             this.grGeneral.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudOverlayDrawDistance)).BeginInit();
@@ -93,7 +94,6 @@
             this.grAPI.SuspendLayout();
             this.tbAbout.SuspendLayout();
             this.tbAgreement.SuspendLayout();
-            this.grLocalization.SuspendLayout();
             this.SuspendLayout();
             // 
             // plButtons
@@ -145,6 +145,29 @@
             resources.ApplyResources(this.tbSettings, "tbSettings");
             this.tbSettings.Name = "tbSettings";
             this.tbSettings.UseVisualStyleBackColor = true;
+            // 
+            // grLocalization
+            // 
+            this.grLocalization.Controls.Add(this.lblCulture);
+            this.grLocalization.Controls.Add(this.cbCulture);
+            resources.ApplyResources(this.grLocalization, "grLocalization");
+            this.grLocalization.Name = "grLocalization";
+            this.grLocalization.TabStop = false;
+            // 
+            // lblCulture
+            // 
+            resources.ApplyResources(this.lblCulture, "lblCulture");
+            this.lblCulture.Name = "lblCulture";
+            // 
+            // cbCulture
+            // 
+            resources.ApplyResources(this.cbCulture, "cbCulture");
+            this.cbCulture.DisplayMember = "DisplayName";
+            this.cbCulture.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbCulture.FormattingEnabled = true;
+            this.cbCulture.Name = "cbCulture";
+            this.cbCulture.Sorted = true;
+            this.cbCulture.ValueMember = "Name";
             // 
             // grLogin
             // 
@@ -426,29 +449,6 @@
             this.txtAgreement.Name = "txtAgreement";
             this.txtAgreement.ReadOnly = true;
             // 
-            // grLocalization
-            // 
-            this.grLocalization.Controls.Add(this.lblCulture);
-            this.grLocalization.Controls.Add(this.cbCulture);
-            resources.ApplyResources(this.grLocalization, "grLocalization");
-            this.grLocalization.Name = "grLocalization";
-            this.grLocalization.TabStop = false;
-            // 
-            // lblCulture
-            // 
-            resources.ApplyResources(this.lblCulture, "lblCulture");
-            this.lblCulture.Name = "lblCulture";
-            // 
-            // cbCulture
-            // 
-            resources.ApplyResources(this.cbCulture, "cbCulture");
-            this.cbCulture.DisplayMember = "NativeName";
-            this.cbCulture.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbCulture.FormattingEnabled = true;
-            this.cbCulture.Name = "cbCulture";
-            this.cbCulture.Sorted = true;
-            this.cbCulture.ValueMember = "Name";
-            // 
             // StreetSmartConfigurationForm
             // 
             resources.ApplyResources(this, "$this");
@@ -466,6 +466,8 @@
             this.plButtons.ResumeLayout(false);
             this.tcSettings.ResumeLayout(false);
             this.tbSettings.ResumeLayout(false);
+            this.grLocalization.ResumeLayout(false);
+            this.grLocalization.PerformLayout();
             this.grLogin.ResumeLayout(false);
             this.grLogin.PerformLayout();
             this.grGeneral.ResumeLayout(false);
@@ -483,8 +485,6 @@
             this.tbAbout.ResumeLayout(false);
             this.tbAgreement.ResumeLayout(false);
             this.tbAgreement.PerformLayout();
-            this.grLocalization.ResumeLayout(false);
-            this.grLocalization.PerformLayout();
             this.ResumeLayout(false);
 
         }

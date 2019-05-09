@@ -190,7 +190,7 @@ namespace StreetSmartArcMap.DockableWindows
             return envelope;
         }
 
-        private void SetMapExtentToCones(bool redraw = true)
+        internal void SetMapExtentToCones(bool redraw = true)
         {
             var view = ArcMap.Document.ActiveView;
 
@@ -237,6 +237,8 @@ namespace StreetSmartArcMap.DockableWindows
         internal void SetVisibility()
         {
             SetVisibility(ConePerViewerDict != null && ConePerViewerDict.Count > 0);
+
+            RedrawCones();
         }
 
         private void SetVisibility(bool visible)

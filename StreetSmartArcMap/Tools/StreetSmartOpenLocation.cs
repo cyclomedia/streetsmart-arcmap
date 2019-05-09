@@ -76,6 +76,8 @@ namespace StreetSmartArcMap.Tools
 
                             await StreetSmartApiWrapper.Instance.Open(Configuration.Configuration.Instance.ApiSRS, imageId, (keyPressed == Keys.ShiftKey));
 
+
+
                             ArcMap.Document?.ActiveView?.ScreenDisplay?.Invalidate(ArcMap.Document.ActiveView.Extent, true, (short)ESRI.ArcGIS.Display.esriScreenCache.esriNoScreenCache);
                         }
                         else

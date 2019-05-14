@@ -116,7 +116,6 @@
     <Compile Include="Model\Namespaces.cs" />
     <Compile Include="Model\Shape\Point.cs" />
     <Compile Include="Model\Shape\ShapeType.cs" />
-    <Compile Include="Model\ViewingCone.cs" />
     <Compile Include="Model\Wfs\WfsFeature.cs" />
     <Compile Include="ViewersChangeEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -124,7 +123,6 @@
     <Compile Include="StreetSmartApiWrapper.cs" />
     <Compile Include="Utilities\FileUtils.cs" />
     <Compile Include="Utilities\MakeTransparant.cs" />
-    <Compile Include="ViewingConeChangeEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

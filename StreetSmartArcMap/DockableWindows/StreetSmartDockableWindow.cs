@@ -23,11 +23,12 @@ using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Geometry;
 using StreetSmartArcMap.AddIns;
 using StreetSmartArcMap.Logic;
-using StreetSmartArcMap.Logic.Model;
+using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using WinPoint = System.Drawing.Point;
 
@@ -42,6 +43,7 @@ namespace StreetSmartArcMap.DockableWindows
         #region Constants
 
         private const byte Alpha = 192;
+        private const int MaxTimeUpdate = 100;
 
         #endregion Constants
 
@@ -66,6 +68,9 @@ namespace StreetSmartArcMap.DockableWindows
         /// Host object of the dockable window
         /// </summary>
         private object Hook { get; set; }
+
+        public bool _toUpdateCones { get; private set; }
+        public System.Threading.Timer _updateTimer { get; private set; }
 
         #endregion Private members
 
@@ -94,20 +99,7 @@ namespace StreetSmartArcMap.DockableWindows
 
         #region Event handlers
 
-        private void AvEvents_AfterDraw(IDisplay Display, esriViewDrawPhase phase)
-        {
-            if (InvokeRequired)
-            {
-                Invoke(new Action(() => AvEvents_AfterDraw(Display, phase)));
-            }
-            else
-            {
-                if (phase == esriViewDrawPhase.esriViewForeground)
-                {
-                    RedrawCones();
-                }
-            }
-        }
+
 
         private void API_OnViewerChangeEvent(ViewersChangeEventArgs args)
         {
@@ -118,27 +110,24 @@ namespace StreetSmartArcMap.DockableWindows
             else
             {
                 SetVisibility(args.Viewers.Count > 0);
+                // force a repaint.
+                var activeView = ArcUtils.ActiveView;
+                activeView.ScreenDisplay?.Invalidate(activeView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
 
-                var missingViewers = new List<string>();
+                var closedViewers = new List<string>();
                 lock (ConePerViewerDict)
                 {
                     foreach (var kvp in ConePerViewerDict)
                     {
                         if (!args.Viewers.Any(v => v == kvp.Key))
                         {
-                            missingViewers.Add(kvp.Key);
+                            closedViewers.Add(kvp.Key);
                         }
                     }
-                    foreach (var removeViewer in missingViewers)
+                    foreach (var removeViewer in closedViewers)
                     {
                         ConePerViewerDict.Remove(removeViewer);
                     }
-                }
-                var avEvents = ArcUtils.ActiveViewEvents;
-                if (avEvents != null)
-                {
-                    avEvents.AfterDraw -= AvEvents_AfterDraw;
-                    avEvents.AfterDraw += AvEvents_AfterDraw;
                 }
             }
         }
@@ -190,22 +179,6 @@ namespace StreetSmartArcMap.DockableWindows
             return envelope;
         }
 
-        internal void SetMapExtentToCones(bool redraw = true)
-        {
-            var view = ArcMap.Document.ActiveView;
-
-            if (view != null)
-                view.Extent = CalculateConesEnvelope();
-
-            if (redraw)
-                RedrawMapExtent();
-        }
-
-        private void RedrawMapExtent()
-        {
-            ArcMap.Document?.ActiveView?.ScreenDisplay?.Invalidate(ArcMap.Document.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
-        }
-
         private void API_OnViewingConeChanged(ViewingConeChangeEventArgs args)
         {
             if (InvokeRequired)
@@ -218,10 +191,47 @@ namespace StreetSmartArcMap.DockableWindows
                 var viewerId = args.ViewerId;
                 lock (ConePerViewerDict)
                 {
-                    ConePerViewerDict[viewerId] = cone;
+                    if (ConePerViewerDict.ContainsKey(viewerId))
+                    {
+                        var _current = ConePerViewerDict[viewerId];
+                        if (!_current.Equals(cone))
+                        {
+                            _current.Dispose();
+                            ConePerViewerDict[viewerId] = cone;
+                            cone.Redraw();
+                        }
+                    }
+                    else
+                    {
+                        ConePerViewerDict[viewerId] = cone;
+                        cone.Redraw();
+                    }
                 }
+                var avEvents = ArcUtils.ActiveViewEvents;
+                if (avEvents != null)
+                {
+                    avEvents.AfterDraw -= AvEvents_AfterDraw;
+                    avEvents.AfterDraw += AvEvents_AfterDraw;
+                }
+            }
+        }
 
-                RedrawMapExtent();
+        private void AvEvents_AfterDraw(IDisplay Display, esriViewDrawPhase phase)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => AvEvents_AfterDraw(Display, phase)));
+            }
+            else
+            {
+                if (phase == esriViewDrawPhase.esriViewForeground)
+                {
+                    foreach(var kvp in ConePerViewerDict)
+                    {
+                        var cone = kvp.Value;
+                        cone.AfterDraw(Display, phase);
+                    }
+                }
             }
         }
 
@@ -237,87 +247,26 @@ namespace StreetSmartArcMap.DockableWindows
         internal void SetVisibility()
         {
             SetVisibility(ConePerViewerDict != null && ConePerViewerDict.Count > 0);
-
-            RedrawCones();
         }
 
         private void SetVisibility(bool visible)
         {
+            var dockWindowManager = ArcMap.Application as ESRI.ArcGIS.Framework.IDockableWindowManager;
+            ESRI.ArcGIS.esriSystem.UID windowId = new ESRI.ArcGIS.esriSystem.UIDClass { Value = "Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" };
+            ESRI.ArcGIS.Framework.IDockableWindow window = dockWindowManager.GetDockableWindow(windowId);
+
             if (visible)
             {
-                Visible = true;
+
+                if (!window.IsVisible())
+                    window.Show(true);
             }
             else
             {
-                var dockWindowManager = ArcMap.Application as ESRI.ArcGIS.Framework.IDockableWindowManager;
-                ESRI.ArcGIS.esriSystem.UID windowId = new ESRI.ArcGIS.esriSystem.UIDClass { Value = "Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" };
-                ESRI.ArcGIS.Framework.IDockableWindow window = dockWindowManager.GetDockableWindow(windowId);
-
                 if (window.IsVisible())
                     window.Show(false);
             }
-        }
 
-        private void RedrawCones()
-        {
-            var config = Configuration.Configuration.Instance;
-            int srs = int.Parse(config.ApiSRS.Substring(config.ApiSRS.IndexOf(":") + 1));
-            // empty views
-            var extension = StreetSmartExtension.GetExtension();
-            if (extension.InsideScale())
-            {
-                var display = ArcMap.Document?.ActiveView?.ScreenDisplay;
-                display.Filter = new TransparencyDisplayFilterClass { Transparency = Alpha };
-                var displayTransformation = display.DisplayTransformation;
-                display.StartDrawing(display.hDC, (short)esriScreenCache.esriNoScreenCache);
-
-                lock (ConePerViewerDict)
-                {
-                    foreach (var kvp in ConePerViewerDict)
-                    {
-                        var cone = kvp.Value;
-
-                        var mappoint = new Point()
-                        {
-                            X = cone.Coordinate.X.Value,
-                            Y = cone.Coordinate.Y.Value,
-                            Z = cone.Coordinate.Z.Value,
-                            SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs)
-                        };
-                        // Project the API SRS to the current map SRS.
-                        mappoint.Project(ArcUtils.SpatialReference);
-
-                        var symbol = new SimpleFillSymbol()
-                        {
-                            Color = Converter.ToRGBColor(cone.Color),
-                            Style = esriSimpleFillStyle.esriSFSSolid
-                        };
-
-                        int screenX, screenY;
-                        displayTransformation.FromMapPoint(mappoint, out screenX, out screenY);
-
-                        double angleh = (cone.Orientation.HFov ?? 0.0) * Math.PI / 360;
-                        double angle = (270 + (cone.Orientation.Yaw ?? 0.0)) % 360 * Math.PI / 180;
-                        double angle1 = angle - angleh;
-                        double angle2 = angle + angleh;
-                        int size = 48; // was: const (value 96) / 2
-
-                        var screenPoint1 = new WinPoint(screenX + (int)(size * Math.Cos(angle1)), screenY + (int)(size * Math.Sin(angle1)));
-                        var screenPoint2 = new WinPoint(screenX + (int)(size * Math.Cos(angle2)), screenY + (int)(size * Math.Sin(angle2)));
-                        var point1 = displayTransformation.ToMapPoint(screenPoint1.X, screenPoint1.Y);
-                        var point2 = displayTransformation.ToMapPoint(screenPoint2.X, screenPoint2.Y);
-
-                        var polygon = new Polygon();
-                        polygon.AddPoint(mappoint);
-                        polygon.AddPoint(point1);
-                        polygon.AddPoint(point2);
-
-                        display.SetSymbol((ISymbol)symbol);
-                        display.DrawPolygon((IGeometry)polygon);
-                    }
-                }
-                display.FinishDrawing();
-            }
         }
 
         #endregion Functions (Private)

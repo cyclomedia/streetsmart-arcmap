@@ -142,7 +142,30 @@
     <Compile Include="Layers\RecordingLayer.cs" />
     <Compile Include="Layers\VectorLayer.cs" />
     <Compile Include="Layers\WfsLayer.cs" />
-    <Compile Include="Objects\Arrow.cs" />
+    <Compile Include="Logic\Configuration\Configuration.cs" />
+    <Compile Include="Logic\IStreetSmartOptions.cs" />
+    <Compile Include="Logic\Model\Atlas\Height.cs" />
+    <Compile Include="Logic\Model\Atlas\Image.cs" />
+    <Compile Include="Logic\Model\Atlas\Images.cs" />
+    <Compile Include="Logic\Model\Atlas\ProductType.cs" />
+    <Compile Include="Logic\Model\Atlas\Recording.cs" />
+    <Compile Include="Logic\Model\Capabilities\BoundingBox.cs" />
+    <Compile Include="Logic\Model\Capabilities\FeatureType.cs" />
+    <Compile Include="Logic\Model\Capabilities\Name.cs" />
+    <Compile Include="Logic\Model\Capabilities\OutputFormats.cs" />
+    <Compile Include="Logic\Model\Capabilities\Point.cs" />
+    <Compile Include="Logic\Model\IMappedFeature.cs" />
+    <Compile Include="Logic\Model\Namespaces.cs" />
+    <Compile Include="Logic\Model\Shape\BaseShape.cs" />
+    <Compile Include="Logic\Model\Shape\IShape.cs" />
+    <Compile Include="Logic\Model\Shape\Point.cs" />
+    <Compile Include="Logic\Model\Shape\ShapeType.cs" />
+    <Compile Include="Logic\Model\Wfs\WfsFeature.cs" />
+    <Compile Include="Logic\State.cs" />
+    <Compile Include="Logic\StreetSmartApiWrapper.cs" />
+    <Compile Include="Logic\Utilities\FileUtils.cs" />
+    <Compile Include="Logic\Utilities\MakeTransparant.cs" />
+    <Compile Include="Objects\ViewingCone.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -154,6 +177,8 @@
     <Compile Include="Utilities\FormStyling.cs" />
     <Compile Include="Utilities\ImageExtensions.cs" />
     <Compile Include="Utilities\WindowWrapper.cs" />
+    <Compile Include="ViewersChangeEventArgs.cs" />
+    <Compile Include="ViewingConeChangeEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Config.esriaddinx">
@@ -218,12 +243,6 @@
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Images\GsCycloMediaOptions.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\StreetSmartArcMap.Logic\StreetSmartArcMap.Logic.csproj">
-      <Project>{d4973164-4449-4be5-a777-31fbf855454b}</Project>
-      <Name>StreetSmartArcMap.Logic</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Install\cef.pak" />
@@ -340,6 +359,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <OutputPath>bin\x86\Debug\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\ESRI\ESRI.ArcGIS.AddIns.targets" Condition="Exists('$(MSBuildExtensionsPath)\ESRI\ESRI.ArcGIS.AddIns.targets')" />

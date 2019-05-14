@@ -39,9 +39,7 @@ namespace StreetSmartArcMap.Forms
         {
             InitializeComponent();
 
-            LoadLoginData();
-            LoadSpatialReferenceData();
-            LoadGeneralSettings();
+            reloadSettings();
 
             FormStyling.SetFont(this);
 
@@ -49,11 +47,18 @@ namespace StreetSmartArcMap.Forms
             SetAgreement();
         }
 
-        private void btnOk_Click(object sender, EventArgs e)
+        private void reloadSettings()
+        {
+            LoadLoginData();
+            LoadSpatialReferenceData();
+            LoadGeneralSettings();
+        }
+
+        private async void btnOk_Click(object sender, EventArgs e)
         {
             Save();
 
-            StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
+            await StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
 
             Close();
         }
@@ -63,11 +68,11 @@ namespace StreetSmartArcMap.Forms
             Close();
         }
 
-        private void btnApply_Click(object sender, EventArgs e)
+        private async void btnApply_Click(object sender, EventArgs e)
         {
             Save();
 
-            StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
+            await StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
         }
 
         public static void CheckOpenCredentials()
@@ -140,9 +145,13 @@ namespace StreetSmartArcMap.Forms
         public static void OpenCloseSwitch()
         {
             if (_StreetSmartConfigurationForm == null)
+            {
                 OpenForm();
+            }
             else
+            {
                 CloseForm();
+            }
         }
 
         public static void OpenForm()

@@ -1,7 +1,8 @@
 ﻿using StreetSmartArcMap.Logic.Model;
+using StreetSmartArcMap.Objects;
 using System;
 
-namespace StreetSmartArcMap.Logic
+namespace StreetSmartArcMap
 {
     public class ViewingConeChangeEventArgs : EventArgs
     {

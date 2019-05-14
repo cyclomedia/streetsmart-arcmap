@@ -109,7 +109,7 @@ namespace StreetSmartArcMap.DockableWindows
             }
             else
             {
-                SetVisibility(args.Viewers.Count > 0);
+                
                 // force a repaint.
                 var activeView = ArcUtils.ActiveView;
                 activeView.ScreenDisplay?.Invalidate(activeView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
@@ -129,6 +129,8 @@ namespace StreetSmartArcMap.DockableWindows
                         ConePerViewerDict.Remove(removeViewer);
                     }
                 }
+
+                SetVisibility(args.Viewers.Count > 0);
             }
         }
 

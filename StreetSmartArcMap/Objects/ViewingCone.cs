@@ -112,7 +112,11 @@ namespace StreetSmartArcMap.Objects
                         var symbol = new SimpleFillSymbol()
                         {
                             Color = Converter.ToRGBColor(Color),
-                            Style = esriSimpleFillStyle.esriSFSSolid
+                            Style = esriSimpleFillStyle.esriSFSSolid,
+                            Outline = new SimpleLineSymbol()
+                            {
+                                Style = esriSimpleLineStyle.esriSLSNull
+                            }
                         };
 
                         int screenX, screenY;
@@ -149,16 +153,17 @@ namespace StreetSmartArcMap.Objects
                 IActiveView activeView = ArcUtils.ActiveView;
                 if (activeView != null)
                 {
-                    var display = activeView.ScreenDisplay;
-                    display.Invalidate(activeView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
+                    //var display = activeView.ScreenDisplay;
+                    //display.Invalidate(activeView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
 
                     // We should calculate an envelope around this cone to invalidate only that extent, instead of everything on screen.
-                    /*
+                    
                     var display = ArcUtils.ActiveView.ScreenDisplay;
                     var displayTransformation = display.DisplayTransformation;
                     //double size = displayTransformation.FromPoints(coneSize);
                     var config = Configuration.Configuration.Instance;
                     int srs = int.Parse(config.ApiSRS.Substring(config.ApiSRS.IndexOf(":") + 1));
+                    var apiSrs = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs);
                     double x, y;
                     ESRI.ArcGIS.Geometry.Point mappoint;
                     lock (Coordinate)
@@ -168,12 +173,12 @@ namespace StreetSmartArcMap.Objects
                             X = Coordinate.X.Value,
                             Y = Coordinate.Y.Value,
                             Z = Coordinate.Z.Value,
-                            SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs)
+                            SpatialReference = apiSrs
                         };
                     }
                     // Project the API SRS to the current map SRS.
-                    mappoint.Project(ArcUtils.SpatialReference);
-                    var test = mappoint.SpatialReference?.FactoryCode;
+                    //mappoint.Project(ArcUtils.SpatialReference);
+                    //var test = mappoint.SpatialReference?.FactoryCode;
 
                     int screenX, screenY;
                     displayTransformation.FromMapPoint(mappoint, out screenX, out screenY);
@@ -189,10 +194,9 @@ namespace StreetSmartArcMap.Objects
                     //double ymin = mappoint.Y - size;
                     //double ymax = mappoint.Y + size;
 
-                    IEnvelope envelope = new EnvelopeClass() { XMin = bottomLeft.X, XMax = topRight.X, YMin = bottomLeft.Y, YMax = topRight.Y, SpatialReference = ArcUtils.SpatialReference};
-                    
+                    IEnvelope envelope = new EnvelopeClass() { XMin = bottomLeft.X, XMax = topRight.X, YMin = bottomLeft.Y, YMax = topRight.Y, SpatialReference = apiSrs};
                     activeView.ScreenDisplay?.Invalidate(envelope, true, (short)esriScreenCache.esriNoScreenCache);
-                    */
+                    
 
                     if (_toUpdate)
                     {

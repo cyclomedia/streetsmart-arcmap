@@ -82,8 +82,7 @@ namespace StreetSmartArcMap.Tools
                         }
                         else
                         {
-                            // TODO: Translate
-                            MessageBox.Show("You are not authorized to view the image"); // Resources.GsOpenLocation_OnMouseUp_You_are_not_authorized_to_view_the_image_
+                            MessageBox.Show(Properties.Resources.ErrorNotAuthorized);
                         }
                     }
                 }

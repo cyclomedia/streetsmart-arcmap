@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Xml.Linq;
 using Point = ESRI.ArcGIS.Geometry.Point;
@@ -325,41 +326,54 @@ namespace StreetSmartArcMap.Layers
 
             if ((activeView != null) && InsideScale)
             {
-                IMappedFeature mapFeature = CreateMappedFeature(null);
-                string objectId = mapFeature.ObjectId;
-                IScreenDisplay screenDisplay = activeView.ScreenDisplay;
-                IDisplayTransformation dispTrans = screenDisplay.DisplayTransformation;
-                IPoint pointLu = dispTrans.ToMapPoint(x - SizeLayer, y - SizeLayer);
-                IPoint pointRd = dispTrans.ToMapPoint(x + SizeLayer, y + SizeLayer);
-
-                IEnvelope envelope = (IEnvelope)new Envelope()
+                try
                 {
-                    XMin = pointLu.X,
-                    XMax = pointRd.X,
-                    YMin = pointLu.Y,
-                    YMax = pointRd.Y
-                };
-                envelope.SpatialReference = ArcUtils.SpatialReference;
-                envelope.Project(SpatialReference);
+                    IMappedFeature mapFeature = CreateMappedFeature(null);
+                    string objectId = mapFeature.ObjectId;
+                    IScreenDisplay screenDisplay = activeView.ScreenDisplay;
+                    IDisplayTransformation dispTrans = screenDisplay.DisplayTransformation;
+                    IPoint pointLu = dispTrans.ToMapPoint(x - SizeLayer, y - SizeLayer);
+                    IPoint pointRd = dispTrans.ToMapPoint(x + SizeLayer, y + SizeLayer);
 
-                ISpatialFilter spatialFilter = new SpatialFilter()
-                {
-                    Geometry = envelope,
-                    GeometryField = FeatureClass.ShapeFieldName,
-                    SpatialRel = esriSpatialRelEnum.esriSpatialRelContains,
-                    SubFields = objectId
-                };
+                    IEnvelope envelope = (IEnvelope)new Envelope()
+                    {
+                        XMin = pointLu.X,
+                        XMax = pointRd.X,
+                        YMin = pointLu.Y,
+                        YMax = pointRd.Y
+                    };
+                    envelope.SpatialReference = ArcUtils.SpatialReference;
+                    envelope.Project(SpatialReference);
 
-                var existsResult = FeatureClass.Search(spatialFilter, false);
-                IFeature feature;
+                    ISpatialFilter spatialFilter = new SpatialFilter()
+                    {
+                        Geometry = envelope,
+                        GeometryField = FeatureClass.ShapeFieldName,
+                        SpatialRel = esriSpatialRelEnum.esriSpatialRelContains,
+                        SubFields = objectId
+                    };
 
-                // ReSharper disable UseIndexedProperty
-                while ((feature = existsResult.NextFeature()) != null)
-                {
-                    int imId = existsResult.FindField(objectId);
-                    result = (string)feature.get_Value(imId);
+                    var existsResult = FeatureClass.Search(spatialFilter, false);
+                    try
+                    {
+                        IFeature feature;
+
+                        // ReSharper disable UseIndexedProperty
+                        while ((feature = existsResult.NextFeature()) != null)
+                        {
+                            int imId = existsResult.FindField(objectId);
+                            result = (string)feature.get_Value(imId);
+                        }
+                    }
+                    finally
+                    {
+                        Marshal.ReleaseComObject(existsResult);
+                    }
                 }
-
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.Message, "CycloMediaLayer.GetFeatureFromPoint");
+                }
                 // ReSharper restore UseIndexedProperty
             }
 
@@ -380,27 +394,33 @@ namespace StreetSmartArcMap.Layers
             };
 
             var existsResult = FeatureClass.Search(filter, false);
-            IFeature feature = existsResult.NextFeature();
-            // ReSharper disable UseIndexedProperty
-
-            if (feature != null)
+            try
             {
-                foreach (var field in result.Fields)
+                IFeature feature = existsResult.NextFeature();
+                // ReSharper disable UseIndexedProperty
+
+                if (feature != null)
                 {
-                    string name = field.Key;
-                    int nameId = existsResult.FindField(name);
-                    object item = feature.get_Value(nameId);
-                    result.UpdateItem(name, item);
+                    foreach (var field in result.Fields)
+                    {
+                        string name = field.Key;
+                        int nameId = existsResult.FindField(name);
+                        object item = feature.get_Value(nameId);
+                        result.UpdateItem(name, item);
+                    }
+
+                    var point = feature.Shape as IPoint;
+                    result.UpdateItem(shapeFieldName, point);
                 }
-
-                var point = feature.Shape as IPoint;
-                result.UpdateItem(shapeFieldName, point);
+                else
+                {
+                    result = null;
+                }
             }
-            else
+            finally
             {
-                result = null;
+                Marshal.ReleaseComObject(existsResult);
             }
-
             // ReSharper restore UseIndexedProperty
             return result;
         }
@@ -419,7 +439,14 @@ namespace StreetSmartArcMap.Layers
             };
 
             var existsResult = FeatureClass.Search(filter, false);
-            return existsResult.NextFeature();
+            try
+            {
+                return existsResult.NextFeature();
+            }
+            finally
+            {
+                Marshal.ReleaseComObject(existsResult);
+            }
         }
 
         public void AddZToSketch(IEditSketch3 sketch)
@@ -664,29 +691,44 @@ namespace StreetSmartArcMap.Layers
         {
             if (featureClass != null)
             {
-                IFeatureWorkspace featureWorkspace = _cycloMediaGroupLayer.FeatureWorkspace;
-                var workspaceEdit = featureWorkspace as IWorkspaceEdit;
-                var spatialCacheManager = featureWorkspace as ISpatialCacheManager3;
-
-                if (workspaceEdit != null)
+                try
                 {
-                    workspaceEdit.StartEditing(false);
-                    var existsResult = featureClass.Search(null, false);
-                    IFeature feature;
+                    IFeatureWorkspace featureWorkspace = _cycloMediaGroupLayer.FeatureWorkspace;
+                    var workspaceEdit = featureWorkspace as IWorkspaceEdit;
+                    var spatialCacheManager = featureWorkspace as ISpatialCacheManager3;
 
-                    while ((feature = existsResult.NextFeature()) != null)
+                    if (workspaceEdit != null)
                     {
-                        feature.Delete();
-                    }
+                        workspaceEdit.StartEditing(false);
 
-                    workspaceEdit.StopEditing(true);
+                        var existsResult = featureClass.Search(null, false);
+                        try
+                        {
+                            IFeature feature;
 
-                    if (spatialCacheManager != null)
-                    {
-                        IActiveView activeView = ArcUtils.ActiveView;
-                        IEnvelope envelope = activeView.Extent;
-                        spatialCacheManager.FillCache(envelope);
+                            while ((feature = existsResult.NextFeature()) != null)
+                            {
+                                feature.Delete();
+                            }
+
+                            workspaceEdit.StopEditing(true);
+
+                            if (spatialCacheManager != null)
+                            {
+                                IActiveView activeView = ArcUtils.ActiveView;
+                                IEnvelope envelope = activeView.Extent;
+                                spatialCacheManager.FillCache(envelope);
+                            }
+                        }
+                        finally
+                        {
+                            Marshal.ReleaseComObject(existsResult);
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.Message, "CycloMediaLayer.MakeEmpty");
                 }
             }
         }
@@ -751,20 +793,36 @@ namespace StreetSmartArcMap.Layers
                         };
 
                         workspaceEdit.StartEditing(false);
-                        var existsResult = FeatureClass.Search(spatialFilter, false);
-                        var existsCount = FeatureClass.FeatureCount(spatialFilter);
-                        var imId = existsResult.FindField(idField);
-                        // ReSharper disable UseIndexedProperty
 
-                        for (int i = 0; i < existsCount; i++)
+                        try
                         {
-                            IFeature feature = existsResult.NextFeature();
-                            var recValue = feature.get_Value(imId) as string;
-
-                            if ((recValue != null) && (!exists.ContainsKey(recValue)))
+                            var existsResult = FeatureClass.Search(spatialFilter, false);
+                            try
                             {
-                                exists.Add(recValue, feature);
+                                var existsCount = FeatureClass.FeatureCount(spatialFilter);
+
+                                var imId = existsResult.FindField(idField);
+                                // ReSharper disable UseIndexedProperty
+
+                                for (int i = 0; i < existsCount; i++)
+                                {
+                                    IFeature feature = existsResult.NextFeature();
+                                    var recValue = feature.get_Value(imId) as string;
+
+                                    if ((recValue != null) && (!exists.ContainsKey(recValue)))
+                                    {
+                                        exists.Add(recValue, feature);
+                                    }
+                                }
                             }
+                            finally
+                            {
+                                Marshal.ReleaseComObject(existsResult);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Trace.WriteLine(ex.Message, "CycloMediaLayer.SaveFeatureMembers");
                         }
                     }
 

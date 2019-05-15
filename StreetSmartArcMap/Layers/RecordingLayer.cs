@@ -27,6 +27,7 @@ using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Xml.Linq;
 
 namespace StreetSmartArcMap.Layers
@@ -208,17 +209,23 @@ namespace StreetSmartArcMap.Layers
             };
 
             var existsResult = FeatureClass.Search(spatialFilter, false);
-            IFeature feature = existsResult.NextFeature();
-
-            if (feature != null)
+            try
             {
-                // ReSharper disable UseIndexedProperty
-                int imId = existsResult.FindField(objectId);
-                object value = feature.get_Value(imId);
-                result = (DateTime)value;
-                // ReSharper restore UseIndexedProperty
-            }
+                IFeature feature = existsResult.NextFeature();
 
+                if (feature != null)
+                {
+                    // ReSharper disable UseIndexedProperty
+                    int imId = existsResult.FindField(objectId);
+                    object value = feature.get_Value(imId);
+                    result = (DateTime)value;
+                    // ReSharper restore UseIndexedProperty
+                }
+            }
+            finally
+            {
+                Marshal.ReleaseComObject(existsResult);
+            }
             return result;
         }
 
@@ -248,21 +255,28 @@ namespace StreetSmartArcMap.Layers
                 };
 
                 var existsResult = FeatureClass.Search(spatialFilter, false);
-                IFeature feature;
-                int count = 0;
-
-                // ReSharper disable UseIndexedProperty
-                while ((feature = existsResult.NextFeature()) != null)
+                try
                 {
-                    int heightId = existsResult.FindField(height);
-                    int groundLevelOffsetId = existsResult.FindField(groundLevelOffset);
-                    var heightValue = (double)feature.get_Value(heightId);
-                    var groundLevelOffsetValue = (double)feature.get_Value(groundLevelOffsetId);
-                    result = result + heightValue - groundLevelOffsetValue;
-                    count++;
-                }
+                    IFeature feature;
+                    int count = 0;
 
-                result = result / Math.Max(count, 1);
+                    // ReSharper disable UseIndexedProperty
+                    while ((feature = existsResult.NextFeature()) != null)
+                    {
+                        int heightId = existsResult.FindField(height);
+                        int groundLevelOffsetId = existsResult.FindField(groundLevelOffset);
+                        var heightValue = (double)feature.get_Value(heightId);
+                        var groundLevelOffsetValue = (double)feature.get_Value(groundLevelOffsetId);
+                        result = result + heightValue - groundLevelOffsetValue;
+                        count++;
+                    }
+
+                    result = result / Math.Max(count, 1);
+                }
+                finally
+                {
+                    Marshal.ReleaseComObject(existsResult);
+                }
                 // ReSharper restore UseIndexedProperty
             }
 

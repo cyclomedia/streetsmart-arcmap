@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace StreetSmartArcMap.Logic
+namespace StreetSmartArcMap
 {
     public class ViewersChangeEventArgs: EventArgs
     {

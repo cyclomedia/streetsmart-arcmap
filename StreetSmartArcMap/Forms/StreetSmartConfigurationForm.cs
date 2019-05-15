@@ -42,11 +42,9 @@ namespace StreetSmartArcMap.Forms
         {
             InitializeComponent();
 
-            LoadLoginData();
-            LoadSpatialReferenceData();
-            LoadGeneralSettings();
-            LoadCulture();
+            reloadSettings();
 
+            LoadCulture();
             LoadResources();
         }
 
@@ -60,13 +58,20 @@ namespace StreetSmartArcMap.Forms
             SetAgreement();
         }
 
-        private void btnOk_Click(object sender, EventArgs e)
+        private void reloadSettings()
+        {
+            LoadLoginData();
+            LoadSpatialReferenceData();
+            LoadGeneralSettings();
+        }
+
+        private async void btnOk_Click(object sender, EventArgs e)
         {
             Save();
 
             LoadResources();
 
-            StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
+            await StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
 
             Close();
         }
@@ -76,13 +81,13 @@ namespace StreetSmartArcMap.Forms
             Close();
         }
 
-        private void btnApply_Click(object sender, EventArgs e)
+        private async void btnApply_Click(object sender, EventArgs e)
         {
             Save();
 
             LoadResources();
 
-            StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
+            await StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
         }
 
         public static void CheckOpenCredentials()
@@ -135,7 +140,7 @@ namespace StreetSmartArcMap.Forms
 
             foreach (var spatialReference in spatialReferences)
             {
-                if (spatialReference.KnownInArcMap && spatialReference.WithinBoundary(boundary))
+                if (spatialReference.KnownInArcMap)
                 {
                     cbCycloramaSRS.Items.Add(spatialReference);
                     cbRecordingsSRS.Items.Add(spatialReference);
@@ -169,9 +174,13 @@ namespace StreetSmartArcMap.Forms
         public static void OpenCloseSwitch()
         {
             if (_StreetSmartConfigurationForm == null)
+            {
                 OpenForm();
+            }
             else
+            {
                 CloseForm();
+            }
         }
 
         public static void OpenForm()
@@ -183,6 +192,10 @@ namespace StreetSmartArcMap.Forms
                 int hWnd = application.hWnd;
                 IWin32Window parent = new WindowWrapper(hWnd);
                 _StreetSmartConfigurationForm.Show(parent);
+            }
+            else
+            {
+                _StreetSmartConfigurationForm.reloadSettings();
             }
         }
 

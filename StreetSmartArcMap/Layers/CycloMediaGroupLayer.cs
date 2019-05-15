@@ -306,7 +306,8 @@ namespace StreetSmartArcMap.Layers
                     Directory.CreateDirectory(location);
                 }
 
-                if ((string.IsNullOrEmpty(defaultRecordingSrs)) || (!int.TryParse(defaultRecordingSrs, out factoryCode)))
+                var srs = defaultRecordingSrs.Substring(defaultRecordingSrs.IndexOf(":")+1);
+                if ((string.IsNullOrEmpty(srs)) || (!int.TryParse(srs, out factoryCode)))
                 {
                     ISpatialReference spatialReference = ArcUtils.SpatialReference;
                     factoryCode = spatialReference.FactoryCode;

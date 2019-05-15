@@ -149,9 +149,14 @@ namespace StreetSmartArcMap.Objects
                 IActiveView activeView = ArcUtils.ActiveView;
                 if (activeView != null)
                 {
+                    var display = activeView.ScreenDisplay;
+                    display.Invalidate(activeView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
+
+                    // We should calculate an envelope around this cone to invalidate only that extent, instead of everything on screen.
+                    /*
                     var display = ArcUtils.ActiveView.ScreenDisplay;
-                    var dispTrans = display.DisplayTransformation;
-                    double size = dispTrans.FromPoints(coneSize);
+                    var displayTransformation = display.DisplayTransformation;
+                    //double size = displayTransformation.FromPoints(coneSize);
                     var config = Configuration.Configuration.Instance;
                     int srs = int.Parse(config.ApiSRS.Substring(config.ApiSRS.IndexOf(":") + 1));
                     double x, y;
@@ -166,16 +171,28 @@ namespace StreetSmartArcMap.Objects
                             SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs)
                         };
                     }
-                    Console.WriteLine($"Before: X: {mappoint.X}, Y: {mappoint.Y}, SRS: {mappoint.SpatialReference}");
                     // Project the API SRS to the current map SRS.
                     mappoint.Project(ArcUtils.SpatialReference);
-                    Console.WriteLine($"After: X: {mappoint.X}, Y: {mappoint.Y}, SRS: {mappoint.SpatialReference}");
-                    double xmin = mappoint.X - size;
-                    double xmax = mappoint.X + size;
-                    double ymin = mappoint.Y - size;
-                    double ymax = mappoint.Y + size;
-                    IEnvelope envelope = new EnvelopeClass() { XMin = xmin, XMax = xmax, YMin = ymin, YMax = ymax };
+                    var test = mappoint.SpatialReference?.FactoryCode;
+
+                    int screenX, screenY;
+                    displayTransformation.FromMapPoint(mappoint, out screenX, out screenY);
+                    var size = (int)coneSize / 2;
+                    var screenBL = new WinPoint(screenX - coneSize, screenY - coneSize);
+                    var screenTR = new WinPoint(screenX + coneSize, screenY + coneSize);
+
+                    var bottomLeft = displayTransformation.ToMapPoint(screenBL.X, screenBL.Y);
+                    var topRight = displayTransformation.ToMapPoint(screenTR.X, screenTR.Y);
+
+                    //double xmin = mappoint.X - size;
+                    //double xmax = mappoint.X + size;
+                    //double ymin = mappoint.Y - size;
+                    //double ymax = mappoint.Y + size;
+
+                    IEnvelope envelope = new EnvelopeClass() { XMin = bottomLeft.X, XMax = topRight.X, YMin = bottomLeft.Y, YMax = topRight.Y, SpatialReference = ArcUtils.SpatialReference};
+                    
                     activeView.ScreenDisplay?.Invalidate(envelope, true, (short)esriScreenCache.esriNoScreenCache);
+                    */
 
                     if (_toUpdate)
                     {

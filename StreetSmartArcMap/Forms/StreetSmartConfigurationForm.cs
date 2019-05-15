@@ -111,7 +111,7 @@ namespace StreetSmartArcMap.Forms
 
             foreach (var spatialReference in spatialReferences)
             {
-                if (spatialReference.KnownInArcMap && spatialReference.WithinBoundary(boundary))
+                if (spatialReference.KnownInArcMap)
                 {
                     cbCycloramaSRS.Items.Add(spatialReference);
                     cbRecordingsSRS.Items.Add(spatialReference);
@@ -163,6 +163,10 @@ namespace StreetSmartArcMap.Forms
                 int hWnd = application.hWnd;
                 IWin32Window parent = new WindowWrapper(hWnd);
                 _StreetSmartConfigurationForm.Show(parent);
+            }
+            else
+            {
+                _StreetSmartConfigurationForm.reloadSettings();
             }
         }
 

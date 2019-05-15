@@ -31,5 +31,8 @@ namespace StreetSmartArcMap.Logic
         string SpatialReferencesUrlToUse { get; }
         string ConfigurationUrlToUse { get; }
         string LocaleToUse { get; }
+
+        bool UseDefaultStreetSmartLocation { get; set; }
+        bool UseDefaultBaseUrl { get; set; }
     }
 }

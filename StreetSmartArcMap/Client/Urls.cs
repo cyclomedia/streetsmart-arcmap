@@ -30,22 +30,29 @@ namespace StreetSmartArcMap.Client
         // Properties
         // =========================================================================
         /// <summary>
-        /// The base url
+        /// The base url, used for Configuration and Recordings
         /// </summary>
         public static string BaseUrl = "https://atlas.cyclomedia.com";
-        public static string ApiBaseUrl = "https://streetsmart.cyclomedia.com";
         /// <summary>
-        /// The recording service url
+        /// The API Base URL, used for SpatialReferences and the API
         /// </summary>
-        //TODO: remove and use Web.RecordingsService.
-        public static string RecordingsServiceUrl = "/recordings/wfs";
-
+        public static string ApiBaseUrl = "https://streetsmart.cyclomedia.com/v18.10/api";
         /// <summary>
         /// The spatialreferences url
         /// </summary>
         public static string SpatialReferencesUrl = "/assets/srs/SpatialReference.xml";
-        public static string ApiUrl = "/api/v18.10";
+        /// <summary>
+        /// The API Url
+        /// </summary>
+        public static string ApiUrl = "/api-dotnet.html";
+        /// <summary>
+        /// The configuration url
+        /// </summary>
         public static string ConfigurationUrl = "/configuration";
+        /// <summary>
+        /// The recording service url
+        /// </summary>
+        public static string RecordingsServiceUrl = "/recordings/wfs";
         #endregion properties
     }
 }

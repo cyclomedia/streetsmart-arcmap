@@ -120,7 +120,7 @@ namespace StreetSmartArcMap.Buttons
             }
             catch (Exception ex)
             {
-                _logClient.Error("GsRecentDataLayer.OnClick", ex.Message, ex);
+                _logClient.Error("StreetSmartRecordingsLayer.OnClick", ex.Message, ex);
 
                 MessageBox.Show(ex.Message, Properties.Resources.ErrorIntegration);
             }

@@ -302,6 +302,7 @@
             resources.ApplyResources(this.chUseDefaultStreetSmartLocation, "chUseDefaultStreetSmartLocation");
             this.chUseDefaultStreetSmartLocation.Name = "chUseDefaultStreetSmartLocation";
             this.chUseDefaultStreetSmartLocation.UseVisualStyleBackColor = true;
+            this.chUseDefaultStreetSmartLocation.CheckedChanged += new System.EventHandler(this.chUseDefaultStreetSmartLocation_CheckedChanged);
             // 
             // txtAPIStreetSmartLocation
             // 

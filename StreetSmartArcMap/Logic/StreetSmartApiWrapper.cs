@@ -149,8 +149,9 @@ namespace StreetSmartArcMap.Logic
                 {
                     IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
                     IDomElement element = DomElementFactory.Create();
-
-                    ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, StreetSmartOptions.ConfigurationUrlToUse, addressSettings, element);
+                    ApiOptions = StreetSmartOptions.UseDefaultBaseUrl ?
+                        OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element) : 
+                        OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, StreetSmartOptions.ConfigurationUrlToUse, addressSettings, element);
 
                     await StreetSmartAPI.Init(ApiOptions);
                 }
@@ -188,26 +189,14 @@ namespace StreetSmartArcMap.Logic
                 //Destroy if existing
                 if (Initialised)
                 {
+                    Initialised = false;
                     await StreetSmartAPI.Destroy(ApiOptions);
+                    await InitApi(options);
                 }
 
-                InitApi(options);
-                //Create new
-                //if (StreetSmartOptions != null)
-                //{
-                //    IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
-                //    IDomElement element = DomElementFactory.Create();
-
-                //    //ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
-
-                //    ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, options.LocaleToUse, options.ConfigurationUrlToUse, addressSettings, element);
-
-                //    await StreetSmartAPI.Init(ApiOptions);
-                //}
-
-                //Open request
-                if (Initialised && RequestQuery != null)
-                    await Open(RequestSRS, RequestQuery);
+                ////Open request
+                //if (Initialised && RequestQuery != null)
+                //    await Open(RequestSRS, RequestQuery);
             }
             catch
             {
@@ -215,17 +204,30 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        public void InitApi(IStreetSmartOptions options, IStreetSmartAPI api = null)
+        public async Task InitApi(IStreetSmartOptions options, IStreetSmartAPI api = null)
         {
-            if (api == null)
-                StreetSmartAPI = StreetSmartAPIFactory.Create();
-            else
-                StreetSmartAPI = api;
-
             StreetSmartOptions = options;
-            StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
-            StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
-            StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
+            if (api == null)
+            {
+                if (StreetSmartAPI == null)
+                {
+                    StreetSmartAPI = StreetSmartAPIFactory.Create();
+                    StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
+                    StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
+                    StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
+                }
+                else
+                {
+                    // already ready, resume init
+                    await Init();
+                }
+            }
+            else
+            {
+                StreetSmartAPI = api;
+                await Init();
+            }
+
         }
 
         private async void NotifyViewerChange()

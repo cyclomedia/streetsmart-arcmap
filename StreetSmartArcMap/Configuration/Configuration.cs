@@ -57,20 +57,24 @@ namespace StreetSmartArcMap.Configuration
 
         public bool UseDefaultBaseUrl { get; set; }
         public string BaseUrl { get; set; }
-        [XmlIgnore()]
-        public string BaseUrlToUse => UseDefaultBaseUrl || string.IsNullOrWhiteSpace(BaseUrl) ? Urls.BaseUrl : BaseUrl;
+
 
         public bool UseDefaultStreetSmartLocation { get; set; }
         public string StreetSmartLocation { get; set; }
 
         [XmlIgnore()]
-        public string StreetSmartLocationToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? Urls.ApiBaseUrl : StreetSmartLocation;
+        public string BaseUrlToUse => UseDefaultBaseUrl || string.IsNullOrWhiteSpace(BaseUrl) ? Urls.BaseUrl : BaseUrl.ToLower().Replace("/configuration",string.Empty);
         [XmlIgnore()]
         public string RecordingsServiceUrlToUse => $"{BaseUrlToUse}{Urls.RecordingsServiceUrl}";
         [XmlIgnore()]
-        public string SpatialReferencesUrlToUse => $"{StreetSmartLocationToUse}{Urls.SpatialReferencesUrl}";
-        [XmlIgnore()]
         public string ConfigurationUrlToUse => $"{BaseUrlToUse}{Urls.ConfigurationUrl}";
+
+        [XmlIgnore()]
+        public string StreetSmartLocationToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.ApiUrl}" : StreetSmartLocation;
+        [XmlIgnore()]
+        public string SpatialReferencesUrlToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.SpatialReferencesUrl}" : $"{StreetSmartLocation.ToLower().Replace("/api-dotnet.html",string.Empty)}{Urls.SpatialReferencesUrl}";
+        
+
         [XmlIgnore()]
         public string LocaleToUse => Culture;
 
@@ -147,7 +151,7 @@ namespace StreetSmartArcMap.Configuration
 
         public bool UseProxyServer { get; set; }
         public string ProxyAddress { get; set; }
-        public bool ProxyPort { get; set; }
+        public int ProxyPort { get; set; }
         public bool BypassProxyOnLocal { get; set; }
         public bool ProxyUseDefaultCredentials { get; set; }
         public string ProxyUsername { get; set; }
@@ -222,7 +226,7 @@ namespace StreetSmartArcMap.Configuration
                 BaseUrl = Urls.BaseUrl,
                 UseDefaultBaseUrl = true,
 
-                StreetSmartLocation = Urls.ApiBaseUrl,
+                StreetSmartLocation = string.Empty,
                 UseDefaultStreetSmartLocation = true,
 
                 DefaultRecordingSrs = string.Empty,

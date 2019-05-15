@@ -116,7 +116,7 @@ namespace StreetSmartArcMap.Forms
             }
 
             chUseDefaultStreetSmartLocation.Checked = Config.UseDefaultStreetSmartLocation;
-            if (chUseDefaultStreetSmartLocation.Checked)
+            if (!chUseDefaultStreetSmartLocation.Checked)
             {
                 txtAPIStreetSmartLocation.Text = Config.StreetSmartLocation;
                 txtAPIStreetSmartLocation.Enabled = true;
@@ -126,6 +126,18 @@ namespace StreetSmartArcMap.Forms
                 txtAPIStreetSmartLocation.Text = "";
                 txtAPIStreetSmartLocation.Enabled = false;
             }
+
+
+
+
+            ckUseProxyServer.Checked = Config.UseProxyServer;
+            ckUseDefaultProxyCredentials.Checked = Config.ProxyUseDefaultCredentials;
+            txtProxyAddress.Text = Config.ProxyAddress;
+            txtProxyDomain.Text = Config.ProxyDomain;
+            txtProxyPort.Text = Config.ProxyPort.ToString();
+            txtProxyUsername.Text = Config.ProxyUsername;
+            txtProxyPassword.Text = Config.ProxyPassword;
+            ckBypassProxyOnLocal.Checked = Config.BypassProxyOnLocal;
         }
 
         private void LoadGeneralSettings()
@@ -273,6 +285,16 @@ namespace StreetSmartArcMap.Forms
             Config.UseDefaultStreetSmartLocation = chUseDefaultStreetSmartLocation.Checked;
             Config.StreetSmartLocation = txtAPIStreetSmartLocation.Text;
 
+            Config.UseProxyServer = ckUseProxyServer.Checked;
+            Config.ProxyUseDefaultCredentials = ckUseDefaultProxyCredentials.Checked;
+            Config.ProxyAddress = txtProxyAddress.Text;
+            Config.ProxyDomain = txtProxyDomain.Text;
+            var port = 0;
+            Config.ProxyPort = int.TryParse(txtProxyPort.Text, out port)?port:0;
+            Config.ProxyUsername = txtProxyUsername.Text;
+            Config.ProxyPassword = txtProxyPassword.Text;
+            Config.BypassProxyOnLocal = ckBypassProxyOnLocal.Checked;
+
             Config.Save();
 
             FormStyling.SetStyling(this);
@@ -389,7 +411,20 @@ namespace StreetSmartArcMap.Forms
             }
             else
             {
-                txtAPIConfigurationUrl.Enabled = false;
+                txtAPIConfigurationUrl.Enabled = true;
+            }
+        }
+
+        private void chUseDefaultStreetSmartLocation_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chUseDefaultStreetSmartLocation.Checked)
+            {
+                txtAPIStreetSmartLocation.Text = "";
+                txtAPIStreetSmartLocation.Enabled = false;
+            }
+            else
+            {
+                txtAPIStreetSmartLocation.Enabled = true;
             }
         }
     }

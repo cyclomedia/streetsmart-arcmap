@@ -26,12 +26,16 @@ using System.Xml.Serialization;
 
 using SystemIOFile = System.IO.File;
 using StreetSmartArcMap.Client;
+using System.Threading;
+using System.Globalization;
 
 namespace StreetSmartArcMap.Configuration
 {
     [XmlRoot("Configuration")]
     public class Configuration : INotifyPropertyChanged, IStreetSmartOptions
     {
+
+        public const string DefaultCulture = "en-GB";
         #region Events
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -95,6 +99,8 @@ namespace StreetSmartArcMap.Configuration
             }
         }
 
+        public string Culture { get; set; }
+
         #endregion
 
         #region Constructors
@@ -154,6 +160,8 @@ namespace StreetSmartArcMap.Configuration
             {
                 Serializer.Serialize(input, this);
             }
+
+            SetCulture(this);
         }
 
         private static void Load()
@@ -168,9 +176,25 @@ namespace StreetSmartArcMap.Configuration
 
                     _configuration = (Configuration)configuration;
 
+                    SetCulture(_configuration);
+
                     IsLoading = false;
                 }
             }
+        }
+
+        public void SetCulture()
+        {
+            SetCulture(this);
+        }
+
+        private static void SetCulture(Configuration config)
+        {
+            if (string.IsNullOrWhiteSpace(config.Culture))
+                config.Culture = DefaultCulture;
+
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(config.Culture);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(config.Culture);
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -198,6 +222,7 @@ namespace StreetSmartArcMap.Configuration
                 OverlayDrawDistanceInMeters = 30,
 
                 Agreement = false,
+                Culture = DefaultCulture,
             };
 
             result.Save();

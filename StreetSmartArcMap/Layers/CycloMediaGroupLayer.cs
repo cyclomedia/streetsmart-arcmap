@@ -53,7 +53,6 @@ namespace StreetSmartArcMap.Layers
         // Properties
         // =========================================================================
         public string Name { get { return "CycloMedia"; } }
-
         public IGroupLayer GroupLayer
         {
             get { return _groupLayer ?? (_groupLayer = GetGroupLayer()); }
@@ -276,6 +275,7 @@ namespace StreetSmartArcMap.Layers
                     CreateFeatureLayers();
                     var layer = _groupLayer as ILayer;
                     map.AddLayer(layer);
+
                 }
             }
             else
@@ -306,7 +306,8 @@ namespace StreetSmartArcMap.Layers
                     Directory.CreateDirectory(location);
                 }
 
-                if ((string.IsNullOrEmpty(defaultRecordingSrs)) || (!int.TryParse(defaultRecordingSrs, out factoryCode)))
+                var srs = defaultRecordingSrs.Substring(defaultRecordingSrs.IndexOf(":")+1);
+                if ((string.IsNullOrEmpty(srs)) || (!int.TryParse(srs, out factoryCode)))
                 {
                     ISpatialReference spatialReference = ArcUtils.SpatialReference;
                     factoryCode = spatialReference.FactoryCode;

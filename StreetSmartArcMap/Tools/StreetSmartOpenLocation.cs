@@ -71,20 +71,18 @@ namespace StreetSmartArcMap.Tools
                     {
                         if ((recording.IsAuthorized == null) || ((bool)recording.IsAuthorized))
                         {
-
-                            if (keyPressed == Keys.ShiftKey)
-                            {
-
-                            }
-
                             var extension = StreetSmartExtension.GetExtension();
                             extension.ShowStreetSmart();
+
                             await StreetSmartApiWrapper.Instance.Open(Configuration.Configuration.Instance.ApiSRS, imageId, (keyPressed == Keys.ShiftKey));
+
+
+
+                            ArcMap.Document?.ActiveView?.ScreenDisplay?.Invalidate(ArcMap.Document.ActiveView.Extent, true, (short)ESRI.ArcGIS.Display.esriScreenCache.esriNoScreenCache);
                         }
                         else
                         {
-                            // TODO: Translate
-                            MessageBox.Show("You are not authorized to view the image"); // Resources.GsOpenLocation_OnMouseUp_You_are_not_authorized_to_view_the_image_
+                            MessageBox.Show(Properties.Resources.ErrorNotAuthorized);
                         }
                     }
                 }
@@ -124,7 +122,7 @@ namespace StreetSmartArcMap.Tools
 
                 var extension = StreetSmartExtension.GetExtension();
                 Enabled = ((ArcMap.Application != null) && extension.Enabled && extension.CycloMediaGroupLayer != null && extension.CycloMediaGroupLayer.Layers.Any(l => l is RecordingLayer));
-                
+
                 if (enabled && !Enabled)
                     OnDeactivate();
             }

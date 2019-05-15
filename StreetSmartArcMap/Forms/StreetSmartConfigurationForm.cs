@@ -21,7 +21,10 @@ using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Utilities;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -39,21 +42,36 @@ namespace StreetSmartArcMap.Forms
         {
             InitializeComponent();
 
-            LoadLoginData();
-            LoadSpatialReferenceData();
-            LoadGeneralSettings();
+            reloadSettings();
 
-            FormStyling.SetFont(this);
+            LoadCulture();
+            LoadResources();
+        }
+
+        private void LoadResources()
+        {
+            lblLogin.Text = string.Empty;
+
+            FormStyling.SetStyling(this);
 
             SetAbout();
             SetAgreement();
         }
 
-        private void btnOk_Click(object sender, EventArgs e)
+        private void reloadSettings()
+        {
+            LoadLoginData();
+            LoadSpatialReferenceData();
+            LoadGeneralSettings();
+        }
+
+        private async void btnOk_Click(object sender, EventArgs e)
         {
             Save();
 
-            StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
+            LoadResources();
+
+            await StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
 
             Close();
         }
@@ -63,11 +81,13 @@ namespace StreetSmartArcMap.Forms
             Close();
         }
 
-        private void btnApply_Click(object sender, EventArgs e)
+        private async void btnApply_Click(object sender, EventArgs e)
         {
             Save();
 
-            StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
+            LoadResources();
+
+            await StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
         }
 
         public static void CheckOpenCredentials()
@@ -83,6 +103,20 @@ namespace StreetSmartArcMap.Forms
         private void LoadGeneralSettings()
         {
             nudOverlayDrawDistance.Value = Config.OverlayDrawDistanceInMeters;
+        }
+
+        private void LoadCulture()
+        {
+            var items = new CultureInfo[]
+            {
+                new CultureInfo(Configuration.Configuration.DefaultCulture),
+                new CultureInfo("fr")
+            };
+            cbCulture.Items.AddRange(items);
+
+            var current = new CultureInfo(Config.Culture);
+            if (cbCulture.Items.Contains(current))
+                cbCulture.SelectedItem = current;
         }
 
         private void LoadLoginData()
@@ -106,7 +140,7 @@ namespace StreetSmartArcMap.Forms
 
             foreach (var spatialReference in spatialReferences)
             {
-                if (spatialReference.KnownInArcMap && spatialReference.WithinBoundary(boundary))
+                if (spatialReference.KnownInArcMap)
                 {
                     cbCycloramaSRS.Items.Add(spatialReference);
                     cbRecordingsSRS.Items.Add(spatialReference);
@@ -140,9 +174,13 @@ namespace StreetSmartArcMap.Forms
         public static void OpenCloseSwitch()
         {
             if (_StreetSmartConfigurationForm == null)
+            {
                 OpenForm();
+            }
             else
+            {
                 CloseForm();
+            }
         }
 
         public static void OpenForm()
@@ -154,6 +192,10 @@ namespace StreetSmartArcMap.Forms
                 int hWnd = application.hWnd;
                 IWin32Window parent = new WindowWrapper(hWnd);
                 _StreetSmartConfigurationForm.Show(parent);
+            }
+            else
+            {
+                _StreetSmartConfigurationForm.reloadSettings();
             }
         }
 
@@ -194,7 +236,12 @@ namespace StreetSmartArcMap.Forms
                 StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(overlayDrawDistance, ArcMap.Document.FocusMap.MapUnits);
             }
 
+            var selectedCulture = (CultureInfo)cbCulture.SelectedItem;
+            Config.Culture = selectedCulture?.Name ?? Config.Culture;
+
             Config.Save();
+
+            FormStyling.SetStyling(this);
         }
 
         private void txtUsername_KeyUp(object sender, KeyEventArgs e)

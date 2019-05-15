@@ -121,13 +121,14 @@ namespace StreetSmartArcMap.Buttons
             catch (Exception ex)
             {
                 _logClient.Error("GsRecentDataLayer.OnClick", ex.Message, ex);
-                // TODO: Add Resource!
-                MessageBox.Show(ex.Message, "StreetSmart integration error.");
+
+                MessageBox.Show(ex.Message, Properties.Resources.ErrorIntegration);
             }
         }
 
         protected override void OnUpdate()
         {
+            Enabled = (ArcUtils.ActiveView != null && ArcUtils.Map != null && ArcUtils.SpatialReference != null);
         }
     }
 }

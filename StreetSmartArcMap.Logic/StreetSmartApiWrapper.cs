@@ -22,15 +22,19 @@ using StreetSmart.Common.Factories;
 using StreetSmart.Common.Interfaces.API;
 using StreetSmart.Common.Interfaces.Data;
 using StreetSmart.Common.Interfaces.DomElement;
+using StreetSmart.Common.Interfaces.Events;
 using StreetSmart.WinForms;
+using StreetSmartArcMap.Logic.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StreetSmartArcMap.Logic
 {
     public delegate void ViewersChangeEventDelegate(ViewersChangeEventArgs args);
+    public delegate void ViewingConeChangeEventDelegate(ViewingConeChangeEventArgs args);
 
     public class StreetSmartApiWrapper
     {
@@ -41,7 +45,6 @@ namespace StreetSmartArcMap.Logic
         #endregion private const
 
         #region Singleton construction
-
         private static StreetSmartApiWrapper _instance;
 
         public static StreetSmartApiWrapper Instance
@@ -58,7 +61,7 @@ namespace StreetSmartArcMap.Logic
         #endregion Singleton construction
 
         #region private properties
-
+        private bool Loading = false;
         private IPanoramaViewerOptions DefaultPanoramaOptions { get; set; }
         private IList<ViewerType> ViewerTypes { get; set; }
         private IStreetSmartAPI StreetSmartAPI { get; set; }
@@ -89,6 +92,9 @@ namespace StreetSmartArcMap.Logic
         #region Events
 
         public event ViewersChangeEventDelegate OnViewerChangeEvent;
+
+        public ViewingConeChangeEventDelegate OnViewingConeChanged;
+
         #endregion Events
 
         #region private functions
@@ -130,7 +136,7 @@ namespace StreetSmartArcMap.Logic
         {
             try
             {
-                RestartStreetSmartAPI(StreetSmartOptions);
+                await RestartStreetSmartAPI(StreetSmartOptions);
 
                 // Open image
                 ViewerTypes = new List<ViewerType> { ViewerType.Panorama };
@@ -144,6 +150,8 @@ namespace StreetSmartArcMap.Logic
 
                 if (RequestOpen)
                     await Open(RequestSRS, RequestQuery);
+
+                OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = new List<string>() });
             }
             catch (StreetSmartLoginFailedException)
             {
@@ -155,7 +163,7 @@ namespace StreetSmartArcMap.Logic
 
         #region public functions
 
-        public async void RestartStreetSmartAPI(IStreetSmartOptions options)
+        public async Task RestartStreetSmartAPI(IStreetSmartOptions options)
         {
             try
             {
@@ -169,7 +177,7 @@ namespace StreetSmartArcMap.Logic
                     IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
                     IDomElement element = DomElementFactory.Create();
 
-                    ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
+                    ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.Culture, addressSettings, element);
 
                     await StreetSmartAPI.Init(ApiOptions);
                 }
@@ -200,16 +208,92 @@ namespace StreetSmartArcMap.Logic
         private async void NotifyViewerChange()
         {
             var viewers = await StreetSmartAPI.GetViewers();
-            OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { NumberOfViewers = viewers.Count });
+            var viewerIds = new List<string>();
+            foreach (var viewer in viewers)
+            {
+                var id = await viewer.GetId();
+                viewerIds.Add(id);
+            }
+            //viewers.
+            // TODO: remove viewing cone of the removed viewers!
+            OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = viewerIds });
         }
 
-        private void StreetSmartAPI_ViewerAdded(object sender, StreetSmart.Common.Interfaces.Events.IEventArgs<IViewer> e)
+        private async void StreetSmartAPI_ViewerAdded(object sender, IEventArgs<IViewer> e)
         {
             NotifyViewerChange();
+
+            if (e.Value != null && e.Value is IPanoramaViewer)
+            {
+                var viewer = e.Value as IPanoramaViewer;
+
+                viewer.ImageChange += Viewer_ImageChange;
+                viewer.ViewChange += Viewer_ViewChange;
+
+                var cone = await CreateCone(viewer);
+                var args = new ViewingConeChangeEventArgs()
+                {
+                    ViewerId = await viewer.GetId(),
+                    ViewingCone = cone
+                };
+                OnViewingConeChanged?.Invoke(args);
+            }
         }
 
-        private void StreetSmartAPI_ViewerRemoved(object sender, StreetSmart.Common.Interfaces.Events.IEventArgs<IViewer> e)
+        private async void Viewer_ImageChange(object sender, EventArgs e)
         {
+            if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
+            {
+                var viewer = (sender as IPanoramaViewer);
+                var cone = await CreateCone(viewer);
+                var args = new ViewingConeChangeEventArgs()
+                {
+                    ViewerId = await viewer.GetId(),
+                    ViewingCone = cone
+                };
+                OnViewingConeChanged?.Invoke(args);
+            }
+        }
+
+        private async void Viewer_ViewChange(object sender, IEventArgs<IOrientation> e)
+        {
+            if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
+            {
+                var viewer = (sender as IPanoramaViewer);
+                var cone = await CreateCone(viewer);
+                var args = new ViewingConeChangeEventArgs()
+                {
+                    ViewerId = await viewer.GetId(),
+                    ViewingCone = cone
+                };
+                OnViewingConeChanged?.Invoke(args);
+            }
+        }
+
+        private async Task<ViewingCone> CreateCone(IPanoramaViewer viewer)
+        {
+            if (viewer == null)
+                throw new ApplicationException();
+
+            while (Loading)
+            {
+                await Task.Delay(100);
+            }
+            var recording = await viewer.GetRecording();
+
+            return new ViewingCone
+            {
+                ImageId = recording.Id,
+                Coordinate = recording.XYZ,
+                Orientation = await viewer.GetOrientation(),
+                Color = await viewer.GetViewerColor(),
+                ViewerId = await viewer.GetId()
+            };
+        }
+
+        private void StreetSmartAPI_ViewerRemoved(object sender, IEventArgs<IViewer> e)
+        {
+            // TODO: remove this viewer from the viewercones
             NotifyViewerChange();
         }
 
@@ -255,10 +339,10 @@ namespace StreetSmartArcMap.Logic
                 else
                 {
                     RequestOpen = false;
-
+                    Loading = true;
                     IViewerOptions options = ViewerOptionsFactory.Create(ViewerTypes, srsCode, GetPanoramaOptions(addExtraViewer));
                     IList<IViewer> viewers = await StreetSmartAPI.Open(query, options);
-
+                    Loading = false;
                     NotifyViewerChange();
                 }
             }

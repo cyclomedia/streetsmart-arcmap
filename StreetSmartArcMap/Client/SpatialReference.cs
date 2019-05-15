@@ -205,6 +205,9 @@ namespace StreetSmartArcMap.Client
 
             boundary.Project(this as ISpatialReference);
 
+
+
+
             return !((boundary.XMin < NativeBounds.MinX) || (boundary.XMax > NativeBounds.MaxX) || (boundary.YMin < NativeBounds.MinY) || (boundary.YMax > NativeBounds.MaxY));
         }
 

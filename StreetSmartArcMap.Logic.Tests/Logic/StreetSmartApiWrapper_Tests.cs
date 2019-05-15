@@ -1,9 +1,10 @@
 ﻿using Moq;
 using StreetSmart.Common.Interfaces.API;
 using StreetSmart.Common.Interfaces.Data;
+using StreetSmartArcMap.Logic;
 using Xunit;
 
-namespace StreetSmartArcMap.Logic.Tests
+namespace StreetSmartArcMap.Tests.Logic
 {
     public class StreetSmartApiWrapper_Tests
     {

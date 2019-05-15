@@ -5,26 +5,26 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreetSmartArcMap", "StreetSmartArcMap\StreetSmartArcMap.csproj", "{FFB838B9-7A85-4470-B88C-62D3B8BBD64C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreetSmartArcMap.Logic", "StreetSmartArcMap.Logic\StreetSmartArcMap.Logic.csproj", "{D4973164-4449-4BE5-A777-31FBF855454B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreetSmartArcMap.Logic.Tests", "StreetSmartArcMap.Logic.Tests\StreetSmartArcMap.Logic.Tests.csproj", "{34D4BB93-609C-4696-9BF9-C9F484072FF8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreetSmartArcMap.Tests", "StreetSmartArcMap.Logic.Tests\StreetSmartArcMap.Tests.csproj", "{34D4BB93-609C-4696-9BF9-C9F484072FF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFB838B9-7A85-4470-B88C-62D3B8BBD64C}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{FFB838B9-7A85-4470-B88C-62D3B8BBD64C}.Debug|x86.ActiveCfg = Debug|x86
 		{FFB838B9-7A85-4470-B88C-62D3B8BBD64C}.Debug|x86.Build.0 = Debug|x86
+		{FFB838B9-7A85-4470-B88C-62D3B8BBD64C}.Release|Any CPU.ActiveCfg = Release|x86
 		{FFB838B9-7A85-4470-B88C-62D3B8BBD64C}.Release|x86.ActiveCfg = Release|x86
 		{FFB838B9-7A85-4470-B88C-62D3B8BBD64C}.Release|x86.Build.0 = Release|x86
-		{D4973164-4449-4BE5-A777-31FBF855454B}.Debug|x86.ActiveCfg = Debug|x86
-		{D4973164-4449-4BE5-A777-31FBF855454B}.Debug|x86.Build.0 = Debug|x86
-		{D4973164-4449-4BE5-A777-31FBF855454B}.Release|x86.ActiveCfg = Release|x86
-		{D4973164-4449-4BE5-A777-31FBF855454B}.Release|x86.Build.0 = Release|x86
+		{34D4BB93-609C-4696-9BF9-C9F484072FF8}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{34D4BB93-609C-4696-9BF9-C9F484072FF8}.Debug|x86.ActiveCfg = Debug|x86
 		{34D4BB93-609C-4696-9BF9-C9F484072FF8}.Debug|x86.Build.0 = Debug|x86
+		{34D4BB93-609C-4696-9BF9-C9F484072FF8}.Release|Any CPU.ActiveCfg = Release|x86
 		{34D4BB93-609C-4696-9BF9-C9F484072FF8}.Release|x86.ActiveCfg = Release|x86
 		{34D4BB93-609C-4696-9BF9-C9F484072FF8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection

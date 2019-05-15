@@ -42,11 +42,9 @@ namespace StreetSmartArcMap.Forms
         {
             InitializeComponent();
 
-            LoadLoginData();
-            LoadSpatialReferenceData();
-            LoadGeneralSettings();
-            LoadCulture();
+            reloadSettings();
 
+            LoadCulture();
             LoadResources();
         }
 
@@ -73,7 +71,7 @@ namespace StreetSmartArcMap.Forms
 
             LoadResources();
 
-            StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
+            await StreetSmartApiWrapper.Instance.RestartStreetSmartAPI(Config);
 
             Close();
         }

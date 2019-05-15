@@ -63,6 +63,7 @@ namespace StreetSmartArcMap.Forms
             LoadLoginData();
             LoadSpatialReferenceData();
             LoadGeneralSettings();
+            LoadAPISettings();
         }
 
         private async void btnOk_Click(object sender, EventArgs e)
@@ -97,6 +98,33 @@ namespace StreetSmartArcMap.Forms
             if (!credentials)
             {
                 OpenForm();
+            }
+        }
+
+        private void LoadAPISettings()
+        {
+            chUseDefaultConfigurationUrl.Checked = Config.UseDefaultBaseUrl;
+            if (!chUseDefaultConfigurationUrl.Checked)
+            {
+                txtAPIConfigurationUrl.Text = Config.BaseUrl;
+                txtAPIConfigurationUrl.Enabled = true;
+            }
+            else
+            {
+                txtAPIConfigurationUrl.Text = "";
+                txtAPIConfigurationUrl.Enabled = false;
+            }
+
+            chUseDefaultStreetSmartLocation.Checked = Config.UseDefaultStreetSmartLocation;
+            if (chUseDefaultStreetSmartLocation.Checked)
+            {
+                txtAPIStreetSmartLocation.Text = Config.StreetSmartLocation;
+                txtAPIStreetSmartLocation.Enabled = true;
+            }
+            else
+            {
+                txtAPIStreetSmartLocation.Text = "";
+                txtAPIStreetSmartLocation.Enabled = false;
             }
         }
 
@@ -239,6 +267,12 @@ namespace StreetSmartArcMap.Forms
             var selectedCulture = (CultureInfo)cbCulture.SelectedItem;
             Config.Culture = selectedCulture?.Name ?? Config.Culture;
 
+            Config.UseDefaultBaseUrl = chUseDefaultConfigurationUrl.Checked;
+            Config.BaseUrl = txtAPIConfigurationUrl.Text;
+
+            Config.UseDefaultStreetSmartLocation = chUseDefaultStreetSmartLocation.Checked;
+            Config.StreetSmartLocation = txtAPIStreetSmartLocation.Text;
+
             Config.Save();
 
             FormStyling.SetStyling(this);
@@ -344,6 +378,19 @@ namespace StreetSmartArcMap.Forms
                 return true;
 
             return false;
+        }
+
+        private void chUseDefaultConfigurationUrl_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chUseDefaultConfigurationUrl.Checked)
+            {
+                txtAPIConfigurationUrl.Text = "";
+                txtAPIConfigurationUrl.Enabled = false;
+            }
+            else
+            {
+                txtAPIConfigurationUrl.Enabled = false;
+            }
         }
     }
 }

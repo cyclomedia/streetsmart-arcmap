@@ -25,5 +25,11 @@ namespace StreetSmartArcMap.Logic
         string AddressDatabase { get; set; }
         string ApiUsername { get; set; }
         string ApiPassword { get; set; }
+
+        string StreetSmartLocationToUse { get; }
+        string RecordingsServiceUrlToUse { get; }
+        string SpatialReferencesUrlToUse { get; }
+        string ConfigurationUrlToUse { get; }
+        string LocaleToUse { get; }
     }
 }

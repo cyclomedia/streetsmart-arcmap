@@ -59,6 +59,11 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
+        private StreetSmartApiWrapper()
+        {
+            Initialised = false;
+        }
+
         #endregion Singleton construction
 
         #region private properties
@@ -137,7 +142,19 @@ namespace StreetSmartArcMap.Logic
         {
             try
             {
-                await RestartStreetSmartAPI(StreetSmartOptions);
+                //await RestartStreetSmartAPI(StreetSmartOptions);
+
+
+                if (StreetSmartOptions != null)
+                {
+                    IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
+                    IDomElement element = DomElementFactory.Create();
+
+                    ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, StreetSmartOptions.ConfigurationUrlToUse, addressSettings, element);
+
+                    await StreetSmartAPI.Init(ApiOptions);
+                }
+
 
                 // Open image
                 ViewerTypes = new List<ViewerType> { ViewerType.Panorama };
@@ -170,18 +187,23 @@ namespace StreetSmartArcMap.Logic
             {
                 //Destroy if existing
                 if (Initialised)
-                    await StreetSmartAPI.Destroy(ApiOptions);
-
-                //Create new
-                if (StreetSmartOptions != null)
                 {
-                    IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
-                    IDomElement element = DomElementFactory.Create();
-
-                    ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
-
-                    await StreetSmartAPI.Init(ApiOptions);
+                    await StreetSmartAPI.Destroy(ApiOptions);
                 }
+
+                InitApi(options);
+                //Create new
+                //if (StreetSmartOptions != null)
+                //{
+                //    IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
+                //    IDomElement element = DomElementFactory.Create();
+
+                //    //ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
+
+                //    ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, options.LocaleToUse, options.ConfigurationUrlToUse, addressSettings, element);
+
+                //    await StreetSmartAPI.Init(ApiOptions);
+                //}
 
                 //Open request
                 if (Initialised && RequestQuery != null)

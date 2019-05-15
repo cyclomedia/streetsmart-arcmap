@@ -128,6 +128,7 @@ namespace StreetSmartArcMap.Buttons
 
         protected override void OnUpdate()
         {
+            Enabled = (ArcUtils.ActiveView != null && ArcUtils.Map != null && ArcUtils.SpatialReference != null);
         }
     }
 }

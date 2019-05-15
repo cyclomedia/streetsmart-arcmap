@@ -152,16 +152,28 @@ namespace StreetSmartArcMap.Objects
                     var display = ArcUtils.ActiveView.ScreenDisplay;
                     var dispTrans = display.DisplayTransformation;
                     double size = dispTrans.FromPoints(coneSize);
+                    var config = Configuration.Configuration.Instance;
+                    int srs = int.Parse(config.ApiSRS.Substring(config.ApiSRS.IndexOf(":") + 1));
                     double x, y;
+                    ESRI.ArcGIS.Geometry.Point mappoint;
                     lock (Coordinate)
                     {
-                        x = Coordinate.X.Value;
-                        y = Coordinate.Y.Value;
+                        mappoint = new ESRI.ArcGIS.Geometry.Point()
+                        {
+                            X = Coordinate.X.Value,
+                            Y = Coordinate.Y.Value,
+                            Z = Coordinate.Z.Value,
+                            SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs)
+                        };
                     }
-                    double xmin = x - size;
-                    double xmax = x + size;
-                    double ymin = y - size;
-                    double ymax = y + size;
+                    Console.WriteLine($"Before: X: {mappoint.X}, Y: {mappoint.Y}, SRS: {mappoint.SpatialReference}");
+                    // Project the API SRS to the current map SRS.
+                    mappoint.Project(ArcUtils.SpatialReference);
+                    Console.WriteLine($"After: X: {mappoint.X}, Y: {mappoint.Y}, SRS: {mappoint.SpatialReference}");
+                    double xmin = mappoint.X - size;
+                    double xmax = mappoint.X + size;
+                    double ymin = mappoint.Y - size;
+                    double ymax = mappoint.Y + size;
                     IEnvelope envelope = new EnvelopeClass() { XMin = xmin, XMax = xmax, YMin = ymin, YMax = ymax };
                     activeView.ScreenDisplay?.Invalidate(envelope, true, (short)esriScreenCache.esriNoScreenCache);
 

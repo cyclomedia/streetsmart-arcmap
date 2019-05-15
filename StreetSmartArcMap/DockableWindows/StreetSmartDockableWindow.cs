@@ -92,7 +92,8 @@ namespace StreetSmartArcMap.DockableWindows
 
         private void StreetSmartDockableWindow_VisibleChanged(object sender, EventArgs e)
         {
-            SetVisibility();
+            if (Visible) // switching from visible to hidden!
+                RemoveConesFromScreen();
         }
 
         #endregion Constructor
@@ -246,13 +247,18 @@ namespace StreetSmartArcMap.DockableWindows
 
         #region Functions (Private)
 
-        internal void SetVisibility()
+        private void RemoveConesFromScreen()
         {
-            SetVisibility(ConePerViewerDict != null && ConePerViewerDict.Count > 0);
+            foreach (var kvp in ConePerViewerDict)
+            {
+                kvp.Value.Dispose();
+            }
+            ConePerViewerDict = new Dictionary<string, ViewingCone>();
         }
 
         private void SetVisibility(bool visible)
         {
+
             var dockWindowManager = ArcMap.Application as ESRI.ArcGIS.Framework.IDockableWindowManager;
             ESRI.ArcGIS.esriSystem.UID windowId = new ESRI.ArcGIS.esriSystem.UIDClass { Value = "Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" };
             ESRI.ArcGIS.Framework.IDockableWindow window = dockWindowManager.GetDockableWindow(windowId);

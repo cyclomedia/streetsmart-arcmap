@@ -24,6 +24,7 @@ using StreetSmart.Common.Interfaces.Data;
 using StreetSmart.Common.Interfaces.DomElement;
 using StreetSmart.Common.Interfaces.Events;
 using StreetSmart.WinForms;
+using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Logic.Model;
 using StreetSmartArcMap.Objects;
 using System;
@@ -156,6 +157,22 @@ namespace StreetSmartArcMap.Logic
                     await StreetSmartAPI.Init(ApiOptions);
                 }
 
+                VectorLayer.LayerAddEvent += VectorLayer_LayerAddEvent;
+                VectorLayer.LayerRemoveEvent += VectorLayer_LayerRemoveEvent;
+                VectorLayer.LayerChangedEvent += VectorLayer_LayerChangedEvent;
+
+                VectorLayer.FeatureStartEditEvent += VectorLayer_FeatureStartEditEvent;
+                VectorLayer.FeatureUpdateEditEvent += VectorLayer_FeatureUpdateEditEvent;
+                VectorLayer.FeatureDeleteEvent += VectorLayer_FeatureDeleteEvent;
+
+                VectorLayer.StopEditEvent += VectorLayer_StopEditEvent;
+                VectorLayer.StartMeasurementEvent += VectorLayer_StartMeasurementEvent;
+
+                VectorLayer.SketchCreateEvent += VectorLayer_SketchCreateEvent;
+                VectorLayer.SketchModifiedEvent += VectorLayer_SketchModifiedEvent;
+                VectorLayer.SketchFinishedEvent += VectorLayer_SketchFinishedEvent;
+                    
+                //TODO: remove VectorLayer events
 
                 // Open image
                 ViewerTypes = new List<ViewerType> { ViewerType.Panorama };
@@ -176,6 +193,61 @@ namespace StreetSmartArcMap.Logic
             {
                 MessageBox.Show("api laden >> login failed");
             }
+        }
+
+        private void VectorLayer_LayerAddEvent(VectorLayer layer)
+        {
+            //
+        }
+
+        private void VectorLayer_LayerRemoveEvent(VectorLayer layer)
+        {
+            //
+        }
+
+        private void VectorLayer_LayerChangedEvent(VectorLayer layer)
+        {
+            //
+        }
+
+        private void VectorLayer_FeatureStartEditEvent(IList<ESRI.ArcGIS.Geometry.IGeometry> geometries)
+        {
+            //
+        }
+
+        private void VectorLayer_FeatureUpdateEditEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
+        {
+            //
+        }
+
+        private void VectorLayer_FeatureDeleteEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
+        {
+            //
+        }
+
+        private void VectorLayer_StopEditEvent()
+        {
+            //
+        }
+
+        private void VectorLayer_StartMeasurementEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
+        {
+            //
+        }
+
+        private void VectorLayer_SketchCreateEvent(ESRI.ArcGIS.Editor.IEditSketch3 sketch)
+        {
+            //
+        }
+
+        private void VectorLayer_SketchModifiedEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
+        {
+            //
+        }
+
+        private void VectorLayer_SketchFinishedEvent()
+        {
+           //
         }
 
         #endregion private functions

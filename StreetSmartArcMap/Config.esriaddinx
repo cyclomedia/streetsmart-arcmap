@@ -33,6 +33,7 @@
         <Toolbar id="StreetSmartArcMapToolbar" caption="Street Smart">
           <Items>
             <Button refID="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" />
+            <Button refID="CycloMedia_StreetSmartArcMap_StreetSmartShowInCyclorama" />
             <Button refID="CycloMedia_StreetSmartArcMap_StreetSmartRecordingsLayer" />
             <Tool refID="CycloMedia_StreetSmartArcMap_StreetSmartOpenLocation"/>
             <Button refID="CycloMedia_StreetSmartArcMap_OpenSearchImageIdButton" />

@@ -1056,105 +1056,105 @@ namespace StreetSmartArcMap.Layers
 
         private static void OnCurrentTaskChanged()
         {
-            //try
-            //{
-            //  IEditor3 editor = ArcUtils.Editor;
-            //  LogClient.Info("On CurrentTask Changed");
-            //  _doSelection = true;
+            try
+            {
+                IEditor3 editor = ArcUtils.Editor;
+                LogClient.Info("On CurrentTask Changed");
+                _doSelection = true;
 
-            //  if (editor != null)
-            //  {
-            //    var sketch = editor as IEditSketch3;
-            //    var editLayers = editor as IEditLayers;
+                if (editor != null)
+                {
+                    var sketch = editor as IEditSketch3;
+                    var editLayers = editor as IEditLayers;
 
-            //    if ((sketch != null) && (editLayers != null))
-            //    {
-            //      IEditTask task = editor.CurrentTask;
-            //      ILayer currentLayer = editLayers.CurrentLayer;
-            //      VectorLayer vectorLayer = (EditFeatures.Count != 1)
-            //        ? ((currentLayer == null) ? null : GetLayer(currentLayer))
-            //        : GetLayer(EditFeatures[0]);
+                    if ((sketch != null) && (editLayers != null))
+                    {
+                        IEditTask task = editor.CurrentTask;
+                        ILayer currentLayer = editLayers.CurrentLayer;
+                        VectorLayer vectorLayer = (EditFeatures.Count != 1)
+                          ? ((currentLayer == null) ? null : GetLayer(currentLayer))
+                          : GetLayer(EditFeatures[0]);
 
-            //      if ((task != null) && ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart)))
-            //      {
-            //        var taskName = task as IEditTaskName;
+                        if ((task != null) && ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart)))
+                        {
+                            var taskName = task as IEditTaskName;
 
-            //        if (taskName != null)
-            //        {
-            //          IGeometry geometry = sketch.Geometry;
-            //          string name = taskName.UniqueName;
+                            if (taskName != null)
+                            {
+                                IGeometry geometry = sketch.Geometry;
+                                string name = taskName.UniqueName;
 
-            //          if (name == "GarciaUI_ModifyFeatureTask")
-            //          {
-            //            Measurement measurement = Measurement.Get(geometry, false);
+                                if (name == "GarciaUI_ModifyFeatureTask")
+                                {
+                                    Measurement measurement = Measurement.Get(geometry, false);
 
-            //            if (measurement != null)
-            //            {
-            //              int nrPoints;
-            //              var ptColl = measurement.ToPointCollection(geometry, out nrPoints);
+                                    if (measurement != null)
+                                    {
+                                        int nrPoints;
+                                        var ptColl = measurement.ToPointCollection(geometry, out nrPoints);
 
-            //              if (ptColl != null)
-            //              {
-            //                ISketchOperation2 sketchOp = new SketchOperationClass();
-            //                sketchOp.Start(editor);
+                                        if (ptColl != null)
+                                        {
+                                            ISketchOperation2 sketchOp = new SketchOperationClass();
+                                            sketchOp.Start(editor);
 
-            //                for (int j = 0; j < nrPoints; j++)
-            //                {
-            //                  IPoint point = ptColl.Point[j];
-            //                  MeasurementPoint mpoint = measurement.IsPointMeasurement
-            //                    ? measurement.GetPoint(point, false)
-            //                    : measurement.GetPoint(point);
+                                            for (int j = 0; j < nrPoints; j++)
+                                            {
+                                                IPoint point = ptColl.Point[j];
+                                                MeasurementPoint mpoint = measurement.IsPointMeasurement
+                                                  ? measurement.GetPoint(point, false)
+                                                  : measurement.GetPoint(point);
 
-            //                  double m = (mpoint == null) ? double.NaN : mpoint.M;
-            //                  double z = (mpoint == null) ? double.NaN : mpoint.Z;
-            //                  IPoint point2 = new ESRI.ArcGIS.Geometry.Point() {X = point.X, Y = point.Y, Z = z, M = m, ZAware = sketch.ZAware};
-            //                  ptColl.UpdatePoint(j, point2);
+                                                double m = (mpoint == null) ? double.NaN : mpoint.M;
+                                                double z = (mpoint == null) ? double.NaN : mpoint.Z;
+                                                IPoint point2 = new ESRI.ArcGIS.Geometry.Point() { X = point.X, Y = point.Y, Z = z, M = m, ZAware = sketch.ZAware };
+                                                ptColl.UpdatePoint(j, point2);
 
-            //                  if (measurement.IsPointMeasurement)
-            //                  {
-            //                    sketch.Geometry = point2;
-            //                  }
-            //                }
+                                                if (measurement.IsPointMeasurement)
+                                                {
+                                                    sketch.Geometry = point2;
+                                                }
+                                            }
 
-            //                if (!measurement.IsPointMeasurement)
-            //                {
-            //                  sketch.Geometry = ptColl as IGeometry;
-            //                }
+                                            if (!measurement.IsPointMeasurement)
+                                            {
+                                                sketch.Geometry = ptColl as IGeometry;
+                                            }
 
-            //                geometry = sketch.Geometry;
+                                            geometry = sketch.Geometry;
 
-            //                if (geometry != null)
-            //                {
-            //                  sketchOp.Finish(geometry.Envelope, esriSketchOperationType.esriSketchOperationGeneral, geometry);
-            //                }
-            //              }
+                                            if (geometry != null)
+                                            {
+                                                sketchOp.Finish(geometry.Envelope, esriSketchOperationType.esriSketchOperationGeneral, geometry);
+                                            }
+                                        }
 
-            //              measurement.SetSketch();
-            //              measurement.OpenMeasurement();
-            //              measurement.DisableMeasurementSeries();
-            //            }
-            //          }
-            //          else
-            //          {
-            //            Measurement measurement = Measurement.Get(geometry, false);
+                                        measurement.SetSketch();
+                                        measurement.OpenMeasurement();
+                                        measurement.DisableMeasurementSeries();
+                                    }
+                                }
+                                else
+                                {
+                                    Measurement measurement = Measurement.Get(geometry, false);
 
-            //            if (measurement != null)
-            //            {
-            //              measurement.EnableMeasurementSeries();
-            //            }
+                                    if (measurement != null)
+                                    {
+                                        measurement.EnableMeasurementSeries();
+                                    }
 
-            //            OnSelectionChanged();
-            //          }
-            //        }
-            //      }
-            //    }
-            //  }
-            //}
-            //catch (Exception ex)
-            //{
-            //  LogClient.Error("VectorLayer.OnCurrentTaskChanged", ex.Message, ex);
-            //  Trace.WriteLine(ex.Message, "VectorLayer.OnCurrentTaskChanged");
-            //}
+                                    OnSelectionChanged();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogClient.Error("VectorLayer.OnCurrentTaskChanged", ex.Message, ex);
+                Trace.WriteLine(ex.Message, "VectorLayer.OnCurrentTaskChanged");
+            }
         }
 
         private static void OnVertexSelectionChanged()

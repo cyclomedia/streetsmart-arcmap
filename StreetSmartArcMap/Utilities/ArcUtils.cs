@@ -24,6 +24,7 @@ using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.esriSystem;
 using ESRI.ArcGIS.Framework;
 using ESRI.ArcGIS.Geometry;
+using StreetSmartArcMap.Client;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -471,15 +472,15 @@ namespace StreetSmartArcMap.Utilities
             }
         }
 
-        //public static IPoint GsToMapPoint(double x, double y, double z)
-        //{
-        //    Configuration.Configuration config = Configuration.Configuration.Instance;
-        //    SpatialReference spatRel = config.SpatialReference;
-        //    ISpatialReference gsSpatialReference = (spatRel == null) ? SpatialReference : spatRel.SpatialRef;
-        //    IPoint point = new Point { X = x, Y = y, Z = z, SpatialReference = gsSpatialReference };
-        //    point.Project(SpatialReference);
-        //    return point;
-        //}
+        public static IPoint ToMapPoint(double x, double y, double z)
+        {
+            Configuration.Configuration config = Configuration.Configuration.Instance;
+            SpatialReference spatRel = config.SpatialReference;
+            ISpatialReference gsSpatialReference = (spatRel == null) ? SpatialReference : spatRel.SpatialRef;
+            IPoint point = new ESRI.ArcGIS.Geometry.Point { X = x, Y = y, Z = z, SpatialReference = gsSpatialReference };
+            point.Project(SpatialReference);
+            return point;
+        }
 
         #endregion functions (public)
 

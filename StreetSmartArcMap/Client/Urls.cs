@@ -36,7 +36,7 @@ namespace StreetSmartArcMap.Client
         /// <summary>
         /// The API Base URL, used for SpatialReferences and the API
         /// </summary>
-        public static string ApiBaseUrl = "https://streetsmart.cyclomedia.com/v18.10/api";
+        public static string ApiBaseUrl = "https://streetsmart.cyclomedia.com/api/v18.10";
         /// <summary>
         /// The spatialreferences url
         /// </summary>

@@ -131,16 +131,16 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="cbCulture.Location" type="System.Drawing.Point, System.Drawing">
-    <value>148, 19</value>
+    <value>153, 19</value>
   </data>
   <data name="cbCulture.Size" type="System.Drawing.Size, System.Drawing">
-    <value>234, 22</value>
+    <value>229, 22</value>
   </data>
   <data name="grLogin.Text" xml:space="preserve">
     <value>Informations d’identification</value>
   </data>
   <data name="btnLogin.Location" type="System.Drawing.Point, System.Drawing">
-    <value>148, 73</value>
+    <value>153, 73</value>
   </data>
   <data name="btnLogin.Text" xml:space="preserve">
     <value>Test de connection</value>
@@ -152,16 +152,16 @@
     <value>Nom d'utilisateur:</value>
   </data>
   <data name="txtUsername.Location" type="System.Drawing.Point, System.Drawing">
-    <value>148, 19</value>
+    <value>153, 19</value>
   </data>
   <data name="txtUsername.Size" type="System.Drawing.Size, System.Drawing">
-    <value>234, 20</value>
+    <value>229, 20</value>
   </data>
   <data name="txtPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>148, 47</value>
+    <value>153, 47</value>
   </data>
   <data name="txtPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>234, 20</value>
+    <value>229, 20</value>
   </data>
   <data name="lblPassword.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 14</value>
@@ -179,7 +179,7 @@
     <value>Superposer le tracé de la distance:</value>
   </data>
   <data name="nudOverlayDrawDistance.Location" type="System.Drawing.Point, System.Drawing">
-    <value>188, 19</value>
+    <value>193, 19</value>
   </data>
   <data name="grCoordinateSystems.Text" xml:space="preserve">
     <value>Systèmes de coordonnées</value>
@@ -191,10 +191,10 @@
     <value>Couche d'enregistrements:</value>
   </data>
   <data name="cbRecordingsSRS.Location" type="System.Drawing.Point, System.Drawing">
-    <value>148, 47</value>
+    <value>153, 47</value>
   </data>
   <data name="cbRecordingsSRS.Size" type="System.Drawing.Size, System.Drawing">
-    <value>234, 22</value>
+    <value>229, 22</value>
   </data>
   <data name="lblCycloramaSRS.Size" type="System.Drawing.Size, System.Drawing">
     <value>104, 14</value>
@@ -203,10 +203,10 @@
     <value>Viewer Cyclomedia:</value>
   </data>
   <data name="cbCycloramaSRS.Location" type="System.Drawing.Point, System.Drawing">
-    <value>148, 19</value>
+    <value>153, 19</value>
   </data>
   <data name="cbCycloramaSRS.Size" type="System.Drawing.Size, System.Drawing">
-    <value>234, 22</value>
+    <value>229, 22</value>
   </data>
   <data name="grConfiguration.Text" xml:space="preserve">
     <value>Enregistrement du service d'URL</value>

@@ -55,9 +55,29 @@ namespace StreetSmartArcMap.Configuration
         public string ApiUsername { get; set; }
         public string ApiPassword { get; set; }
 
+        public bool UseDefaultBaseUrl { get; set; }
         public string BaseUrl { get; set; }
-        public string RecordingsServiceUrl { get; set; }
-        public string SpatialReferencesUrl { get; set; }
+
+
+        public bool UseDefaultStreetSmartLocation { get; set; }
+        public string StreetSmartLocation { get; set; }
+
+        [XmlIgnore()]
+        public string BaseUrlToUse => UseDefaultBaseUrl || string.IsNullOrWhiteSpace(BaseUrl) ? Urls.BaseUrl : BaseUrl.ToLower().Replace("/configuration",string.Empty);
+        [XmlIgnore()]
+        public string RecordingsServiceUrlToUse => $"{BaseUrlToUse}{Urls.RecordingsServiceUrl}";
+        [XmlIgnore()]
+        public string ConfigurationUrlToUse => $"{BaseUrlToUse}{Urls.ConfigurationUrl}";
+
+        [XmlIgnore()]
+        public string StreetSmartLocationToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.ApiUrl}" : StreetSmartLocation;
+        [XmlIgnore()]
+        public string SpatialReferencesUrlToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.SpatialReferencesUrl}" : $"{StreetSmartLocation.ToLower().Replace("/api-dotnet.html",string.Empty)}{Urls.SpatialReferencesUrl}";
+        
+
+        [XmlIgnore()]
+        public string LocaleToUse => Culture;
+
 
         public string DefaultRecordingSrs { get; set; }
 
@@ -128,6 +148,15 @@ namespace StreetSmartArcMap.Configuration
 
         public string CycloramaVectorLayerLocation { get; set; }
         public SpatialReference SpatialReference { get; set; }
+
+        public bool UseProxyServer { get; set; }
+        public string ProxyAddress { get; set; }
+        public int ProxyPort { get; set; }
+        public bool BypassProxyOnLocal { get; set; }
+        public bool ProxyUseDefaultCredentials { get; set; }
+        public string ProxyUsername { get; set; }
+        public string ProxyPassword { get; set; }
+        public string ProxyDomain { get; set; }
         #endregion
 
         #region Functions
@@ -194,9 +223,11 @@ namespace StreetSmartArcMap.Configuration
                 ApiUsername = string.Empty,
                 ApiPassword = string.Empty,
 
-                BaseUrl = "https://atlas.cyclomedia.com",
-                RecordingsServiceUrl = "https://atlas.cyclomedia.com/recordings/wfs",
-                SpatialReferencesUrl = "https://streetsmart.cyclomedia.com/api/v18.10/assets/srs/SpatialReference.xml",
+                BaseUrl = Urls.BaseUrl,
+                UseDefaultBaseUrl = true,
+
+                StreetSmartLocation = string.Empty,
+                UseDefaultStreetSmartLocation = true,
 
                 DefaultRecordingSrs = string.Empty,
                 OverlayDrawDistanceInMeters = 30,

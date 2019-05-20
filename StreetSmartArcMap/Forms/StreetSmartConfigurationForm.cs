@@ -63,6 +63,7 @@ namespace StreetSmartArcMap.Forms
             LoadLoginData();
             LoadSpatialReferenceData();
             LoadGeneralSettings();
+            LoadAPISettings();
         }
 
         private async void btnOk_Click(object sender, EventArgs e)
@@ -98,6 +99,45 @@ namespace StreetSmartArcMap.Forms
             {
                 OpenForm();
             }
+        }
+
+        private void LoadAPISettings()
+        {
+            chUseDefaultConfigurationUrl.Checked = Config.UseDefaultBaseUrl;
+            if (!chUseDefaultConfigurationUrl.Checked)
+            {
+                txtAPIConfigurationUrl.Text = Config.BaseUrl;
+                txtAPIConfigurationUrl.Enabled = true;
+            }
+            else
+            {
+                txtAPIConfigurationUrl.Text = "";
+                txtAPIConfigurationUrl.Enabled = false;
+            }
+
+            chUseDefaultStreetSmartLocation.Checked = Config.UseDefaultStreetSmartLocation;
+            if (!chUseDefaultStreetSmartLocation.Checked)
+            {
+                txtAPIStreetSmartLocation.Text = Config.StreetSmartLocation;
+                txtAPIStreetSmartLocation.Enabled = true;
+            }
+            else
+            {
+                txtAPIStreetSmartLocation.Text = "";
+                txtAPIStreetSmartLocation.Enabled = false;
+            }
+
+
+
+
+            ckUseProxyServer.Checked = Config.UseProxyServer;
+            ckUseDefaultProxyCredentials.Checked = Config.ProxyUseDefaultCredentials;
+            txtProxyAddress.Text = Config.ProxyAddress;
+            txtProxyDomain.Text = Config.ProxyDomain;
+            txtProxyPort.Text = Config.ProxyPort.ToString();
+            txtProxyUsername.Text = Config.ProxyUsername;
+            txtProxyPassword.Text = Config.ProxyPassword;
+            ckBypassProxyOnLocal.Checked = Config.BypassProxyOnLocal;
         }
 
         private void LoadGeneralSettings()
@@ -239,6 +279,22 @@ namespace StreetSmartArcMap.Forms
             var selectedCulture = (CultureInfo)cbCulture.SelectedItem;
             Config.Culture = selectedCulture?.Name ?? Config.Culture;
 
+            Config.UseDefaultBaseUrl = chUseDefaultConfigurationUrl.Checked;
+            Config.BaseUrl = txtAPIConfigurationUrl.Text;
+
+            Config.UseDefaultStreetSmartLocation = chUseDefaultStreetSmartLocation.Checked;
+            Config.StreetSmartLocation = txtAPIStreetSmartLocation.Text;
+
+            Config.UseProxyServer = ckUseProxyServer.Checked;
+            Config.ProxyUseDefaultCredentials = ckUseDefaultProxyCredentials.Checked;
+            Config.ProxyAddress = txtProxyAddress.Text;
+            Config.ProxyDomain = txtProxyDomain.Text;
+            var port = 0;
+            Config.ProxyPort = int.TryParse(txtProxyPort.Text, out port)?port:0;
+            Config.ProxyUsername = txtProxyUsername.Text;
+            Config.ProxyPassword = txtProxyPassword.Text;
+            Config.BypassProxyOnLocal = ckBypassProxyOnLocal.Checked;
+
             Config.Save();
 
             FormStyling.SetStyling(this);
@@ -344,6 +400,32 @@ namespace StreetSmartArcMap.Forms
                 return true;
 
             return false;
+        }
+
+        private void chUseDefaultConfigurationUrl_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chUseDefaultConfigurationUrl.Checked)
+            {
+                txtAPIConfigurationUrl.Text = "";
+                txtAPIConfigurationUrl.Enabled = false;
+            }
+            else
+            {
+                txtAPIConfigurationUrl.Enabled = true;
+            }
+        }
+
+        private void chUseDefaultStreetSmartLocation_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chUseDefaultStreetSmartLocation.Checked)
+            {
+                txtAPIStreetSmartLocation.Text = "";
+                txtAPIStreetSmartLocation.Enabled = false;
+            }
+            else
+            {
+                txtAPIStreetSmartLocation.Enabled = true;
+            }
         }
     }
 }

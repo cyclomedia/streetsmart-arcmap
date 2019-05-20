@@ -59,6 +59,11 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
+        private StreetSmartApiWrapper()
+        {
+            Initialised = false;
+        }
+
         #endregion Singleton construction
 
         #region private properties
@@ -137,7 +142,20 @@ namespace StreetSmartArcMap.Logic
         {
             try
             {
-                await RestartStreetSmartAPI(StreetSmartOptions);
+                //await RestartStreetSmartAPI(StreetSmartOptions);
+
+
+                if (StreetSmartOptions != null)
+                {
+                    IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
+                    IDomElement element = DomElementFactory.Create();
+                    ApiOptions = StreetSmartOptions.UseDefaultBaseUrl ?
+                        OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element) : 
+                        OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, StreetSmartOptions.ConfigurationUrlToUse, addressSettings, element);
+
+                    await StreetSmartAPI.Init(ApiOptions);
+                }
+
 
                 // Open image
                 ViewerTypes = new List<ViewerType> { ViewerType.Panorama };
@@ -170,22 +188,15 @@ namespace StreetSmartArcMap.Logic
             {
                 //Destroy if existing
                 if (Initialised)
-                    await StreetSmartAPI.Destroy(ApiOptions);
-
-                //Create new
-                if (StreetSmartOptions != null)
                 {
-                    IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
-                    IDomElement element = DomElementFactory.Create();
-
-                    ApiOptions = OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, addressSettings, element);
-
-                    await StreetSmartAPI.Init(ApiOptions);
+                    Initialised = false;
+                    await StreetSmartAPI.Destroy(ApiOptions);
+                    await InitApi(options);
                 }
 
-                //Open request
-                if (Initialised && RequestQuery != null)
-                    await Open(RequestSRS, RequestQuery);
+                ////Open request
+                //if (Initialised && RequestQuery != null)
+                //    await Open(RequestSRS, RequestQuery);
             }
             catch
             {
@@ -193,17 +204,30 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        public void InitApi(IStreetSmartOptions options, IStreetSmartAPI api = null)
+        public async Task InitApi(IStreetSmartOptions options, IStreetSmartAPI api = null)
         {
-            if (api == null)
-                StreetSmartAPI = StreetSmartAPIFactory.Create();
-            else
-                StreetSmartAPI = api;
-
             StreetSmartOptions = options;
-            StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
-            StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
-            StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
+            if (api == null)
+            {
+                if (StreetSmartAPI == null)
+                {
+                    StreetSmartAPI = StreetSmartAPIFactory.Create();
+                    StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
+                    StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
+                    StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
+                }
+                else
+                {
+                    // already ready, resume init
+                    await Init();
+                }
+            }
+            else
+            {
+                StreetSmartAPI = api;
+                await Init();
+            }
+
         }
 
         private async void NotifyViewerChange()

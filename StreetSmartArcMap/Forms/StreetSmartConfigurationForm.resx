@@ -777,58 +777,55 @@
   <data name="&gt;&gt;lblConfiguration.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="chConfiguration.AutoSize" type="System.Boolean, mscorlib">
+  <data name="chUseDefaultStreetSmartLocation.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="chConfiguration.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="chUseDefaultStreetSmartLocation.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="chConfiguration.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="chUseDefaultStreetSmartLocation.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 19</value>
   </data>
-  <data name="chConfiguration.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="chUseDefaultStreetSmartLocation.Size" type="System.Drawing.Size, System.Drawing">
     <value>81, 18</value>
   </data>
-  <data name="chConfiguration.TabIndex" type="System.Int32, mscorlib">
+  <data name="chUseDefaultStreetSmartLocation.TabIndex" type="System.Int32, mscorlib">
     <value>20</value>
   </data>
-  <data name="chConfiguration.Text" xml:space="preserve">
+  <data name="chUseDefaultStreetSmartLocation.Text" xml:space="preserve">
     <value>Use default</value>
   </data>
-  <data name="&gt;&gt;chConfiguration.Name" xml:space="preserve">
-    <value>chConfiguration</value>
+  <data name="&gt;&gt;chUseDefaultStreetSmartLocation.Name" xml:space="preserve">
+    <value>chUseDefaultStreetSmartLocation</value>
   </data>
-  <data name="&gt;&gt;chConfiguration.Type" xml:space="preserve">
+  <data name="&gt;&gt;chUseDefaultStreetSmartLocation.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;chConfiguration.Parent" xml:space="preserve">
+  <data name="&gt;&gt;chUseDefaultStreetSmartLocation.Parent" xml:space="preserve">
     <value>grConfiguration</value>
   </data>
-  <data name="&gt;&gt;chConfiguration.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;chUseDefaultStreetSmartLocation.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="txtConfiguration.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
-  </data>
-  <data name="txtConfiguration.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="txtAPIStreetSmartLocation.Location" type="System.Drawing.Point, System.Drawing">
     <value>122, 43</value>
   </data>
-  <data name="txtConfiguration.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="txtAPIStreetSmartLocation.Size" type="System.Drawing.Size, System.Drawing">
     <value>260, 20</value>
   </data>
-  <data name="txtConfiguration.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
+  <data name="txtAPIStreetSmartLocation.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
   </data>
-  <data name="&gt;&gt;txtConfiguration.Name" xml:space="preserve">
-    <value>txtConfiguration</value>
+  <data name="&gt;&gt;txtAPIStreetSmartLocation.Name" xml:space="preserve">
+    <value>txtAPIStreetSmartLocation</value>
   </data>
-  <data name="&gt;&gt;txtConfiguration.Type" xml:space="preserve">
+  <data name="&gt;&gt;txtAPIStreetSmartLocation.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;txtConfiguration.Parent" xml:space="preserve">
+  <data name="&gt;&gt;txtAPIStreetSmartLocation.Parent" xml:space="preserve">
     <value>grConfiguration</value>
   </data>
-  <data name="&gt;&gt;txtConfiguration.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;txtAPIStreetSmartLocation.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
   <data name="grConfiguration.Location" type="System.Drawing.Point, System.Drawing">
@@ -841,7 +838,7 @@
     <value>24</value>
   </data>
   <data name="grConfiguration.Text" xml:space="preserve">
-    <value>Recording Service URL</value>
+    <value>Street Smart Location</value>
   </data>
   <data name="&gt;&gt;grConfiguration.Name" xml:space="preserve">
     <value>grConfiguration</value>
@@ -1266,68 +1263,68 @@
   <data name="&gt;&gt;lblAPI.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="ckDefaultAPI.AutoSize" type="System.Boolean, mscorlib">
+  <data name="chUseDefaultConfigurationUrl.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="ckDefaultAPI.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="chUseDefaultConfigurationUrl.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="chUseDefaultConfigurationUrl.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 19</value>
   </data>
-  <data name="ckDefaultAPI.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="chUseDefaultConfigurationUrl.Size" type="System.Drawing.Size, System.Drawing">
     <value>81, 18</value>
   </data>
-  <data name="ckDefaultAPI.TabIndex" type="System.Int32, mscorlib">
+  <data name="chUseDefaultConfigurationUrl.TabIndex" type="System.Int32, mscorlib">
     <value>20</value>
   </data>
-  <data name="ckDefaultAPI.Text" xml:space="preserve">
+  <data name="chUseDefaultConfigurationUrl.Text" xml:space="preserve">
     <value>Use default</value>
   </data>
-  <data name="&gt;&gt;ckDefaultAPI.Name" xml:space="preserve">
-    <value>ckDefaultAPI</value>
+  <data name="&gt;&gt;chUseDefaultConfigurationUrl.Name" xml:space="preserve">
+    <value>chUseDefaultConfigurationUrl</value>
   </data>
-  <data name="&gt;&gt;ckDefaultAPI.Type" xml:space="preserve">
+  <data name="&gt;&gt;chUseDefaultConfigurationUrl.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;ckDefaultAPI.Parent" xml:space="preserve">
+  <data name="&gt;&gt;chUseDefaultConfigurationUrl.Parent" xml:space="preserve">
     <value>grAPI</value>
   </data>
-  <data name="&gt;&gt;ckDefaultAPI.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;chUseDefaultConfigurationUrl.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="txtAPI.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
+  <data name="txtAPIConfigurationUrl.Location" type="System.Drawing.Point, System.Drawing">
+    <value>122, 40</value>
   </data>
-  <data name="txtAPI.Location" type="System.Drawing.Point, System.Drawing">
-    <value>122, 43</value>
-  </data>
-  <data name="txtAPI.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="txtAPIConfigurationUrl.Size" type="System.Drawing.Size, System.Drawing">
     <value>260, 20</value>
   </data>
-  <data name="txtAPI.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
+  <data name="txtAPIConfigurationUrl.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
   </data>
-  <data name="&gt;&gt;txtAPI.Name" xml:space="preserve">
-    <value>txtAPI</value>
+  <data name="&gt;&gt;txtAPIConfigurationUrl.Name" xml:space="preserve">
+    <value>txtAPIConfigurationUrl</value>
   </data>
-  <data name="&gt;&gt;txtAPI.Type" xml:space="preserve">
+  <data name="&gt;&gt;txtAPIConfigurationUrl.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;txtAPI.Parent" xml:space="preserve">
+  <data name="&gt;&gt;txtAPIConfigurationUrl.Parent" xml:space="preserve">
     <value>grAPI</value>
   </data>
-  <data name="&gt;&gt;txtAPI.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;txtAPIConfigurationUrl.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
   <data name="grAPI.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 6</value>
+    <value>6, 3</value>
   </data>
   <data name="grAPI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 73</value>
+    <value>388, 76</value>
   </data>
   <data name="grAPI.TabIndex" type="System.Int32, mscorlib">
-    <value>23</value>
+    <value>26</value>
   </data>
   <data name="grAPI.Text" xml:space="preserve">
-    <value>API URL</value>
+    <value>Configuration URL</value>
   </data>
   <data name="&gt;&gt;grAPI.Name" xml:space="preserve">
     <value>grAPI</value>

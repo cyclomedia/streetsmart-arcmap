@@ -98,10 +98,10 @@
             // 
             // plButtons
             // 
+            resources.ApplyResources(this.plButtons, "plButtons");
             this.plButtons.Controls.Add(this.btnOk);
             this.plButtons.Controls.Add(this.btnCancel);
             this.plButtons.Controls.Add(this.btnApply);
-            resources.ApplyResources(this.plButtons, "plButtons");
             this.plButtons.Name = "plButtons";
             // 
             // btnOk
@@ -138,19 +138,19 @@
             // 
             // tbSettings
             // 
+            resources.ApplyResources(this.tbSettings, "tbSettings");
             this.tbSettings.Controls.Add(this.grLocalization);
             this.tbSettings.Controls.Add(this.grLogin);
             this.tbSettings.Controls.Add(this.grGeneral);
             this.tbSettings.Controls.Add(this.grCoordinateSystems);
-            resources.ApplyResources(this.tbSettings, "tbSettings");
             this.tbSettings.Name = "tbSettings";
             this.tbSettings.UseVisualStyleBackColor = true;
             // 
             // grLocalization
             // 
+            resources.ApplyResources(this.grLocalization, "grLocalization");
             this.grLocalization.Controls.Add(this.lblCulture);
             this.grLocalization.Controls.Add(this.cbCulture);
-            resources.ApplyResources(this.grLocalization, "grLocalization");
             this.grLocalization.Name = "grLocalization";
             this.grLocalization.TabStop = false;
             // 
@@ -171,13 +171,13 @@
             // 
             // grLogin
             // 
+            resources.ApplyResources(this.grLogin, "grLogin");
             this.grLogin.Controls.Add(this.btnLogin);
             this.grLogin.Controls.Add(this.lblLogin);
             this.grLogin.Controls.Add(this.lblUsername);
             this.grLogin.Controls.Add(this.txtUsername);
             this.grLogin.Controls.Add(this.txtPassword);
             this.grLogin.Controls.Add(this.lblPassword);
-            resources.ApplyResources(this.grLogin, "grLogin");
             this.grLogin.Name = "grLogin";
             this.grLogin.TabStop = false;
             // 
@@ -217,9 +217,9 @@
             // 
             // grGeneral
             // 
+            resources.ApplyResources(this.grGeneral, "grGeneral");
             this.grGeneral.Controls.Add(this.label2);
             this.grGeneral.Controls.Add(this.nudOverlayDrawDistance);
-            resources.ApplyResources(this.grGeneral, "grGeneral");
             this.grGeneral.Name = "grGeneral";
             this.grGeneral.TabStop = false;
             // 
@@ -240,11 +240,11 @@
             // 
             // grCoordinateSystems
             // 
+            resources.ApplyResources(this.grCoordinateSystems, "grCoordinateSystems");
             this.grCoordinateSystems.Controls.Add(this.label1);
             this.grCoordinateSystems.Controls.Add(this.cbRecordingsSRS);
             this.grCoordinateSystems.Controls.Add(this.lblCycloramaSRS);
             this.grCoordinateSystems.Controls.Add(this.cbCycloramaSRS);
-            resources.ApplyResources(this.grCoordinateSystems, "grCoordinateSystems");
             this.grCoordinateSystems.Name = "grCoordinateSystems";
             this.grCoordinateSystems.TabStop = false;
             // 
@@ -276,19 +276,19 @@
             // 
             // tbConfiguration
             // 
+            resources.ApplyResources(this.tbConfiguration, "tbConfiguration");
             this.tbConfiguration.Controls.Add(this.grConfiguration);
             this.tbConfiguration.Controls.Add(this.grProxyServer);
             this.tbConfiguration.Controls.Add(this.grAPI);
-            resources.ApplyResources(this.tbConfiguration, "tbConfiguration");
             this.tbConfiguration.Name = "tbConfiguration";
             this.tbConfiguration.UseVisualStyleBackColor = true;
             // 
             // grConfiguration
             // 
+            resources.ApplyResources(this.grConfiguration, "grConfiguration");
             this.grConfiguration.Controls.Add(this.lblConfiguration);
             this.grConfiguration.Controls.Add(this.chConfiguration);
             this.grConfiguration.Controls.Add(this.txtConfiguration);
-            resources.ApplyResources(this.grConfiguration, "grConfiguration");
             this.grConfiguration.Name = "grConfiguration";
             this.grConfiguration.TabStop = false;
             // 
@@ -310,6 +310,7 @@
             // 
             // grProxyServer
             // 
+            resources.ApplyResources(this.grProxyServer, "grProxyServer");
             this.grProxyServer.Controls.Add(this.lblProxyDomain);
             this.grProxyServer.Controls.Add(this.txtProxyDomain);
             this.grProxyServer.Controls.Add(this.lblProxyPassword);
@@ -323,7 +324,6 @@
             this.grProxyServer.Controls.Add(this.lblProxyAddress);
             this.grProxyServer.Controls.Add(this.ckUseProxyServer);
             this.grProxyServer.Controls.Add(this.txtProxyAddress);
-            resources.ApplyResources(this.grProxyServer, "grProxyServer");
             this.grProxyServer.Name = "grProxyServer";
             this.grProxyServer.TabStop = false;
             // 
@@ -397,10 +397,10 @@
             // 
             // grAPI
             // 
+            resources.ApplyResources(this.grAPI, "grAPI");
             this.grAPI.Controls.Add(this.lblAPI);
             this.grAPI.Controls.Add(this.ckDefaultAPI);
             this.grAPI.Controls.Add(this.txtAPI);
-            resources.ApplyResources(this.grAPI, "grAPI");
             this.grAPI.Name = "grAPI";
             this.grAPI.TabStop = false;
             // 
@@ -422,24 +422,24 @@
             // 
             // tbAbout
             // 
-            this.tbAbout.Controls.Add(this.rtbAbout);
             resources.ApplyResources(this.tbAbout, "tbAbout");
+            this.tbAbout.Controls.Add(this.rtbAbout);
             this.tbAbout.Name = "tbAbout";
             this.tbAbout.UseVisualStyleBackColor = true;
             // 
             // rtbAbout
             // 
+            resources.ApplyResources(this.rtbAbout, "rtbAbout");
             this.rtbAbout.BackColor = System.Drawing.SystemColors.Window;
             this.rtbAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            resources.ApplyResources(this.rtbAbout, "rtbAbout");
             this.rtbAbout.Name = "rtbAbout";
             this.rtbAbout.ReadOnly = true;
             this.rtbAbout.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbAbout_LinkClicked);
             // 
             // tbAgreement
             // 
-            this.tbAgreement.Controls.Add(this.txtAgreement);
             resources.ApplyResources(this.tbAgreement, "tbAgreement");
+            this.tbAgreement.Controls.Add(this.txtAgreement);
             this.tbAgreement.Name = "tbAgreement";
             this.tbAgreement.UseVisualStyleBackColor = true;
             // 

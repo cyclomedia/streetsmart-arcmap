@@ -117,40 +117,41 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="Agreement" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Agreement.fr.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+    <value>..\Resources\Agreement.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="ConfigurationAsk" xml:space="preserve">
-    <value>Do you want to save anyway?*</value>
+    <value>Voulez vous sauvegarder?</value>
   </data>
   <data name="ErrorIntegration" xml:space="preserve">
-    <value>StreetSmart integration error.*</value>
+    <value>Erreur d' intégration StreeSmart</value>
   </data>
   <data name="ErrorNotAuthorized" xml:space="preserve">
-    <value>You are not authorized to view the image.*</value>
+    <value>Vous n'êtes pas autorisé à voir l'image.</value>
   </data>
   <data name="InvalidApiPassword" xml:space="preserve">
-    <value>Password does not have a value.*</value>
+    <value>Le mot de passe n'a pas de valeur.</value>
   </data>
   <data name="InvalidApiSRS" xml:space="preserve">
-    <value>Cyclorama viewer does not have a value.*</value>
+    <value>Le Cyclorama Viewer n'a pas de valeur.</value>
   </data>
   <data name="InvalidApiUsername" xml:space="preserve">
-    <value>Username does not have a value.*</value>
+    <value>Le nom d'utilisateur n'a pas de valeur.</value>
   </data>
   <data name="LoginFailed" xml:space="preserve">
-    <value>Login Failed*</value>
+    <value>Echec du login</value>
   </data>
   <data name="LoginSuccessfully" xml:space="preserve">
-    <value>Login Successfully*</value>
+    <value>Succès du login</value>
   </data>
   <data name="Title" xml:space="preserve">
-    <value>Street Smart for ArcMap*</value>
+    <value>StreetSmart pour ArcMap</value>
   </data>
   <data name="WithDepthMap" xml:space="preserve">
-    <value>With Depth Map*</value>
+    <value>Avec carte de profondeur</value>
   </data>
   <data name="WithoutDepthMap" xml:space="preserve">
-    <value>Without Depth Map*</value>
+    <value>Sans carte de profondeur</value>
   </data>
 </root>

@@ -26,6 +26,8 @@ namespace StreetSmartArcMap.Buttons
 
         public StreetSmartRecordingsLayer()
         {
+            Caption = Properties.Resources.StreetSmartRecordingsLayerButonCaption;
+
             _logClient = new LogClient(typeof(StreetSmartRecordingsLayer));
             Checked = false;
             StreetSmartExtension extension = StreetSmartExtension.GetExtension();

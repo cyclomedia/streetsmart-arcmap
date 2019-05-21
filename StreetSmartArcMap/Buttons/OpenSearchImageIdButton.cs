@@ -25,6 +25,11 @@ namespace StreetSmartArcMap.Buttons
     {
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
+        public OpenSearchImageIdButton()
+        {
+            this.Caption = Properties.Resources.OpenSearchImageButtonCaption;
+        }
+
         protected override void OnClick()
         {
             if (Config.Agreement)

@@ -25,6 +25,11 @@ namespace StreetSmartArcMap.Buttons
     {
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
+        public OpenStreetSmartOptionsButton()
+        {
+            this.Caption = Properties.Resources.OpenStreetSmartOptionsButtonCaption;
+        }
+
         protected override void OnClick()
         {
             if (Config.Agreement)

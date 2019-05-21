@@ -145,6 +145,36 @@
   <data name="LoginSuccessfully" xml:space="preserve">
     <value>Login Successfully</value>
   </data>
+  <data name="OpenSearchImageButtonCaption" xml:space="preserve">
+    <value>Search by Image ID</value>
+  </data>
+  <data name="OpenSearchImageButtonTip" xml:space="preserve">
+    <value>Search by ImageId</value>
+  </data>
+  <data name="OpenStreetSmartOptionsButtonCaption" xml:space="preserve">
+    <value>Open Street Smart Options</value>
+  </data>
+  <data name="OpenStreetSmartOptionsButtonTip" xml:space="preserve">
+    <value>Open the Street Smart options window</value>
+  </data>
+  <data name="StreetSmartOpenLocationButtonCaption" xml:space="preserve">
+    <value>Open the location in a cyclorama</value>
+  </data>
+  <data name="StreetSmartOpenLocationButtonTip" xml:space="preserve">
+    <value>Open the location in a Cyclorama...</value>
+  </data>
+  <data name="StreetSmartRecordingsLayerButonCaption" xml:space="preserve">
+    <value>Recent Recordings</value>
+  </data>
+  <data name="StreetSmartRecordingsLayerButonTip" xml:space="preserve">
+    <value>Add recent cyclorama layer to the map</value>
+  </data>
+  <data name="StreetSmartShowInCycloramaButtonCaption" xml:space="preserve">
+    <value>Show in Cyclorama...</value>
+  </data>
+  <data name="StreetSmartShowInCycloramaButtonTip" xml:space="preserve">
+    <value>Show in Cyclorama</value>
+  </data>
   <data name="Title" xml:space="preserve">
     <value>Street Smart for ArcMap</value>
   </data>

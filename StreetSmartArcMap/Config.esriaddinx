@@ -18,7 +18,7 @@
         </Extension>
       </Extensions>
       <DockableWindows>
-        <DockableWindow id="CycloMedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" class="StreetSmartArcMap.DockableWindows.StreetSmartDockableWindow+AddinImpl" caption="Street Smart" image="Images\StreetSmartDockableWindow.png">
+        <DockableWindow id="CycloMedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" class="StreetSmartArcMap.DockableWindows.StreetSmartDockableWindow+AddinImpl" caption="Street Smart Viewer" image="Images\StreetSmartDockableWindow.png">
           <InitialPlacement height="600" width="800" state="pinned" position="left" />
         </DockableWindow>
       </DockableWindows>

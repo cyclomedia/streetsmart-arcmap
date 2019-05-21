@@ -79,6 +79,7 @@ namespace StreetSmartArcMap.DockableWindows
         public StreetSmartDockableWindow(object hook)
         {
             InitializeComponent();
+
             this.Hook = hook;
             this.VisibleChanged += StreetSmartDockableWindow_VisibleChanged;
 

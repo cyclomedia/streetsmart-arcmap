@@ -48,8 +48,9 @@
       <HintPath>..\packages\Moq.4.10.1\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="StreetSmart.WinForms">
-      <HintPath>..\StreetSmartArcMap\Install\StreetSmart.WinForms.dll</HintPath>
+    <Reference Include="StreetSmart.WinForms, Version=19.6.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
+      <HintPath>..\packages\StreetSmart.WinForms.19.6.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -94,6 +95,68 @@
     <Compile Include="Logic\StreetSmartApiWrapper_Tests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="install\cef.pak" />
+    <None Include="install\cef_100_percent.pak" />
+    <None Include="install\cef_200_percent.pak" />
+    <None Include="install\cef_extensions.pak" />
+    <None Include="install\devtools_resources.pak" />
+    <None Include="install\icudtl.dat" />
+    <None Include="install\locales\am.pak" />
+    <None Include="install\locales\ar.pak" />
+    <None Include="install\locales\bg.pak" />
+    <None Include="install\locales\bn.pak" />
+    <None Include="install\locales\ca.pak" />
+    <None Include="install\locales\cs.pak" />
+    <None Include="install\locales\da.pak" />
+    <None Include="install\locales\de.pak" />
+    <None Include="install\locales\el.pak" />
+    <None Include="install\locales\en-GB.pak" />
+    <None Include="install\locales\en-US.pak" />
+    <None Include="install\locales\es-419.pak" />
+    <None Include="install\locales\es.pak" />
+    <None Include="install\locales\et.pak" />
+    <None Include="install\locales\fa.pak" />
+    <None Include="install\locales\fi.pak" />
+    <None Include="install\locales\fil.pak" />
+    <None Include="install\locales\fr.pak" />
+    <None Include="install\locales\gu.pak" />
+    <None Include="install\locales\he.pak" />
+    <None Include="install\locales\hi.pak" />
+    <None Include="install\locales\hr.pak" />
+    <None Include="install\locales\hu.pak" />
+    <None Include="install\locales\id.pak" />
+    <None Include="install\locales\it.pak" />
+    <None Include="install\locales\ja.pak" />
+    <None Include="install\locales\kn.pak" />
+    <None Include="install\locales\ko.pak" />
+    <None Include="install\locales\lt.pak" />
+    <None Include="install\locales\lv.pak" />
+    <None Include="install\locales\ml.pak" />
+    <None Include="install\locales\mr.pak" />
+    <None Include="install\locales\ms.pak" />
+    <None Include="install\locales\nb.pak" />
+    <None Include="install\locales\nl.pak" />
+    <None Include="install\locales\pl.pak" />
+    <None Include="install\locales\pt-BR.pak" />
+    <None Include="install\locales\pt-PT.pak" />
+    <None Include="install\locales\ro.pak" />
+    <None Include="install\locales\ru.pak" />
+    <None Include="install\locales\sk.pak" />
+    <None Include="install\locales\sl.pak" />
+    <None Include="install\locales\sr.pak" />
+    <None Include="install\locales\sv.pak" />
+    <None Include="install\locales\sw.pak" />
+    <None Include="install\locales\ta.pak" />
+    <None Include="install\locales\te.pak" />
+    <None Include="install\locales\th.pak" />
+    <None Include="install\locales\tr.pak" />
+    <None Include="install\locales\uk.pak" />
+    <None Include="install\locales\vi.pak" />
+    <None Include="install\locales\zh-CN.pak" />
+    <None Include="install\locales\zh-TW.pak" />
+    <None Include="install\natives_blob.bin" />
+    <None Include="install\snapshot_blob.bin" />
+    <None Include="install\v8_context_snapshot.bin" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -107,6 +170,25 @@
       <Project>{ffb838b9-7a85-4470-b88c-62d3b8bbd64c}</Project>
       <Name>StreetSmartArcMap</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="install\CefSharp.BrowserSubprocess.Core.dll" />
+    <Content Include="install\CefSharp.BrowserSubprocess.exe" />
+    <Content Include="install\CefSharp.Core.dll" />
+    <Content Include="install\CefSharp.Core.xml" />
+    <Content Include="install\CefSharp.dll" />
+    <Content Include="install\CefSharp.WinForms.dll" />
+    <Content Include="install\CefSharp.WinForms.XML" />
+    <Content Include="install\CefSharp.XML" />
+    <Content Include="install\chrome_elf.dll" />
+    <Content Include="install\d3dcompiler_47.dll" />
+    <Content Include="install\libcef.dll" />
+    <Content Include="install\libEGL.dll" />
+    <Content Include="install\libGLESv2.dll" />
+    <Content Include="install\README.txt" />
+    <Content Include="install\ReleaseNotes.txt" />
+    <Content Include="install\swiftshader\libEGL.dll" />
+    <Content Include="install\swiftshader\libGLESv2.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -23,12 +23,17 @@ using StreetSmart.Common.Interfaces.API;
 using StreetSmart.Common.Interfaces.Data;
 using StreetSmart.Common.Interfaces.DomElement;
 using StreetSmart.Common.Interfaces.Events;
+using StreetSmart.Common.Interfaces.GeoJson;
+using StreetSmart.Common.Interfaces.SLD;
 using StreetSmart.WinForms;
 using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Logic.Model;
+using StreetSmartArcMap.Logic.Model.Atlas;
 using StreetSmartArcMap.Objects;
+using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -38,8 +43,11 @@ namespace StreetSmartArcMap.Logic
     public delegate void ViewersChangeEventDelegate(ViewersChangeEventArgs args);
     public delegate void ViewingConeChangeEventDelegate(ViewingConeChangeEventArgs args);
 
+    
+
     public class StreetSmartApiWrapper
     {
+        
         #region private const
 
         public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
@@ -68,6 +76,7 @@ namespace StreetSmartArcMap.Logic
         #endregion Singleton construction
 
         #region private properties
+        private Configuration.Configuration Config => Configuration.Configuration.Instance;
         private bool Loading = false;
         private IPanoramaViewerOptions DefaultPanoramaOptions { get; set; }
         private IList<ViewerType> ViewerTypes { get; set; }
@@ -195,9 +204,39 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
+        private string GetGml(VectorLayer vectorLayer, out Color color)
+        {
+            var viewers = StreetSmartAPI.GetViewers().Result;
+            var recordings = viewers.Select(v => ((IPanoramaViewer)v).GetRecording().Result).ToList();
+
+            //List<Recording> locations = streetsmart.Locations;
+            double distanceVectorLayer = Configuration.Configuration.Instance.OverlayDrawDistanceInMeters;
+            return vectorLayer.GetGmlFromLocation(recordings, distanceVectorLayer, out color, Config.SpatialReference);
+        }
+
         private void VectorLayer_LayerAddEvent(VectorLayer layer)
         {
-            //
+            if (layer != null && layer.IsVisibleInStreetSmart && StreetSmartAPI != null)
+            {
+                VectorLayer_LayerRemoveEvent(layer);
+                Color color;
+                string gml = GetGml(layer, out color);
+                AddVectorLayer(layer, gml, color);
+            }
+        }
+
+        private async void AddVectorLayer(VectorLayer vectorLayer, string gml, Color color)
+        {
+            var spatRel = Configuration.Configuration.Instance.SpatialReference;
+            string srsName = (spatRel == null) ? ArcUtils.EpsgCode : spatRel.SRSName;
+            string layerName = vectorLayer.Name;
+
+            IFeatureCollection geoJson = vectorLayer.GenerateJson();
+            IStyledLayerDescriptor sld = vectorLayer.Sld;
+
+            var overlay = OverlayFactory.Create(geoJson, layerName, srsName, sld?.SLD);
+            await StreetSmartAPI.AddOverlay(overlay);
+
         }
 
         private void VectorLayer_LayerRemoveEvent(VectorLayer layer)

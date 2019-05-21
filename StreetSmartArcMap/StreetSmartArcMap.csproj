@@ -75,6 +75,9 @@
     <Reference Include="ESRI.ArcGIS.SystemUI, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="ESRI.ArcGIS.TrackingAnalyst, Version=10.4.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -82,8 +85,8 @@
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="StreetSmart.WinForms, Version=19.5.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
-      <HintPath>..\packages\StreetSmart.WinForms.19.5.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
+    <Reference Include="StreetSmart.WinForms, Version=19.6.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
+      <HintPath>..\packages\StreetSmart.WinForms.19.6.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -259,90 +262,69 @@
     <AddInContent Include="Images\GsCycloMediaOptions.png" />
   </ItemGroup>
   <ItemGroup>
-    <AddInContent Include="Install\cef.pak" />
-    <AddInContent Include="Install\cef_100_percent.pak" />
-    <AddInContent Include="Install\cef_200_percent.pak" />
-    <AddInContent Include="Install\cef_extensions.pak" />
-    <AddInContent Include="Install\devtools_resources.pak" />
-    <AddInContent Include="Install\icudtl.dat" />
-    <AddInContent Include="Install\locales\am.pak" />
-    <AddInContent Include="Install\locales\ar.pak" />
-    <AddInContent Include="Install\locales\bg.pak" />
-    <AddInContent Include="Install\locales\bn.pak" />
-    <AddInContent Include="Install\locales\ca.pak" />
-    <AddInContent Include="Install\locales\cs.pak" />
-    <AddInContent Include="Install\locales\da.pak" />
-    <AddInContent Include="Install\locales\de.pak" />
-    <AddInContent Include="Install\locales\el.pak" />
-    <AddInContent Include="Install\locales\en-GB.pak" />
-    <AddInContent Include="Install\locales\en-US.pak" />
-    <AddInContent Include="Install\locales\es-419.pak" />
-    <AddInContent Include="Install\locales\es.pak" />
-    <AddInContent Include="Install\locales\et.pak" />
-    <AddInContent Include="Install\locales\fa.pak" />
-    <AddInContent Include="Install\locales\fi.pak" />
-    <AddInContent Include="Install\locales\fil.pak" />
-    <AddInContent Include="Install\locales\fr.pak" />
-    <AddInContent Include="Install\locales\gu.pak" />
-    <AddInContent Include="Install\locales\he.pak" />
-    <AddInContent Include="Install\locales\hi.pak" />
-    <AddInContent Include="Install\locales\hr.pak" />
-    <AddInContent Include="Install\locales\hu.pak" />
-    <AddInContent Include="Install\locales\id.pak" />
-    <AddInContent Include="Install\locales\it.pak" />
-    <AddInContent Include="Install\locales\ja.pak" />
-    <AddInContent Include="Install\locales\kn.pak" />
-    <AddInContent Include="Install\locales\ko.pak" />
-    <AddInContent Include="Install\locales\lt.pak" />
-    <AddInContent Include="Install\locales\lv.pak" />
-    <AddInContent Include="Install\locales\ml.pak" />
-    <AddInContent Include="Install\locales\mr.pak" />
-    <AddInContent Include="Install\locales\ms.pak" />
-    <AddInContent Include="Install\locales\nb.pak" />
-    <AddInContent Include="Install\locales\nl.pak" />
-    <AddInContent Include="Install\locales\pl.pak" />
-    <AddInContent Include="Install\locales\pt-BR.pak" />
-    <AddInContent Include="Install\locales\pt-PT.pak" />
-    <AddInContent Include="Install\locales\ro.pak" />
-    <AddInContent Include="Install\locales\ru.pak" />
-    <AddInContent Include="Install\locales\sk.pak" />
-    <AddInContent Include="Install\locales\sl.pak" />
-    <AddInContent Include="Install\locales\sr.pak" />
-    <AddInContent Include="Install\locales\sv.pak" />
-    <AddInContent Include="Install\locales\sw.pak" />
-    <AddInContent Include="Install\locales\ta.pak" />
-    <AddInContent Include="Install\locales\te.pak" />
-    <AddInContent Include="Install\locales\th.pak" />
-    <AddInContent Include="Install\locales\tr.pak" />
-    <AddInContent Include="Install\locales\uk.pak" />
-    <AddInContent Include="Install\locales\vi.pak" />
-    <AddInContent Include="Install\locales\zh-CN.pak" />
-    <AddInContent Include="Install\locales\zh-TW.pak" />
-    <AddInContent Include="Install\natives_blob.bin" />
-    <AddInContent Include="Install\snapshot_blob.bin" />
-    <AddInContent Include="Install\v8_context_snapshot.bin" />
+    <AddInContent Include="install\cef.pak" />
+    <AddInContent Include="install\cef_100_percent.pak" />
+    <AddInContent Include="install\cef_200_percent.pak" />
+    <AddInContent Include="install\cef_extensions.pak" />
+    <AddInContent Include="install\devtools_resources.pak" />
+    <AddInContent Include="install\icudtl.dat" />
+    <AddInContent Include="install\locales\am.pak" />
+    <AddInContent Include="install\locales\ar.pak" />
+    <AddInContent Include="install\locales\bg.pak" />
+    <AddInContent Include="install\locales\bn.pak" />
+    <AddInContent Include="install\locales\ca.pak" />
+    <AddInContent Include="install\locales\cs.pak" />
+    <AddInContent Include="install\locales\da.pak" />
+    <AddInContent Include="install\locales\de.pak" />
+    <AddInContent Include="install\locales\el.pak" />
+    <AddInContent Include="install\locales\en-GB.pak" />
+    <AddInContent Include="install\locales\en-US.pak" />
+    <AddInContent Include="install\locales\es-419.pak" />
+    <AddInContent Include="install\locales\es.pak" />
+    <AddInContent Include="install\locales\et.pak" />
+    <AddInContent Include="install\locales\fa.pak" />
+    <AddInContent Include="install\locales\fi.pak" />
+    <AddInContent Include="install\locales\fil.pak" />
+    <AddInContent Include="install\locales\fr.pak" />
+    <AddInContent Include="install\locales\gu.pak" />
+    <AddInContent Include="install\locales\he.pak" />
+    <AddInContent Include="install\locales\hi.pak" />
+    <AddInContent Include="install\locales\hr.pak" />
+    <AddInContent Include="install\locales\hu.pak" />
+    <AddInContent Include="install\locales\id.pak" />
+    <AddInContent Include="install\locales\it.pak" />
+    <AddInContent Include="install\locales\ja.pak" />
+    <AddInContent Include="install\locales\kn.pak" />
+    <AddInContent Include="install\locales\ko.pak" />
+    <AddInContent Include="install\locales\lt.pak" />
+    <AddInContent Include="install\locales\lv.pak" />
+    <AddInContent Include="install\locales\ml.pak" />
+    <AddInContent Include="install\locales\mr.pak" />
+    <AddInContent Include="install\locales\ms.pak" />
+    <AddInContent Include="install\locales\nb.pak" />
+    <AddInContent Include="install\locales\nl.pak" />
+    <AddInContent Include="install\locales\pl.pak" />
+    <AddInContent Include="install\locales\pt-BR.pak" />
+    <AddInContent Include="install\locales\pt-PT.pak" />
+    <AddInContent Include="install\locales\ro.pak" />
+    <AddInContent Include="install\locales\ru.pak" />
+    <AddInContent Include="install\locales\sk.pak" />
+    <AddInContent Include="install\locales\sl.pak" />
+    <AddInContent Include="install\locales\sr.pak" />
+    <AddInContent Include="install\locales\sv.pak" />
+    <AddInContent Include="install\locales\sw.pak" />
+    <AddInContent Include="install\locales\ta.pak" />
+    <AddInContent Include="install\locales\te.pak" />
+    <AddInContent Include="install\locales\th.pak" />
+    <AddInContent Include="install\locales\tr.pak" />
+    <AddInContent Include="install\locales\uk.pak" />
+    <AddInContent Include="install\locales\vi.pak" />
+    <AddInContent Include="install\locales\zh-CN.pak" />
+    <AddInContent Include="install\locales\zh-TW.pak" />
+    <AddInContent Include="install\natives_blob.bin" />
+    <AddInContent Include="install\snapshot_blob.bin" />
+    <AddInContent Include="install\v8_context_snapshot.bin" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <AddInContent Include="Install\CefSharp.BrowserSubprocess.Core.dll" />
-    <AddInContent Include="Install\CefSharp.BrowserSubprocess.exe" />
-    <AddInContent Include="Install\CefSharp.Core.dll" />
-    <AddInContent Include="Install\CefSharp.Core.xml" />
-    <AddInContent Include="Install\CefSharp.dll" />
-    <AddInContent Include="Install\CefSharp.WinForms.dll" />
-    <AddInContent Include="Install\CefSharp.WinForms.XML" />
-    <AddInContent Include="Install\CefSharp.XML" />
-    <AddInContent Include="Install\chrome_elf.dll" />
-    <AddInContent Include="Install\d3dcompiler_47.dll" />
-    <AddInContent Include="Install\libcef.dll" />
-    <AddInContent Include="Install\libEGL.dll" />
-    <AddInContent Include="Install\libGLESv2.dll" />
-    <AddInContent Include="Install\README.txt" />
-    <AddInContent Include="Install\ReleaseNotes.txt" />
-    <AddInContent Include="Install\StreetSmart.WinForms.dll" />
-    <AddInContent Include="Install\StreetSmart.WinForms.xml" />
-    <AddInContent Include="Install\swiftshader\libEGL.dll" />
-    <AddInContent Include="Install\swiftshader\libGLESv2.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Agreement.txt" />
@@ -364,6 +346,25 @@
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Images\CycloramaSearch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="install\CefSharp.BrowserSubprocess.Core.dll" />
+    <AddInContent Include="install\CefSharp.BrowserSubprocess.exe" />
+    <AddInContent Include="install\CefSharp.Core.dll" />
+    <AddInContent Include="install\CefSharp.Core.xml" />
+    <AddInContent Include="install\CefSharp.dll" />
+    <AddInContent Include="install\CefSharp.WinForms.dll" />
+    <AddInContent Include="install\CefSharp.WinForms.XML" />
+    <AddInContent Include="install\CefSharp.XML" />
+    <AddInContent Include="install\chrome_elf.dll" />
+    <AddInContent Include="install\d3dcompiler_47.dll" />
+    <AddInContent Include="install\libcef.dll" />
+    <AddInContent Include="install\libEGL.dll" />
+    <AddInContent Include="install\libGLESv2.dll" />
+    <AddInContent Include="install\README.txt" />
+    <AddInContent Include="install\ReleaseNotes.txt" />
+    <AddInContent Include="install\swiftshader\libEGL.dll" />
+    <AddInContent Include="install\swiftshader\libGLESv2.dll" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>

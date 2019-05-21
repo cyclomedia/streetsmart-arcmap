@@ -224,7 +224,7 @@
     <value>157, 18</value>
   </data>
   <data name="chUseDefaultStreetSmartLocation.Text" xml:space="preserve">
-    <value>Utilisez la valeur par défaut</value>
+    <value>Utilisez par défaut</value>
   </data>
   <data name="grProxyServer.Text" xml:space="preserve">
     <value>Serveur proxy</value>
@@ -275,10 +275,10 @@
     <value>Position:</value>
   </data>
   <data name="chUseDefaultConfigurationUrl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>157, 18</value>
+    <value>113, 18</value>
   </data>
   <data name="chUseDefaultConfigurationUrl.Text" xml:space="preserve">
-    <value>Utilisez la valeur par défaut</value>
+    <value>Utilisez par défaut</value>
   </data>
   <data name="tbAbout.Text" xml:space="preserve">
     <value>A propos</value>

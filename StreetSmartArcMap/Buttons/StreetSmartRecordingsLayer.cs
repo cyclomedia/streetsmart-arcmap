@@ -23,6 +23,7 @@ namespace StreetSmartArcMap.Buttons
 
         private readonly LogClient _logClient;
 
+        private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
         public StreetSmartRecordingsLayer()
         {
@@ -47,6 +48,9 @@ namespace StreetSmartArcMap.Buttons
                     }
                 }
             }
+            Config.SetCulture();
+            Caption = Properties.Resources.StreetSmartRecordingsLayerButonCaption;
+            Tooltip = Properties.Resources.StreetSmartRecordingsLayerButonTip;
 
             CycloMediaLayer.LayerAddedEvent += CycloMediaLayerAdded;
             CycloMediaLayer.LayerRemoveEvent += CycloMediaLayerRemoved;
@@ -128,6 +132,9 @@ namespace StreetSmartArcMap.Buttons
 
         protected override void OnUpdate()
         {
+            Caption = Properties.Resources.StreetSmartRecordingsLayerButonCaption;
+            Tooltip = Properties.Resources.StreetSmartRecordingsLayerButonTip;
+
             Enabled = (ArcUtils.ActiveView != null && ArcUtils.Map != null && ArcUtils.SpatialReference != null);
         }
     }

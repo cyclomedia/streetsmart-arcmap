@@ -122,12 +122,12 @@
     <value>228, 17</value>
   </data>
   <data name="ckAgreement.Text" xml:space="preserve">
-    <value>I have read and agree to the terms of use.*</value>
+    <value>J'ai lu et accepté les conditions d'utilisation.</value>
   </data>
   <data name="btnClose.Text" xml:space="preserve">
-    <value>Close*</value>
+    <value>Fermer</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Street Smart for ArcMap*</value>
+    <value>StreetSmart pour ArcMap</value>
   </data>
 </root>

@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnClose.Text" xml:space="preserve">
-    <value>Close*</value>
+    <value>Fermer</value>
   </data>
   <data name="btnFind.Text" xml:space="preserve">
-    <value>Find*</value>
+    <value>Trouver</value>
   </data>
   <data name="chImageId.Text" xml:space="preserve">
-    <value>ImageId*</value>
+    <value>Id Image</value>
   </data>
   <data name="chRecordedAt.Text" xml:space="preserve">
-    <value>RecordedAt*</value>
+    <value>Enregistré à</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Find Cyclorama*</value>
+    <value>Trouver</value>
   </data>
 </root>

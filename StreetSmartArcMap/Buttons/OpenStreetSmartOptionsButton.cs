@@ -25,6 +25,14 @@ namespace StreetSmartArcMap.Buttons
     {
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
+        public OpenStreetSmartOptionsButton()
+        {
+            Config.SetCulture();
+
+            Caption = Properties.Resources.OpenStreetSmartOptionsButtonCaption;
+            Tooltip = Properties.Resources.OpenStreetSmartOptionsButtonTip;
+        }
+
         protected override void OnClick()
         {
             if (Config.Agreement)
@@ -33,8 +41,13 @@ namespace StreetSmartArcMap.Buttons
 
         protected override void OnUpdate()
         {
+
+
             Enabled = StreetSmartExtension.GetExtension().IsEnabled;
             Checked = StreetSmartConfigurationForm.IsActive();
+
+            Caption = Properties.Resources.OpenStreetSmartOptionsButtonCaption;
+            Tooltip = Properties.Resources.OpenStreetSmartOptionsButtonTip;
 
             base.OnUpdate();
         }

@@ -71,8 +71,7 @@ namespace StreetSmartArcMap.Properties {
         ///employee or on assignment basis, is only permitted under the following terms
         ///and conditions.
         ///
-        ///Definitions
-        ///Image Ma [rest of string was truncated]&quot;;.
+        ///Definition [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Agreement {
             get {
@@ -149,6 +148,96 @@ namespace StreetSmartArcMap.Properties {
         internal static string LoginSuccessfully {
             get {
                 return ResourceManager.GetString("LoginSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search by Image ID.
+        /// </summary>
+        internal static string OpenSearchImageButtonCaption {
+            get {
+                return ResourceManager.GetString("OpenSearchImageButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search by ImageId.
+        /// </summary>
+        internal static string OpenSearchImageButtonTip {
+            get {
+                return ResourceManager.GetString("OpenSearchImageButtonTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Street Smart Options.
+        /// </summary>
+        internal static string OpenStreetSmartOptionsButtonCaption {
+            get {
+                return ResourceManager.GetString("OpenStreetSmartOptionsButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open the Street Smart options window.
+        /// </summary>
+        internal static string OpenStreetSmartOptionsButtonTip {
+            get {
+                return ResourceManager.GetString("OpenStreetSmartOptionsButtonTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open the location in a cyclorama.
+        /// </summary>
+        internal static string StreetSmartOpenLocationButtonCaption {
+            get {
+                return ResourceManager.GetString("StreetSmartOpenLocationButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open the location in a Cyclorama....
+        /// </summary>
+        internal static string StreetSmartOpenLocationButtonTip {
+            get {
+                return ResourceManager.GetString("StreetSmartOpenLocationButtonTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent Recordings.
+        /// </summary>
+        internal static string StreetSmartRecordingsLayerButonCaption {
+            get {
+                return ResourceManager.GetString("StreetSmartRecordingsLayerButonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add recent cyclorama layer to the map.
+        /// </summary>
+        internal static string StreetSmartRecordingsLayerButonTip {
+            get {
+                return ResourceManager.GetString("StreetSmartRecordingsLayerButonTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show in Cyclorama....
+        /// </summary>
+        internal static string StreetSmartShowInCycloramaButtonCaption {
+            get {
+                return ResourceManager.GetString("StreetSmartShowInCycloramaButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show in Cyclorama.
+        /// </summary>
+        internal static string StreetSmartShowInCycloramaButtonTip {
+            get {
+                return ResourceManager.GetString("StreetSmartShowInCycloramaButtonTip", resourceCulture);
             }
         }
         

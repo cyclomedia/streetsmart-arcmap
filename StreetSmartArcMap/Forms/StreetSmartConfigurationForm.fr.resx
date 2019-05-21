@@ -117,164 +117,176 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnOk.Text" xml:space="preserve">
-    <value>OK*</value>
-  </data>
   <data name="btnCancel.Text" xml:space="preserve">
-    <value>Cancel*</value>
+    <value>Annuler</value>
   </data>
   <data name="btnApply.Text" xml:space="preserve">
-    <value>Apply*</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="lblCulture.Size" type="System.Drawing.Size, System.Drawing">
-    <value>62, 14</value>
-  </data>
-  <data name="lblCulture.Text" xml:space="preserve">
-    <value>Language*:</value>
-  </data>
-  <data name="grLocalization.Text" xml:space="preserve">
-    <value>Localization*</value>
-  </data>
-  <data name="btnLogin.Size" type="System.Drawing.Size, System.Drawing">
-    <value>110, 23</value>
-  </data>
-  <data name="btnLogin.Text" xml:space="preserve">
-    <value>Test connection*</value>
-  </data>
-  <data name="lblUsername.Size" type="System.Drawing.Size, System.Drawing">
-    <value>63, 14</value>
-  </data>
-  <data name="lblUsername.Text" xml:space="preserve">
-    <value>Username*:</value>
-  </data>
-  <data name="lblPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 14</value>
-  </data>
-  <data name="lblPassword.Text" xml:space="preserve">
-    <value>Password*:</value>
-  </data>
-  <data name="grLogin.Text" xml:space="preserve">
-    <value>Credentials*</value>
-  </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>144, 14</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Overlay draw distance (m)*:</value>
-  </data>
-  <data name="grGeneral.Text" xml:space="preserve">
-    <value>General*</value>
-  </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>96, 14</value>
-  </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Recordings layer*:</value>
-  </data>
-  <data name="lblCycloramaSRS.Size" type="System.Drawing.Size, System.Drawing">
-    <value>102, 14</value>
-  </data>
-  <data name="lblCycloramaSRS.Text" xml:space="preserve">
-    <value>Cyclorama viewer*:</value>
-  </data>
-  <data name="grCoordinateSystems.Text" xml:space="preserve">
-    <value>Coordinate systems*</value>
+    <value>Appliquer</value>
   </data>
   <data name="tbSettings.Text" xml:space="preserve">
-    <value>Settings*</value>
+    <value>Paramètres</value>
   </data>
-  <data name="lblConfiguration.Size" type="System.Drawing.Size, System.Drawing">
-    <value>55, 14</value>
+  <data name="grLocalization.Text" xml:space="preserve">
+    <value>Localisation</value>
   </data>
-  <data name="lblConfiguration.Text" xml:space="preserve">
-    <value>Location*:</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="cbCulture.Location" type="System.Drawing.Point, System.Drawing">
+    <value>153, 19</value>
   </data>
-  <data name="chConfiguration.Size" type="System.Drawing.Size, System.Drawing">
-    <value>85, 18</value>
+  <data name="cbCulture.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 22</value>
   </data>
-  <data name="chConfiguration.Text" xml:space="preserve">
-    <value>Use default*</value>
+  <data name="grLogin.Text" xml:space="preserve">
+    <value>Informations d’identification</value>
+  </data>
+  <data name="btnLogin.Location" type="System.Drawing.Point, System.Drawing">
+    <value>153, 73</value>
+  </data>
+  <data name="btnLogin.Size" type="System.Drawing.Size, System.Drawing">
+    <value>126, 23</value>
+  </data>
+  <data name="btnLogin.Text" xml:space="preserve">
+    <value>Test de connection</value>
+  </data>
+  <data name="lblUsername.Size" type="System.Drawing.Size, System.Drawing">
+    <value>88, 14</value>
+  </data>
+  <data name="lblUsername.Text" xml:space="preserve">
+    <value>Nom d'utilisateur:</value>
+  </data>
+  <data name="txtUsername.Location" type="System.Drawing.Point, System.Drawing">
+    <value>153, 19</value>
+  </data>
+  <data name="txtUsername.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 20</value>
+  </data>
+  <data name="txtPassword.Location" type="System.Drawing.Point, System.Drawing">
+    <value>153, 47</value>
+  </data>
+  <data name="txtPassword.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 20</value>
+  </data>
+  <data name="lblPassword.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 14</value>
+  </data>
+  <data name="lblPassword.Text" xml:space="preserve">
+    <value>Mot de passe:</value>
+  </data>
+  <data name="grGeneral.Text" xml:space="preserve">
+    <value>Général</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>195, 14</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Superposer le tracé de la distance (m):</value>
+  </data>
+  <data name="nudOverlayDrawDistance.Location" type="System.Drawing.Point, System.Drawing">
+    <value>222, 19</value>
+  </data>
+  <data name="grCoordinateSystems.Text" xml:space="preserve">
+    <value>Systèmes de coordonnées</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>136, 14</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Couche d'enregistrements:</value>
+  </data>
+  <data name="cbRecordingsSRS.Location" type="System.Drawing.Point, System.Drawing">
+    <value>153, 47</value>
+  </data>
+  <data name="cbRecordingsSRS.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 22</value>
+  </data>
+  <data name="lblCycloramaSRS.Size" type="System.Drawing.Size, System.Drawing">
+    <value>104, 14</value>
+  </data>
+  <data name="lblCycloramaSRS.Text" xml:space="preserve">
+    <value>Viewer Cyclomedia:</value>
+  </data>
+  <data name="cbCycloramaSRS.Location" type="System.Drawing.Point, System.Drawing">
+    <value>153, 19</value>
+  </data>
+  <data name="cbCycloramaSRS.Size" type="System.Drawing.Size, System.Drawing">
+    <value>229, 22</value>
   </data>
   <data name="grConfiguration.Text" xml:space="preserve">
-    <value>Recording Service URL*</value>
+    <value>Enregistrement du service d'URL</value>
   </data>
-  <data name="lblProxyDomain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>49, 14</value>
+  <data name="lblConfiguration.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 14</value>
   </data>
-  <data name="lblProxyDomain.Text" xml:space="preserve">
-    <value>Domain*:</value>
+  <data name="lblConfiguration.Text" xml:space="preserve">
+    <value>Position:</value>
   </data>
-  <data name="lblProxyPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 14</value>
+  <data name="chUseDefaultStreetSmartLocation.Size" type="System.Drawing.Size, System.Drawing">
+    <value>157, 18</value>
   </data>
-  <data name="lblProxyPassword.Text" xml:space="preserve">
-    <value>Password*:</value>
-  </data>
-  <data name="lblProxyUserName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>63, 14</value>
-  </data>
-  <data name="lblProxyUserName.Text" xml:space="preserve">
-    <value>Username*:</value>
-  </data>
-  <data name="ckUseDefaultProxyCredentials.Size" type="System.Drawing.Size, System.Drawing">
-    <value>141, 18</value>
-  </data>
-  <data name="ckUseDefaultProxyCredentials.Text" xml:space="preserve">
-    <value>Use default credentials*</value>
-  </data>
-  <data name="ckBypassProxyOnLocal.Size" type="System.Drawing.Size, System.Drawing">
-    <value>230, 18</value>
-  </data>
-  <data name="ckBypassProxyOnLocal.Text" xml:space="preserve">
-    <value>Bypass proxy server for local addresses*</value>
-  </data>
-  <data name="lblProxyPort.Size" type="System.Drawing.Size, System.Drawing">
-    <value>33, 14</value>
-  </data>
-  <data name="lblProxyPort.Text" xml:space="preserve">
-    <value>Port*:</value>
-  </data>
-  <data name="lblProxyAddress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>56, 14</value>
-  </data>
-  <data name="lblProxyAddress.Text" xml:space="preserve">
-    <value>Address*:</value>
-  </data>
-  <data name="ckUseProxyServer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>124, 18</value>
-  </data>
-  <data name="ckUseProxyServer.Text" xml:space="preserve">
-    <value>Use a proxy server*</value>
+  <data name="chUseDefaultStreetSmartLocation.Text" xml:space="preserve">
+    <value>Utilisez la valeur par défaut</value>
   </data>
   <data name="grProxyServer.Text" xml:space="preserve">
-    <value>Proxy server*</value>
+    <value>Serveur proxy</value>
+  </data>
+  <data name="lblProxyDomain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>51, 14</value>
+  </data>
+  <data name="lblProxyDomain.Text" xml:space="preserve">
+    <value>Domaine:</value>
+  </data>
+  <data name="lblProxyPassword.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 14</value>
+  </data>
+  <data name="lblProxyPassword.Text" xml:space="preserve">
+    <value>Mot de passe:</value>
+  </data>
+  <data name="lblProxyUserName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>88, 14</value>
+  </data>
+  <data name="lblProxyUserName.Text" xml:space="preserve">
+    <value>Nom d'utilisateur:</value>
+  </data>
+  <data name="ckUseDefaultProxyCredentials.Size" type="System.Drawing.Size, System.Drawing">
+    <value>261, 18</value>
+  </data>
+  <data name="ckUseDefaultProxyCredentials.Text" xml:space="preserve">
+    <value>Utiliser les informations d'identification par défaut</value>
+  </data>
+  <data name="ckBypassProxyOnLocal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>291, 18</value>
+  </data>
+  <data name="ckBypassProxyOnLocal.Text" xml:space="preserve">
+    <value>Contourner le serveur proxy pour les adresses locales</value>
+  </data>
+  <data name="lblProxyAddress.Text" xml:space="preserve">
+    <value>Adresse:</value>
+  </data>
+  <data name="ckUseProxyServer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>145, 18</value>
+  </data>
+  <data name="ckUseProxyServer.Text" xml:space="preserve">
+    <value>Utiliser un serveur proxy</value>
   </data>
   <data name="lblAPI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>55, 14</value>
+    <value>47, 14</value>
   </data>
   <data name="lblAPI.Text" xml:space="preserve">
-    <value>Location*:</value>
+    <value>Position:</value>
   </data>
-  <data name="ckDefaultAPI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>85, 18</value>
+  <data name="chUseDefaultConfigurationUrl.Size" type="System.Drawing.Size, System.Drawing">
+    <value>157, 18</value>
   </data>
-  <data name="ckDefaultAPI.Text" xml:space="preserve">
-    <value>Use default*</value>
-  </data>
-  <data name="grAPI.Text" xml:space="preserve">
-    <value>API URL*</value>
-  </data>
-  <data name="tbConfiguration.Text" xml:space="preserve">
-    <value>Configuration*</value>
+  <data name="chUseDefaultConfigurationUrl.Text" xml:space="preserve">
+    <value>Utilisez la valeur par défaut</value>
   </data>
   <data name="tbAbout.Text" xml:space="preserve">
-    <value>About*</value>
+    <value>A propos</value>
   </data>
   <data name="tbAgreement.Text" xml:space="preserve">
-    <value>Agreement*</value>
+    <value>Accord</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Street Smart for ArcMap*</value>
+    <value>StreetSmart pour ArcMap</value>
   </data>
 </root>

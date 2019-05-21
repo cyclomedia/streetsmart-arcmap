@@ -29,6 +29,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using ESRI.ArcGIS.Desktop.AddIns;
+using ESRI.ArcGIS.Framework;
 
 namespace StreetSmartArcMap.Tools
 {
@@ -36,10 +37,12 @@ namespace StreetSmartArcMap.Tools
     {
         private Cursor _thisCursor;
         private readonly LogClient _logClient;
+        private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
         public StreetSmartOpenLocation()
         {
             _logClient = new LogClient(typeof(StreetSmartOpenLocation));
+            Config.SetCulture();
         }
 
         private Keys keyPressed = Keys.None;
@@ -53,6 +56,14 @@ namespace StreetSmartArcMap.Tools
         {
             keyPressed = Keys.None;
             base.OnKeyUp(arg);
+        }
+
+        public string Tooltip
+        {
+            get
+            {
+                return Properties.Resources.StreetSmartOpenLocationButtonTip;
+            }
         }
 
         protected override async void OnMouseUp(MouseEventArgs arg)
@@ -89,8 +100,8 @@ namespace StreetSmartArcMap.Tools
             }
             catch (Exception ex)
             {
-                _logClient.Error("GsOpenLocation.OnMouseUp", ex.Message, ex);
-                Trace.WriteLine(ex.Message, "GsOpenLocation.OnMouseUp");
+                _logClient.Error("StreetSmartOpenLocation.OnMouseUp", ex.Message, ex);
+                Trace.WriteLine(ex.Message, "StreetSmartOpenLocation.OnMouseUp");
             }
 
             base.OnMouseUp(arg);
@@ -118,8 +129,17 @@ namespace StreetSmartArcMap.Tools
         {
             try
             {
+                var toolbar = (ICommandBar)ArcMap.Application.Document.CommandBars.Find("StreetSmartArcMapToolbar", true, false);
+                if (toolbar != null)
+                {
+                    var tool = toolbar.Find("CycloMedia_StreetSmartArcMap_StreetSmartOpenLocation");
+                    if (tool != null)
+                    {
+                        tool.Caption = Properties.Resources.StreetSmartOpenLocationButtonCaption;
+                    }
+                }
                 var enabled = Enabled;
-
+                
                 var extension = StreetSmartExtension.GetExtension();
                 Enabled = ((ArcMap.Application != null) && extension.Enabled && extension.CycloMediaGroupLayer != null && extension.CycloMediaGroupLayer.Layers.Any(l => l is RecordingLayer));
 

@@ -24,6 +24,7 @@ using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Utilities;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace StreetSmartArcMap.Buttons
@@ -39,14 +40,17 @@ namespace StreetSmartArcMap.Buttons
         private VectorLayer _vectorLayer;
 
         private readonly LogClient _logClient;
-
+        private Configuration.Configuration Config => Configuration.Configuration.Instance;
         #endregion members
 
         public StreetSmartShowInCyclorama()
         {
             _logClient = new LogClient(typeof(StreetSmartShowInCyclorama));
 
+            Config.SetCulture();
+
             Caption = Properties.Resources.StreetSmartShowInCycloramaButtonCaption;
+            Tooltip = Properties.Resources.StreetSmartShowInCycloramaButtonTip;
         }
 
         protected override void OnClick()
@@ -114,12 +118,15 @@ namespace StreetSmartArcMap.Buttons
                         }
                     }
                 }
+                
             }
             catch (Exception ex)
             {
                 _logClient.Error("StreetSmartShowInCyclorama.OnUpdate", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "StreetSmartShowInCyclorama.OnUpdate");
             }
+            Caption = Properties.Resources.StreetSmartShowInCycloramaButtonCaption;
+            Tooltip = Properties.Resources.StreetSmartShowInCycloramaButtonTip;
         }
 
         #region add or remove button from the menu

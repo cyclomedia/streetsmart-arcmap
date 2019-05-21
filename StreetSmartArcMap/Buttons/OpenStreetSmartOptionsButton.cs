@@ -27,7 +27,10 @@ namespace StreetSmartArcMap.Buttons
 
         public OpenStreetSmartOptionsButton()
         {
-            this.Caption = Properties.Resources.OpenStreetSmartOptionsButtonCaption;
+            Config.SetCulture();
+
+            Caption = Properties.Resources.OpenStreetSmartOptionsButtonCaption;
+            Tooltip = Properties.Resources.OpenStreetSmartOptionsButtonTip;
         }
 
         protected override void OnClick()
@@ -38,8 +41,13 @@ namespace StreetSmartArcMap.Buttons
 
         protected override void OnUpdate()
         {
+
+
             Enabled = StreetSmartExtension.GetExtension().IsEnabled;
             Checked = StreetSmartConfigurationForm.IsActive();
+
+            Caption = Properties.Resources.OpenStreetSmartOptionsButtonCaption;
+            Tooltip = Properties.Resources.OpenStreetSmartOptionsButtonTip;
 
             base.OnUpdate();
         }

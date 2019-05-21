@@ -59,6 +59,7 @@ namespace StreetSmartArcMap.AddIns
         protected override void OnStartup()
         {
             Configuration.Configuration.AgreementChanged += OnAgreementChanged;
+            Configuration.Configuration.Instance.SetCulture();
 
             _extension = this;
 

@@ -27,7 +27,9 @@ namespace StreetSmartArcMap.Buttons
 
         public OpenSearchImageIdButton()
         {
-            this.Caption = Properties.Resources.OpenSearchImageButtonCaption;
+            Config.SetCulture();
+            Caption = Properties.Resources.OpenSearchImageButtonCaption;
+            Tooltip = Properties.Resources.OpenSearchImageButtonTip;
         }
 
         protected override void OnClick()
@@ -40,6 +42,9 @@ namespace StreetSmartArcMap.Buttons
         {
             Enabled = StreetSmartExtension.GetExtension().IsEnabled;
             Checked = CycloramaSearchForm.IsActive;
+
+            Caption = Properties.Resources.OpenSearchImageButtonCaption;
+            Tooltip = Properties.Resources.OpenSearchImageButtonTip;
 
             base.OnUpdate();
         }

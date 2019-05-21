@@ -142,6 +142,9 @@
   <data name="btnLogin.Location" type="System.Drawing.Point, System.Drawing">
     <value>153, 73</value>
   </data>
+  <data name="btnLogin.Size" type="System.Drawing.Size, System.Drawing">
+    <value>126, 23</value>
+  </data>
   <data name="btnLogin.Text" xml:space="preserve">
     <value>Test de connection</value>
   </data>
@@ -173,13 +176,13 @@
     <value>Général</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>176, 14</value>
+    <value>195, 14</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
-    <value>Superposer le tracé de la distance:</value>
+    <value>Superposer le tracé de la distance (m):</value>
   </data>
   <data name="nudOverlayDrawDistance.Location" type="System.Drawing.Point, System.Drawing">
-    <value>193, 19</value>
+    <value>222, 19</value>
   </data>
   <data name="grCoordinateSystems.Text" xml:space="preserve">
     <value>Systèmes de coordonnées</value>

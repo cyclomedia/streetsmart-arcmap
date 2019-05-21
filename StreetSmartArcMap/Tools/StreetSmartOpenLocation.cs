@@ -136,7 +136,6 @@ namespace StreetSmartArcMap.Tools
                     if (tool != null)
                     {
                         tool.Caption = Properties.Resources.StreetSmartOpenLocationButtonCaption;
-                        tool.Tooltip = Properties.Resources.StreetSmartOpenLocationButtonTip;
                     }
                 }
                 var enabled = Enabled;

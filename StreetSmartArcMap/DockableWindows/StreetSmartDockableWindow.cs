@@ -83,7 +83,7 @@ namespace StreetSmartArcMap.DockableWindows
             this.Hook = hook;
             this.VisibleChanged += StreetSmartDockableWindow_VisibleChanged;
 
-            API.InitApi(Config);
+            API.InitApi(Config).Wait();
             API.OnViewerChangeEvent += API_OnViewerChangeEvent;
             API.OnViewingConeChanged += API_OnViewingConeChanged;
             this.Controls.Add(API.StreetSmartGUI);

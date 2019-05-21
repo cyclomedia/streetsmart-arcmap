@@ -771,6 +771,7 @@
   <data name="lblConfiguration.TabIndex" type="System.Int32, mscorlib">
     <value>22</value>
   </data>
+  <data name="chUseDefaultStreetSmartLocation.AutoSize" type="System.Boolean, mscorlib">
   <data name="lblPassword.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -779,11 +780,15 @@
   </data>
   <data name="txtProxyPassword.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
+  <data name="chUseDefaultStreetSmartLocation.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="lblProxyDomain.Text" xml:space="preserve">
     <value>Domain:</value>
+  <data name="chUseDefaultStreetSmartLocation.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 19</value>
   </data>
-  <data name="chConfiguration.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="chUseDefaultStreetSmartLocation.Size" type="System.Drawing.Size, System.Drawing">
     <value>81, 18</value>
   </data>
   <data name="lblProxyDomain.Location" type="System.Drawing.Point, System.Drawing">
@@ -791,20 +796,31 @@
   </data>
   <data name="grProxyServer.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 164</value>
+  <data name="chUseDefaultStreetSmartLocation.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
   </data>
   <data name="lblPassword.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleLeft</value>
+  <data name="chUseDefaultStreetSmartLocation.Text" xml:space="preserve">
+    <value>Use default</value>
   </data>
   <data name="tbSettings.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 23</value>
+  <data name="&gt;&gt;chUseDefaultStreetSmartLocation.Name" xml:space="preserve">
+    <value>chUseDefaultStreetSmartLocation</value>
   </data>
   <data name="&gt;&gt;grConfiguration.Parent" xml:space="preserve">
     <value>tbConfiguration</value>
+  <data name="&gt;&gt;chUseDefaultStreetSmartLocation.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;grLocalization.Parent" xml:space="preserve">
     <value>tbSettings</value>
+  <data name="&gt;&gt;chUseDefaultStreetSmartLocation.Parent" xml:space="preserve">
+    <value>grConfiguration</value>
   </data>
   <data name="&gt;&gt;ckDefaultAPI.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;chUseDefaultStreetSmartLocation.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
@@ -818,24 +834,38 @@
   </data>
   <data name="grCoordinateSystems.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 120</value>
+  <data name="txtAPIStreetSmartLocation.Location" type="System.Drawing.Point, System.Drawing">
+    <value>122, 43</value>
   </data>
   <data name="nudOverlayDrawDistance.Location" type="System.Drawing.Point, System.Drawing">
     <value>162, 19</value>
+  <data name="txtAPIStreetSmartLocation.Size" type="System.Drawing.Size, System.Drawing">
+    <value>260, 20</value>
   </data>
   <data name="lblProxyPassword.Size" type="System.Drawing.Size, System.Drawing">
     <value>60, 14</value>
+  <data name="txtAPIStreetSmartLocation.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
   </data>
   <data name="&gt;&gt;lblUsername.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;txtAPIStreetSmartLocation.Name" xml:space="preserve">
+    <value>txtAPIStreetSmartLocation</value>
   </data>
   <data name="&gt;&gt;grGeneral.Name" xml:space="preserve">
     <value>grGeneral</value>
+  <data name="&gt;&gt;txtAPIStreetSmartLocation.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="ckBypassProxyOnLocal.Text" xml:space="preserve">
     <value>Bypass proxy server for local addresses</value>
+  <data name="&gt;&gt;txtAPIStreetSmartLocation.Parent" xml:space="preserve">
+    <value>grConfiguration</value>
   </data>
   <data name="&gt;&gt;grConfiguration.ZOrder" xml:space="preserve">
     <value>0</value>
+  <data name="&gt;&gt;txtAPIStreetSmartLocation.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="lblProxyAddress.Text" xml:space="preserve">
     <value>Address:</value>
@@ -848,6 +878,8 @@
   </data>
   <data name="&gt;&gt;lblCulture.Parent" xml:space="preserve">
     <value>grLocalization</value>
+  <data name="grConfiguration.Text" xml:space="preserve">
+    <value>Street Smart Location</value>
   </data>
   <data name="ckDefaultAPI.Size" type="System.Drawing.Size, System.Drawing">
     <value>81, 18</value>
@@ -1274,38 +1306,62 @@
   </data>
   <data name="grConfiguration.TabIndex" type="System.Int32, mscorlib">
     <value>24</value>
+  <data name="chUseDefaultConfigurationUrl.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="&gt;&gt;lblProxyAddress.Name" xml:space="preserve">
     <value>lblProxyAddress</value>
+  <data name="chUseDefaultConfigurationUrl.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="chUseDefaultConfigurationUrl.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 19</value>
   </data>
   <data name="&gt;&gt;grConfiguration.Name" xml:space="preserve">
     <value>grConfiguration</value>
+  <data name="chUseDefaultConfigurationUrl.Size" type="System.Drawing.Size, System.Drawing">
+    <value>81, 18</value>
   </data>
   <data name="grAPI.Size" type="System.Drawing.Size, System.Drawing">
     <value>388, 73</value>
+  <data name="chUseDefaultConfigurationUrl.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
   </data>
   <data name="grProxyServer.TabIndex" type="System.Int32, mscorlib">
     <value>25</value>
+  <data name="chUseDefaultConfigurationUrl.Text" xml:space="preserve">
+    <value>Use default</value>
   </data>
   <data name="&gt;&gt;lblProxyPassword.ZOrder" xml:space="preserve">
     <value>2</value>
+  <data name="&gt;&gt;chUseDefaultConfigurationUrl.Name" xml:space="preserve">
+    <value>chUseDefaultConfigurationUrl</value>
   </data>
   <data name="txtAgreement.ScrollBars" type="System.Windows.Forms.ScrollBars, System.Windows.Forms">
     <value>Both</value>
+  <data name="&gt;&gt;chUseDefaultConfigurationUrl.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnApply.ZOrder" xml:space="preserve">
     <value>2</value>
+  <data name="&gt;&gt;chUseDefaultConfigurationUrl.Parent" xml:space="preserve">
+    <value>grAPI</value>
   </data>
   <data name="chConfiguration.Text" xml:space="preserve">
     <value>Use default</value>
+  <data name="&gt;&gt;chUseDefaultConfigurationUrl.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;grProxyServer.Name" xml:space="preserve">
     <value>grProxyServer</value>
+  <data name="txtAPIConfigurationUrl.Location" type="System.Drawing.Point, System.Drawing">
+    <value>122, 40</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>StreetSmartConfigurationForm</value>
   </data>
   <data name="txtProxyPassword.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="txtAPIConfigurationUrl.Size" type="System.Drawing.Size, System.Drawing">
     <value>260, 20</value>
   </data>
   <data name="&gt;&gt;txtProxyPassword.ZOrder" xml:space="preserve">
@@ -1316,30 +1372,48 @@
   </data>
   <data name="tbConfiguration.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
+  <data name="txtAPIConfigurationUrl.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
   </data>
   <data name="&gt;&gt;grAPI.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;txtAPIConfigurationUrl.Name" xml:space="preserve">
+    <value>txtAPIConfigurationUrl</value>
   </data>
   <data name="txtUsername.Font" type="System.Drawing.Font, System.Drawing">
     <value>Arial, 8.25pt</value>
+  <data name="&gt;&gt;txtAPIConfigurationUrl.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="ckBypassProxyOnLocal.Size" type="System.Drawing.Size, System.Drawing">
     <value>226, 18</value>
+  <data name="&gt;&gt;txtAPIConfigurationUrl.Parent" xml:space="preserve">
+    <value>grAPI</value>
   </data>
   <data name="&gt;&gt;grCoordinateSystems.Parent" xml:space="preserve">
     <value>tbSettings</value>
+  <data name="&gt;&gt;txtAPIConfigurationUrl.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="&gt;&gt;lblProxyPassword.Name" xml:space="preserve">
     <value>lblProxyPassword</value>
+  <data name="grAPI.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 3</value>
   </data>
   <data name="lblPassword.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
+  <data name="grAPI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>388, 76</value>
   </data>
   <data name="&gt;&gt;label1.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="grAPI.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
   </data>
   <data name="&gt;&gt;txtAgreement.Parent" xml:space="preserve">
     <value>tbAgreement</value>
+  <data name="grAPI.Text" xml:space="preserve">
+    <value>Configuration URL</value>
   </data>
   <data name="&gt;&gt;btnOk.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

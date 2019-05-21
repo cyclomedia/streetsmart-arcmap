@@ -79,14 +79,10 @@ namespace StreetSmartArcMap.Client
         // =========================================================================
         // Properties
         // =========================================================================
-        private string BaseUrl => _config.BaseUrl;
 
-        private string RecordingService => $"{BaseUrl}/recordings/wfs";
+        public Configuration.Configuration Config => Configuration.Configuration.Instance;
 
-        public static Web Instance
-        {
-            get { return _web ?? (_web = new Web()); }
-        }
+        public static Web Instance => _web ?? (_web = new Web());
 
         #endregion properties
 
@@ -115,7 +111,7 @@ namespace StreetSmartArcMap.Client
         {
             string epsgCode = cycloMediaLayer.EpsgCode;
             epsgCode = SpatialReferences.Instance.ToKnownSrsName(epsgCode);
-            string remoteLocation = string.Format(RecordingRequest, RecordingService, epsgCode, imageId);
+            string remoteLocation = string.Format(RecordingRequest, Config.RecordingsServiceUrlToUse, epsgCode, imageId);
             var xml = (string)GetRequest(remoteLocation, GetXmlCallback, XmlConfig);
             return ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
         }
@@ -140,7 +136,7 @@ namespace StreetSmartArcMap.Client
                 string postItem = string.Format(_ci, cycloMediaLayer.WfsRequest, epsgCode, envelope.XMin, envelope.YMin,
                                                 envelope.XMax,
                                                 envelope.YMax, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:00-00:00"));
-                var xml = (string)PostRequest(RecordingService, GetXmlCallback, postItem, XmlConfig);
+                var xml = (string)PostRequest(Config.RecordingsServiceUrlToUse, GetXmlCallback, postItem, XmlConfig);
                 result = ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
             }
 
@@ -152,7 +148,7 @@ namespace StreetSmartArcMap.Client
             string epsgCode = ArcUtils.EpsgCode;
             string postItem = string.Format(_ci, wfsRequest, epsgCode, envelope.XMin, envelope.YMin, envelope.XMax,
                                             envelope.YMax, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:00-00:00"));
-            var xml = (string)PostRequest(RecordingService, GetXmlCallback, postItem, XmlConfig);
+            var xml = (string)PostRequest(Config.RecordingsServiceUrlToUse, GetXmlCallback, postItem, XmlConfig);
             return ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
         }
 
@@ -171,14 +167,14 @@ namespace StreetSmartArcMap.Client
 
         public Stream DownloadSpatialReferences()
         {
-            string url = _config.SpatialReferencesUrl ?? Urls.SpatialReferencesUrl;
-            return GetRequest(url, GetStreamCallback, XmlConfig) as Stream;
+            return GetRequest(Config.SpatialReferencesUrlToUse, GetStreamCallback, XmlConfig) as Stream;
         }
 
         public Stream DownloadGlobeSpotterConfiguration()
         {
+            
             const string postItem = @"<Authorization />";
-            string authorizationService = string.Format(AuthorizationRequest, Urls.BaseUrl);
+            string authorizationService = string.Format(AuthorizationRequest, Config.BaseUrlToUse);
             return PostRequest(authorizationService, GetStreamCallback, postItem, XmlConfig) as Stream;
         }
 
@@ -371,25 +367,25 @@ namespace StreetSmartArcMap.Client
             {
                 IWebProxy proxy;
 
-                //if (_config.UseProxyServer)
-                //{
-                //    var webProxy = new WebProxy(_config.ProxyAddress, _config.ProxyPort)
-                //    {
-                //        BypassProxyOnLocal = _config.BypassProxyOnLocal,
-                //        UseDefaultCredentials = _config.ProxyUseDefaultCredentials
-                //    };
+                if (Config.UseProxyServer)
+                {
+                    var webProxy = new WebProxy(Config.ProxyAddress, Config.ProxyPort)
+                    {
+                        BypassProxyOnLocal = Config.BypassProxyOnLocal,
+                        UseDefaultCredentials = Config.ProxyUseDefaultCredentials
+                    };
 
-                //    if (!_config.ProxyUseDefaultCredentials)
-                //    {
-                //        webProxy.Credentials = new NetworkCredential(_config.ProxyUsername, _config.ProxyPassword, _config.ProxyDomain);
-                //    }
+                    if (!Config.ProxyUseDefaultCredentials)
+                    {
+                        webProxy.Credentials = new NetworkCredential(Config.ProxyUsername, Config.ProxyPassword, Config.ProxyDomain);
+                    }
 
-                //    proxy = webProxy;
-                //}
-                //else
-                //{
-                proxy = WebRequest.GetSystemWebProxy();
-                //}
+                    proxy = webProxy;
+                }
+                else
+                {
+                    proxy = WebRequest.GetSystemWebProxy();
+                }
 
                 var request = (HttpWebRequest)WebRequest.Create(remoteLocation);
                 request.Credentials = new NetworkCredential(_login.Username, _login.Password);

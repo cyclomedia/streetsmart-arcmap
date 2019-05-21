@@ -56,8 +56,8 @@
             this.tbConfiguration = new System.Windows.Forms.TabPage();
             this.grConfiguration = new System.Windows.Forms.GroupBox();
             this.lblConfiguration = new System.Windows.Forms.Label();
-            this.chConfiguration = new System.Windows.Forms.CheckBox();
-            this.txtConfiguration = new System.Windows.Forms.TextBox();
+            this.chUseDefaultStreetSmartLocation = new System.Windows.Forms.CheckBox();
+            this.txtAPIStreetSmartLocation = new System.Windows.Forms.TextBox();
             this.grProxyServer = new System.Windows.Forms.GroupBox();
             this.lblProxyDomain = new System.Windows.Forms.Label();
             this.txtProxyDomain = new System.Windows.Forms.TextBox();
@@ -74,8 +74,8 @@
             this.txtProxyAddress = new System.Windows.Forms.TextBox();
             this.grAPI = new System.Windows.Forms.GroupBox();
             this.lblAPI = new System.Windows.Forms.Label();
-            this.ckDefaultAPI = new System.Windows.Forms.CheckBox();
-            this.txtAPI = new System.Windows.Forms.TextBox();
+            this.chUseDefaultConfigurationUrl = new System.Windows.Forms.CheckBox();
+            this.txtAPIConfigurationUrl = new System.Windows.Forms.TextBox();
             this.tbAbout = new System.Windows.Forms.TabPage();
             this.rtbAbout = new System.Windows.Forms.RichTextBox();
             this.tbAgreement = new System.Windows.Forms.TabPage();
@@ -289,6 +289,9 @@
             this.grConfiguration.Controls.Add(this.lblConfiguration);
             this.grConfiguration.Controls.Add(this.chConfiguration);
             this.grConfiguration.Controls.Add(this.txtConfiguration);
+            this.grConfiguration.Controls.Add(this.chUseDefaultStreetSmartLocation);
+            this.grConfiguration.Controls.Add(this.txtAPIStreetSmartLocation);
+            resources.ApplyResources(this.grConfiguration, "grConfiguration");
             this.grConfiguration.Name = "grConfiguration";
             this.grConfiguration.TabStop = false;
             // 
@@ -297,16 +300,17 @@
             resources.ApplyResources(this.lblConfiguration, "lblConfiguration");
             this.lblConfiguration.Name = "lblConfiguration";
             // 
-            // chConfiguration
+            // chUseDefaultStreetSmartLocation
             // 
-            resources.ApplyResources(this.chConfiguration, "chConfiguration");
-            this.chConfiguration.Name = "chConfiguration";
-            this.chConfiguration.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.chUseDefaultStreetSmartLocation, "chUseDefaultStreetSmartLocation");
+            this.chUseDefaultStreetSmartLocation.Name = "chUseDefaultStreetSmartLocation";
+            this.chUseDefaultStreetSmartLocation.UseVisualStyleBackColor = true;
+            this.chUseDefaultStreetSmartLocation.CheckedChanged += new System.EventHandler(this.chUseDefaultStreetSmartLocation_CheckedChanged);
             // 
-            // txtConfiguration
+            // txtAPIStreetSmartLocation
             // 
-            resources.ApplyResources(this.txtConfiguration, "txtConfiguration");
-            this.txtConfiguration.Name = "txtConfiguration";
+            resources.ApplyResources(this.txtAPIStreetSmartLocation, "txtAPIStreetSmartLocation");
+            this.txtAPIStreetSmartLocation.Name = "txtAPIStreetSmartLocation";
             // 
             // grProxyServer
             // 
@@ -401,6 +405,9 @@
             this.grAPI.Controls.Add(this.lblAPI);
             this.grAPI.Controls.Add(this.ckDefaultAPI);
             this.grAPI.Controls.Add(this.txtAPI);
+            this.grAPI.Controls.Add(this.chUseDefaultConfigurationUrl);
+            this.grAPI.Controls.Add(this.txtAPIConfigurationUrl);
+            resources.ApplyResources(this.grAPI, "grAPI");
             this.grAPI.Name = "grAPI";
             this.grAPI.TabStop = false;
             // 
@@ -409,16 +416,17 @@
             resources.ApplyResources(this.lblAPI, "lblAPI");
             this.lblAPI.Name = "lblAPI";
             // 
-            // ckDefaultAPI
+            // chUseDefaultConfigurationUrl
             // 
-            resources.ApplyResources(this.ckDefaultAPI, "ckDefaultAPI");
-            this.ckDefaultAPI.Name = "ckDefaultAPI";
-            this.ckDefaultAPI.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.chUseDefaultConfigurationUrl, "chUseDefaultConfigurationUrl");
+            this.chUseDefaultConfigurationUrl.Name = "chUseDefaultConfigurationUrl";
+            this.chUseDefaultConfigurationUrl.UseVisualStyleBackColor = true;
+            this.chUseDefaultConfigurationUrl.CheckedChanged += new System.EventHandler(this.chUseDefaultConfigurationUrl_CheckedChanged);
             // 
-            // txtAPI
+            // txtAPIConfigurationUrl
             // 
-            resources.ApplyResources(this.txtAPI, "txtAPI");
-            this.txtAPI.Name = "txtAPI";
+            resources.ApplyResources(this.txtAPIConfigurationUrl, "txtAPIConfigurationUrl");
+            this.txtAPIConfigurationUrl.Name = "txtAPIConfigurationUrl";
             // 
             // tbAbout
             // 
@@ -517,8 +525,8 @@
         private System.Windows.Forms.TextBox txtProxyAddress;
         private System.Windows.Forms.GroupBox grAPI;
         private System.Windows.Forms.Label lblAPI;
-        private System.Windows.Forms.CheckBox ckDefaultAPI;
-        private System.Windows.Forms.TextBox txtAPI;
+        private System.Windows.Forms.CheckBox chUseDefaultConfigurationUrl;
+        private System.Windows.Forms.TextBox txtAPIConfigurationUrl;
         private System.Windows.Forms.TabPage tbAbout;
         private System.Windows.Forms.RichTextBox rtbAbout;
         private System.Windows.Forms.TabPage tbAgreement;
@@ -537,8 +545,8 @@
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.GroupBox grConfiguration;
         private System.Windows.Forms.Label lblConfiguration;
-        private System.Windows.Forms.CheckBox chConfiguration;
-        private System.Windows.Forms.TextBox txtConfiguration;
+        private System.Windows.Forms.CheckBox chUseDefaultStreetSmartLocation;
+        private System.Windows.Forms.TextBox txtAPIStreetSmartLocation;
         private System.Windows.Forms.GroupBox grLocalization;
         private System.Windows.Forms.Label lblCulture;
         private System.Windows.Forms.ComboBox cbCulture;

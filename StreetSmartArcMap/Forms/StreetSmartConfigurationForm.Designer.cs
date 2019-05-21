@@ -287,11 +287,8 @@
             // 
             resources.ApplyResources(this.grConfiguration, "grConfiguration");
             this.grConfiguration.Controls.Add(this.lblConfiguration);
-            this.grConfiguration.Controls.Add(this.chConfiguration);
-            this.grConfiguration.Controls.Add(this.txtConfiguration);
             this.grConfiguration.Controls.Add(this.chUseDefaultStreetSmartLocation);
             this.grConfiguration.Controls.Add(this.txtAPIStreetSmartLocation);
-            resources.ApplyResources(this.grConfiguration, "grConfiguration");
             this.grConfiguration.Name = "grConfiguration";
             this.grConfiguration.TabStop = false;
             // 
@@ -403,11 +400,8 @@
             // 
             resources.ApplyResources(this.grAPI, "grAPI");
             this.grAPI.Controls.Add(this.lblAPI);
-            this.grAPI.Controls.Add(this.ckDefaultAPI);
-            this.grAPI.Controls.Add(this.txtAPI);
             this.grAPI.Controls.Add(this.chUseDefaultConfigurationUrl);
             this.grAPI.Controls.Add(this.txtAPIConfigurationUrl);
-            resources.ApplyResources(this.grAPI, "grAPI");
             this.grAPI.Name = "grAPI";
             this.grAPI.TabStop = false;
             // 

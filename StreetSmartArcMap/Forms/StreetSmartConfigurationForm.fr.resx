@@ -220,11 +220,11 @@
   <data name="lblConfiguration.Text" xml:space="preserve">
     <value>Position:</value>
   </data>
-  <data name="chConfiguration.Size" type="System.Drawing.Size, System.Drawing">
-    <value>111, 18</value>
+  <data name="chUseDefaultStreetSmartLocation.Size" type="System.Drawing.Size, System.Drawing">
+    <value>157, 18</value>
   </data>
-  <data name="chConfiguration.Text" xml:space="preserve">
-    <value>Utiliser par défaut</value>
+  <data name="chUseDefaultStreetSmartLocation.Text" xml:space="preserve">
+    <value>Utilisez la valeur par défaut</value>
   </data>
   <data name="grProxyServer.Text" xml:space="preserve">
     <value>Serveur proxy</value>
@@ -274,11 +274,11 @@
   <data name="lblAPI.Text" xml:space="preserve">
     <value>Position:</value>
   </data>
-  <data name="ckDefaultAPI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>111, 18</value>
+  <data name="chUseDefaultConfigurationUrl.Size" type="System.Drawing.Size, System.Drawing">
+    <value>157, 18</value>
   </data>
-  <data name="ckDefaultAPI.Text" xml:space="preserve">
-    <value>Utiliser par défaut</value>
+  <data name="chUseDefaultConfigurationUrl.Text" xml:space="preserve">
+    <value>Utilisez la valeur par défaut</value>
   </data>
   <data name="tbAbout.Text" xml:space="preserve">
     <value>A propos</value>

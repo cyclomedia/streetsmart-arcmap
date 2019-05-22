@@ -22,14 +22,14 @@ using ESRI.ArcGIS.Framework;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using ESRI.ArcGIS.SystemUI;
-using ESRI.ArcGIS.TrackingAnalyst;
+using StreetSmart.Common.Data.SLD;
+using StreetSmart.Common.Factories;
 using StreetSmart.Common.Interfaces.Data;
 using StreetSmart.Common.Interfaces.GeoJson;
 using StreetSmart.Common.Interfaces.SLD;
 using StreetSmartArcMap.AddIns;
 using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Utilities;
-using StreetSmart.Common.Factories;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -37,7 +37,6 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using StreetSmart.Common.Data.SLD;
 
 namespace StreetSmartArcMap.Layers
 {
@@ -136,6 +135,8 @@ namespace StreetSmartArcMap.Layers
         private Color _color;
 
         public IOverlay Overlay;
+
+        private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
         #endregion members
 
@@ -458,18 +459,61 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         // Functions (Public)
         // =========================================================================
-        // TODO: fix
-        public string GetGmlFromLocation(List<StreetSmart.Common.Interfaces.Data.IRecording> recordingLocations, double distance, out Color color, SpatialReference cyclSpatialRef)
+          public Color GetColor()
         {
-            string result = WfsHeader;
-            // ReSharper disable UseIndexedProperty
-
-            if (_featureClass != null)
+            if (_layer != null)
             {
+                var color = ArcUtils.GetColorFromLayer(_layer);
+                return color;
+            }
+            return Color.Black; // unknown
+        }
+
+        public IStyledLayerDescriptor CreateSld(IFeatureCollection featureCollection, Color color)
+        {
+            // according to specs, we only need color.
+            if (featureCollection.Features.Count >= 1)
+            {
+                // use SLDFactory for this.
+                Sld = SLDFactory.CreateEmptyStyle();
+                ISymbolizer symbolizer = default(ISymbolizer);
+                switch (TypeOfLayer)
+                {
+                    case TypeOfLayer.Point:
+                        symbolizer = SLDFactory.CreateStylePoint(SymbolizerType.Circle, 10, color, 75, color, 0);
+                        break;
+                    case TypeOfLayer.Line:
+                        symbolizer = SLDFactory.CreateStyleLine(color);
+                        break;
+                    case TypeOfLayer.Polygon:
+                        symbolizer = SLDFactory.CreateStylePolygon(color, 75);
+                        break;
+                }
+                var rule = SLDFactory.CreateRule(symbolizer);
+                SLDFactory.AddRuleToStyle(Sld, rule);
+            }
+            return Sld;
+        }
+
+        // TODO: finish
+        public IFeatureCollection GenerateJson(IList<IRecording> recordingLocations)
+        {
+            //throw new NotImplementedException();
+
+            var spatRel = Config.SpatialReference;
+            string srsName = (spatRel == null) ? ArcUtils.EpsgCode : spatRel.SRSName;
+            string layerName = _layer.Name;
+            int srs = int.Parse(srsName.Replace("EPSG:", string.Empty));
+            var featureCollection = GeoJsonFactory.CreateFeatureCollection(srs);
+
+            var featureLayer = (IFeatureLayer)_layer;
+            if (featureLayer != null)
+            {
+                IFeatureClass fc = featureLayer.FeatureClass;
+                double distance = Config.OverlayDrawDistanceInMeters * 1.0;
+
                 ESRI.ArcGIS.Geometry.IGeometry geometryBag = new GeometryBag();
                 var geometryCollection = geometryBag as IGeometryCollection;
-                Configuration.Configuration config = Configuration.Configuration.Instance;
-                SpatialReference spatRel = config.SpatialReference;
                 ISpatialReference gsSpatialReference = (spatRel == null) ? ArcUtils.SpatialReference : spatRel.SpatialRef;
                 var projCoord = gsSpatialReference as IProjectedCoordinateSystem;
 
@@ -523,7 +567,6 @@ namespace StreetSmartArcMap.Layers
                 var featureCursor = _featureClass.Search(spatialFilter, false);
                 var featureCount = _featureClass.FeatureCount(spatialFilter);
                 var shapeId = featureCursor.FindField(_featureClass.ShapeFieldName);
-                var gmlConverter = new GMLConverter();
 
                 for (int i = 0; i < featureCount; i++)
                 {
@@ -548,100 +591,55 @@ namespace StreetSmartArcMap.Layers
 
                         var shapeVar = feature.get_Value(shapeId);
                         var geometry = shapeVar as ESRI.ArcGIS.Geometry.IGeometry;
-
                         if (geometry != null)
                         {
-                            geometry.Project((cyclSpatialRef == null) ? gsSpatialReference : cyclSpatialRef.SpatialRef);
+                            var cyclSpatialRef = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs);
+                            geometry.Project((Config.ApiSRS == null) ? gsSpatialReference : cyclSpatialRef);
 
-                            if (!HasZ)
+                            var pointCollection = geometry as IPointCollection4;
+
+                            if (pointCollection != null)
                             {
-                                var pointCollection = geometry as IPointCollection4;
-
-                                if (pointCollection != null)
+                                var pointCollectionJson = new List<ICoordinate>();
+                                for (int j = 0; j < pointCollection.PointCount; j++)
                                 {
-                                    for (int j = 0; j < pointCollection.PointCount; j++)
-                                    {
-                                        ESRI.ArcGIS.Geometry.IPoint point = pointCollection.Point[j];
-
-                                        if (point != null)
-                                        {
-                                            point.Z = double.NaN;
-                                        }
-
-                                        pointCollection.ReplacePoints(j, 1, 1, point);
-                                    }
-
-                                    shapeVar = pointCollection as ESRI.ArcGIS.Geometry.IGeometry;
-                                }
-                                else
-                                {
-                                    var point = geometry as ESRI.ArcGIS.Geometry.IPoint;
+                                    ESRI.ArcGIS.Geometry.IPoint point = pointCollection.Point[j];
 
                                     if (point != null)
                                     {
-                                        point.Z = double.NaN;
-                                        shapeVar = point;
+                                        if (!HasZ)
+                                        {
+                                            point.Z = double.NaN;
+                                        }
                                     }
+                                    ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y);
+                                    pointCollectionJson.Add(pJson);
+                                }
+
+                                var geomJson = GeoJsonFactory.CreatePolygonFeature(new List<IList<ICoordinate>> { pointCollectionJson });
+                                featureCollection.Features.Add(geomJson);
+                            }
+                            else
+                            {
+                                var point = geometry as ESRI.ArcGIS.Geometry.IPoint;
+
+                                if (point != null)
+                                {
+                                    if (!HasZ)
+                                    {
+                                        point.Z = double.NaN;
+                                    }
+                                    shapeVar = point;
+                                    ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y);
+                                    var geomJson = GeoJsonFactory.CreatePointFeature(pJson);
+                                    featureCollection.Features.Add(geomJson);
                                 }
                             }
+                            
                         }
-
-                        gmlConverter.ESRIGeometry = shapeVar;
-                        string gml = gmlConverter.GML;
-                        gml = gml.Replace("<Polygon>", string.Format("<Polygon srsDimension=\"{0}\" >", HasZ ? 3 : 2));
-                        gml = gml.Replace("<LineString>", string.Format("<LineString srsDimension=\"{0}\" >", HasZ ? 3 : 2));
-                        gml = gml.Replace("<point>", string.Format("<point srsDimension=\"{0}\" >", HasZ ? 3 : 2));
-                        gml = gml.Replace("point", "Point");
-                        gml = gml.Replace(",1.#QNAN", string.Empty);
-                        gml = gml.Replace("<", "<gml:");
-                        gml = gml.Replace("<gml:/", "</gml:");
-                        string fieldValueStr = fieldvalues.Aggregate(string.Empty,
-                          (current, fieldvalue) => string.Format("{0}<{1}>{2}</{1}>", current, fieldvalue.Key, fieldvalue.Value));
-                        result = string.Format("{0}<gml:featureMember><xs:Geometry>{1}{2}</xs:Geometry></gml:featureMember>", result,
-                          fieldValueStr, gml);
                     }
                 }
             }
-
-            // ReSharper restore UseIndexedProperty
-            color = ArcUtils.GetColorFromLayer(_layer);
-            GmlChanged = (_color != color);
-            _color = color;
-            string newGml = string.Concat(result, WfsFinished);
-            GmlChanged = ((newGml != _gml) || GmlChanged);
-            return (_gml = newGml);
-        }
-
-        private bool CreateSld(IFeatureCollection featureCollection)
-        {
-            string oldSld = Sld?.SLD;
-            // according to specs, we only need color. 
-            if (featureCollection.Features.Count >= 1)
-            {
-                var rule = new Rule();
-                Sld = new StyledLayerDescriptor(rule);
-            }
-
-            return !(oldSld?.Equals(Sld?.SLD) ?? false);
-        }
-        
-        // TODO: finish
-        public IFeatureCollection GenerateJson()
-        {
-            var spatRel = Configuration.Configuration.Instance.SpatialReference;
-            string srsName = (spatRel == null) ? ArcUtils.EpsgCode : spatRel.SRSName;
-            string layerName = _layer.Name;
-            int srs = int.Parse(srsName.Replace("EPSG:", string.Empty));
-            var featureCollection = GeoJsonFactory.CreateFeatureCollection(srs);
-
-            var featureLayer = (IFeatureLayer)_layer;
-            if (featureLayer != null)
-            {
-                //featureLayer.getFeatureClass();
-
-
-            }
-
 
             return featureCollection;
         }

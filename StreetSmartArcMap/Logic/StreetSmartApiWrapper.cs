@@ -27,13 +27,10 @@ using StreetSmart.Common.Interfaces.GeoJson;
 using StreetSmart.Common.Interfaces.SLD;
 using StreetSmart.WinForms;
 using StreetSmartArcMap.Layers;
-using StreetSmartArcMap.Logic.Model;
-using StreetSmartArcMap.Logic.Model.Atlas;
 using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -41,13 +38,11 @@ using System.Windows.Forms;
 namespace StreetSmartArcMap.Logic
 {
     public delegate void ViewersChangeEventDelegate(ViewersChangeEventArgs args);
-    public delegate void ViewingConeChangeEventDelegate(ViewingConeChangeEventArgs args);
 
-    
+    public delegate void ViewingConeChangeEventDelegate(ViewingConeChangeEventArgs args);
 
     public class StreetSmartApiWrapper
     {
-        
         #region private const
 
         public const string ApiKey = "O3Qd-D85a3YF6DkNmLEp-XU9OrQpGX8RG7IZi7UFKTAFO38ViDo9CD4xmbcdejcd";
@@ -55,6 +50,7 @@ namespace StreetSmartArcMap.Logic
         #endregion private const
 
         #region Singleton construction
+
         private static StreetSmartApiWrapper _instance;
 
         public static StreetSmartApiWrapper Instance
@@ -71,11 +67,14 @@ namespace StreetSmartArcMap.Logic
         private StreetSmartApiWrapper()
         {
             Initialised = false;
+            _vectorLayers = new List<VectorLayer>();
+            _vectorLayerInChange = new List<VectorLayer>();
         }
 
         #endregion Singleton construction
 
         #region private properties
+
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
         private bool Loading = false;
         private IPanoramaViewerOptions DefaultPanoramaOptions { get; set; }
@@ -88,6 +87,8 @@ namespace StreetSmartArcMap.Logic
         private int RequestOverlayDistance { get; set; }
         private string RequestQuery { get; set; }
         private string RequestSRS { get; set; }
+        private readonly IList<VectorLayer> _vectorLayers;
+        private readonly IList<VectorLayer> _vectorLayerInChange;
 
         #endregion private properties
 
@@ -154,13 +155,12 @@ namespace StreetSmartArcMap.Logic
             {
                 //await RestartStreetSmartAPI(StreetSmartOptions);
 
-
                 if (StreetSmartOptions != null)
                 {
                     IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
                     IDomElement element = DomElementFactory.Create();
                     ApiOptions = StreetSmartOptions.UseDefaultBaseUrl ?
-                        OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, addressSettings, element) : 
+                        OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, addressSettings, element) :
                         OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, StreetSmartOptions.ConfigurationUrlToUse, addressSettings, element);
 
                     await StreetSmartAPI.Init(ApiOptions);
@@ -170,6 +170,7 @@ namespace StreetSmartArcMap.Logic
                 VectorLayer.LayerRemoveEvent += VectorLayer_LayerRemoveEvent;
                 VectorLayer.LayerChangedEvent += VectorLayer_LayerChangedEvent;
 
+                // these events still need to be implemented:
                 VectorLayer.FeatureStartEditEvent += VectorLayer_FeatureStartEditEvent;
                 VectorLayer.FeatureUpdateEditEvent += VectorLayer_FeatureUpdateEditEvent;
                 VectorLayer.FeatureDeleteEvent += VectorLayer_FeatureDeleteEvent;
@@ -180,7 +181,7 @@ namespace StreetSmartArcMap.Logic
                 VectorLayer.SketchCreateEvent += VectorLayer_SketchCreateEvent;
                 VectorLayer.SketchModifiedEvent += VectorLayer_SketchModifiedEvent;
                 VectorLayer.SketchFinishedEvent += VectorLayer_SketchFinishedEvent;
-                    
+
                 //TODO: remove VectorLayer events
 
                 // Open image
@@ -204,89 +205,284 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        private string GetGml(VectorLayer vectorLayer, out Color color)
+        private async Task RemoveVectorLayerAsync(VectorLayer vectorLayer)
         {
-            var viewers = StreetSmartAPI.GetViewers().Result;
-            var recordings = viewers.Select(v => ((IPanoramaViewer)v).GetRecording().Result).ToList();
+            IOverlay overlay = vectorLayer?.Overlay;
 
-            //List<Recording> locations = streetsmart.Locations;
-            double distanceVectorLayer = Configuration.Configuration.Instance.OverlayDrawDistanceInMeters;
-            return vectorLayer.GetGmlFromLocation(recordings, distanceVectorLayer, out color, Config.SpatialReference);
-        }
-
-        private void VectorLayer_LayerAddEvent(VectorLayer layer)
-        {
-            if (layer != null && layer.IsVisibleInStreetSmart && StreetSmartAPI != null)
+            if (overlay != null)
             {
-                VectorLayer_LayerRemoveEvent(layer);
-                Color color;
-                string gml = GetGml(layer, out color);
-                AddVectorLayer(layer, gml, color);
+                await StreetSmartAPI.RemoveOverlay(overlay.Id);
+                vectorLayer.Overlay = null;
+                if (_vectorLayers.Contains(vectorLayer))
+                    _vectorLayers.Remove(vectorLayer);
             }
         }
 
-        private async void AddVectorLayer(VectorLayer vectorLayer, string gml, Color color)
+        private async Task AddVectorLayerAsync(VectorLayer vectorLayer)
         {
-            var spatRel = Configuration.Configuration.Instance.SpatialReference;
+            var viewers = await StreetSmartAPI.GetViewers();
+            var recordings = new List<IRecording>();
+            foreach (var v in viewers)
+            {
+                var rec = await ((IPanoramaViewer)v).GetRecording();
+                recordings.Add(rec);
+            }
+            var color = vectorLayer.GetColor();
+
+            var spatRel = Config.SpatialReference;
             string srsName = (spatRel == null) ? ArcUtils.EpsgCode : spatRel.SRSName;
             string layerName = vectorLayer.Name;
 
-            IFeatureCollection geoJson = vectorLayer.GenerateJson();
-            IStyledLayerDescriptor sld = vectorLayer.Sld;
+            IFeatureCollection geoJson = vectorLayer.GenerateJson(recordings);
+            IStyledLayerDescriptor sld = vectorLayer.CreateSld(geoJson, color);
 
-            var overlay = OverlayFactory.Create(geoJson, layerName, srsName, sld?.SLD);
-            await StreetSmartAPI.AddOverlay(overlay);
-
+            var overlay = OverlayFactory.Create(geoJson, layerName, srsName, color);
+            var o = await StreetSmartAPI.AddOverlay(overlay);
+            vectorLayer.Overlay = o;
+            _vectorLayers.Add(vectorLayer);
         }
 
-        private void VectorLayer_LayerRemoveEvent(VectorLayer layer)
+        private async void VectorLayer_LayerAddEvent(VectorLayer layer)
         {
-            //
+            if (layer != null && layer.IsVisibleInStreetSmart && StreetSmartAPI != null)
+            {
+                if (!_vectorLayerInChange.Contains(layer))
+                {
+                    _vectorLayerInChange.Add(layer);
+                    await RemoveVectorLayerAsync(layer);
+                    await AddVectorLayerAsync(layer);
+                    _vectorLayerInChange.Remove(layer);
+                }
+            }
         }
 
-        private void VectorLayer_LayerChangedEvent(VectorLayer layer)
+        private async void VectorLayer_LayerRemoveEvent(VectorLayer layer)
         {
-            //
+            if (layer != null && layer.IsVisibleInStreetSmart && StreetSmartAPI != null)
+            {
+                if (!_vectorLayerInChange.Contains(layer))
+                {
+                    _vectorLayerInChange.Add(layer);
+                    await RemoveVectorLayerAsync(layer);
+                    _vectorLayerInChange.Remove(layer);
+                }
+            }
+        }
+
+        private async void VectorLayer_LayerChangedEvent(VectorLayer layer)
+        {
+            if (StreetSmartAPI != null)
+            {
+                if (layer != null)
+                {
+                    if (!_vectorLayerInChange.Contains(layer))
+                    {
+                        _vectorLayerInChange.Add(layer);
+                        if (layer.IsVisibleInStreetSmart)
+                        {
+                            await RemoveVectorLayerAsync(layer);
+                            await AddVectorLayerAsync(layer);
+                        }
+                        else
+                        {
+                            await RemoveVectorLayerAsync(layer);
+                        }
+                        _vectorLayerInChange.Remove(layer);
+                    }
+                    else
+                    {
+                        IList<VectorLayer> vectorLayers = VectorLayer.Layers;
+                        int i = 0;
+
+                        while (i < _vectorLayers.Count)
+                        {
+                            var lay = _vectorLayers.ElementAt(i);
+
+                            if (!vectorLayers.Contains(lay))
+                            {
+                                await StreetSmartAPI.RemoveOverlay(lay.Overlay.Id);
+                                _vectorLayers.Remove(lay);
+                            }
+                            else
+                            {
+                                i++;
+                            }
+                        }
+
+                        foreach (var vectorLayer in vectorLayers)
+                        {
+                            if (!_vectorLayers.Contains(vectorLayer))
+                            {
+                                VectorLayer_LayerAddEvent(vectorLayer);
+                            }
+                            else
+                            {
+                                if (vectorLayer.IsVisibleInStreetSmart)
+                                {
+                                    VectorLayer_LayerAddEvent(vectorLayer);
+                                }
+                                else
+                                {
+                                    if (_vectorLayers.Contains(vectorLayer))
+                                    {
+                                        await StreetSmartAPI.RemoveOverlay(vectorLayer.Overlay.Id);
+                                        _vectorLayers.Remove(vectorLayer);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void VectorLayer_FeatureStartEditEvent(IList<ESRI.ArcGIS.Geometry.IGeometry> geometries)
         {
-            //
+            //if (Config.MeasurePermissions && (geometries != null))
+            //{
+            //    var usedMeasurements = new List<Measurement>();
+
+            //    foreach (ESRI.ArcGIS.Geometry.IGeometry geometry in geometries)
+            //    {
+            //        if (geometry != null)
+            //        {
+            //            Measurement measurement = Measurement.Get(geometry);
+            //            _drawPoint = false;
+            //            measurement = StartMeasurement(geometry, measurement, false);
+            //            _drawPoint = true;
+
+            //            if (measurement != null)
+            //            {
+            //                measurement.UpdateMeasurementPoints(geometry);
+            //                measurement.CloseMeasurement();
+            //                usedMeasurements.Add(measurement);
+            //            }
+            //        }
+            //    }
+
+            //    Measurement.RemoveUnusedMeasurements(usedMeasurements);
+            //}
         }
 
         private void VectorLayer_FeatureUpdateEditEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
-            //
+            //if (Config.MeasurePermissions && (feature != null))
+            //{
+            //    ESRI.ArcGIS.Geometry.IGeometry geometry = feature.Shape;
+
+            //    if (geometry != null)
+            //    {
+            //        Measurement measurement = Measurement.Get(geometry);
+
+            //        if (measurement != null)
+            //        {
+            //            measurement.UpdateMeasurementPoints(geometry);
+            //        }
+            //    }
+            //}
         }
 
         private void VectorLayer_FeatureDeleteEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
-            //
+            //if (Config.MeasurePermissions)
+            //{
+            //     ESRI.ArcGIS.Geometry.IGeometry geometry = feature.Shape;
+
+            //    if (geometry != null)
+            //    {
+            //        Measurement measurement = Measurement.Get(geometry);
+
+            //        if (measurement != null)
+            //        {
+            //            measurement.RemoveMeasurement();
+            //        }
+            //    }
+            //}
         }
 
         private void VectorLayer_StopEditEvent()
         {
-            //
+            //if (Config.MeasurePermissions)
+            //{
+            //    _drawingSketch = false;
+            //    Measurement.RemoveAll();
+            //    FrmMeasurement.Close();
+            //}
         }
 
         private void VectorLayer_StartMeasurementEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
         {
-            //
+            //if (Config.MeasurePermissions)
+            //{
+            //    Measurement measurement = Measurement.Sketch;
+            //    StartMeasurement(geometry, measurement, true);
+            //}
         }
 
         private void VectorLayer_SketchCreateEvent(ESRI.ArcGIS.Editor.IEditSketch3 sketch)
         {
-            //
+            //if (Config.MeasurePermissions && (!_sketchModified) && (!_screenPointAdded) && (_layer != null))
+            //{
+            //    _sketchModified = true;
+            //    _layer.AddZToSketch(sketch);
+            //    _sketchModified = false;
+            //}
         }
 
         private void VectorLayer_SketchModifiedEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
         {
-            //
+            //if (Config.MeasurePermissions)
+            //{
+            //    _mapPointAdded = !_screenPointAdded;
+            //    Measurement measurement = Measurement.Sketch;
+
+            //    if (geometry != null)
+            //    {
+            //        if (((!_drawingSketch) && (!geometry.IsEmpty)) || (measurement == null))
+            //        {
+            //            _drawingSketch = true;
+            //            measurement = StartMeasurement(geometry, measurement, true);
+            //        }
+
+            //        if (measurement != null)
+            //        {
+            //            measurement.UpdateMeasurementPoints(geometry);
+            //        }
+            //    }
+
+            //    _mapPointAdded = false;
+            //}
         }
 
         private void VectorLayer_SketchFinishedEvent()
         {
-           //
+            //if (Config.MeasurePermissions)
+            //{
+            //    _screenPointAdded = false;
+            //    _mapPointAdded = false;
+            //    _drawingSketch = false;
+            //    Measurement.RemoveSketch();
+            //}
+        }
+
+        private async Task DeinitApi()
+        {
+            VectorLayer.LayerAddEvent -= VectorLayer_LayerAddEvent;
+            VectorLayer.LayerRemoveEvent -= VectorLayer_LayerRemoveEvent;
+            VectorLayer.LayerChangedEvent -= VectorLayer_LayerChangedEvent;
+
+            VectorLayer.FeatureStartEditEvent -= VectorLayer_FeatureStartEditEvent;
+            VectorLayer.FeatureUpdateEditEvent -= VectorLayer_FeatureUpdateEditEvent;
+            VectorLayer.FeatureDeleteEvent -= VectorLayer_FeatureDeleteEvent;
+
+            VectorLayer.StopEditEvent -= VectorLayer_StopEditEvent;
+            VectorLayer.StartMeasurementEvent -= VectorLayer_StartMeasurementEvent;
+
+            VectorLayer.SketchCreateEvent -= VectorLayer_SketchCreateEvent;
+            VectorLayer.SketchModifiedEvent -= VectorLayer_SketchModifiedEvent;
+            VectorLayer.SketchFinishedEvent -= VectorLayer_SketchFinishedEvent;
+
+            await StreetSmartAPI.Destroy(ApiOptions);
         }
 
         #endregion private functions
@@ -301,7 +497,7 @@ namespace StreetSmartArcMap.Logic
                 if (Initialised)
                 {
                     Initialised = false;
-                    await StreetSmartAPI.Destroy(ApiOptions);
+                    await DeinitApi();
                     await InitApi(options);
                 }
 
@@ -338,7 +534,6 @@ namespace StreetSmartArcMap.Logic
                 StreetSmartAPI = api;
                 await Init();
             }
-
         }
 
         private async void NotifyViewerChange()

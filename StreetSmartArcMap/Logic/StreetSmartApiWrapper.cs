@@ -89,6 +89,8 @@ namespace StreetSmartArcMap.Logic
         private string RequestSRS { get; set; }
         private readonly IList<VectorLayer> _vectorLayers;
         private readonly IList<VectorLayer> _vectorLayerInChange;
+        private readonly IList<CycloMediaLayer> _wfsLayers;
+        private readonly IList<CycloMediaLayer> _wfsLayersInChange;
 
         #endregion private properties
 
@@ -182,8 +184,10 @@ namespace StreetSmartArcMap.Logic
                 VectorLayer.SketchModifiedEvent += VectorLayer_SketchModifiedEvent;
                 VectorLayer.SketchFinishedEvent += VectorLayer_SketchFinishedEvent;
 
-                //TODO: remove VectorLayer events
-
+                WfsLayer.LayerAddedEvent += WfsLayer_LayerAddedEvent;
+                WfsLayer.LayerRemoveEvent += WfsLayer_LayerRemoveEvent;
+                WfsLayer.LayerChangedEvent += WfsLayer_LayerChangedEvent;
+                
                 // Open image
                 ViewerTypes = new List<ViewerType> { ViewerType.Panorama };
                 Initialised = true;
@@ -240,6 +244,43 @@ namespace StreetSmartArcMap.Logic
             var o = await StreetSmartAPI.AddOverlay(overlay);
             vectorLayer.Overlay = o;
             _vectorLayers.Add(vectorLayer);
+        }
+
+        private async Task RemoveWfsLayerAsync(CycloMediaLayer layer)
+        {
+            IOverlay overlay = layer?.Overlay;
+
+            if (overlay != null)
+            {
+                await StreetSmartAPI.RemoveOverlay(overlay.Id);
+                layer.Overlay = null;
+                if (_wfsLayers.Contains(layer))
+                    _wfsLayers.Remove(layer);
+            }
+        }
+
+        private async Task AddWfsLayerAsync(CycloMediaLayer layer)
+        {
+            var viewers = await StreetSmartAPI.GetViewers();
+            var recordings = new List<IRecording>();
+            foreach (var v in viewers)
+            {
+                var rec = await ((IPanoramaViewer)v).GetRecording();
+                recordings.Add(rec);
+            }
+            var color = layer.GetColor();
+
+            var spatRel = Config.SpatialReference;
+            string srsName = (spatRel == null) ? ArcUtils.EpsgCode : spatRel.SRSName;
+            string layerName = layer.Name;
+
+            IFeatureCollection geoJson = layer.GenerateJson(recordings);
+            IStyledLayerDescriptor sld = layer.CreateSld(geoJson, color);
+
+            var overlay = OverlayFactory.Create(geoJson, layerName, srsName, color);
+            var o = await StreetSmartAPI.AddOverlay(overlay);
+            layer.Overlay = o;
+            _wfsLayers.Add(layer);
         }
 
         private async void VectorLayer_LayerAddEvent(VectorLayer layer)
@@ -463,6 +504,38 @@ namespace StreetSmartArcMap.Logic
             //    _drawingSketch = false;
             //    Measurement.RemoveSketch();
             //}
+        }
+
+        private async void WfsLayer_LayerAddedEvent(CycloMediaLayer layer)
+        {
+            if (layer != null && layer.IsVisibleInStreetSmart && StreetSmartAPI != null)
+            {
+                if (!_wfsLayersInChange.Contains(layer))
+                {
+                    _wfsLayersInChange.Add(layer);
+                    await RemoveWfsLayerAsync(layer);
+                    await AddWfsLayerAsync(layer);
+                    _wfsLayersInChange.Remove(layer);
+                }
+            }
+        }
+
+        private async void WfsLayer_LayerRemoveEvent(CycloMediaLayer layer)
+        {
+            if (layer != null && layer.IsVisibleInStreetSmart && StreetSmartAPI != null)
+            {
+                if (!_wfsLayersInChange.Contains(layer))
+                {
+                    _wfsLayersInChange.Add(layer);
+                    await RemoveWfsLayerAsync(layer);
+                    _wfsLayersInChange.Remove(layer);
+                }
+            }
+        }
+
+        private void WfsLayer_LayerChangedEvent(CycloMediaLayer layer)
+        {
+            //TODO: copy and modify from VectorLayer
         }
 
         private async Task DeinitApi()

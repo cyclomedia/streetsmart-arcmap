@@ -459,7 +459,7 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         // Functions (Public)
         // =========================================================================
-          public Color GetColor()
+        public Color GetColor()
         {
             if (_layer != null)
             {
@@ -616,8 +616,22 @@ namespace StreetSmartArcMap.Layers
                                     pointCollectionJson.Add(pJson);
                                 }
 
-                                var geomJson = GeoJsonFactory.CreatePolygonFeature(new List<IList<ICoordinate>> { pointCollectionJson });
-                                featureCollection.Features.Add(geomJson);
+                                var points = new List<IList<ICoordinate>> { pointCollectionJson };
+
+                                //TODO: add more line types?
+                                if (geometry.GeometryType == esriGeometryType.esriGeometryPolyline || geometry.GeometryType == esriGeometryType.esriGeometryLine)
+                                {
+                                    if (points.Count > 0)
+                                    {
+                                        var geomJson = GeoJsonFactory.CreateLineFeature(points.FirstOrDefault());
+                                        featureCollection.Features.Add(geomJson);
+                                    }
+                                }
+                                else
+                                {
+                                    var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
+                                    featureCollection.Features.Add(geomJson);
+                                }
                             }
                             else
                             {
@@ -635,7 +649,7 @@ namespace StreetSmartArcMap.Layers
                                     featureCollection.Features.Add(geomJson);
                                 }
                             }
-                            
+
                         }
                     }
                 }

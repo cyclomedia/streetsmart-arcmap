@@ -166,6 +166,8 @@ namespace StreetSmartArcMap.Logic
                     await StreetSmartAPI.Init(ApiOptions);
                 }
 
+                VectorLayer.DetectVectorLayers(true);
+
                 VectorLayer.LayerAddEvent += VectorLayer_LayerAddEvent;
                 VectorLayer.LayerRemoveEvent += VectorLayer_LayerRemoveEvent;
                 VectorLayer.LayerChangedEvent += VectorLayer_LayerChangedEvent;
@@ -181,7 +183,7 @@ namespace StreetSmartArcMap.Logic
                 VectorLayer.SketchCreateEvent += VectorLayer_SketchCreateEvent;
                 VectorLayer.SketchModifiedEvent += VectorLayer_SketchModifiedEvent;
                 VectorLayer.SketchFinishedEvent += VectorLayer_SketchFinishedEvent;
-                
+
                 // Open image
                 ViewerTypes = new List<ViewerType> { ViewerType.Panorama };
                 Initialised = true;
@@ -203,6 +205,28 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
+        private async Task AddVectorLayerAsync(VectorLayer layer)
+        {
+            var viewers = await StreetSmartAPI.GetViewers();
+            var recordings = new List<IRecording>();
+            foreach (var v in viewers)
+            {
+                var rec = await ((IPanoramaViewer)v).GetRecording();
+                recordings.Add(rec);
+            }
+            var color = layer.GetColor();
+
+            var spatRel = Config.SpatialReference;
+            string srsName = (spatRel == null) ? ArcUtils.EpsgCode : spatRel.SRSName;
+            string layerName = layer.Name;
+
+            IFeatureCollection geoJson = layer.GenerateJson(recordings);
+            IStyledLayerDescriptor sld = layer.CreateSld(geoJson, color);
+
+            var overlay = OverlayFactory.Create(geoJson, layerName, srsName, color);
+            layer.Overlay = await StreetSmartAPI.AddOverlay(overlay);
+        }
+
         private async Task RemoveVectorLayerAsync(VectorLayer vectorLayer)
         {
             IOverlay overlay = vectorLayer?.Overlay;
@@ -214,30 +238,6 @@ namespace StreetSmartArcMap.Logic
                 if (_vectorLayers.Contains(vectorLayer))
                     _vectorLayers.Remove(vectorLayer);
             }
-        }
-
-        private async Task AddVectorLayerAsync(VectorLayer vectorLayer)
-        {
-            var viewers = await StreetSmartAPI.GetViewers();
-            var recordings = new List<IRecording>();
-            foreach (var v in viewers)
-            {
-                var rec = await ((IPanoramaViewer)v).GetRecording();
-                recordings.Add(rec);
-            }
-            var color = vectorLayer.GetColor();
-
-            var spatRel = Config.SpatialReference;
-            string srsName = (spatRel == null) ? ArcUtils.EpsgCode : spatRel.SRSName;
-            string layerName = vectorLayer.Name;
-
-            IFeatureCollection geoJson = vectorLayer.GenerateJson(recordings);
-            IStyledLayerDescriptor sld = vectorLayer.CreateSld(geoJson, color);
-
-            var overlay = OverlayFactory.Create(geoJson, layerName, srsName, color);
-            var o = await StreetSmartAPI.AddOverlay(overlay);
-            vectorLayer.Overlay = o;
-            _vectorLayers.Add(vectorLayer);
         }
 
         private async void VectorLayer_LayerAddEvent(VectorLayer layer)
@@ -269,63 +269,61 @@ namespace StreetSmartArcMap.Logic
 
         private async void VectorLayer_LayerChangedEvent(VectorLayer layer)
         {
-            if (StreetSmartAPI != null)
+            if (StreetSmartAPI != null && layer != null)
             {
-                if (layer != null)
+                if (!_vectorLayerInChange.Contains(layer))
                 {
-                    if (!_vectorLayerInChange.Contains(layer))
+                    _vectorLayerInChange.Add(layer);
+
+                    await RemoveVectorLayerAsync(layer);
+
+                    if (layer.IsVisibleInStreetSmart)
                     {
-                        _vectorLayerInChange.Add(layer);
-                        if (layer.IsVisibleInStreetSmart)
+                        await AddVectorLayerAsync(layer);
+
+                        _vectorLayers.Add(layer);
+                    }
+
+                    _vectorLayerInChange.Remove(layer);
+                }
+                else
+                {
+                    IList<VectorLayer> vectorLayers = VectorLayer.Layers;
+                    int i = 0;
+
+                    while (i < _vectorLayers.Count)
+                    {
+                        var lay = _vectorLayers.ElementAt(i);
+
+                        if (!vectorLayers.Contains(lay))
                         {
-                            await RemoveVectorLayerAsync(layer);
-                            await AddVectorLayerAsync(layer);
+                            await StreetSmartAPI.RemoveOverlay(lay.Overlay.Id);
+                            _vectorLayers.Remove(lay);
                         }
                         else
                         {
-                            await RemoveVectorLayerAsync(layer);
+                            i++;
                         }
-                        _vectorLayerInChange.Remove(layer);
                     }
-                    else
+
+                    foreach (var vectorLayer in vectorLayers)
                     {
-                        IList<VectorLayer> vectorLayers = VectorLayer.Layers;
-                        int i = 0;
-
-                        while (i < _vectorLayers.Count)
+                        if (!_vectorLayers.Contains(vectorLayer))
                         {
-                            var lay = _vectorLayers.ElementAt(i);
-
-                            if (!vectorLayers.Contains(lay))
-                            {
-                                await StreetSmartAPI.RemoveOverlay(lay.Overlay.Id);
-                                _vectorLayers.Remove(lay);
-                            }
-                            else
-                            {
-                                i++;
-                            }
+                            VectorLayer_LayerAddEvent(vectorLayer);
                         }
-
-                        foreach (var vectorLayer in vectorLayers)
+                        else
                         {
-                            if (!_vectorLayers.Contains(vectorLayer))
+                            if (vectorLayer.IsVisibleInStreetSmart)
                             {
                                 VectorLayer_LayerAddEvent(vectorLayer);
                             }
                             else
                             {
-                                if (vectorLayer.IsVisibleInStreetSmart)
+                                if (_vectorLayers.Contains(vectorLayer))
                                 {
-                                    VectorLayer_LayerAddEvent(vectorLayer);
-                                }
-                                else
-                                {
-                                    if (_vectorLayers.Contains(vectorLayer))
-                                    {
-                                        await StreetSmartAPI.RemoveOverlay(vectorLayer.Overlay.Id);
-                                        _vectorLayers.Remove(vectorLayer);
-                                    }
+                                    await StreetSmartAPI.RemoveOverlay(vectorLayer.Overlay.Id);
+                                    _vectorLayers.Remove(vectorLayer);
                                 }
                             }
                         }
@@ -565,6 +563,7 @@ namespace StreetSmartArcMap.Logic
                     ViewerId = await viewer.GetId(),
                     ViewingCone = cone
                 };
+
                 OnViewingConeChanged?.Invoke(args);
             }
         }

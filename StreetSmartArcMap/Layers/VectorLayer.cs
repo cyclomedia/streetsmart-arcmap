@@ -312,7 +312,7 @@ namespace StreetSmartArcMap.Layers
 
         public static IList<VectorLayer> Layers
         {
-            get { return _layers ?? (_layers = DetectVectorLayers(true)); }
+            get { return _layers ?? (_layers = DetectVectorLayers(false)); }
         }
 
         #endregion properties
@@ -355,7 +355,7 @@ namespace StreetSmartArcMap.Layers
             return result;
         }
 
-        private static IList<VectorLayer> DetectVectorLayers(bool initEvents)
+        public static IList<VectorLayer> DetectVectorLayers(bool initEvents)
         {
             _layers = new List<VectorLayer>();
             IMap map = ArcUtils.Map;
@@ -618,8 +618,7 @@ namespace StreetSmartArcMap.Layers
 
                                 var points = new List<IList<ICoordinate>> { pointCollectionJson };
 
-                                //TODO: add more line types?
-                                if (geometry.GeometryType == esriGeometryType.esriGeometryPolyline || geometry.GeometryType == esriGeometryType.esriGeometryLine)
+                                if (TypeOfLayer == TypeOfLayer.Line)
                                 {
                                     if (points.Count > 0)
                                     {
@@ -627,7 +626,7 @@ namespace StreetSmartArcMap.Layers
                                         featureCollection.Features.Add(geomJson);
                                     }
                                 }
-                                else
+                                else if (TypeOfLayer == TypeOfLayer.Polygon)
                                 {
                                     var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
                                     featureCollection.Features.Add(geomJson);
@@ -795,7 +794,7 @@ namespace StreetSmartArcMap.Layers
 
         private static void AvContentChanged()
         {
-            OnLayerChanged(null);
+            //OnLayerChanged(null);
 
             _layers = new List<VectorLayer>();
             IMap map = ArcUtils.Map;
@@ -835,10 +834,7 @@ namespace StreetSmartArcMap.Layers
         {
             try
             {
-                if (LayerChangedEvent != null)
-                {
-                    LayerChangedEvent(layer);
-                }
+                LayerChangedEvent?.Invoke(layer);
             }
             catch (Exception ex)
             {

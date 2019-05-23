@@ -23,9 +23,6 @@ using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.esriSystem;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
-using StreetSmart.Common.Factories;
-using StreetSmart.Common.Interfaces.Data;
-using StreetSmart.Common.Interfaces.SLD;
 using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Logic.Model;
 using StreetSmartArcMap.Logic.Model.Shape;
@@ -81,12 +78,6 @@ namespace StreetSmartArcMap.Layers
         private Thread _getDataThread;
         private Thread _refreshDataThread;
         private bool _isVisibleInGlobespotter;
-
-        public IStyledLayerDescriptor Sld { get; private set; }
-
-        public IOverlay Overlay;
-
-        private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
         #endregion members
 
@@ -202,48 +193,6 @@ namespace StreetSmartArcMap.Layers
             get { return _yearMonth ?? (_yearMonth = new SortedDictionary<int, int>()); }
         }
 
-        public bool HasZ
-        {
-            get
-            {
-                Configuration.Configuration config = Configuration.Configuration.Instance;
-                SpatialReference spatRel = config.SpatialReference;
-                ISpatialReference gsSpatialReference = (spatRel == null) ? ArcUtils.SpatialReference : spatRel.SpatialRef;
-                bool zCoord = gsSpatialReference.ZCoordinateUnit != null;
-                bool sameFactoryCode = SpatialReference.FactoryCode == gsSpatialReference.FactoryCode;
-                return ((spatRel == null) || spatRel.CanMeasuring) && GeometryDef.HasZ;
-            }
-        }
-
-        public TypeOfLayer TypeOfLayer
-        {
-            get
-            {
-                TypeOfLayer result;
-
-                switch (_featureClass.ShapeType)
-                {
-                    case esriGeometryType.esriGeometryPoint:
-                        result = TypeOfLayer.Point;
-                        break;
-
-                    case esriGeometryType.esriGeometryPolyline:
-                        result = TypeOfLayer.Line;
-                        break;
-
-                    case esriGeometryType.esriGeometryPolygon:
-                        result = TypeOfLayer.Polygon;
-                        break;
-
-                    default:
-                        result = TypeOfLayer.None;
-                        break;
-                }
-
-                return result;
-            }
-        }
-
         #endregion properties
 
         #region constructor
@@ -275,42 +224,6 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         // Functions (Public)
         // =========================================================================
-        public Color GetColor()
-        {
-            if (_layer != null)
-            {
-                var color = ArcUtils.GetColorFromLayer(_layer);
-                return color;
-            }
-            return Color.Black; // unknown
-        }
-
-        public IStyledLayerDescriptor CreateSld(StreetSmart.Common.Interfaces.GeoJson.IFeatureCollection featureCollection, Color color)
-        {
-            // according to specs, we only need color.
-            if (featureCollection.Features.Count >= 1)
-            {
-                // use SLDFactory for this.
-                Sld = SLDFactory.CreateEmptyStyle();
-                ISymbolizer symbolizer = default(ISymbolizer);
-                switch (TypeOfLayer)
-                {
-                    case TypeOfLayer.Point:
-                        symbolizer = SLDFactory.CreateStylePoint(SymbolizerType.Circle, 10, color, 75, color, 0);
-                        break;
-                    case TypeOfLayer.Line:
-                        symbolizer = SLDFactory.CreateStyleLine(color);
-                        break;
-                    case TypeOfLayer.Polygon:
-                        symbolizer = SLDFactory.CreateStylePolygon(color, 75);
-                        break;
-                }
-                var rule = SLDFactory.CreateRule(symbolizer);
-                SLDFactory.AddRuleToStyle(Sld, rule);
-            }
-            return Sld;
-        }
-
         public void AddToLayers()
         {
             IList<CycloMediaLayer> layers = _cycloMediaGroupLayer.Layers;
@@ -647,166 +560,6 @@ namespace StreetSmartArcMap.Layers
         public virtual double GetHeight(double x, double y)
         {
             return 0.0;
-        }
-
-        public StreetSmart.Common.Interfaces.GeoJson.IFeatureCollection GenerateJson(IList<IRecording> recordingLocations)
-        {
-            var spatRel = Config.SpatialReference;
-            string srsName = (spatRel == null) ? ArcUtils.EpsgCode : spatRel.SRSName;
-            string layerName = _layer.Name;
-            int srs = int.Parse(srsName.Replace("EPSG:", string.Empty));
-            var featureCollection = GeoJsonFactory.CreateFeatureCollection(srs);
-
-            var featureLayer = (IFeatureLayer)_layer;
-            if (featureLayer != null)
-            {
-                IFeatureClass fc = featureLayer.FeatureClass;
-                double distance = Config.OverlayDrawDistanceInMeters * 1.0;
-
-                IGeometry geometryBag = new GeometryBag();
-                var geometryCollection = geometryBag as IGeometryCollection;
-                ISpatialReference gsSpatialReference = (spatRel == null) ? ArcUtils.SpatialReference : spatRel.SpatialRef;
-                var projCoord = gsSpatialReference as IProjectedCoordinateSystem;
-
-                if (projCoord == null)
-                {
-                    var geoCoord = gsSpatialReference as IGeographicCoordinateSystem;
-
-                    if (geoCoord != null)
-                    {
-                        IAngularUnit unit = geoCoord.CoordinateUnit;
-                        double factor = unit.ConversionFactor;
-                        distance = distance * factor;
-                    }
-                }
-                else
-                {
-                    ILinearUnit unit = projCoord.CoordinateUnit;
-                    double factor = unit.ConversionFactor;
-                    distance = distance / factor;
-                }
-
-                foreach (var recordingLocation in recordingLocations)
-                {
-                    double x = recordingLocation.XYZ.X.Value;
-                    double y = recordingLocation.XYZ.Y.Value;
-
-                    var envelope = (IEnvelope2)new Envelope()
-                    {
-                        XMin = x - distance,
-                        XMax = x + distance,
-                        YMin = y - distance,
-                        YMax = y + distance,
-                    };
-                    envelope.SpatialReference = gsSpatialReference;
-
-                    envelope.Project(SpatialReference);
-                    geometryCollection.AddGeometry(envelope);
-                }
-
-                ITopologicalOperator unionedPolygon = (ITopologicalOperator)new Polygon();
-                unionedPolygon.ConstructUnion(geometryBag as IEnumGeometry);
-                var polygon = unionedPolygon as ESRI.ArcGIS.Geometry.IPolygon;
-
-                ISpatialFilter spatialFilter = new SpatialFilter
-                {
-                    Geometry = polygon,
-                    GeometryField = _featureClass.ShapeFieldName,
-                    SpatialRel = esriSpatialRelEnum.esriSpatialRelIntersects
-                };
-
-                var featureCursor = _featureClass.Search(spatialFilter, false);
-                var featureCount = _featureClass.FeatureCount(spatialFilter);
-                var shapeId = featureCursor.FindField(_featureClass.ShapeFieldName);
-
-                for (int i = 0; i < featureCount; i++)
-                {
-                    var feature = featureCursor.NextFeature();
-
-                    if (!VectorLayer.EditFeatures.Contains(feature))
-                    {
-                        var fields = feature.Fields;
-                        var fieldvalues = new Dictionary<string, string> { { "FEATURECLASSNAME", _featureClass.AliasName } };
-
-                        for (int j = 0; j < fields.FieldCount; j++)
-                        {
-                            var field = fields.Field[j];
-                            string name = field.Name;
-                            int id = featureCursor.FindField(name);
-
-                            string value = (id != shapeId)
-                              ? feature.get_Value(id).ToString()
-                              : _featureClass.ShapeType.ToString().Replace("esriGeometry", string.Empty);
-                            fieldvalues.Add(name, value);
-                        }
-
-                        var shapeVar = feature.get_Value(shapeId);
-                        var geometry = shapeVar as IGeometry;
-                        if (geometry != null)
-                        {
-                            var cyclSpatialRef = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs);
-                            geometry.Project((Config.ApiSRS == null) ? gsSpatialReference : cyclSpatialRef);
-
-                            var pointCollection = geometry as IPointCollection4;
-
-                            if (pointCollection != null)
-                            {
-                                var pointCollectionJson = new List<ICoordinate>();
-                                for (int j = 0; j < pointCollection.PointCount; j++)
-                                {
-                                    IPoint point = pointCollection.Point[j];
-
-                                    if (point != null)
-                                    {
-                                        if (!HasZ)
-                                        {
-                                            point.Z = double.NaN;
-                                        }
-                                    }
-                                    ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y);
-                                    pointCollectionJson.Add(pJson);
-                                }
-
-                                var points = new List<IList<ICoordinate>> { pointCollectionJson };
-
-                                //TODO: add more line types?
-                                if (geometry.GeometryType == esriGeometryType.esriGeometryPolyline || geometry.GeometryType == esriGeometryType.esriGeometryLine)
-                                {
-                                    if (points.Count > 0)
-                                    {
-                                        var geomJson = GeoJsonFactory.CreateLineFeature(points.FirstOrDefault());
-                                        featureCollection.Features.Add(geomJson);
-                                    }
-                                }
-                                else
-                                {
-                                    var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
-                                    featureCollection.Features.Add(geomJson);
-                                }
-                            }
-                            else
-                            {
-                                var point = geometry as IPoint;
-
-                                if (point != null)
-                                {
-                                    if (!HasZ)
-                                    {
-                                        point.Z = double.NaN;
-                                    }
-                                    shapeVar = point;
-                                    ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y);
-                                    var geomJson = GeoJsonFactory.CreatePointFeature(pJson);
-                                    featureCollection.Features.Add(geomJson);
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
-
-            return featureCollection;
         }
 
         #endregion functions (public)

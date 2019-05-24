@@ -498,8 +498,6 @@ namespace StreetSmartArcMap.Layers
         // TODO: finish
         public IFeatureCollection GenerateJson(IList<IRecording> recordingLocations)
         {
-            //throw new NotImplementedException();
-
             var spatRel = Config.SpatialReference;
             string srsName = (spatRel == null) ? ArcUtils.EpsgCode : spatRel.SRSName;
             string layerName = _layer.Name;

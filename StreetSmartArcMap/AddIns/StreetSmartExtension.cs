@@ -54,7 +54,7 @@ namespace StreetSmartArcMap.AddIns
             }
         }
 
-        public bool AddToMenu => true;
+        public bool AddToMenu => false;
 
         #region event handlers
 

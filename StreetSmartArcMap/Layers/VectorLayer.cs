@@ -179,7 +179,7 @@ namespace StreetSmartArcMap.Layers
             set
             {
                 _isVisibleInStreetSmart = value;
-                StoredLayers.Instance.Update(Name, value);
+
                 OnLayerChanged(this);
                 IEditor3 editor = ArcUtils.Editor;
 

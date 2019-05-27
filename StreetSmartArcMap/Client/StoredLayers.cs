@@ -28,6 +28,8 @@ namespace StreetSmartArcMap.Client
     [XmlRoot("StoredLayers")]
     public class StoredLayers : List<StoredLayer>
     {
+        public const bool DefaultVisibility = false;
+
         #region members
 
         // =========================================================================
@@ -102,9 +104,10 @@ namespace StreetSmartArcMap.Client
         // =========================================================================
         public void Save()
         {
-            FileStream streamFile = File.Open(FileName, FileMode.Create);
-            XmlStoredLayers.Serialize(streamFile, this);
-            streamFile.Close();
+            using (FileStream output = File.Open(FileName, FileMode.Create))
+            {
+                XmlStoredLayers.Serialize(output, this);
+            }
         }
 
         public StoredLayer GetLayer(string name)
@@ -116,24 +119,37 @@ namespace StreetSmartArcMap.Client
         public bool Get(string name)
         {
             StoredLayer storedLayer = GetLayer(name);
-            return (storedLayer != null) && storedLayer.Visible;
+
+            if (storedLayer != null)
+            {
+                return storedLayer.Visible;
+            }
+            else
+            {
+                Update(name, DefaultVisibility);
+
+                return DefaultVisibility;
+            }
         }
 
         public void Update(string name, bool visible)
         {
-            StoredLayer storedLayer = GetLayer(name);
-
-            if (storedLayer == null)
+            if (name != null)
             {
-                storedLayer = new StoredLayer { Name = name, Visible = visible };
-                Add(storedLayer);
-            }
-            else
-            {
-                storedLayer.Visible = visible;
-            }
+                StoredLayer storedLayer = GetLayer(name);
 
-            Save();
+                if (storedLayer == null)
+                {
+                    storedLayer = new StoredLayer { Name = name, Visible = visible };
+                    Add(storedLayer);
+                }
+                else
+                {
+                    storedLayer.Visible = visible;
+                }
+
+                Save();
+            }
         }
 
         #endregion
@@ -147,9 +163,10 @@ namespace StreetSmartArcMap.Client
         {
             if (File.Exists(FileName))
             {
-                var streamFile = new FileStream(FileName, FileMode.OpenOrCreate);
-                _storedLayers = (StoredLayers)XmlStoredLayers.Deserialize(streamFile);
-                streamFile.Close();
+                using (FileStream input = new FileStream(FileName, FileMode.OpenOrCreate))
+                {
+                    _storedLayers = (StoredLayers)XmlStoredLayers.Deserialize(input);
+                }
             }
 
             return _storedLayers;

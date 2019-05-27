@@ -28,6 +28,7 @@ using StreetSmart.Common.Interfaces.Events;
 using StreetSmart.Common.Interfaces.GeoJson;
 using StreetSmart.Common.Interfaces.SLD;
 using StreetSmart.WinForms;
+using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
@@ -168,6 +169,8 @@ namespace StreetSmartArcMap.Logic
                         OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, StreetSmartOptions.ConfigurationUrlToUse, addressSettings, element);
 
                     await StreetSmartAPI.Init(ApiOptions);
+
+                    //StreetSmartAPI.ShowDevTools();
                 }
 
                 VectorLayer.DetectVectorLayers(true);
@@ -242,8 +245,23 @@ namespace StreetSmartArcMap.Logic
             var geoJson = layer.GenerateJson(recordings);
             var sld = layer.CreateSld(geoJson, color, outline);
 
-            var overlay = OverlayFactory.Create(geoJson, layerName, srsName, sld);
+            IGeoJsonOverlay overlay;
+            if (sld != null)
+                overlay = OverlayFactory.Create(geoJson, layerName, srsName, sld);
+            else
+                overlay = OverlayFactory.Create(geoJson, layerName, srsName, color);
+
+            //Set overlay
             layer.Overlay = await StreetSmartAPI.AddOverlay(overlay);
+
+            //Set visibility
+            IList<IViewer> viewers = await StreetSmartAPI.GetViewers();
+            foreach (var viewer in viewers)
+            {
+                overlay.Visible = !StoredLayers.Instance.Get(overlay.Name);
+
+                viewer.ToggleOverlay(overlay);
+            }
 
             return true;
         }
@@ -360,6 +378,8 @@ namespace StreetSmartArcMap.Logic
                         RemoveVectorInchange(layer);
                     }
                 }
+
+                //What does this code do?
                 //else
                 //{
                 //    IList<VectorLayer> vectorLayers = VectorLayer.Layers;
@@ -588,7 +608,7 @@ namespace StreetSmartArcMap.Logic
             {
                 if (StreetSmartAPI == null)
                 {
-                    StreetSmartAPI = StreetSmartAPIFactory.Create();
+                    StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse);
                     StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
                     StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
                     StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
@@ -627,13 +647,20 @@ namespace StreetSmartArcMap.Logic
             if (e.Value != null && e.Value is IPanoramaViewer)
             {
                 var viewer = e.Value as IPanoramaViewer;
+
                 viewer.ImageChange += Viewer_ImageChange;
                 viewer.ViewChange += Viewer_ViewChange;
                 viewer.FeatureClick += Viewer_FeatureClick;
+                viewer.LayerVisibilityChange += Viewer_LayerVisibilityChange;
 
                 await InvokeOnViewingConeChanged(viewer);
                 InvokeOnVectorLayerChanged();
             }
+        }
+
+        private void Viewer_LayerVisibilityChange(object sender, IEventArgs<StreetSmart.Common.Interfaces.Data.ILayerInfo> e)
+        {
+            //TODO: Update StoredLayer
         }
 
         private async Task InvokeOnViewingConeChanged(IPanoramaViewer viewer)
@@ -660,9 +687,8 @@ namespace StreetSmartArcMap.Logic
 
         private void Viewer_FeatureClick(object sender, IEventArgs<IFeatureInfo> e)
         {
+            //TODO: wait for fix by Harm in API
             IFeatureInfo featureInfo = e.Value;
-            //VectorLayer layer = VectorLayer.GetLayer(e.Value.LayerId);
-            //layer?.SelectFeature(featureInfo.FeatureProperties, MapView);
         }
 
         private async void Viewer_ImageChange(object sender, EventArgs e)

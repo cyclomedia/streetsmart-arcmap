@@ -459,17 +459,20 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         // Functions (Public)
         // =========================================================================
-        public Color GetColor()
+        public Color GetColor(out Color outline)
         {
+            outline = Color.Black;
+
             if (_layer != null)
             {
-                var color = ArcUtils.GetColorFromLayer(_layer);
+                var color = ArcUtils.GetColorFromLayer(_layer, out outline);
                 return color;
             }
+
             return Color.Black; // unknown
         }
 
-        public IStyledLayerDescriptor CreateSld(IFeatureCollection featureCollection, Color color)
+        public IStyledLayerDescriptor CreateSld(IFeatureCollection featureCollection, Color color, Color outline)
         {
             // according to specs, we only need color.
             if (featureCollection.Features.Count >= 1)
@@ -480,7 +483,7 @@ namespace StreetSmartArcMap.Layers
                 switch (TypeOfLayer)
                 {
                     case TypeOfLayer.Point:
-                        symbolizer = SLDFactory.CreateStylePoint(SymbolizerType.Circle, 10, color, 75, color, 0);
+                        symbolizer = SLDFactory.CreateStylePoint(SymbolizerType.Circle, 10, color, 75, outline, 0);
                         break;
                     case TypeOfLayer.Line:
                         symbolizer = SLDFactory.CreateStyleLine(color);

@@ -91,6 +91,7 @@ namespace StreetSmartArcMap.Layers
         }
 
         public override Color Color { get; set; }
+        public override Color Outline { get; set; }
 
         public override double MinimumScale
         {

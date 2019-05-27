@@ -33,6 +33,7 @@ using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -230,13 +231,16 @@ namespace StreetSmartArcMap.Logic
             if (recordings.Count == 0)
                 return false;
 
-            var color = layer.GetColor();
+            Color outline;
+            Color color = layer.GetColor(out outline);
+
             var spatRel = Config.SpatialReference;
+
             string srsName = (spatRel == null) ? ArcUtils.EpsgCode : spatRel.SRSName;
             string layerName = layer.Name;
 
             var geoJson = layer.GenerateJson(recordings);
-            var sld = layer.CreateSld(geoJson, color);
+            var sld = layer.CreateSld(geoJson, color, outline);
 
             var overlay = OverlayFactory.Create(geoJson, layerName, srsName, color);
             layer.Overlay = await StreetSmartAPI.AddOverlay(overlay);
@@ -259,20 +263,50 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
+        private bool AddVectorInChange(VectorLayer layer)
+        {
+            var query = _vectorLayerInChange.Where(v => v.Name == layer.Name).ToList();
+
+            if (query.Any())
+            {
+                return false;
+            }
+            else
+            {
+                _vectorLayerInChange.Add(layer);
+
+                return true;
+            }
+        }
+
+        private void RemoveVectorInchange(VectorLayer layer)
+        {
+            var query = _vectorLayerInChange.Where(v => v.Name == layer.Name).ToList();
+
+            query.ForEach(l => _vectorLayerInChange.Remove(l));
+        }
+
         private async void VectorLayer_LayerAddEvent(VectorLayer layer)
         {
             if (layer != null && layer.IsVisibleInStreetSmart && StreetSmartAPI != null)
             {
-                if (!_vectorLayerInChange.Contains(layer))
+                if (AddVectorInChange(layer))
                 {
-                    _vectorLayerInChange.Add(layer);
+                    try
+                    {
+                        await RemoveVectorLayerAsync(layer);
 
-                    await RemoveVectorLayerAsync(layer);
-
-                    if (layer.IsVisibleInStreetSmart && !_vectorLayers.Where(l => l.Name == layer.Name).Any() && await TryAddVectorLayerAsync(layer))
-                        _vectorLayers.Add(layer);
-
-                    _vectorLayerInChange.Remove(layer);
+                        if (layer.IsVisibleInStreetSmart && !AddVectorInChange(layer) && await TryAddVectorLayerAsync(layer))
+                            _vectorLayers.Add(layer);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    finally
+                    {
+                        RemoveVectorInchange(layer);
+                    }
                 }
             }
         }
@@ -281,13 +315,20 @@ namespace StreetSmartArcMap.Logic
         {
             if (layer != null && layer.IsVisibleInStreetSmart && StreetSmartAPI != null)
             {
-                if (!_vectorLayerInChange.Contains(layer))
+                if (AddVectorInChange(layer))
                 {
-                    _vectorLayerInChange.Add(layer);
-
-                    await RemoveVectorLayerAsync(layer);
-
-                    _vectorLayerInChange.Remove(layer);
+                    try
+                    {
+                        await RemoveVectorLayerAsync(layer);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    finally
+                    {
+                        RemoveVectorInchange(layer);
+                    }
                 }
             }
         }
@@ -296,65 +337,72 @@ namespace StreetSmartArcMap.Logic
         {
             if (StreetSmartAPI != null && layer != null)
             {
-                if (!_vectorLayerInChange.Contains(layer))
+                if (AddVectorInChange(layer))
                 {
-                    _vectorLayerInChange.Add(layer);
-
-                    var firstLayer = _vectorLayers.Where(l => l.Name == layer.Name).FirstOrDefault();
-
-                    -if (layer.Overlay == null && firstLayer != null)
-                        layer = firstLayer;
-
-                    await RemoveVectorLayerAsync(layer);
-
-                    if (layer.IsVisibleInStreetSmart && await TryAddVectorLayerAsync(layer))
-                        _vectorLayers.Add(layer);
-
-                    _vectorLayerInChange.Remove(layer);
-                }
-                else
-                {
-                    IList<VectorLayer> vectorLayers = VectorLayer.Layers;
-                    int i = 0;
-
-                    while (i < _vectorLayers.Count)
+                    try
                     {
-                        var lay = _vectorLayers.ElementAt(i);
+                        var firstLayer = _vectorLayers.Where(l => l.Name == layer.Name).FirstOrDefault();
 
-                        if (!vectorLayers.Contains(lay))
-                        {
-                            await StreetSmartAPI.RemoveOverlay(lay.Overlay.Id);
-                            _vectorLayers.Remove(lay);
-                        }
-                        else
-                        {
-                            i++;
-                        }
+                        if (layer.Overlay == null && firstLayer != null)
+                            layer = firstLayer;
+
+                        await RemoveVectorLayerAsync(layer);
+
+                        if (layer.IsVisibleInStreetSmart && await TryAddVectorLayerAsync(layer))
+                            _vectorLayers.Add(layer);
                     }
-
-                    foreach (var vectorLayer in vectorLayers)
+                    catch (Exception ex)
                     {
-                        if (!_vectorLayers.Contains(vectorLayer))
-                        {
-                            VectorLayer_LayerAddEvent(vectorLayer);
-                        }
-                        else
-                        {
-                            if (vectorLayer.IsVisibleInStreetSmart)
-                            {
-                                VectorLayer_LayerAddEvent(vectorLayer);
-                            }
-                            else
-                            {
-                                if (_vectorLayers.Contains(vectorLayer))
-                                {
-                                    await StreetSmartAPI.RemoveOverlay(vectorLayer.Overlay.Id);
-                                    _vectorLayers.Remove(vectorLayer);
-                                }
-                            }
-                        }
+                        throw ex;
+                    }
+                    finally
+                    {
+                        RemoveVectorInchange(layer);
                     }
                 }
+                //else
+                //{
+                //    IList<VectorLayer> vectorLayers = VectorLayer.Layers;
+                //    int i = 0;
+
+                //    while (i < _vectorLayers.Count)
+                //    {
+                //        var lay = _vectorLayers.ElementAt(i);
+
+                //        if (!vectorLayers.Contains(lay))
+                //        {
+                //            await StreetSmartAPI.RemoveOverlay(lay.Overlay.Id);
+                //            _vectorLayers.Remove(lay);
+                //        }
+                //        else
+                //        {
+                //            i++;
+                //        }
+                //    }
+
+                //    foreach (var vectorLayer in vectorLayers)
+                //    {
+                //        if (!_vectorLayers.Contains(vectorLayer))
+                //        {
+                //            VectorLayer_LayerAddEvent(vectorLayer);
+                //        }
+                //        else
+                //        {
+                //            if (vectorLayer.IsVisibleInStreetSmart)
+                //            {
+                //                VectorLayer_LayerAddEvent(vectorLayer);
+                //            }
+                //            else
+                //            {
+                //                if (_vectorLayers.Contains(vectorLayer))
+                //                {
+                //                    await StreetSmartAPI.RemoveOverlay(vectorLayer.Overlay.Id);
+                //                    _vectorLayers.Remove(vectorLayer);
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
             }
         }
 

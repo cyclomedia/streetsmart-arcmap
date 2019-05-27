@@ -497,8 +497,7 @@ namespace StreetSmartArcMap.Layers
             }
             return Sld;
         }
-
-        // TODO: finish
+        
         public IFeatureCollection GenerateJson(IList<IRecording> recordingLocations)
         {
             var spatRel = Config.SpatialReference;
@@ -576,7 +575,7 @@ namespace StreetSmartArcMap.Layers
                     if (!EditFeatures.Contains(feature))
                     {
                         var fields = feature.Fields;
-                        var fieldvalues = new Dictionary<string, string> { { "FEATURECLASSNAME", _featureClass.AliasName } };
+                        var fieldValues = new Dictionary<string, string> { { "FEATURECLASSNAME", _featureClass.AliasName } };
 
                         for (int j = 0; j < fields.FieldCount; j++)
                         {
@@ -587,7 +586,7 @@ namespace StreetSmartArcMap.Layers
                             string value = (id != shapeId)
                               ? feature.get_Value(id).ToString()
                               : _featureClass.ShapeType.ToString().Replace("esriGeometry", string.Empty);
-                            fieldvalues.Add(name, value);
+                            fieldValues.Add(name, value);
                         }
 
                         var shapeVar = feature.get_Value(shapeId);
@@ -651,6 +650,18 @@ namespace StreetSmartArcMap.Layers
                             }
 
                         }
+
+                        foreach (var fieldValue in fieldValues)
+                        {
+                            if (featureCollection.Features.Count >= 1)
+                            {
+                                var properties = featureCollection.Features[featureCollection.Features.Count - 1].Properties;
+
+                                if (!properties.ContainsKey(fieldValue.Key))
+                                    properties.Add(fieldValue.Key, fieldValue.Value);
+                            }
+                        }
+
                     }
                 }
             }

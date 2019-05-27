@@ -242,7 +242,7 @@ namespace StreetSmartArcMap.Logic
             var geoJson = layer.GenerateJson(recordings);
             var sld = layer.CreateSld(geoJson, color, outline);
 
-            var overlay = OverlayFactory.Create(geoJson, layerName, srsName, color);
+            var overlay = OverlayFactory.Create(geoJson, layerName, srsName, sld);
             layer.Overlay = await StreetSmartAPI.AddOverlay(overlay);
 
             return true;
@@ -629,35 +629,50 @@ namespace StreetSmartArcMap.Logic
                 var viewer = e.Value as IPanoramaViewer;
                 viewer.ImageChange += Viewer_ImageChange;
                 viewer.ViewChange += Viewer_ViewChange;
+                viewer.FeatureClick += Viewer_FeatureClick;
 
-                var cone = await CreateCone(viewer);
-                var args = new ViewingConeChangeEventArgs()
-                {
-                    ViewerId = await viewer.GetId(),
-                    ViewingCone = cone
-                };
-
-                OnViewingConeChanged?.Invoke(args);
-
-                foreach (var layer in VectorLayer.Layers)
-                {
-                    OnVectorLayerChanged?.Invoke(new VectorLayerChangeEventArgs { Layer = layer });
-                }
+                await InvokeOnViewingConeChanged(viewer);
+                InvokeOnVectorLayerChanged();
             }
+        }
+
+        private async Task InvokeOnViewingConeChanged(IPanoramaViewer viewer)
+        {
+            var cone = await CreateCone(viewer);
+            var args = new ViewingConeChangeEventArgs()
+            {
+                ViewerId = await viewer.GetId(),
+                ViewingCone = cone
+            };
+
+            OnViewingConeChanged?.Invoke(args);
+        }
+
+        private void InvokeOnVectorLayerChanged()
+        {
+            foreach (var layer in VectorLayer.Layers)
+            {
+                var args = new VectorLayerChangeEventArgs { Layer = layer };
+
+                OnVectorLayerChanged?.Invoke(args);
+            }
+        }
+
+        private void Viewer_FeatureClick(object sender, IEventArgs<IFeatureInfo> e)
+        {
+            IFeatureInfo featureInfo = e.Value;
+            //VectorLayer layer = VectorLayer.GetLayer(e.Value.LayerId);
+            //layer?.SelectFeature(featureInfo.FeatureProperties, MapView);
         }
 
         private async void Viewer_ImageChange(object sender, EventArgs e)
         {
             if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
             {
-                var viewer = (sender as IPanoramaViewer);
-                var cone = await CreateCone(viewer);
-                var args = new ViewingConeChangeEventArgs()
-                {
-                    ViewerId = await viewer.GetId(),
-                    ViewingCone = cone
-                };
-                OnViewingConeChanged?.Invoke(args);
+                var viewer = sender as IPanoramaViewer;
+
+                await InvokeOnViewingConeChanged(viewer);
+                InvokeOnVectorLayerChanged();
             }
         }
 
@@ -665,14 +680,10 @@ namespace StreetSmartArcMap.Logic
         {
             if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
             {
-                var viewer = (sender as IPanoramaViewer);
+                var viewer = sender as IPanoramaViewer;
                 var cone = await CreateCone(viewer);
-                var args = new ViewingConeChangeEventArgs()
-                {
-                    ViewerId = await viewer.GetId(),
-                    ViewingCone = cone
-                };
-                OnViewingConeChanged?.Invoke(args);
+
+                await InvokeOnViewingConeChanged(viewer);
             }
         }
 

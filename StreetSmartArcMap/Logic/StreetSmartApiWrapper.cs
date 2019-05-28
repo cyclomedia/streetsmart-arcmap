@@ -44,6 +44,7 @@ namespace StreetSmartArcMap.Logic
     public delegate void ViewersChangeEventDelegate(ViewersChangeEventArgs args);
     public delegate void ViewingConeChangeEventDelegate(ViewingConeChangeEventArgs args);
     public delegate void VectorLayerChangeEventDelegate(VectorLayerChangeEventArgs args);
+    public delegate void OnSelectedFeatureChangeEventDelegate(SelectedFeatureChangedEventArgs args);
 
     public class StreetSmartApiWrapper
     {
@@ -116,6 +117,7 @@ namespace StreetSmartArcMap.Logic
 
         public ViewingConeChangeEventDelegate OnViewingConeChanged;
         public VectorLayerChangeEventDelegate OnVectorLayerChanged;
+        public OnSelectedFeatureChangeEventDelegate OnSelectedFeatureChanged;
 
         #endregion Events
 
@@ -653,7 +655,7 @@ namespace StreetSmartArcMap.Logic
 
                 viewer.ImageChange += Viewer_ImageChange;
                 viewer.ViewChange += Viewer_ViewChange;
-                viewer.FeatureClick += Viewer_FeatureClick;
+                viewer.FeatureSelectionChange += Viewer_FeatureSelectionChange;
                 viewer.LayerVisibilityChange += Viewer_LayerVisibilityChange;
 
                 await InvokeOnViewingConeChanged(viewer);
@@ -661,9 +663,32 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
+        private async void Viewer_FeatureSelectionChange(object sender, IEventArgs<IFeatureInfo> e)
+        {
+            if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
+            {
+                var viewer = sender as IPanoramaViewer;
+                IFeatureInfo featureInfo = e.Value;
+                await InvokeOnSelectedFeatureChanged(viewer, featureInfo);
+                //InvokeOnVectorLayerChanged();
+            }
+        }
+
         private void Viewer_LayerVisibilityChange(object sender, IEventArgs<StreetSmart.Common.Interfaces.Data.ILayerInfo> e)
         {
             //TODO: Update StoredLayer
+        }
+
+        private async Task InvokeOnSelectedFeatureChanged(IPanoramaViewer viewer, IFeatureInfo featureInfo)
+        {
+            var cone = await CreateCone(viewer);
+            var args = new SelectedFeatureChangedEventArgs()
+            {
+                ViewerId = await viewer.GetId(),
+                FeatureInfo = featureInfo
+            };
+
+            OnSelectedFeatureChanged?.Invoke(args);
         }
 
         private async Task InvokeOnViewingConeChanged(IPanoramaViewer viewer)
@@ -686,12 +711,6 @@ namespace StreetSmartArcMap.Logic
 
                 OnVectorLayerChanged?.Invoke(args);
             }
-        }
-
-        private void Viewer_FeatureClick(object sender, IEventArgs<IFeatureInfo> e)
-        {
-            //TODO: wait for fix by Harm in API
-            IFeatureInfo featureInfo = e.Value;
         }
 
         private async void Viewer_ImageChange(object sender, EventArgs e)

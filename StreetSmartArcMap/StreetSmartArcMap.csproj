@@ -85,8 +85,8 @@
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="StreetSmart.WinForms, Version=19.6.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
-      <HintPath>..\packages\StreetSmart.WinForms.19.6.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
+    <Reference Include="StreetSmart.WinForms, Version=19.7.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
+      <HintPath>..\packages\StreetSmart.WinForms.19.7.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -349,6 +349,9 @@
     <AddInContent Include="Images\CycloramaSearch.png" />
   </ItemGroup>
   <ItemGroup>
+    <AddInContent Include="install\ReleaseNotes.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <AddInContent Include="install\CefSharp.BrowserSubprocess.Core.dll" />
     <AddInContent Include="install\CefSharp.BrowserSubprocess.exe" />
     <AddInContent Include="install\CefSharp.Core.dll" />
@@ -363,7 +366,6 @@
     <AddInContent Include="install\libEGL.dll" />
     <AddInContent Include="install\libGLESv2.dll" />
     <AddInContent Include="install\README.txt" />
-    <AddInContent Include="install\ReleaseNotes.txt" />
     <AddInContent Include="install\swiftshader\libEGL.dll" />
     <AddInContent Include="install\swiftshader\libGLESv2.dll" />
   </ItemGroup>

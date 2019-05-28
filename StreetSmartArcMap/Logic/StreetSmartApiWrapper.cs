@@ -166,7 +166,7 @@ namespace StreetSmartArcMap.Logic
                     IDomElement element = DomElementFactory.Create();
                     ApiOptions = StreetSmartOptions.UseDefaultBaseUrl ?
                         OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, addressSettings, element) :
-                        OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, StreetSmartOptions.ConfigurationUrlToUse, addressSettings, element);
+                        OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, StreetSmartOptions.-, addressSettings, element);
 
                     await StreetSmartAPI.Init(ApiOptions);
 
@@ -608,7 +608,11 @@ namespace StreetSmartArcMap.Logic
             {
                 if (StreetSmartAPI == null)
                 {
-                    StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse);
+                    if (Config.UseDefaultStreetSmartLocation)
+                        StreetSmartAPI = StreetSmartAPIFactory.Create();
+                    else
+                        StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse);
+
                     StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
                     StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
                     StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;

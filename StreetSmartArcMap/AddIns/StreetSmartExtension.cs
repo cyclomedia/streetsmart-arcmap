@@ -54,6 +54,8 @@ namespace StreetSmartArcMap.AddIns
             }
         }
 
+        public bool AddToMenu => false;
+
         #region event handlers
 
         protected override void OnStartup()
@@ -206,7 +208,9 @@ namespace StreetSmartArcMap.AddIns
             {
                 if (CycloMediaGroupLayer == null)
                 {
-                    StreetSmartShowInCyclorama.AddToMenu();
+                    if (AddToMenu)
+                        StreetSmartShowInCyclorama.AddToMenu();
+
                     StreetSmartConfigurationForm.CheckOpenCredentials();
                     CycloMediaGroupLayer = new CycloMediaGroupLayer();
                 }
@@ -227,7 +231,8 @@ namespace StreetSmartArcMap.AddIns
         {
             if (CycloMediaGroupLayer != null)
             {
-                StreetSmartShowInCyclorama.RemoveFromMenu();
+                if (AddToMenu)
+                    StreetSmartShowInCyclorama.RemoveFromMenu();
 
                 CycloMediaGroupLayer?.Dispose();
                 CycloMediaGroupLayer = null;

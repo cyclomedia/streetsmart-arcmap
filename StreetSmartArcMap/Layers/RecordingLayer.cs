@@ -40,6 +40,7 @@ namespace StreetSmartArcMap.Layers
         // Members
         // =========================================================================
         private static Color _color;
+        private static Color _outline;
 
         private static double _minimumScale;
         private static SortedDictionary<int, Color> _yearToColor;
@@ -75,6 +76,12 @@ namespace StreetSmartArcMap.Layers
         {
             get { return _color; }
             set { _color = value; }
+        }
+
+        public override Color Outline
+        {
+            get { return _outline; }
+            set { _outline = value; }
         }
 
         public override double MinimumScale

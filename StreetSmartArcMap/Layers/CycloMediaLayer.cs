@@ -91,6 +91,7 @@ namespace StreetSmartArcMap.Layers
         public abstract string Name { get; }
         public abstract string FcName { get; }
         public abstract Color Color { get; set; }
+        public abstract Color Outline { get; set; }
         public abstract int SizeLayer { get; }
         public abstract double MinimumScale { get; set; }
         public abstract bool UseDateRange { get; }
@@ -963,12 +964,11 @@ namespace StreetSmartArcMap.Layers
         {
             try
             {
-                Color = ArcUtils.GetColorFromLayer(_layer);
+                Color outline;
+                Color = ArcUtils.GetColorFromLayer(_layer, out outline);
+                Outline = outline;
 
-                if (LayerChangedEvent != null)
-                {
-                    LayerChangedEvent(this);
-                }
+                LayerChangedEvent?.Invoke(this);
             }
             catch (Exception ex)
             {

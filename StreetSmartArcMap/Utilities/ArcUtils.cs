@@ -24,6 +24,7 @@ using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.esriSystem;
 using ESRI.ArcGIS.Framework;
 using ESRI.ArcGIS.Geometry;
+using StreetSmartArcMap.Client;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -264,9 +265,10 @@ namespace StreetSmartArcMap.Utilities
             }
         }
 
-        public static Color GetColorFromLayer(ILayer layer)
+        public static Color GetColorFromLayer(ILayer layer, out Color outline)
         {
             Color result = Color.White;
+            outline = Color.White;
 
             if (layer != null)
             {
@@ -275,27 +277,21 @@ namespace StreetSmartArcMap.Utilities
                 if (geoFeatureLayer != null)
                 {
                     RgbColor rgbColor = null;
+                    RgbColor outlineColor = null;
+
                     var simpleRenderer = geoFeatureLayer.Renderer as ISimpleRenderer;
                     var uniqueValueRenderer = geoFeatureLayer.Renderer as IUniqueValueRenderer;
 
                     if (simpleRenderer != null)
-                    {
-                        rgbColor = GetColorFromSymbol(simpleRenderer.Symbol);
-                    }
+                        rgbColor = GetColorFromSymbol(simpleRenderer.Symbol, out outlineColor);
 
                     if (uniqueValueRenderer != null)
-                    {
-                        rgbColor = GetColorFromSymbol(uniqueValueRenderer.DefaultSymbol);
-                    }
+                        rgbColor = GetColorFromSymbol(uniqueValueRenderer.DefaultSymbol, out outlineColor);
 
                     if (rgbColor != null)
-                    {
-                        // ReSharper disable CSharpWarnings::CS0612
-                        // ReSharper disable CSharpWarnings::CS0618
                         result = Converter.FromRGBColor(rgbColor);
-                        // ReSharper restore CSharpWarnings::CS0618
-                        // ReSharper restore CSharpWarnings::CS0612
-                    }
+
+                    outline = outlineColor != null ? Converter.FromRGBColor(outlineColor) : Color.Black;
                 }
             }
 
@@ -390,28 +386,41 @@ namespace StreetSmartArcMap.Utilities
             // ReSharper restore CSharpWarnings::CS0612
         }
 
-        private static RgbColor GetColorFromSymbol(ISymbol symbol)
+        private static RgbColor GetColorFromSymbol(ISymbol symbol, out RgbColor outlineColor)
         {
             RgbColor rgbColor = null;
+            outlineColor = null;
 
             if (symbol is ISimpleFillSymbol)
             {
                 rgbColor = (symbol as ISimpleFillSymbol).Color as RgbColor;
             }
-
-            if (symbol is IMultiLayerFillSymbol)
+            else if (symbol is IMultiLayerFillSymbol)
             {
-                rgbColor = (symbol as IMultiLayerFillSymbol).Color as RgbColor;
-            }
+                var multiLayerFill = symbol as IMultiLayerFillSymbol;
 
-            if (symbol is ILineSymbol)
+                rgbColor = multiLayerFill.Color as RgbColor;
+
+                if (multiLayerFill.Outline != null && multiLayerFill.Outline.Color != null)
+                    outlineColor = multiLayerFill.Outline.Color as RgbColor;
+            }
+            else if (symbol is ILineSymbol)
             {
                 rgbColor = (symbol as ILineSymbol).Color as RgbColor;
             }
-
-            if (symbol is ISimpleMarkerSymbol)
+            else if (symbol is ISimpleMarkerSymbol)
             {
-                rgbColor = (symbol as ISimpleMarkerSymbol).Color as RgbColor;
+                var simpleMarker = symbol as ISimpleMarkerSymbol;
+
+                rgbColor = simpleMarker.Color as RgbColor;
+                outlineColor = simpleMarker.OutlineColor as RgbColor;
+            }
+            else if (symbol is IMultiLayerMarkerSymbol)
+            {
+                var multiLayerMarker = symbol as IMultiLayerMarkerSymbol;
+
+                rgbColor = multiLayerMarker.Color as RgbColor;
+                //outlineColor is not implemented on IMultiLayerMarkerSymbol.
             }
 
             return rgbColor;
@@ -471,15 +480,15 @@ namespace StreetSmartArcMap.Utilities
             }
         }
 
-        //public static IPoint GsToMapPoint(double x, double y, double z)
-        //{
-        //    Configuration.Configuration config = Configuration.Configuration.Instance;
-        //    SpatialReference spatRel = config.SpatialReference;
-        //    ISpatialReference gsSpatialReference = (spatRel == null) ? SpatialReference : spatRel.SpatialRef;
-        //    IPoint point = new Point { X = x, Y = y, Z = z, SpatialReference = gsSpatialReference };
-        //    point.Project(SpatialReference);
-        //    return point;
-        //}
+        public static IPoint ToMapPoint(double x, double y, double z)
+        {
+            Configuration.Configuration config = Configuration.Configuration.Instance;
+            SpatialReference spatRel = config.SpatialReference;
+            ISpatialReference gsSpatialReference = (spatRel == null) ? SpatialReference : spatRel.SpatialRef;
+            IPoint point = new ESRI.ArcGIS.Geometry.Point { X = x, Y = y, Z = z, SpatialReference = gsSpatialReference };
+            point.Project(SpatialReference);
+            return point;
+        }
 
         #endregion functions (public)
 

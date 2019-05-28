@@ -86,6 +86,8 @@ namespace StreetSmartArcMap.DockableWindows
             API.InitApi(Config).Wait();
             API.OnViewerChangeEvent += API_OnViewerChangeEvent;
             API.OnViewingConeChanged += API_OnViewingConeChanged;
+            API.OnVectorLayerChanged += API_OnVectorLayerChanged;
+
             this.Controls.Add(API.StreetSmartGUI);
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
             docEvents.MapsChanged += DocEvents_MapsChanged;
@@ -217,6 +219,18 @@ namespace StreetSmartArcMap.DockableWindows
                     avEvents.AfterDraw -= AvEvents_AfterDraw;
                     avEvents.AfterDraw += AvEvents_AfterDraw;
                 }
+            }
+        }
+
+        private void API_OnVectorLayerChanged(VectorLayerChangeEventArgs args)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => API_OnVectorLayerChanged(args)));
+            }
+            else
+            {
+                args.Layer.IsVisibleInStreetSmart = true;
             }
         }
 

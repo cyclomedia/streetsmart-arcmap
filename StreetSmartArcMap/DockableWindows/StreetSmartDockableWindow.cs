@@ -136,9 +136,11 @@ namespace StreetSmartArcMap.DockableWindows
                         {
                             var fc = flayer.FeatureClass;
 
+                            var oidField = fc.OIDFieldName;
+
                             IQueryFilter queryFilter = new QueryFilter
                             {
-                                WhereClause = $"objectid={featureInfo.FeatureProperties["OBJECTID"]}"
+                                WhereClause = $"{oidField}={featureInfo.FeatureProperties[oidField]}"
                             };
 
                             var featureCursor = fc.Search(queryFilter, false);
@@ -149,7 +151,7 @@ namespace StreetSmartArcMap.DockableWindows
                             {
                                 var feature = featureCursor.NextFeature();
 
-                                ArcUtils.Map?.SelectFeature(layer, feature); // NOTE: this triggers a new selected event, that in it's turn triggers a selection towards StreetSmart, etc...
+                                ArcUtils.Map?.SelectFeature(layer, feature); 
                             }
                         }
                     }

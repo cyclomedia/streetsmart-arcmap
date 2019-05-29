@@ -167,7 +167,7 @@ namespace StreetSmartArcMap.Logic
 
                 if (StreetSmartOptions != null)
                 {
-                    StreetSmartAPI.ShowDevTools();
+                    //StreetSmartAPI.ShowDevTools();
 
                     IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
                     IDomElement element = DomElementFactory.Create();

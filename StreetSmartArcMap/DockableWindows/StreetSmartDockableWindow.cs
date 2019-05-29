@@ -22,6 +22,7 @@ using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using StreetSmart.Common.Interfaces.Data;
+using StreetSmartArcMap.AddIns;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
@@ -86,6 +87,7 @@ namespace StreetSmartArcMap.DockableWindows
             API.OnViewingConeChanged += API_OnViewingConeChanged;
             API.OnVectorLayerChanged += API_OnVectorLayerChanged;
             API.OnSelectedFeatureChanged += API_OnSelectedFeatureChanged;
+            API.OnFeatureClicked += API_OnFeatureClicked;
 
             this.Controls.Add(API.StreetSmartGUI);
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
@@ -102,6 +104,64 @@ namespace StreetSmartArcMap.DockableWindows
 
         #region Event handlers
 
+        private void API_OnFeatureClicked(FeatureClickEventArgs args)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => API_OnFeatureClicked(args)));
+            }
+            else
+            {
+                var extension = StreetSmartExtension.GetExtension();
+                if (!extension.CommunicatingWithStreetSmart)
+                {
+                    extension.CommunicatingWithStreetSmart = true;
+                    try
+                    {
+                        IFeatureInfo featureInfo = args.FeatureInfo;
+
+                        var layers = ArcUtils.Map.Layers;
+                        ILayer layer;
+
+                        IFeatureLayer flayer = null;
+                        while ((layer = layers.Next()) != null)
+                        {
+                            if (layer.Name == featureInfo.LayerName) // is this enough to ensure its the correct layer??
+                            {
+                                flayer = (IFeatureLayer)layer;
+                                break;
+                            }
+                        }
+                        if (flayer != null)
+                        {
+                            var fc = flayer.FeatureClass;
+
+                            IQueryFilter queryFilter = new QueryFilter
+                            {
+                                WhereClause = $"objectid={featureInfo.FeatureProperties["OBJECTID"]}"
+                            };
+
+                            var featureCursor = fc.Search(queryFilter, false);
+                            var featureCount = fc.FeatureCount(queryFilter);
+                            var shapeId = featureCursor.FindField(fc.ShapeFieldName);
+
+                            for (int i = 0; i < featureCount; i++)
+                            {
+                                var feature = featureCursor.NextFeature();
+
+                                ArcUtils.Map?.SelectFeature(layer, feature); // NOTE: this triggers a new selected event, that in it's turn triggers a selection towards StreetSmart, etc...
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        extension.CommunicatingWithStreetSmart = false;
+                    }
+                    ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
+                }
+            }
+        }
+
         private void API_OnSelectedFeatureChanged(SelectedFeatureChangedEventArgs args)
         {
             if (InvokeRequired)
@@ -111,38 +171,11 @@ namespace StreetSmartArcMap.DockableWindows
             else
             {
                 IFeatureInfo featureInfo = args.FeatureInfo;
-                var layers = ArcUtils.Map.Layers;
-                ILayer layer;
-                ArcUtils.Map.ClearSelection();
-                IFeatureLayer flayer = null;
-                while ((layer = layers.Next()) != null)
+                if (string.IsNullOrEmpty(featureInfo.LayerId)) // deselected!
                 {
-                    if (layer.Name == featureInfo.LayerName) // is this enough to ensure its the correct layer??
-                    {
-                        flayer = (IFeatureLayer)layer;
-                        break;
-                    }
+                    ArcUtils.Map.ClearSelection();
+                    ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
                 }
-                if (flayer != null)
-                {
-                    var fc = flayer.FeatureClass;
-
-                    IQueryFilter queryFilter = new QueryFilter
-                    {
-                        WhereClause = $"objectid={featureInfo.FeatureProperties["OBJECTID"]}"
-                    };
-
-                    var featureCursor = fc.Search(queryFilter, false);
-                    var featureCount = fc.FeatureCount(queryFilter);
-                    var shapeId = featureCursor.FindField(fc.ShapeFieldName);
-
-                    for (int i = 0; i < featureCount; i++)
-                    {
-                        var feature = featureCursor.NextFeature();
-                        ArcUtils.Map?.SelectFeature(layer, feature);
-                    }
-                }
-                ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
             }
         }
 

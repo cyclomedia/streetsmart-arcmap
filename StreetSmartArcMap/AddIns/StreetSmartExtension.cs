@@ -21,6 +21,7 @@ using ESRI.ArcGIS.Desktop.AddIns;
 using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.esriSystem;
 using ESRI.ArcGIS.Framework;
+using ESRI.ArcGIS.Geodatabase;
 using StreetSmartArcMap.Buttons;
 using StreetSmartArcMap.Forms;
 using StreetSmartArcMap.Layers;
@@ -42,7 +43,7 @@ namespace StreetSmartArcMap.AddIns
 
         private static StreetSmartExtension _extension;
         public CycloMediaGroupLayer CycloMediaGroupLayer { get; private set; }
-
+        public bool CommunicatingWithStreetSmart { get; set; }
         public bool IsEnabled => State == ExtensionState.Enabled;
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
@@ -112,6 +113,7 @@ namespace StreetSmartArcMap.AddIns
                     {
                         docEvents.OpenDocument += OpenDocument;
                         docEvents.CloseDocument += CloseDocument;
+                        
                     }
                 }
                 else
@@ -190,6 +192,8 @@ namespace StreetSmartArcMap.AddIns
                 {
                     arcEvents.ItemDeleted -= ItemDeleted;
                     arcEvents.AfterDraw -= Afterdraw;
+                    arcEvents.SelectionChanged -= SelectionChanged;
+
                 }
 
                 CycloMediaLayer.LayerRemoveEvent -= OnLayerRemoved;
@@ -272,6 +276,7 @@ namespace StreetSmartArcMap.AddIns
                 {
                     arcEvents.ItemDeleted += ItemDeleted;
                     arcEvents.AfterDraw += Afterdraw;
+                    arcEvents.SelectionChanged += SelectionChanged;
                 }
 
                 OpenDocumentEvent?.Invoke();
@@ -286,6 +291,22 @@ namespace StreetSmartArcMap.AddIns
                 AddLayers();
             }
             StreetSmartRecordingsLayer.AddToMenu();
+        }
+
+        private async void SelectionChanged()
+        {
+            var map = ArcUtils.Map;
+            var setup = (IEnumFeatureSetup)map.FeatureSelection;
+            setup.AllFields = true;
+            var selection = (IEnumFeature)map.FeatureSelection;
+            IFeature feature = selection.Next();
+            while (feature != null)
+            {
+                await StreetSmartApiWrapper.Instance.Select(feature);
+                feature = selection.Next();
+            }
+
+            ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
         }
 
         private void CloseDocument()

@@ -28,6 +28,7 @@ using StreetSmart.Common.Interfaces.Events;
 using StreetSmart.Common.Interfaces.GeoJson;
 using StreetSmart.Common.Interfaces.SLD;
 using StreetSmart.WinForms;
+using StreetSmartArcMap.AddIns;
 using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Objects;
@@ -44,7 +45,8 @@ namespace StreetSmartArcMap.Logic
     public delegate void ViewersChangeEventDelegate(ViewersChangeEventArgs args);
     public delegate void ViewingConeChangeEventDelegate(ViewingConeChangeEventArgs args);
     public delegate void VectorLayerChangeEventDelegate(VectorLayerChangeEventArgs args);
-    public delegate void OnSelectedFeatureChangeEventDelegate(SelectedFeatureChangedEventArgs args);
+    public delegate void SelectedFeatureChangeEventDelegate(SelectedFeatureChangedEventArgs args);
+    public delegate void FeatureClickEventDelegate(FeatureClickEventArgs args);
 
     public class StreetSmartApiWrapper
     {
@@ -117,7 +119,8 @@ namespace StreetSmartArcMap.Logic
 
         public ViewingConeChangeEventDelegate OnViewingConeChanged;
         public VectorLayerChangeEventDelegate OnVectorLayerChanged;
-        public OnSelectedFeatureChangeEventDelegate OnSelectedFeatureChanged;
+        public SelectedFeatureChangeEventDelegate OnSelectedFeatureChanged;
+        public FeatureClickEventDelegate OnFeatureClicked;
 
         #endregion Events
 
@@ -164,6 +167,8 @@ namespace StreetSmartArcMap.Logic
 
                 if (StreetSmartOptions != null)
                 {
+                    StreetSmartAPI.ShowDevTools();
+
                     IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
                     IDomElement element = DomElementFactory.Create();
                     ApiOptions = StreetSmartOptions.UseDefaultBaseUrl ?
@@ -172,7 +177,7 @@ namespace StreetSmartArcMap.Logic
 
                     await StreetSmartAPI.Init(ApiOptions);
 
-                    //StreetSmartAPI.ShowDevTools();
+                    
                 }
 
                 VectorLayer.DetectVectorLayers(true);
@@ -285,16 +290,13 @@ namespace StreetSmartArcMap.Logic
 
         private bool AddVectorInChange(VectorLayer layer)
         {
-            var query = _vectorLayerInChange.Where(v => v.Name == layer.Name).ToList();
-
-            if (query.Any())
+            if( _vectorLayerInChange.Any(v => v.Name == layer.Name))
             {
                 return false;
             }
             else
             {
                 _vectorLayerInChange.Add(layer);
-
                 return true;
             }
         }
@@ -314,10 +316,13 @@ namespace StreetSmartArcMap.Logic
                 {
                     try
                     {
-                        await RemoveVectorLayerAsync(layer);
+                        if (layer.ContentsChanged)
+                        {
+                            await RemoveVectorLayerAsync(layer);
 
-                        if (layer.IsVisibleInStreetSmart && !AddVectorInChange(layer) && await TryAddVectorLayerAsync(layer))
-                            _vectorLayers.Add(layer);
+                            if (layer.IsVisibleInStreetSmart && !AddVectorInChange(layer) && await TryAddVectorLayerAsync(layer))
+                                _vectorLayers.Add(layer);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -617,6 +622,8 @@ namespace StreetSmartArcMap.Logic
                     StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
                     StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
                     StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
+
+                    
                 }
                 else
                 {
@@ -657,9 +664,19 @@ namespace StreetSmartArcMap.Logic
                 viewer.ViewChange += Viewer_ViewChange;
                 viewer.FeatureSelectionChange += Viewer_FeatureSelectionChange;
                 viewer.LayerVisibilityChange += Viewer_LayerVisibilityChange;
-
+                viewer.FeatureClick += Viewer_FeatureClick;
                 await InvokeOnViewingConeChanged(viewer);
                 InvokeOnVectorLayerChanged();
+            }
+        }
+
+        private async void Viewer_FeatureClick(object sender, IEventArgs<IFeatureInfo> e)
+        {
+            if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
+            {
+                var viewer = sender as IPanoramaViewer;
+                IFeatureInfo featureInfo = e.Value;
+                await InvokeOnFeatureClicked(viewer, featureInfo);
             }
         }
 
@@ -670,18 +687,29 @@ namespace StreetSmartArcMap.Logic
                 var viewer = sender as IPanoramaViewer;
                 IFeatureInfo featureInfo = e.Value;
                 await InvokeOnSelectedFeatureChanged(viewer, featureInfo);
-                //InvokeOnVectorLayerChanged();
             }
         }
 
         private void Viewer_LayerVisibilityChange(object sender, IEventArgs<StreetSmart.Common.Interfaces.Data.ILayerInfo> e)
         {
-            //TODO: Update StoredLayer
+            //TODO: STREET-1995 - Update StoredLayer
         }
+
+
+        private async Task InvokeOnFeatureClicked(IPanoramaViewer viewer, IFeatureInfo featureInfo)
+        {
+            var args = new FeatureClickEventArgs()
+            {
+                ViewerId = await viewer.GetId(),
+                FeatureInfo = featureInfo
+            };
+
+            OnFeatureClicked?.Invoke(args);
+        }
+
 
         private async Task InvokeOnSelectedFeatureChanged(IPanoramaViewer viewer, IFeatureInfo featureInfo)
         {
-            var cone = await CreateCone(viewer);
             var args = new SelectedFeatureChangedEventArgs()
             {
                 ViewerId = await viewer.GetId(),
@@ -781,6 +809,48 @@ namespace StreetSmartArcMap.Logic
             else
             {
                 StreetSmartAPI.SetOverlayDrawDistance(distance);
+            }
+        }
+
+        public async Task Select(ESRI.ArcGIS.Geodatabase.IFeature feature)
+        {
+            var extension = StreetSmartExtension.GetExtension();
+            if (!extension.CommunicatingWithStreetSmart && StreetSmartAPI != null && feature != null && feature.HasOID)
+            {
+                extension.CommunicatingWithStreetSmart = true;
+                try
+                {
+                    VectorLayer layer = VectorLayer.GetLayer(feature);
+                    if (layer != null)
+                    {
+                        VectorLayer vectorLayer = _vectorLayers.FirstOrDefault(v => v.Name == layer.Name);
+                        if (vectorLayer != null && AddVectorInChange(vectorLayer))
+                        {
+                            var props = new Dictionary<string, string>();
+                            var fields = feature.Fields;
+                            for (int i = 0; i < fields.FieldCount; i++)
+                            {
+                                var f = fields.Field[i];
+                                if (!f.Name.StartsWith("SHAPE", StringComparison.CurrentCultureIgnoreCase))
+                                {
+                                    props.Add(f.Name, feature.Value[i]?.ToString());
+                                }
+                            }
+                            var json = JsonFactory.Create(props);
+                            var viewers = await StreetSmartAPI.GetViewers();
+                            foreach (var viewer in viewers)
+                            {
+                                var panoramaViewer = (IPanoramaViewer)viewer;
+                                panoramaViewer.SetSelectedFeatureByProperties(json, vectorLayer.Overlay.Id);
+                            }
+                            RemoveVectorInchange(vectorLayer);
+                        }
+                    }
+                }
+                finally
+                {
+                    extension.CommunicatingWithStreetSmart = false;
+                }
             }
         }
 

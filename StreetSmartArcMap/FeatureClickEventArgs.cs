@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StreetSmartArcMap
 {
-    public class SelectedFeatureChangedEventArgs: EventArgs
+    public class FeatureClickEventArgs: EventArgs
     {
         public string ViewerId;
         public IFeatureInfo FeatureInfo;

@@ -122,6 +122,7 @@
       <DependentUpon>Config.esriaddinx</DependentUpon>
     </Compile>
     <Compile Include="Configuration\Configuration.cs" />
+    <Compile Include="FeatureClickEventArgs.cs" />
     <Compile Include="Forms\AgreementForm.cs">
       <SubType>Form</SubType>
     </Compile>

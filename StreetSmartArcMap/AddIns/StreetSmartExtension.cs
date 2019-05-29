@@ -300,6 +300,12 @@ namespace StreetSmartArcMap.AddIns
             setup.AllFields = true;
             var selection = (IEnumFeature)map.FeatureSelection;
             IFeature feature = selection.Next();
+
+            if (feature == null) // no selection
+            {
+                await StreetSmartApiWrapper.Instance.DeselectAll();
+            }
+
             while (feature != null)
             {
                 await StreetSmartApiWrapper.Instance.Select(feature);

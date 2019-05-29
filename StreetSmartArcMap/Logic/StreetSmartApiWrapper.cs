@@ -812,6 +812,22 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
+        public async Task DeselectAll()
+        {
+            var viewers = await StreetSmartAPI.GetViewers();
+            foreach (var viewer in viewers)
+            {
+                var panoramaViewer = (IPanoramaViewer)viewer;
+                var json = JsonFactory.Create(new Dictionary<string, string>());
+                foreach (var vectorLayer in _vectorLayers)
+                {
+                    if (vectorLayer.Overlay != null)
+                        panoramaViewer.SetSelectedFeatureByProperties(json, vectorLayer.Overlay.Id);
+                }
+                
+            }
+        }
+
         public async Task Select(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
             var extension = StreetSmartExtension.GetExtension();

@@ -693,6 +693,16 @@ namespace StreetSmartArcMap.Logic
         private void Viewer_LayerVisibilityChange(object sender, IEventArgs<StreetSmart.Common.Interfaces.Data.ILayerInfo> e)
         {
             //TODO: STREET-1995 - Update StoredLayer
+            if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
+            {
+                var viewer = sender as IPanoramaViewer;
+                var layerInfo = e.Value;
+                var vectorLayer = _vectorLayers.FirstOrDefault(v => v.Overlay?.Id == layerInfo.LayerId);
+                if (vectorLayer != null)
+                {
+                    StoredLayers.Instance.Update(vectorLayer.Name, layerInfo.Visible);
+                }
+            }
         }
 
 

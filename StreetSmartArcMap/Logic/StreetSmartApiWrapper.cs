@@ -93,6 +93,7 @@ namespace StreetSmartArcMap.Logic
         private string RequestSRS { get; set; }
         private readonly IList<VectorLayer> _vectorLayers;
         private readonly IList<VectorLayer> _vectorLayerInChange;
+        private readonly LogClient _logClient;
 
         #endregion private properties
 
@@ -185,7 +186,7 @@ namespace StreetSmartArcMap.Logic
                 VectorLayer.FeatureDeleteEvent += VectorLayer_FeatureDeleteEvent;
 
                 VectorLayer.StopEditEvent += VectorLayer_StopEditEvent;
-                VectorLayer.StartMeasurementEvent += VectorLayer_StartMeasurementEvent;
+                //VectorLayer.StartMeasurementEvent += VectorLayer_StartMeasurementEvent;
 
                 VectorLayer.SketchCreateEvent += VectorLayer_SketchCreateEvent;
                 VectorLayer.SketchModifiedEvent += VectorLayer_SketchModifiedEvent;
@@ -204,12 +205,20 @@ namespace StreetSmartArcMap.Logic
                 if (RequestOpen)
                     await Open(RequestSRS, RequestQuery);
 
+                StreetSmartAPI.MeasurementChanged += StreetSmartAPI_MeasurementChanged;
+
                 OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = new List<string>() });
             }
             catch (StreetSmartLoginFailedException)
             {
                 MessageBox.Show("api laden >> login failed");
             }
+        }
+
+        private void StreetSmartAPI_MeasurementChanged(object sender, IEventArgs<IFeatureCollection> e)
+        {
+            IFeatureCollection FeatureCollection = e.Value;
+            IStreetSmartAPI api = sender as IStreetSmartAPI;
         }
 
         private async Task<List<IRecording>> GetRecordings()
@@ -351,6 +360,11 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
+        public void OpenMeasurementPoint(int entityId, int pointId)
+        {
+            //StreetSmartAPI?.OpenMeasurementPoint(entityId, pointId);
+        }
+
         private async void VectorLayer_LayerChangedEvent(VectorLayer layer)
         {
             if (StreetSmartAPI != null && layer != null)
@@ -378,51 +392,6 @@ namespace StreetSmartArcMap.Logic
                         RemoveVectorInchange(layer);
                     }
                 }
-
-                //What does this code do?
-                //else
-                //{
-                //    IList<VectorLayer> vectorLayers = VectorLayer.Layers;
-                //    int i = 0;
-
-                //    while (i < _vectorLayers.Count)
-                //    {
-                //        var lay = _vectorLayers.ElementAt(i);
-
-                //        if (!vectorLayers.Contains(lay))
-                //        {
-                //            await StreetSmartAPI.RemoveOverlay(lay.Overlay.Id);
-                //            _vectorLayers.Remove(lay);
-                //        }
-                //        else
-                //        {
-                //            i++;
-                //        }
-                //    }
-
-                //    foreach (var vectorLayer in vectorLayers)
-                //    {
-                //        if (!_vectorLayers.Contains(vectorLayer))
-                //        {
-                //            VectorLayer_LayerAddEvent(vectorLayer);
-                //        }
-                //        else
-                //        {
-                //            if (vectorLayer.IsVisibleInStreetSmart)
-                //            {
-                //                VectorLayer_LayerAddEvent(vectorLayer);
-                //            }
-                //            else
-                //            {
-                //                if (_vectorLayers.Contains(vectorLayer))
-                //                {
-                //                    await StreetSmartAPI.RemoveOverlay(vectorLayer.Overlay.Id);
-                //                    _vectorLayers.Remove(vectorLayer);
-                //                }
-                //            }
-                //        }
-                //    }
-                //}
             }
         }
 
@@ -500,15 +469,6 @@ namespace StreetSmartArcMap.Logic
             //}
         }
 
-        private void VectorLayer_StartMeasurementEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
-        {
-            //if (Config.MeasurePermissions)
-            //{
-            //    Measurement measurement = Measurement.Sketch;
-            //    StartMeasurement(geometry, measurement, true);
-            //}
-        }
-
         private void VectorLayer_SketchCreateEvent(ESRI.ArcGIS.Editor.IEditSketch3 sketch)
         {
             //if (Config.MeasurePermissions && (!_sketchModified) && (!_screenPointAdded) && (_layer != null))
@@ -555,6 +515,64 @@ namespace StreetSmartArcMap.Logic
             //}
         }
 
+        public async Task<int> CreateMeasurement(TypeOfLayer typeOfLayer)
+        {
+            var viewers = await StreetSmartAPI.GetViewers();
+            var viewer = viewers?.ToList().Where(v => v is IPanoramaViewer).LastOrDefault();
+
+            if (viewer != null)
+                return CreateMeasurement(typeOfLayer, viewer as IPanoramaViewer);
+            else
+                return -1;
+        }
+
+        public int CreateMeasurement(TypeOfLayer typeOfLayer, IPanoramaViewer viewer)
+        {
+            int entityId = -1;
+
+            switch (typeOfLayer)
+            {
+                case TypeOfLayer.Point:
+                    if (Config.MeasurePoint)
+                    {
+                        _logClient.Info("Create point measurement");
+
+                        var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.Point);
+                        StreetSmartAPI.StartMeasurementMode(viewer, options);
+                        
+                        //entityId = StreetSmartAPI.AddPointMeasurement(_measurementName);
+                        //OpenMeasurement(entityId);
+                        //DisableMeasurementSeries();
+                        //AddMeasurementPoint(entityId);
+                    }
+
+                    break;
+                case TypeOfLayer.Line:
+                    //if (Config.MeasureLine)
+                    //{
+                    //    _logClient.Info("Create line measurement");
+                    //    entityId = StreetSmartAPI.AddLineMeasurement(_measurementName);
+                    //    OpenMeasurement(entityId);
+                    //    EnableMeasurementSeries(entityId);
+                    //}
+
+                    break;
+                case TypeOfLayer.Polygon:
+                    //if (Config.MeasurePolygon)
+                    //{
+                    //    _logClient.Info("Create surface measurement");
+                    //    entityId = StreetSmartAPI.AddSurfaceMeasurement(_measurementName);
+                    //    StreetSmartAPI.SetMeasurementExtrusionEnabled(entityId, false);
+                    //    OpenMeasurement(entityId);
+                    //    EnableMeasurementSeries(entityId);
+                    //}
+
+                    break;
+            }
+
+            return entityId;
+        }
+
         private async Task DeinitApi()
         {
             VectorLayer.LayerAddEvent -= VectorLayer_LayerAddEvent;
@@ -566,7 +584,7 @@ namespace StreetSmartArcMap.Logic
             VectorLayer.FeatureDeleteEvent -= VectorLayer_FeatureDeleteEvent;
 
             VectorLayer.StopEditEvent -= VectorLayer_StopEditEvent;
-            VectorLayer.StartMeasurementEvent -= VectorLayer_StartMeasurementEvent;
+            //VectorLayer.StartMeasurementEvent -= VectorLayer_StartMeasurementEvent;
 
             VectorLayer.SketchCreateEvent -= VectorLayer_SketchCreateEvent;
             VectorLayer.SketchModifiedEvent -= VectorLayer_SketchModifiedEvent;

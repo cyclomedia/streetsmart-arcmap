@@ -63,7 +63,7 @@ namespace StreetSmartArcMap.Configuration
         public string StreetSmartLocation { get; set; }
 
         [XmlIgnore()]
-        public string BaseUrlToUse => UseDefaultBaseUrl || string.IsNullOrWhiteSpace(BaseUrl) ? Urls.BaseUrl : BaseUrl.ToLower().Replace("/configuration",string.Empty);
+        public string BaseUrlToUse => UseDefaultBaseUrl || string.IsNullOrWhiteSpace(BaseUrl) ? Urls.BaseUrl : BaseUrl.ToLower().Replace("/configuration", string.Empty);
         [XmlIgnore()]
         public string RecordingsServiceUrlToUse => $"{BaseUrlToUse}{Urls.RecordingsServiceUrl}";
         [XmlIgnore()]
@@ -72,8 +72,8 @@ namespace StreetSmartArcMap.Configuration
         [XmlIgnore()]
         public string StreetSmartLocationToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.ApiUrl}" : StreetSmartLocation;
         [XmlIgnore()]
-        public string SpatialReferencesUrlToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.SpatialReferencesUrl}" : $"{StreetSmartLocation.ToLower().Replace("/api-dotnet.html",string.Empty)}{Urls.SpatialReferencesUrl}";
-        
+        public string SpatialReferencesUrlToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.SpatialReferencesUrl}" : $"{StreetSmartLocation.ToLower().Replace("/api-dotnet.html", string.Empty)}{Urls.SpatialReferencesUrl}";
+
 
         [XmlIgnore()]
         public string LocaleToUse => Culture;
@@ -122,6 +122,15 @@ namespace StreetSmartArcMap.Configuration
         #endregion
 
         #region Properties
+
+        public ApplicationConfiguration ApplicationConfiguration { get; set; }
+
+        public bool MeasureSmartClick => Instance.CheckFunctionality("MeasureSmartClick");
+        public bool MeasurePoint => Instance.CheckFunctionality("MeasurePoint");
+        public bool MeasureLine => Instance.CheckFunctionality("MeasureLine");
+        public bool MeasurePolygon => Instance.CheckFunctionality("MeasurePolygon");
+        public bool AddLayerWfs => Instance.CheckFunctionality("AddLayerWFS");
+        public bool MeasurePermissions => MeasurePoint || MeasureLine || MeasurePolygon || MeasureSmartClick;
 
         public static Configuration Instance
         {
@@ -190,6 +199,11 @@ namespace StreetSmartArcMap.Configuration
                     IsLoading = false;
                 }
             }
+        }
+
+        private bool CheckFunctionality(string name)
+        {
+            return ApplicationConfiguration?.GetFunctionality(name) != null;
         }
 
         public void SetCulture()

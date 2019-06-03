@@ -169,7 +169,7 @@ namespace StreetSmartArcMap.Client
 
         private bool CheckFunctionality(string name)
         {
-            return ((ApplicationConfiguration != null) && (ApplicationConfiguration.GetFunctionality(name) != null));
+            return ApplicationConfiguration?.GetFunctionality(name) != null;
         }
 
         #endregion

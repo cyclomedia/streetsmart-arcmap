@@ -107,6 +107,7 @@
     <Compile Include="Buttons\StreetSmartShowInCyclorama.cs" />
     <Compile Include="Client\ApplicationConfiguration.cs" />
     <Compile Include="Client\Bounds.cs" />
+    <Compile Include="Client\ConstantsViewer.cs" />
     <Compile Include="Client\Functionality.cs" />
     <Compile Include="Client\GlobeSpotterConfiguration.cs" />
     <Compile Include="Client\LogClient.cs" />

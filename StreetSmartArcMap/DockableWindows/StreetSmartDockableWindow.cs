@@ -22,6 +22,8 @@ using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Geometry;
 using StreetSmartArcMap.AddIns;
+using StreetSmartArcMap.Client;
+using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
@@ -29,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using WinPoint = System.Drawing.Point;
 
@@ -72,6 +75,8 @@ namespace StreetSmartArcMap.DockableWindows
         public bool _toUpdateCones { get; private set; }
         public System.Threading.Timer _updateTimer { get; private set; }
 
+        private string _measurementName { get; set; }
+
         #endregion Private members
 
         #region Constructor
@@ -87,6 +92,8 @@ namespace StreetSmartArcMap.DockableWindows
             API.OnViewerChangeEvent += API_OnViewerChangeEvent;
             API.OnViewingConeChanged += API_OnViewingConeChanged;
             API.OnVectorLayerChanged += API_OnVectorLayerChanged;
+
+            VectorLayer.StartMeasurementEvent += VectorLayer_StartMeasurementEvent;
 
             this.Controls.Add(API.StreetSmartGUI);
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
@@ -113,7 +120,7 @@ namespace StreetSmartArcMap.DockableWindows
             }
             else
             {
-                
+
                 // force a repaint.
                 var activeView = ArcUtils.ActiveView;
                 activeView.ScreenDisplay?.Invalidate(activeView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
@@ -244,7 +251,7 @@ namespace StreetSmartArcMap.DockableWindows
             {
                 if (phase == esriViewDrawPhase.esriViewForeground)
                 {
-                    foreach(var kvp in ConePerViewerDict)
+                    foreach (var kvp in ConePerViewerDict)
                     {
                         var cone = kvp.Value;
                         cone.AfterDraw(Display, phase);
@@ -320,6 +327,95 @@ namespace StreetSmartArcMap.DockableWindows
 
                 base.Dispose(disposing);
             }
+        }
+
+        //private void OnStartMeasurement(IGeometry geometry)
+        //{
+        //    if (Config.MeasurePermissions)
+        //    {
+        //        Measurement measurement = Measurement.Sketch;
+        //        StartMeasurement(geometry, measurement, true);
+        //    }
+        //}
+
+        private void VectorLayer_StartMeasurementEvent(IGeometry geometry)
+        {
+            if (Config.MeasurePermissions)
+            {
+                Measurement measurement = Measurement.Sketch;
+                StartMeasurement(geometry, measurement, true);
+            }
+        }
+
+        private async Task StartMeasurement(IGeometry geometry, Measurement measurement, bool sketch)
+        {
+            if (Config.MeasurePermissions && API != null && measurement != null)
+            {
+                var typeOfLayer = Measurement.GetTypeOfLayer(geometry);
+
+                if (typeOfLayer != TypeOfLayer.None)
+                {
+                    if (measurement.IsTypeOfLayer(typeOfLayer))
+                    {
+                        measurement.OpenMeasurement();
+                    }
+                    else
+                    {
+                        measurement.RemoveMeasurement();
+
+                        _measurementName = "my measurement";
+
+                        Measurement.CloseOpenMeasurement();
+
+                        int entityId = await API.CreateMeasurement(typeOfLayer);
+
+                        measurement = Measurement.Get(entityId);
+                        measurement?.Open();
+
+                        if (sketch)
+                            measurement?.SetSketch();
+                    }
+                }
+            }
+        }
+
+        public void EnableMeasurementSeries(int entityId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DisableMeasurementSeries()
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+        public void CreateMeasurementPoint(int entityId, IPoint gsPoint)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OpenMeasurementPoint(int entityId, int pointId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CloseMeasurementPoint(int entityId, int pointId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveMeasurementPoint(int entityId, int pointId)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+        public int GetMeasurementPointIndex(int entityId, int pointId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

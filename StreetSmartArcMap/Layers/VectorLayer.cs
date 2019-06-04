@@ -132,8 +132,6 @@ namespace StreetSmartArcMap.Layers
         private IFeatureClass _featureClass;
         private ILayer _layer;
         private bool _isVisibleInStreetSmart;
-        private string _gml;
-        private Color _color;
 
         public IOverlay Overlay;
 
@@ -162,7 +160,8 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         // Properties
         // =========================================================================
-        public bool GmlChanged { get; private set; }
+        private IFeatureCollection _contents;
+        public bool ContentsChanged { get; private set; }
 
         public string Name
         {
@@ -334,7 +333,7 @@ namespace StreetSmartArcMap.Layers
         {
             return Layers.Aggregate<VectorLayer, VectorLayer>(null,
                                                               (current, layerCheck) =>
-                                                              (layerCheck._featureClass == featureClass)
+                                                              (layerCheck._featureClass.FeatureClassID == featureClass.FeatureClassID)
                                                                 ? layerCheck
                                                                 : current);
         }
@@ -666,7 +665,8 @@ namespace StreetSmartArcMap.Layers
                     }
                 }
             }
-
+            ContentsChanged = featureCollection != _contents;
+            _contents = featureCollection;
             return featureCollection;
         }
 
@@ -682,7 +682,7 @@ namespace StreetSmartArcMap.Layers
             try
             {
                 DetectVectorLayers(false);
-                AddEvents();
+                //AddEvents();
             }
             catch (Exception ex)
             {
@@ -751,10 +751,7 @@ namespace StreetSmartArcMap.Layers
 
                                         _layers.Add(vectorLayer);
 
-                                        if (LayerAddEvent != null)
-                                        {
-                                            LayerAddEvent(vectorLayer);
-                                        }
+                                        LayerAddEvent?.Invoke(vectorLayer);
                                     }
                                 }
                             }
@@ -809,22 +806,22 @@ namespace StreetSmartArcMap.Layers
         {
             //OnLayerChanged(null);
 
-            _layers = new List<VectorLayer>();
-            IMap map = ArcUtils.Map;
+            //_layers = new List<VectorLayer>();
+            //IMap map = ArcUtils.Map;
 
-            if (map != null)
-            {
-                // ReSharper disable UseIndexedProperty
-                var layers = map.get_Layers();
-                ILayer layer;
+            //if (map != null)
+            //{
+            //    // ReSharper disable UseIndexedProperty
+            //    var layers = map.get_Layers();
+            //    ILayer layer;
 
-                while ((layer = layers.Next()) != null)
-                {
-                    AvItemAdded(layer);
-                }
+            //    while ((layer = layers.Next()) != null)
+            //    {
+            //        AvItemAdded(layer);
+            //    }
 
-                // ReSharper restore UseIndexedProperty
-            }
+            //    // ReSharper restore UseIndexedProperty
+            //}
         }
 
         private static void OnStartEditing()

@@ -123,6 +123,7 @@
       <DependentUpon>Config.esriaddinx</DependentUpon>
     </Compile>
     <Compile Include="Configuration\Configuration.cs" />
+    <Compile Include="FeatureClickEventArgs.cs" />
     <Compile Include="Forms\AgreementForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -172,6 +173,7 @@
     <Compile Include="Objects\Measurement.cs" />
     <Compile Include="Objects\MeasurementPoint.cs" />
     <Compile Include="Objects\ViewingCone.cs" />
+    <Compile Include="SelectedFeatureChangedEventArgs.cs" />
     <Compile Include="VectorLayerChangeEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

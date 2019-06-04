@@ -16,11 +16,12 @@
  * License along with this library.
  */
 
-using ESRI.ArcGIS.ADF.Connection.Local;
 using ESRI.ArcGIS.ArcMapUI;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Display;
+using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
+using StreetSmart.Common.Interfaces.Data;
 using StreetSmartArcMap.AddIns;
 using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Layers;
@@ -33,7 +34,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WinPoint = System.Drawing.Point;
 
 namespace StreetSmartArcMap.DockableWindows
 {
@@ -92,6 +92,8 @@ namespace StreetSmartArcMap.DockableWindows
             API.OnViewerChangeEvent += API_OnViewerChangeEvent;
             API.OnViewingConeChanged += API_OnViewingConeChanged;
             API.OnVectorLayerChanged += API_OnVectorLayerChanged;
+            API.OnSelectedFeatureChanged += API_OnSelectedFeatureChanged;
+            API.OnFeatureClicked += API_OnFeatureClicked;
 
             VectorLayer.StartMeasurementEvent += VectorLayer_StartMeasurementEvent;
 
@@ -110,7 +112,82 @@ namespace StreetSmartArcMap.DockableWindows
 
         #region Event handlers
 
+        private void API_OnFeatureClicked(FeatureClickEventArgs args)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => API_OnFeatureClicked(args)));
+            }
+            else
+            {
+                var extension = StreetSmartExtension.GetExtension();
+                if (!extension.CommunicatingWithStreetSmart)
+                {
+                    extension.CommunicatingWithStreetSmart = true;
+                    try
+                    {
+                        IFeatureInfo featureInfo = args.FeatureInfo;
 
+                        var layers = ArcUtils.Map.Layers;
+                        ILayer layer;
+
+                        IFeatureLayer flayer = null;
+                        while ((layer = layers.Next()) != null)
+                        {
+                            if (layer.Name == featureInfo.LayerName) // is this enough to ensure its the correct layer??
+                            {
+                                flayer = (IFeatureLayer)layer;
+                                break;
+                            }
+                        }
+                        if (flayer != null)
+                        {
+                            var fc = flayer.FeatureClass;
+
+                            var oidField = fc.OIDFieldName;
+
+                            IQueryFilter queryFilter = new QueryFilter
+                            {
+                                WhereClause = $"{oidField}={featureInfo.FeatureProperties[oidField]}"
+                            };
+
+                            var featureCursor = fc.Search(queryFilter, false);
+                            var featureCount = fc.FeatureCount(queryFilter);
+                            var shapeId = featureCursor.FindField(fc.ShapeFieldName);
+
+                            for (int i = 0; i < featureCount; i++)
+                            {
+                                var feature = featureCursor.NextFeature();
+
+                                ArcUtils.Map?.SelectFeature(layer, feature); 
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        extension.CommunicatingWithStreetSmart = false;
+                    }
+                    ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
+                }
+            }
+        }
+
+        private void API_OnSelectedFeatureChanged(SelectedFeatureChangedEventArgs args)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => API_OnSelectedFeatureChanged(args)));
+            }
+            else
+            {
+                //Deselect
+                if (args == null || args.FeatureInfo == null || string.IsNullOrWhiteSpace(args.FeatureInfo.LayerId))
+                {
+                    ArcUtils.Map.ClearSelection();
+                    ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
+                }
+            }
+        }
 
         private void API_OnViewerChangeEvent(ViewersChangeEventArgs args)
         {
@@ -120,7 +197,6 @@ namespace StreetSmartArcMap.DockableWindows
             }
             else
             {
-
                 // force a repaint.
                 var activeView = ArcUtils.ActiveView;
                 activeView.ScreenDisplay?.Invalidate(activeView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
@@ -237,7 +313,7 @@ namespace StreetSmartArcMap.DockableWindows
             }
             else
             {
-                args.Layer.IsVisibleInStreetSmart = true;
+                args.Layer.IsVisibleInStreetSmart = true; // is this correct???
             }
         }
 
@@ -280,14 +356,12 @@ namespace StreetSmartArcMap.DockableWindows
 
         private void SetVisibility(bool visible)
         {
-
             var dockWindowManager = ArcMap.Application as ESRI.ArcGIS.Framework.IDockableWindowManager;
             ESRI.ArcGIS.esriSystem.UID windowId = new ESRI.ArcGIS.esriSystem.UIDClass { Value = "Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" };
             ESRI.ArcGIS.Framework.IDockableWindow window = dockWindowManager.GetDockableWindow(windowId);
 
             if (visible)
             {
-
                 if (!window.IsVisible())
                     window.Show(true);
             }
@@ -296,7 +370,6 @@ namespace StreetSmartArcMap.DockableWindows
                 if (window.IsVisible())
                     window.Show(false);
             }
-
         }
 
         #endregion Functions (Private)

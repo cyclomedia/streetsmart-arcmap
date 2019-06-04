@@ -172,8 +172,8 @@ namespace StreetSmartArcMap.DockableWindows
             }
             else
             {
-                IFeatureInfo featureInfo = args.FeatureInfo;
-                if (string.IsNullOrEmpty(featureInfo.LayerId)) // deselected!
+                //Deselect
+                if (args == null || args.FeatureInfo == null || string.IsNullOrWhiteSpace(args.FeatureInfo.LayerId))
                 {
                     ArcUtils.Map.ClearSelection();
                     ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);

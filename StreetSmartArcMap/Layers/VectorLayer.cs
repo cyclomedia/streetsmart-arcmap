@@ -29,6 +29,7 @@ using StreetSmart.Common.Interfaces.GeoJson;
 using StreetSmart.Common.Interfaces.SLD;
 using StreetSmartArcMap.AddIns;
 using StreetSmartArcMap.Client;
+using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
@@ -1149,67 +1150,67 @@ namespace StreetSmartArcMap.Layers
                                 var geometry = sketch.Geometry;
                                 string name = taskName.UniqueName;
 
-                                //if (name == "GarciaUI_ModifyFeatureTask")
-                                //{
-                                //    Measurement measurement = Measurement.Get(geometry, false);
+                                if (name == "GarciaUI_ModifyFeatureTask")
+                                {
+                                    Measurement measurement = Measurement.Get(geometry, false);
 
-                                //    if (measurement != null)
-                                //    {
-                                //        int nrPoints;
-                                //        var ptColl = measurement.ToPointCollection(geometry, out nrPoints);
+                                    if (measurement != null)
+                                    {
+                                        int nrPoints;
+                                        var ptColl = measurement.ToPointCollection(geometry, out nrPoints);
 
-                                //        if (ptColl != null)
-                                //        {
-                                //            ISketchOperation2 sketchOp = new SketchOperationClass();
-                                //            sketchOp.Start(editor);
+                                        if (ptColl != null)
+                                        {
+                                            ISketchOperation2 sketchOp = new SketchOperationClass();
+                                            sketchOp.Start(editor);
 
-                                //            for (int j = 0; j < nrPoints; j++)
-                                //            {
-                                //                IPoint point = ptColl.Point[j];
-                                //                MeasurementPoint mpoint = measurement.IsPointMeasurement
-                                //                  ? measurement.GetPoint(point, false)
-                                //                  : measurement.GetPoint(point);
+                                            for (int j = 0; j < nrPoints; j++)
+                                            {
+                                                ESRI.ArcGIS.Geometry.IPoint point = ptColl.Point[j];
+                                                MeasurementPoint mpoint = measurement.IsPointMeasurement
+                                                  ? measurement.GetPoint(point, false)
+                                                  : measurement.GetPoint(point);
 
-                                //                double m = (mpoint == null) ? double.NaN : mpoint.M;
-                                //                double z = (mpoint == null) ? double.NaN : mpoint.Z;
-                                //                IPoint point2 = new ESRI.ArcGIS.Geometry.Point() { X = point.X, Y = point.Y, Z = z, M = m, ZAware = sketch.ZAware };
-                                //                ptColl.UpdatePoint(j, point2);
+                                                double m = (mpoint == null) ? double.NaN : mpoint.M;
+                                                double z = (mpoint == null) ? double.NaN : mpoint.Z;
+                                                ESRI.ArcGIS.Geometry.IPoint point2 = new PointClass() { X = point.X, Y = point.Y, Z = z, M = m, ZAware = sketch.ZAware };
+                                                ptColl.UpdatePoint(j, point2);
 
-                                //                if (measurement.IsPointMeasurement)
-                                //                {
-                                //                    sketch.Geometry = point2;
-                                //                }
-                                //            }
+                                                if (measurement.IsPointMeasurement)
+                                                {
+                                                    sketch.Geometry = point2;
+                                                }
+                                            }
 
-                                //            if (!measurement.IsPointMeasurement)
-                                //            {
-                                //                sketch.Geometry = ptColl as IGeometry;
-                                //            }
+                                            if (!measurement.IsPointMeasurement)
+                                            {
+                                                sketch.Geometry = ptColl as ESRI.ArcGIS.Geometry.IGeometry;
+                                            }
 
-                                //            geometry = sketch.Geometry;
+                                            geometry = sketch.Geometry;
 
-                                //            if (geometry != null)
-                                //            {
-                                //                sketchOp.Finish(geometry.Envelope, esriSketchOperationType.esriSketchOperationGeneral, geometry);
-                                //            }
-                                //        }
+                                            if (geometry != null)
+                                            {
+                                                sketchOp.Finish(geometry.Envelope, esriSketchOperationType.esriSketchOperationGeneral, geometry);
+                                            }
+                                        }
 
-                                //        measurement.SetSketch();
-                                //        measurement.OpenMeasurement();
-                                //        measurement.DisableMeasurementSeries();
-                                //    }
-                                //}
-                                //else
-                                //{
-                                //    Measurement measurement = Measurement.Get(geometry, false);
+                                        measurement.SetSketch();
+                                        measurement.OpenMeasurement();
+                                        measurement.DisableMeasurementSeries();
+                                    }
+                                }
+                                else
+                                {
+                                    Measurement measurement = Measurement.Get(geometry, false);
 
-                                //    if (measurement != null)
-                                //    {
-                                //        measurement.EnableMeasurementSeries();
-                                //    }
+                                    if (measurement != null)
+                                    {
+                                        measurement.EnableMeasurementSeries();
+                                    }
 
-                                //    OnSelectionChanged();
-                                //}
+                                    OnSelectionChanged();
+                                }
                             }
                         }
                     }

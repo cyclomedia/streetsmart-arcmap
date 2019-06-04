@@ -338,12 +338,12 @@ namespace StreetSmartArcMap.DockableWindows
         //    }
         //}
 
-        private void VectorLayer_StartMeasurementEvent(IGeometry geometry)
+        private async void VectorLayer_StartMeasurementEvent(IGeometry geometry)
         {
             if (Config.MeasurePermissions)
             {
                 Measurement measurement = Measurement.Sketch;
-                StartMeasurement(geometry, measurement, true);
+                await StartMeasurement(geometry, measurement, true);
             }
         }
 

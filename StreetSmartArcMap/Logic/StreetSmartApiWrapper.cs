@@ -456,14 +456,8 @@ namespace StreetSmartArcMap.Logic
 
                 if (geometry != null)
                 {
-                    // Todo: Pass the edit to measurement
-                    // CSPAN: I think this is redundant code
-                    //Measurement measurement = Measurement.Get(geometry);
+                    // TODO MEASUREMENT: Pass the edit to measurement
 
-                    //if (measurement != null)
-                    //{
-                    //    measurement.UpdateMeasurementPoints(geometry);
-                    //}
                 }
             }
         }
@@ -476,14 +470,7 @@ namespace StreetSmartArcMap.Logic
 
                 if (geometry != null)
                 {
-                    // TODO: pass the delete to measurement
-                    // CSPAN: I think this is redundant code
-                    //Measurement measurement = Measurement.Get(geometry);
-
-                    //if (measurement != null)
-                    //{
-                    //    measurement.RemoveMeasurement();
-                    //}
+                    // TODO MEASUREMENT: pass the delete to measurement
                 }
             }
         }
@@ -492,9 +479,7 @@ namespace StreetSmartArcMap.Logic
         {
             if (Config.MeasurePermissions)
             {
-                // todo: stop measure?
-                // CSPAN: I think this is redundant code
-                //Measurement.RemoveAll();
+                // TODO MEASUREMENT: stop measure?
             }
         }
 
@@ -510,35 +495,17 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_SketchModifiedEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
         {
-            //if (Config.MeasurePermissions)
-            //{
-            //    _mapPointAdded = !_screenPointAdded;
-            //    Measurement measurement = Measurement.Sketch;
-
-            //    if (geometry != null)
-            //    {
-            //        if (((!_drawingSketch) && (!geometry.IsEmpty)) || (measurement == null))
-            //        {
-            //            _drawingSketch = true;
-            //            measurement = StartMeasurement(geometry, measurement, true);
-            //        }
-
-            //        if (measurement != null)
-            //        {
-            //            measurement.UpdateMeasurementPoints(geometry);
-            //        }
-            //    }
-
-            //    _mapPointAdded = false;
-            //}
+            if (Config.MeasurePermissions)
+            {
+                // TODO MEASUREMENT: Do we need this event at all?
+            }
         }
 
         private void VectorLayer_SketchFinishedEvent()
         {
             if (Config.MeasurePermissions)
             {
-                // CSPAN: I think this is redundant code
-                //Measurement.RemoveSketch();
+                // TODO MEASUREMENT: Do we need this event at all?
             }
         }
 

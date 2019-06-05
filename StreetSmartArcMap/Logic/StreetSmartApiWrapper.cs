@@ -19,6 +19,7 @@
 using ESRI.ArcGIS.ArcMapUI;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.Geometry;
 using StreetSmart.Common.Exceptions;
 using StreetSmart.Common.Factories;
 using StreetSmart.Common.Interfaces.API;
@@ -97,6 +98,8 @@ namespace StreetSmartArcMap.Logic
         private readonly IList<VectorLayer> _vectorLayers;
         private readonly IList<VectorLayer> _vectorLayerInChange;
         private readonly LogClient _logClient;
+        private bool _screenPointAdded;
+        private bool _mapPointAdded;
 
         #endregion private properties
 
@@ -122,6 +125,8 @@ namespace StreetSmartArcMap.Logic
         public VectorLayerChangeEventDelegate OnVectorLayerChanged;
         public SelectedFeatureChangeEventDelegate OnSelectedFeatureChanged;
         public FeatureClickEventDelegate OnFeatureClicked;
+        private bool _drawPoint;
+        private bool _sketchModified;
 
         #endregion Events
 
@@ -193,7 +198,7 @@ namespace StreetSmartArcMap.Logic
                 VectorLayer.FeatureDeleteEvent += VectorLayer_FeatureDeleteEvent;
 
                 VectorLayer.StopEditEvent += VectorLayer_StopEditEvent;
-                //VectorLayer.StartMeasurementEvent += VectorLayer_StartMeasurementEvent;
+                VectorLayer.StartMeasurementEvent += VectorLayer_StartMeasurementEvent;
 
                 VectorLayer.SketchCreateEvent += VectorLayer_SketchCreateEvent;
                 VectorLayer.SketchModifiedEvent += VectorLayer_SketchModifiedEvent;
@@ -404,86 +409,103 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_FeatureStartEditEvent(IList<ESRI.ArcGIS.Geometry.IGeometry> geometries)
         {
-            //if (Config.MeasurePermissions && (geometries != null))
-            //{
-            //    var usedMeasurements = new List<Measurement>();
+            if (Config.MeasurePermissions && (geometries != null))
+            {
+                
+                IFeatureCollection featureCollection = GeoJsonFactory.CreateFeatureCollection(ArcUtils.SpatialReference.FactoryCode);
+                foreach (ESRI.ArcGIS.Geometry.IGeometry geometry in geometries)
+                {
+                    if (geometry != null)
+                    {
+                        switch (geometry.GeometryType)
+                        {
+                            case esriGeometryType.esriGeometryPoint:
+                                ESRI.ArcGIS.Geometry.IPoint point = geometry as ESRI.ArcGIS.Geometry.IPoint;
+                                IFeature feature = GeoJsonFactory.CreatePointFeature(point.X, point.Y, point.Z);
+                                featureCollection.Features.Add(feature);
+                                break;
+                        }
 
-            //    foreach (ESRI.ArcGIS.Geometry.IGeometry geometry in geometries)
-            //    {
-            //        if (geometry != null)
-            //        {
-            //            Measurement measurement = Measurement.Get(geometry);
-            //            _drawPoint = false;
-            //            measurement = StartMeasurement(geometry, measurement, false);
-            //            _drawPoint = true;
 
-            //            if (measurement != null)
-            //            {
-            //                measurement.UpdateMeasurementPoints(geometry);
-            //                measurement.CloseMeasurement();
-            //                usedMeasurements.Add(measurement);
-            //            }
-            //        }
-            //    }
+                        //Measurement measurement = Measurement.Get(geometry);
 
-            //    Measurement.RemoveUnusedMeasurements(usedMeasurements);
-            //}
+                        //if (measurement != null)
+                        //{
+                        //    measurement.UpdateMeasurementPoints(geometry);
+                        //    measurement.CloseMeasurement();
+                        //    usedMeasurements.Add(measurement);
+                        //}
+                        //else
+                        //{
+                        //    await StartMeasurement(geometry, measurement, false);
+                        //}
+                    }
+                }
+                StreetSmartAPI.SetActiveMeasurement(featureCollection);
+
+
+                //Measurement.RemoveUnusedMeasurements(usedMeasurements);
+            }
         }
 
         private void VectorLayer_FeatureUpdateEditEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
-            //if (Config.MeasurePermissions && (feature != null))
-            //{
-            //    ESRI.ArcGIS.Geometry.IGeometry geometry = feature.Shape;
+            if (Config.MeasurePermissions && (feature != null))
+            {
+                ESRI.ArcGIS.Geometry.IGeometry geometry = feature.Shape;
 
-            //    if (geometry != null)
-            //    {
-            //        Measurement measurement = Measurement.Get(geometry);
+                if (geometry != null)
+                {
+                    // Todo: Pass the edit to measurement
+                    // CSPAN: I think this is redundant code
+                    //Measurement measurement = Measurement.Get(geometry);
 
-            //        if (measurement != null)
-            //        {
-            //            measurement.UpdateMeasurementPoints(geometry);
-            //        }
-            //    }
-            //}
+                    //if (measurement != null)
+                    //{
+                    //    measurement.UpdateMeasurementPoints(geometry);
+                    //}
+                }
+            }
         }
 
         private void VectorLayer_FeatureDeleteEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
-            //if (Config.MeasurePermissions)
-            //{
-            //     ESRI.ArcGIS.Geometry.IGeometry geometry = feature.Shape;
+            if (Config.MeasurePermissions)
+            {
+                ESRI.ArcGIS.Geometry.IGeometry geometry = feature.Shape;
 
-            //    if (geometry != null)
-            //    {
-            //        Measurement measurement = Measurement.Get(geometry);
+                if (geometry != null)
+                {
+                    // TODO: pass the delete to measurement
+                    // CSPAN: I think this is redundant code
+                    //Measurement measurement = Measurement.Get(geometry);
 
-            //        if (measurement != null)
-            //        {
-            //            measurement.RemoveMeasurement();
-            //        }
-            //    }
-            //}
+                    //if (measurement != null)
+                    //{
+                    //    measurement.RemoveMeasurement();
+                    //}
+                }
+            }
         }
 
         private void VectorLayer_StopEditEvent()
         {
-            //if (Config.MeasurePermissions)
-            //{
-            //    _drawingSketch = false;
-            //    Measurement.RemoveAll();
-            //    FrmMeasurement.Close();
-            //}
+            if (Config.MeasurePermissions)
+            {
+                // todo: stop measure?
+                // CSPAN: I think this is redundant code
+                //Measurement.RemoveAll();
+            }
         }
 
         private void VectorLayer_SketchCreateEvent(ESRI.ArcGIS.Editor.IEditSketch3 sketch)
         {
-            //if (Config.MeasurePermissions && (!_sketchModified) && (!_screenPointAdded) && (_layer != null))
-            //{
-            //    _sketchModified = true;
-            //    _layer.AddZToSketch(sketch);
-            //    _sketchModified = false;
-            //}
+            
+            if (Config.MeasurePermissions && (!_sketchModified) && (!_screenPointAdded))
+            {
+                var geometry = sketch.Geometry;
+                //VectorLayer_FeatureStartEditEvent(new List<ESRI.ArcGIS.Geometry.IGeometry>() { geometry });
+            }
         }
 
         private void VectorLayer_SketchModifiedEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
@@ -513,40 +535,37 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_SketchFinishedEvent()
         {
-            //if (Config.MeasurePermissions)
-            //{
-            //    _screenPointAdded = false;
-            //    _mapPointAdded = false;
-            //    _drawingSketch = false;
-            //    Measurement.RemoveSketch();
-            //}
+            if (Config.MeasurePermissions)
+            {
+                // CSPAN: I think this is redundant code
+                //Measurement.RemoveSketch();
+            }
         }
 
-        public async Task<int> CreateMeasurement(TypeOfLayer typeOfLayer)
+        public async Task<bool> CreateMeasurement(TypeOfLayer typeOfLayer)
         {
             var viewers = await StreetSmartAPI.GetViewers();
             var viewer = viewers?.ToList().Where(v => v is IPanoramaViewer).LastOrDefault();
 
             if (viewer != null)
-                return CreateMeasurement(typeOfLayer, viewer as IPanoramaViewer);
-            else
-                return -1;
+            {
+                CreateMeasurement(typeOfLayer, viewer as IPanoramaViewer);
+                return true;
+            }
+            return false;
         }
 
-        public int CreateMeasurement(TypeOfLayer typeOfLayer, IPanoramaViewer viewer)
+        public void CreateMeasurement(TypeOfLayer typeOfLayer, IPanoramaViewer viewer)
         {
-            int entityId = -1;
-
             switch (typeOfLayer)
             {
                 case TypeOfLayer.Point:
                     if (Config.MeasurePoint)
                     {
-                        _logClient.Info("Create point measurement");
+                        //_logClient.Info("Create point measurement");
 
                         var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.Point);
                         StreetSmartAPI.StartMeasurementMode(viewer, options);
-                        
                         //entityId = StreetSmartAPI.AddPointMeasurement(_measurementName);
                         //OpenMeasurement(entityId);
                         //DisableMeasurementSeries();
@@ -576,8 +595,6 @@ namespace StreetSmartArcMap.Logic
 
                     break;
             }
-
-            return entityId;
         }
 
         private async Task DeinitApi()
@@ -640,7 +657,7 @@ namespace StreetSmartArcMap.Logic
                     StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
                     StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
                     StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
-
+                    StreetSmartAPI.MeasurementChanged += StreetSmartAPI_MeasurementChanged1;
                     
                 }
                 else
@@ -653,6 +670,27 @@ namespace StreetSmartArcMap.Logic
             {
                 StreetSmartAPI = api;
                 await Init();
+            }
+        }
+
+        private void StreetSmartAPI_MeasurementChanged1(object sender, IEventArgs<IFeatureCollection> e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        public async void StartMeasurement(IPanoramaViewer viewer, MeasurementGeometryType measurementGeometryType)
+        {
+            if (await StreetSmartAPI.GetApiReadyState())
+            {
+                IMeasurementOptions options = MeasurementOptionsFactory.Create(measurementGeometryType);
+                StreetSmartAPI.StartMeasurementMode(viewer, options);
+            }
+        }
+        public async void StopMeasurement()
+        {
+            if (await StreetSmartAPI.GetApiReadyState())
+            {
+                StreetSmartAPI.StopMeasurementMode();
             }
         }
 
@@ -683,6 +721,7 @@ namespace StreetSmartArcMap.Logic
                 viewer.FeatureSelectionChange += Viewer_FeatureSelectionChange;
                 viewer.LayerVisibilityChange += Viewer_LayerVisibilityChange;
                 viewer.FeatureClick += Viewer_FeatureClick;
+
                 await InvokeOnViewingConeChanged(viewer);
                 InvokeOnVectorLayerChanged();
             }
@@ -808,7 +847,7 @@ namespace StreetSmartArcMap.Logic
             };
         }
 
-        private async void StreetSmartAPI_ViewerRemoved(object sender, IEventArgs<IViewer> e)
+        private void StreetSmartAPI_ViewerRemoved(object sender, IEventArgs<IViewer> e)
         {
             // TODO: remove this viewer from the viewercones
 
@@ -933,6 +972,85 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
+
+
+
+        public async Task StartMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry, bool sketch)
+        {
+            if (Config.MeasurePermissions && StreetSmartAPI != null)
+            {
+
+                var typeOfLayer = TypeOfLayer.None;
+                switch(geometry.GeometryType)
+                {
+                    case esriGeometryType.esriGeometryPoint: typeOfLayer = TypeOfLayer.Point;
+                        break;
+
+                    default: typeOfLayer = TypeOfLayer.None;
+                        break;
+                }
+
+                
+                if (typeOfLayer != TypeOfLayer.None)
+                {
+                    await CreateMeasurement(typeOfLayer);
+                }
+            }
+        }
+
+        public void EnableMeasurementSeries(int entityId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DisableMeasurementSeries()
+        {
+            throw new NotImplementedException();
+        }
+
+        private async void VectorLayer_StartMeasurementEvent(TypeOfLayer typeOfLayer)
+        {
+            if (Config.MeasurePermissions)
+            {
+                await CreateMeasurement(typeOfLayer);
+            }
+        }
+
+        public async Task<int> CreateMeasurementPoint(int entityId, ESRI.ArcGIS.Geometry.IPoint point)
+        {
+            int result = -1;
+
+            if (Config.MeasurePermissions && (StreetSmartApiWrapper.Instance != null))
+            {
+                // TODO: no clue here at the moment...
+                var point3D = new PointClass() { X = point.X, Y = point.Y, Z = point.Z };
+                await CreateMeasurement(TypeOfLayer.Point); // CreateMeasurementPoint(entityId, point3D);
+            }
+
+            return result;
+        }
+
+        public void CloseMeasurementPoint(int entityId, int pointId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveMeasurementPoint(int entityId, int pointId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetMeasurementPointIndex(int entityId, int pointId)
+        {
+            throw new NotImplementedException();
+        }
+
+
         #endregion public functions
     }
+
+
+
+
+
 }

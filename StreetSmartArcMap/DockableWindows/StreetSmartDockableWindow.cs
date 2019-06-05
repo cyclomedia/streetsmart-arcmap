@@ -95,7 +95,7 @@ namespace StreetSmartArcMap.DockableWindows
             API.OnSelectedFeatureChanged += API_OnSelectedFeatureChanged;
             API.OnFeatureClicked += API_OnFeatureClicked;
 
-            VectorLayer.StartMeasurementEvent += VectorLayer_StartMeasurementEvent;
+            //VectorLayer.StartMeasurementEvent += VectorLayer_StartMeasurementEvent;
 
             this.Controls.Add(API.StreetSmartGUI);
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
@@ -411,84 +411,7 @@ namespace StreetSmartArcMap.DockableWindows
         //    }
         //}
 
-        private async void VectorLayer_StartMeasurementEvent(IGeometry geometry)
-        {
-            if (Config.MeasurePermissions)
-            {
-                Measurement measurement = Measurement.Sketch;
-                await StartMeasurement(geometry, measurement, true);
-            }
-        }
-
-        private async Task StartMeasurement(IGeometry geometry, Measurement measurement, bool sketch)
-        {
-            if (Config.MeasurePermissions && API != null && measurement != null)
-            {
-                var typeOfLayer = Measurement.GetTypeOfLayer(geometry);
-
-                if (typeOfLayer != TypeOfLayer.None)
-                {
-                    if (measurement.IsTypeOfLayer(typeOfLayer))
-                    {
-                        measurement.OpenMeasurement();
-                    }
-                    else
-                    {
-                        measurement.RemoveMeasurement();
-
-                        _measurementName = "my measurement";
-
-                        Measurement.CloseOpenMeasurement();
-
-                        int entityId = await API.CreateMeasurement(typeOfLayer);
-
-                        measurement = Measurement.Get(entityId);
-                        measurement?.Open();
-
-                        if (sketch)
-                            measurement?.SetSketch();
-                    }
-                }
-            }
-        }
-
-        public void EnableMeasurementSeries(int entityId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DisableMeasurementSeries()
-        {
-            throw new NotImplementedException();
-        }
 
 
-
-        public void CreateMeasurementPoint(int entityId, IPoint gsPoint)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OpenMeasurementPoint(int entityId, int pointId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CloseMeasurementPoint(int entityId, int pointId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveMeasurementPoint(int entityId, int pointId)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-        public int GetMeasurementPointIndex(int entityId, int pointId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

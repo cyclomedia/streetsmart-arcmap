@@ -145,6 +145,7 @@
     <Compile Include="Layers\CycloMediaGroupLayer.cs" />
     <Compile Include="Layers\CycloMediaLayer.cs" />
     <Compile Include="Layers\RecordingLayer.cs" />
+    <Compile Include="Layers\TypeOfLayer.cs" />
     <Compile Include="Layers\VectorLayer.cs" />
     <Compile Include="Layers\WfsLayer.cs" />
     <Compile Include="Logic\Configuration\Configuration.cs" />
@@ -170,8 +171,6 @@
     <Compile Include="Logic\StreetSmartApiWrapper.cs" />
     <Compile Include="Logic\Utilities\FileUtils.cs" />
     <Compile Include="Logic\Utilities\MakeTransparant.cs" />
-    <Compile Include="Objects\Measurement.cs" />
-    <Compile Include="Objects\MeasurementPoint.cs" />
     <Compile Include="Objects\ViewingCone.cs" />
     <Compile Include="SelectedFeatureChangedEventArgs.cs" />
     <Compile Include="VectorLayerChangeEventArgs.cs" />

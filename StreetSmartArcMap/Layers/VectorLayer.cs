@@ -22,7 +22,6 @@ using ESRI.ArcGIS.Framework;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using ESRI.ArcGIS.SystemUI;
-using StreetSmart.Common.Data.SLD;
 using StreetSmart.Common.Factories;
 using StreetSmart.Common.Interfaces.Data;
 using StreetSmart.Common.Interfaces.GeoJson;
@@ -37,10 +36,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace StreetSmartArcMap.Layers
 {
+    #region delegates
+
     // ===========================================================================
     // Delegates
     // ===========================================================================
@@ -58,7 +58,7 @@ namespace StreetSmartArcMap.Layers
 
     public delegate void StopEditDelegate();
 
-    public delegate void StartMeasurementDelegate(ESRI.ArcGIS.Geometry.IGeometry geometry);
+    public delegate void StartMeasurementDelegate(TypeOfLayer typeOfLayer);
 
     public delegate void SketchCreateDelegate(IEditSketch3 sketch);
 
@@ -66,16 +66,7 @@ namespace StreetSmartArcMap.Layers
 
     public delegate void SketchFinishedDelegate();
 
-    // ===========================================================================
-    // Type of layer
-    // ===========================================================================
-    public enum TypeOfLayer
-    {
-        None = 0,
-        Point = 1,
-        Line = 2,
-        Polygon = 3
-    }
+    #endregion delegates
 
     public class VectorLayer
     {
@@ -161,6 +152,7 @@ namespace StreetSmartArcMap.Layers
         // Properties
         // =========================================================================
         private IFeatureCollection _contents;
+
         public bool ContentsChanged { get; private set; }
 
         public string Name
@@ -211,7 +203,7 @@ namespace StreetSmartArcMap.Layers
                                             AvContentChanged();
                                         }
 
-                                        OnSelectionChanged();
+                                        //OnSelectionChanged();
                                     }
                                 }
                             }
@@ -225,12 +217,29 @@ namespace StreetSmartArcMap.Layers
                             {
                                 if (value)
                                 {
-                                    OnSelectionChanged();
+                                    //OnSelectionChanged();
                                     var sketch = editor as IEditSketch3;
 
                                     if (sketch != null)
                                     {
-                                        StartMeasurementEvent(sketch.Geometry);
+                                        var typeOfLayer = TypeOfLayer.None;
+                                        switch (sketch.Geometry?.GeometryType)
+                                        {
+                                            case esriGeometryType.esriGeometryPoint: typeOfLayer = TypeOfLayer.Point;
+                                                break;
+                                            case esriGeometryType.esriGeometryLine:
+                                                typeOfLayer = TypeOfLayer.Line;
+                                                break;
+                                            case esriGeometryType.esriGeometryPolygon:
+                                                typeOfLayer = TypeOfLayer.Point;
+                                                break;
+
+                                            default: typeOfLayer = TypeOfLayer.None;
+                                                break;
+                                        }
+
+
+                                        StartMeasurementEvent(typeOfLayer);
                                     }
                                 }
                                 else
@@ -326,7 +335,7 @@ namespace StreetSmartArcMap.Layers
         {
             return Layers.Aggregate<VectorLayer, VectorLayer>(null,
                                                               (current, layerCheck) =>
-                                                              (layerCheck._layer == layer) ? layerCheck : current);
+                                                              (layerCheck._layer?.Name == layer?.Name) ? layerCheck : current);
         }
 
         public static VectorLayer GetLayer(IFeatureClass featureClass)
@@ -378,7 +387,7 @@ namespace StreetSmartArcMap.Layers
 
             if (editor.EditState != esriEditState.esriStateNotEditing)
             {
-                OnSelectionChanged();
+                //OnSelectionChanged();
             }
 
             if (initEvents)
@@ -485,9 +494,11 @@ namespace StreetSmartArcMap.Layers
                     case TypeOfLayer.Point:
                         symbolizer = SLDFactory.CreateStylePoint(SymbolizerType.Circle, 10, color, 75, outline, 0);
                         break;
+
                     case TypeOfLayer.Line:
                         symbolizer = SLDFactory.CreateStyleLine(color);
                         break;
+
                     case TypeOfLayer.Polygon:
                         symbolizer = SLDFactory.CreateStylePolygon(color, 75);
                         break;
@@ -497,7 +508,7 @@ namespace StreetSmartArcMap.Layers
             }
             return Sld;
         }
-        
+
         public IFeatureCollection GenerateJson(IList<IRecording> recordingLocations)
         {
             var spatRel = Config.SpatialReference;
@@ -648,7 +659,6 @@ namespace StreetSmartArcMap.Layers
                                     featureCollection.Features.Add(geomJson);
                                 }
                             }
-
                         }
 
                         foreach (var fieldValue in fieldValues)
@@ -661,7 +671,6 @@ namespace StreetSmartArcMap.Layers
                                     properties.Add(fieldValue.Key, fieldValue.Value);
                             }
                         }
-
                     }
                 }
             }
@@ -837,6 +846,13 @@ namespace StreetSmartArcMap.Layers
                 {
                     map.ClearSelection();
                 }
+
+
+                if ((editor.EditState != esriEditState.esriStateNotEditing) && (StartMeasurementEvent != null))
+                {
+//                    StartMeasurementEvent(TypeOfLayer);
+                }
+
             }
         }
 
@@ -1056,13 +1072,7 @@ namespace StreetSmartArcMap.Layers
                                     SketchCreateEvent(sketch);
                                 }
                             }
-                            else
-                            {
-                                if ((editor.EditState != esriEditState.esriStateNotEditing) && (StartMeasurementEvent != null))
-                                {
-                                    StartMeasurementEvent(geometry);
-                                }
-                            }
+                            
 
                             // ReSharper restore CompareOfFloatsByEqualityOperator
                             if (SketchModifiedEvent != null)
@@ -1105,7 +1115,7 @@ namespace StreetSmartArcMap.Layers
                                 AvContentChanged();
                             }
 
-                            OnSelectionChanged();
+                            //OnSelectionChanged();
                         }
                     }
                 }
@@ -1117,8 +1127,10 @@ namespace StreetSmartArcMap.Layers
             }
         }
 
+        
         private static void OnCurrentTaskChanged()
         {
+            /*  CSPAN: I think this is all redundant code.
             try
             {
                 IEditor3 editor = ArcUtils.Editor;
@@ -1149,8 +1161,6 @@ namespace StreetSmartArcMap.Layers
 
                                 if (name == "GarciaUI_ModifyFeatureTask")
                                 {
-                                    Measurement measurement = Measurement.Get(geometry, false);
-
                                     if (measurement != null)
                                     {
                                         int nrPoints;
@@ -1218,8 +1228,9 @@ namespace StreetSmartArcMap.Layers
                 LogClient.Error("VectorLayer.OnCurrentTaskChanged", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnCurrentTaskChanged");
             }
+            */
         }
-
+        
         private static void OnVertexSelectionChanged()
         {
             try
@@ -1355,7 +1366,27 @@ namespace StreetSmartArcMap.Layers
 
                                         if ((!(command is IEditTool)) && (editor.EditState != esriEditState.esriStateNotEditing) && (StartMeasurementEvent != null))
                                         {
-                                            StartMeasurementEvent(geometry);
+
+                                            var typeOfLayer = TypeOfLayer.None;
+                                            switch (geometry.GeometryType)
+                                            {
+                                                case esriGeometryType.esriGeometryPoint:
+                                                    typeOfLayer = TypeOfLayer.Point;
+                                                    break;
+                                                case esriGeometryType.esriGeometryLine:
+                                                    typeOfLayer = TypeOfLayer.Line;
+                                                    break;
+                                                case esriGeometryType.esriGeometryPolygon:
+                                                    typeOfLayer = TypeOfLayer.Polygon;
+                                                    break;
+
+                                                default:
+                                                    typeOfLayer = TypeOfLayer.None;
+                                                    break;
+                                            }
+
+
+                                            StartMeasurementEvent(typeOfLayer);
                                         }
                                     }
                                 }

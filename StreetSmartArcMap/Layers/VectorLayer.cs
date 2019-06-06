@@ -145,7 +145,8 @@ namespace StreetSmartArcMap.Layers
 
         public bool ContentsChanged { get; private set; }
         public string Name => _layer?.Name ?? string.Empty;
-        public bool IsVisible => _layer?.Visible ?? false;
+        public bool IsVisible => _layer != null && _layer.Visible;
+
         public TypeOfLayer TypeOfLayer => GetTypeOfLayer(_featureClass.ShapeType);
         public ISpatialReference SpatialReference => GeometryDef.SpatialReference;
         public static IList<ESRI.ArcGIS.Geodatabase.IFeature> EditFeatures => _editFeatures ?? (_editFeatures = new List<ESRI.ArcGIS.Geodatabase.IFeature>());

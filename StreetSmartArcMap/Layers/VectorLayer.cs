@@ -144,7 +144,7 @@ namespace StreetSmartArcMap.Layers
         private IFeatureCollection _contents;
 
         public bool ContentsChanged { get; private set; }
-        public string Name => _layer?.Name ?? string.Empty;
+        public string Name => _layer != null ? _layer.Name : string.Empty;
         public bool IsVisible => _layer != null && _layer.Visible;
 
         public TypeOfLayer TypeOfLayer => GetTypeOfLayer(_featureClass.ShapeType);
@@ -184,7 +184,7 @@ namespace StreetSmartArcMap.Layers
             {
                 Configuration.Configuration config = Configuration.Configuration.Instance;
                 SpatialReference spatRel = config.SpatialReference;
-                ISpatialReference gsSpatialReference = spatRel.SpatialRef ?? ArcUtils.SpatialReference;
+                ISpatialReference gsSpatialReference = spatRel?.SpatialRef ?? ArcUtils.SpatialReference;
 
                 bool zCoord = gsSpatialReference.ZCoordinateUnit != null;
                 bool sameFactoryCode = SpatialReference.FactoryCode == gsSpatialReference.FactoryCode;
@@ -787,43 +787,28 @@ namespace StreetSmartArcMap.Layers
 
         private static void AvContentChanged()
         {
-            //OnLayerChanged(null);
+            OnLayerChanged(null);
 
-            //_layers = new List<VectorLayer>();
-            //IMap map = ArcUtils.Map;
+            _layers = new List<VectorLayer>();
+            IMap map = ArcUtils.Map;
 
-            //if (map != null)
-            //{
-            //    // ReSharper disable UseIndexedProperty
-            //    var layers = map.get_Layers();
-            //    ILayer layer;
+            if (map != null)
+            {
+                var layers = map.get_Layers();
+                ILayer layer;
 
-            //    while ((layer = layers.Next()) != null)
-            //    {
-            //        AvItemAdded(layer);
-            //    }
-
-            //    // ReSharper restore UseIndexedProperty
-            //}
+                while ((layer = layers.Next()) != null)
+                {
+                    AvItemAdded(layer);
+                }
+            }
         }
 
         private static void OnStartEditing()
         {
-            IEditor3 editor = ArcUtils.Editor;
             LogClient.Info("On StartEditing");
 
-            if (editor != null)
-            {
-                IMap map = editor.Map;
-
-                map?.ClearSelection();
-
-                if ((editor.EditState != esriEditState.esriStateNotEditing) && (StartMeasurementEvent != null))
-                {
-                    //StartMeasurementEvent(TypeOfLayer);
-                }
-
-            }
+            ArcUtils.Editor?.Map?.ClearSelection();
         }
 
         private static void OnLayerChanged(VectorLayer layer)
@@ -952,7 +937,7 @@ namespace StreetSmartArcMap.Layers
                 var feature = obj as ESRI.ArcGIS.Geodatabase.IFeature;
                 LogClient.Info(string.Format("On Delete Feature: {0}", ((feature != null) ? feature.Class.AliasName : string.Empty)));
 
-                if ((FeatureDeleteEvent != null) && (feature != null))
+                if (FeatureDeleteEvent != null && feature != null)
                 {
                     if (EditFeatures.Contains(feature))
                     {
@@ -1024,23 +1009,18 @@ namespace StreetSmartArcMap.Layers
                     var sketch = editor as IEditSketch3;
                     var editLayers = editor as IEditLayers;
 
-                    if ((sketch != null) && (editLayers != null))
+                    if (sketch != null && editLayers != null)
                     {
                         ILayer currentLayer = editLayers.CurrentLayer;
                         VectorLayer vectorLayer = GetLayer(currentLayer);
-
-                        if ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart) && CheckEditTask())
+                    
+                        if (vectorLayer != null && vectorLayer.IsVisibleInStreetSmart && CheckEditTask())
                         {
                             var geometry = sketch.Geometry;
                             var lastPoint = sketch.LastPoint;
 
-                            if (lastPoint != null)
-                            {
-                                if ((lastPoint.Z == 0) && (SketchCreateEvent != null) && sketch.ZAware)
-                                {
-                                    SketchCreateEvent(sketch);
-                                }
-                            }
+                            if (lastPoint != null && lastPoint.Z == 0 && SketchCreateEvent != null && sketch.ZAware)
+                                SketchCreateEvent(sketch);
 
                             SketchModifiedEvent?.Invoke(geometry);
                         }
@@ -1071,7 +1051,7 @@ namespace StreetSmartArcMap.Layers
                         ILayer currentLayer = editLayers.CurrentLayer;
                         VectorLayer vectorLayer = GetLayer(currentLayer);
 
-                        if (CheckEditTask() && ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart)))
+                        if (CheckEditTask() && vectorLayer != null && vectorLayer.IsVisibleInStreetSmart)
                         {
                             if (SketchFinishedEvent != null)
                             {
@@ -1079,7 +1059,7 @@ namespace StreetSmartArcMap.Layers
                                 AvContentChanged();
                             }
 
-                            //OnSelectionChanged();
+                            OnSelectionChanged();
                         }
                     }
                 }

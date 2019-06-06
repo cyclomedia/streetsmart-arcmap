@@ -412,8 +412,8 @@ namespace StreetSmartArcMap.Logic
         {
             if (GlobeSpotterConfiguration.MeasurePermissions && (geometries != null))
             {
-
                 IFeatureCollection featureCollection = GeoJsonFactory.CreateFeatureCollection(ArcUtils.SpatialReference.FactoryCode);
+
                 foreach (ESRI.ArcGIS.Geometry.IGeometry geometry in geometries)
                 {
                     if (geometry != null)
@@ -426,26 +426,10 @@ namespace StreetSmartArcMap.Logic
                                 featureCollection.Features.Add(feature);
                                 break;
                         }
-
-
-                        //Measurement measurement = Measurement.Get(geometry);
-
-                        //if (measurement != null)
-                        //{
-                        //    measurement.UpdateMeasurementPoints(geometry);
-                        //    measurement.CloseMeasurement();
-                        //    usedMeasurements.Add(measurement);
-                        //}
-                        //else
-                        //{
-                        //    await StartMeasurement(geometry, measurement, false);
-                        //}
                     }
                 }
+
                 StreetSmartAPI.SetActiveMeasurement(featureCollection);
-
-
-                //Measurement.RemoveUnusedMeasurements(usedMeasurements);
             }
         }
 
@@ -463,16 +447,16 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        private void VectorLayer_FeatureDeleteEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
+        private async void VectorLayer_FeatureDeleteEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
             if (GlobeSpotterConfiguration.MeasurePermissions)
             {
-                ESRI.ArcGIS.Geometry.IGeometry geometry = feature.Shape;
+                var jsonFeature = ConvertFeature(feature);
 
-                if (geometry != null)
-                {
-                    // TODO MEASUREMENT: pass the delete to measurement
-                }
+                var collection = await StreetSmartAPI.GetActiveMeasurement();
+
+                if (collection.Features.Contains(jsonFeature))
+                    collection.Features.Remove(jsonFeature);
             }
         }
 
@@ -614,10 +598,6 @@ namespace StreetSmartArcMap.Logic
                     await DeinitApi();
                     await InitApi(options);
                 }
-
-                ////Open request
-                //if (Initialised && RequestQuery != null)
-                //    await Open(RequestSRS, RequestQuery);
             }
             catch
             {
@@ -639,7 +619,7 @@ namespace StreetSmartArcMap.Logic
                     StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
                     StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
                     StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
-                    StreetSmartAPI.MeasurementChanged += StreetSmartAPI_MeasurementChanged1;
+                    StreetSmartAPI.MeasurementChanged += StreetSmartAPI_MeasurementChanged;
 
                 }
                 else
@@ -653,11 +633,6 @@ namespace StreetSmartArcMap.Logic
                 StreetSmartAPI = api;
                 await Init();
             }
-        }
-
-        private void StreetSmartAPI_MeasurementChanged1(object sender, IEventArgs<IFeatureCollection> e)
-        {
-            //throw new NotImplementedException();
         }
 
         public async void StartMeasurement(IPanoramaViewer viewer, MeasurementGeometryType measurementGeometryType)
@@ -1018,6 +993,19 @@ namespace StreetSmartArcMap.Logic
             throw new NotImplementedException();
         }
 
+        public static IFeature ConvertFeature(ESRI.ArcGIS.Geodatabase.IFeature feature)
+        {
+            if (feature != null && feature.Shape != null && feature.Shape.GeometryType == esriGeometryType.esriGeometryPoint)
+            {
+                var point = feature.Shape as ESRI.ArcGIS.Geometry.IPoint;
+
+                return GeoJsonFactory.CreatePointFeature(point.X, point.Y, point.Z);
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         #endregion public functions
     }

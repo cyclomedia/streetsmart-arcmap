@@ -16,7 +16,7 @@
  * License along with this library.
  */
 
-namespace StreetSmartArcMap.Client
+namespace StreetSmartArcMap.Configuration
 {
     public class Functionality
     {

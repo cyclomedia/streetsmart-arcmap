@@ -125,12 +125,12 @@ namespace StreetSmartArcMap.Configuration
 
         public ApplicationConfiguration ApplicationConfiguration { get; set; }
 
-        public bool MeasureSmartClick => Instance.CheckFunctionality("MeasureSmartClick");
-        public bool MeasurePoint => Instance.CheckFunctionality("MeasurePoint");
-        public bool MeasureLine => Instance.CheckFunctionality("MeasureLine");
-        public bool MeasurePolygon => Instance.CheckFunctionality("MeasurePolygon");
-        public bool AddLayerWfs => Instance.CheckFunctionality("AddLayerWFS");
-        public bool MeasurePermissions => MeasurePoint || MeasureLine || MeasurePolygon || MeasureSmartClick;
+        //public bool MeasureSmartClick => Instance.CheckFunctionality("MeasureSmartClick");
+        //public bool MeasurePoint => Instance.CheckFunctionality("MeasurePoint");
+        //public bool MeasureLine => Instance.CheckFunctionality("MeasureLine");
+        //public bool MeasurePolygon => Instance.CheckFunctionality("MeasurePolygon");
+        //public bool AddLayerWfs => Instance.CheckFunctionality("AddLayerWFS");
+        //public bool MeasurePermissions => MeasurePoint || MeasureLine || MeasurePolygon || MeasureSmartClick;
 
         public static Configuration Instance
         {

@@ -84,6 +84,7 @@ namespace StreetSmartArcMap.Logic
         #region private properties
 
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
+        
         private bool Loading = false;
         private IPanoramaViewerOptions DefaultPanoramaOptions { get; set; }
         private IList<ViewerType> ViewerTypes { get; set; }
@@ -409,7 +410,7 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_FeatureStartEditEvent(IList<ESRI.ArcGIS.Geometry.IGeometry> geometries)
         {
-            if (Config.MeasurePermissions && (geometries != null))
+            if (GlobeSpotterConfiguration.MeasurePermissions && (geometries != null))
             {
 
                 IFeatureCollection featureCollection = GeoJsonFactory.CreateFeatureCollection(ArcUtils.SpatialReference.FactoryCode);
@@ -450,7 +451,7 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_FeatureUpdateEditEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
-            if (Config.MeasurePermissions && (feature != null))
+            if (GlobeSpotterConfiguration.MeasurePermissions && (feature != null))
             {
                 ESRI.ArcGIS.Geometry.IGeometry geometry = feature.Shape;
 
@@ -464,7 +465,7 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_FeatureDeleteEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
-            if (Config.MeasurePermissions)
+            if (GlobeSpotterConfiguration.MeasurePermissions)
             {
                 ESRI.ArcGIS.Geometry.IGeometry geometry = feature.Shape;
 
@@ -477,7 +478,7 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_StopEditEvent()
         {
-            if (Config.MeasurePermissions)
+            if (GlobeSpotterConfiguration.MeasurePermissions)
             {
                 // TODO MEASUREMENT: stop measure?
             }
@@ -486,7 +487,7 @@ namespace StreetSmartArcMap.Logic
         private void VectorLayer_SketchCreateEvent(ESRI.ArcGIS.Editor.IEditSketch3 sketch)
         {
 
-            if (Config.MeasurePermissions && (!_sketchModified) && (!_screenPointAdded))
+            if (GlobeSpotterConfiguration.MeasurePermissions && (!_sketchModified) && (!_screenPointAdded))
             {
                 var geometry = sketch.Geometry;
                 //VectorLayer_FeatureStartEditEvent(new List<ESRI.ArcGIS.Geometry.IGeometry>() { geometry });
@@ -495,7 +496,7 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_SketchModifiedEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
         {
-            if (Config.MeasurePermissions)
+            if (GlobeSpotterConfiguration.MeasurePermissions)
             {
                 // TODO MEASUREMENT: Do we need this event at all?
             }
@@ -503,7 +504,7 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_SketchFinishedEvent()
         {
-            if (Config.MeasurePermissions)
+            if (GlobeSpotterConfiguration.MeasurePermissions)
             {
                 // TODO MEASUREMENT: Do we need this event at all?
             }
@@ -539,7 +540,7 @@ namespace StreetSmartArcMap.Logic
 
         public void CreatePointMeasurement(IPanoramaViewer viewer)
         {
-            if (Config.MeasurePoint)
+            if (GlobeSpotterConfiguration.MeasurePoint)
             {
                 //_logClient.Info("Create point measurement");
 
@@ -555,7 +556,7 @@ namespace StreetSmartArcMap.Logic
 
         public void CreateLineMeasurement(IPanoramaViewer viewer)
         {
-            if (Config.MeasureLine)
+            if (GlobeSpotterConfiguration.MeasureLine)
             {
                 //_logClient.Info("Create line measurement");
 
@@ -567,7 +568,7 @@ namespace StreetSmartArcMap.Logic
 
         public void CreatePolygonMeasurement(IPanoramaViewer viewer)
         {
-            if (Config.MeasurePolygon)
+            if (GlobeSpotterConfiguration.MeasurePolygon)
             {
                 //_logClient.Info("Create surface measurement");
 
@@ -959,7 +960,7 @@ namespace StreetSmartArcMap.Logic
 
         public async Task StartMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry, bool sketch)
         {
-            if (Config.MeasurePermissions && StreetSmartAPI != null)
+            if (GlobeSpotterConfiguration.MeasurePermissions && StreetSmartAPI != null)
             {
                 var typeOfLayer = VectorLayer.GetTypeOfLayer(geometry.GeometryType);
 
@@ -982,7 +983,7 @@ namespace StreetSmartArcMap.Logic
 
         private async void VectorLayer_StartMeasurementEvent(TypeOfLayer typeOfLayer)
         {
-            if (Config.MeasurePermissions)
+            if (GlobeSpotterConfiguration.MeasurePermissions)
             {
                 await CreateMeasurement(typeOfLayer);
             }
@@ -992,7 +993,7 @@ namespace StreetSmartArcMap.Logic
         {
             int result = -1;
 
-            if (Config.MeasurePermissions && (StreetSmartApiWrapper.Instance != null))
+            if (GlobeSpotterConfiguration.MeasurePermissions && (StreetSmartApiWrapper.Instance != null))
             {
                 // TODO: no clue here at the moment...
                 var point3D = new PointClass() { X = point.X, Y = point.Y, Z = point.Z };

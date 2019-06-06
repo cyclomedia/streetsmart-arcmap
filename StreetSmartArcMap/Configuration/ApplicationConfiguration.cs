@@ -19,7 +19,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StreetSmartArcMap.Client
+namespace StreetSmartArcMap.Configuration
 {
     public class ApplicationConfiguration
     {

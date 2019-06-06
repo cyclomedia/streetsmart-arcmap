@@ -183,7 +183,7 @@ namespace StreetSmartArcMap.Logic
 
                     await StreetSmartAPI.Init(ApiOptions);
 
-                    
+
                 }
 
                 VectorLayer.DetectVectorLayers(true);
@@ -304,7 +304,7 @@ namespace StreetSmartArcMap.Logic
 
         private bool AddVectorInChange(VectorLayer layer)
         {
-            if( _vectorLayerInChange.Any(v => v.Name == layer.Name))
+            if (_vectorLayerInChange.Any(v => v.Name == layer.Name))
             {
                 return false;
             }
@@ -411,7 +411,7 @@ namespace StreetSmartArcMap.Logic
         {
             if (Config.MeasurePermissions && (geometries != null))
             {
-                
+
                 IFeatureCollection featureCollection = GeoJsonFactory.CreateFeatureCollection(ArcUtils.SpatialReference.FactoryCode);
                 foreach (ESRI.ArcGIS.Geometry.IGeometry geometry in geometries)
                 {
@@ -485,7 +485,7 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_SketchCreateEvent(ESRI.ArcGIS.Editor.IEditSketch3 sketch)
         {
-            
+
             if (Config.MeasurePermissions && (!_sketchModified) && (!_screenPointAdded))
             {
                 var geometry = sketch.Geometry;
@@ -512,55 +512,69 @@ namespace StreetSmartArcMap.Logic
         public async Task<bool> CreateMeasurement(TypeOfLayer typeOfLayer)
         {
             var viewers = await StreetSmartAPI.GetViewers();
-            var viewer = viewers?.ToList().Where(v => v is IPanoramaViewer).LastOrDefault();
+            var panoramaViewer = viewers?.ToList().Where(v => v is IPanoramaViewer).Select(v => v as IPanoramaViewer).LastOrDefault();
 
-            if (viewer != null)
+            if (panoramaViewer != null)
             {
-                CreateMeasurement(typeOfLayer, viewer as IPanoramaViewer);
+                switch (typeOfLayer)
+                {
+                    case TypeOfLayer.Point:
+                        CreatePointMeasurement(panoramaViewer);
+                        break;
+                    case TypeOfLayer.Line:
+                        CreateLineMeasurement(panoramaViewer);
+                        break;
+                    case TypeOfLayer.Polygon:
+                        CreatePolygonMeasurement(panoramaViewer);
+                        break;
+                    default:
+                        break;
+                }
+
                 return true;
             }
+
             return false;
         }
 
-        public void CreateMeasurement(TypeOfLayer typeOfLayer, IPanoramaViewer viewer)
+        public void CreatePointMeasurement(IPanoramaViewer viewer)
         {
-            switch (typeOfLayer)
+            if (Config.MeasurePoint)
             {
-                case TypeOfLayer.Point:
-                    if (Config.MeasurePoint)
-                    {
-                        //_logClient.Info("Create point measurement");
+                //_logClient.Info("Create point measurement");
 
-                        var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.Point);
-                        StreetSmartAPI.StartMeasurementMode(viewer, options);
-                        //entityId = StreetSmartAPI.AddPointMeasurement(_measurementName);
-                        //OpenMeasurement(entityId);
-                        //DisableMeasurementSeries();
-                        //AddMeasurementPoint(entityId);
-                    }
+                var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.Point);
+                StreetSmartAPI.StartMeasurementMode(viewer, options);
 
-                    break;
-                case TypeOfLayer.Line:
-                    //if (Config.MeasureLine)
-                    //{
-                    //    _logClient.Info("Create line measurement");
-                    //    entityId = StreetSmartAPI.AddLineMeasurement(_measurementName);
-                    //    OpenMeasurement(entityId);
-                    //    EnableMeasurementSeries(entityId);
-                    //}
+                //entityId = StreetSmartAPI.AddPointMeasurement(_measurementName);
+                //OpenMeasurement(entityId);
+                //DisableMeasurementSeries();
+                //AddMeasurementPoint(entityId);
+            }
+        }
 
-                    break;
-                case TypeOfLayer.Polygon:
-                    //if (Config.MeasurePolygon)
-                    //{
-                    //    _logClient.Info("Create surface measurement");
-                    //    entityId = StreetSmartAPI.AddSurfaceMeasurement(_measurementName);
-                    //    StreetSmartAPI.SetMeasurementExtrusionEnabled(entityId, false);
-                    //    OpenMeasurement(entityId);
-                    //    EnableMeasurementSeries(entityId);
-                    //}
+        public void CreateLineMeasurement(IPanoramaViewer viewer)
+        {
+            if (Config.MeasureLine)
+            {
+                //_logClient.Info("Create line measurement");
 
-                    break;
+                //    entityId = StreetSmartAPI.AddLineMeasurement(_measurementName);
+                //    OpenMeasurement(entityId);
+                //    EnableMeasurementSeries(entityId);
+            }
+        }
+
+        public void CreatePolygonMeasurement(IPanoramaViewer viewer)
+        {
+            if (Config.MeasurePolygon)
+            {
+                //_logClient.Info("Create surface measurement");
+
+                //    entityId = StreetSmartAPI.AddSurfaceMeasurement(_measurementName);
+                //    StreetSmartAPI.SetMeasurementExtrusionEnabled(entityId, false);
+                //    OpenMeasurement(entityId);
+                //    EnableMeasurementSeries(entityId);
             }
         }
 
@@ -625,7 +639,7 @@ namespace StreetSmartArcMap.Logic
                     StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
                     StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
                     StreetSmartAPI.MeasurementChanged += StreetSmartAPI_MeasurementChanged1;
-                    
+
                 }
                 else
                 {
@@ -672,7 +686,7 @@ namespace StreetSmartArcMap.Logic
             }
             //viewers.
             // TODO: remove viewing cone of the removed viewers!
-            OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = viewerIds });            
+            OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = viewerIds });
         }
 
         private async void StreetSmartAPI_ViewerAdded(object sender, IEventArgs<IViewer> e)
@@ -682,6 +696,10 @@ namespace StreetSmartArcMap.Logic
             if (e.Value != null && e.Value is IPanoramaViewer)
             {
                 var viewer = e.Value as IPanoramaViewer;
+
+                viewer.ToggleButtonEnabled(PanoramaViewerButtons.ZoomIn, false);
+                viewer.ToggleButtonEnabled(PanoramaViewerButtons.ZoomOut, false);
+                viewer.ToggleButtonEnabled(PanoramaViewerButtons.Measure, false);
 
                 viewer.ImageChange += Viewer_ImageChange;
                 viewer.ViewChange += Viewer_ViewChange;
@@ -737,7 +755,7 @@ namespace StreetSmartArcMap.Logic
 
             OnFeatureClicked?.Invoke(args);
         }
-        
+
         private async Task InvokeOnSelectedFeatureChanged(IPanoramaViewer viewer, IFeatureInfo featureInfo)
         {
             var args = new SelectedFeatureChangedEventArgs()
@@ -939,25 +957,12 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-
-
-
         public async Task StartMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry, bool sketch)
         {
             if (Config.MeasurePermissions && StreetSmartAPI != null)
             {
+                var typeOfLayer = VectorLayer.GetTypeOfLayer(geometry.GeometryType);
 
-                var typeOfLayer = TypeOfLayer.None;
-                switch(geometry.GeometryType)
-                {
-                    case esriGeometryType.esriGeometryPoint: typeOfLayer = TypeOfLayer.Point;
-                        break;
-
-                    default: typeOfLayer = TypeOfLayer.None;
-                        break;
-                }
-
-                
                 if (typeOfLayer != TypeOfLayer.None)
                 {
                     await CreateMeasurement(typeOfLayer);

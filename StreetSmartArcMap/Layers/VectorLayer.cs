@@ -22,13 +22,13 @@ using ESRI.ArcGIS.Framework;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using ESRI.ArcGIS.SystemUI;
-using StreetSmart.Common.Data.SLD;
 using StreetSmart.Common.Factories;
 using StreetSmart.Common.Interfaces.Data;
 using StreetSmart.Common.Interfaces.GeoJson;
 using StreetSmart.Common.Interfaces.SLD;
 using StreetSmartArcMap.AddIns;
 using StreetSmartArcMap.Client;
+using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
@@ -36,10 +36,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace StreetSmartArcMap.Layers
 {
+    #region delegates
+
     // ===========================================================================
     // Delegates
     // ===========================================================================
@@ -57,7 +58,7 @@ namespace StreetSmartArcMap.Layers
 
     public delegate void StopEditDelegate();
 
-    public delegate void StartMeasurementDelegate(ESRI.ArcGIS.Geometry.IGeometry geometry);
+    public delegate void StartMeasurementDelegate(TypeOfLayer typeOfLayer);
 
     public delegate void SketchCreateDelegate(IEditSketch3 sketch);
 
@@ -65,16 +66,7 @@ namespace StreetSmartArcMap.Layers
 
     public delegate void SketchFinishedDelegate();
 
-    // ===========================================================================
-    // Type of layer
-    // ===========================================================================
-    public enum TypeOfLayer
-    {
-        None = 0,
-        Point = 1,
-        Line = 2,
-        Polygon = 3
-    }
+    #endregion delegates
 
     public class VectorLayer
     {
@@ -96,25 +88,15 @@ namespace StreetSmartArcMap.Layers
         // Members
         // =========================================================================
         public static event VectorLayerAddDelegate LayerAddEvent;
-
         public static event VectorLayerRemoveDelegate LayerRemoveEvent;
-
         public static event VectorLayerChangedDelegate LayerChangedEvent;
-
         public static event FeatureStartEditDelegate FeatureStartEditEvent;
-
         public static event FeatureUpdateEditDelegate FeatureUpdateEditEvent;
-
         public static event FeatureDeleteDelegate FeatureDeleteEvent;
-
         public static event StopEditDelegate StopEditEvent;
-
         public static event StartMeasurementDelegate StartMeasurementEvent;
-
         public static event SketchCreateDelegate SketchCreateEvent;
-
         public static event SketchModifiedDelegate SketchModifiedEvent;
-
         public static event SketchFinishedDelegate SketchFinishedEvent;
 
         public IStyledLayerDescriptor Sld { get; private set; }
@@ -160,115 +142,27 @@ namespace StreetSmartArcMap.Layers
         // Properties
         // =========================================================================
         private IFeatureCollection _contents;
+
         public bool ContentsChanged { get; private set; }
+        public string Name => _layer != null ? _layer.Name : string.Empty;
+        public bool IsVisible => _layer != null && _layer.Visible;
 
-        public string Name
-        {
-            get { return (_layer == null) ? string.Empty : _layer.Name; }
-        }
-
-        public bool IsVisible
-        {
-            get { return (_layer != null) && _layer.Visible; }
-        }
+        public TypeOfLayer TypeOfLayer => GetTypeOfLayer(_featureClass.ShapeType);
+        public ISpatialReference SpatialReference => GeometryDef.SpatialReference;
+        public static IList<ESRI.ArcGIS.Geodatabase.IFeature> EditFeatures => _editFeatures ?? (_editFeatures = new List<ESRI.ArcGIS.Geodatabase.IFeature>());
+        public static IList<VectorLayer> Layers => _layers ?? (_layers = DetectVectorLayers(false));
 
         public bool IsVisibleInStreetSmart
         {
-            get { return (_isVisibleInStreetSmart && IsVisible); }
+            get
+            {
+                return (_isVisibleInStreetSmart && IsVisible);
+            }
             set
             {
                 _isVisibleInStreetSmart = value;
 
-                OnLayerChanged(this);
-                IEditor3 editor = ArcUtils.Editor;
-
-                if (editor != null)
-                {
-                    var editLayers = editor as IEditLayers;
-
-                    if (editLayers != null)
-                    {
-                        ILayer currentLayer = editLayers.CurrentLayer;
-
-                        if (currentLayer != null)
-                        {
-                            VectorLayer vectorLayer = GetLayer(currentLayer);
-
-                            if (vectorLayer == this)
-                            {
-                                if (value)
-                                {
-                                    OnSketchModified();
-                                }
-                                else
-                                {
-                                    if (CheckEditTask())
-                                    {
-                                        if (SketchFinishedEvent != null)
-                                        {
-                                            SketchFinishedEvent();
-                                            AvContentChanged();
-                                        }
-
-                                        OnSelectionChanged();
-                                    }
-                                }
-                            }
-                        }
-
-                        foreach (var editFeature in EditFeatures)
-                        {
-                            VectorLayer vectorLayer = GetLayer(editFeature);
-
-                            if (vectorLayer == this)
-                            {
-                                if (value)
-                                {
-                                    OnSelectionChanged();
-                                    var sketch = editor as IEditSketch3;
-
-                                    if (sketch != null)
-                                    {
-                                        StartMeasurementEvent(sketch.Geometry);
-                                    }
-                                }
-                                else
-                                {
-                                    FeatureDeleteEvent(editFeature);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        public TypeOfLayer TypeOfLayer
-        {
-            get
-            {
-                TypeOfLayer result;
-
-                switch (_featureClass.ShapeType)
-                {
-                    case esriGeometryType.esriGeometryPoint:
-                        result = TypeOfLayer.Point;
-                        break;
-
-                    case esriGeometryType.esriGeometryPolyline:
-                        result = TypeOfLayer.Line;
-                        break;
-
-                    case esriGeometryType.esriGeometryPolygon:
-                        result = TypeOfLayer.Polygon;
-                        break;
-
-                    default:
-                        result = TypeOfLayer.None;
-                        break;
-                }
-
-                return result;
+                SetVisibility(value);
             }
         }
 
@@ -276,12 +170,11 @@ namespace StreetSmartArcMap.Layers
         {
             get
             {
-                // ReSharper disable UseIndexedProperty
                 IFields fields = _featureClass.Fields;
                 int fieldId = fields.FindField(_featureClass.ShapeFieldName);
                 IField field = fields.get_Field(fieldId);
+
                 return field.GeometryDef;
-                // ReSharper restore UseIndexedProperty
             }
         }
 
@@ -291,27 +184,13 @@ namespace StreetSmartArcMap.Layers
             {
                 Configuration.Configuration config = Configuration.Configuration.Instance;
                 SpatialReference spatRel = config.SpatialReference;
-                ISpatialReference gsSpatialReference = (spatRel == null) ? ArcUtils.SpatialReference : spatRel.SpatialRef;
+                ISpatialReference gsSpatialReference = spatRel?.SpatialRef ?? ArcUtils.SpatialReference;
+
                 bool zCoord = gsSpatialReference.ZCoordinateUnit != null;
                 bool sameFactoryCode = SpatialReference.FactoryCode == gsSpatialReference.FactoryCode;
-                //        return (sameFactoryCode || zCoord) && GeometryDef.HasZ;
-                return ((spatRel == null) || spatRel.CanMeasuring) && GeometryDef.HasZ;
+
+                return (spatRel == null || spatRel.CanMeasuring) && GeometryDef.HasZ;
             }
-        }
-
-        public ISpatialReference SpatialReference
-        {
-            get { return GeometryDef.SpatialReference; }
-        }
-
-        public static IList<ESRI.ArcGIS.Geodatabase.IFeature> EditFeatures
-        {
-            get { return _editFeatures ?? (_editFeatures = new List<ESRI.ArcGIS.Geodatabase.IFeature>()); }
-        }
-
-        public static IList<VectorLayer> Layers
-        {
-            get { return _layers ?? (_layers = DetectVectorLayers(false)); }
         }
 
         #endregion properties
@@ -321,11 +200,32 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         // Functions (Static)
         // =========================================================================
+
+        public static TypeOfLayer GetTypeOfLayer(esriGeometryType type)
+        {
+            switch (type)
+            {
+                case esriGeometryType.esriGeometryPoint:
+                    return TypeOfLayer.Point;
+                case esriGeometryType.esriGeometryLine:
+                    return TypeOfLayer.Line;
+                case esriGeometryType.esriGeometryPolyline:
+                    return TypeOfLayer.Line;
+                case esriGeometryType.esriGeometryPolygon:
+                    return TypeOfLayer.Point;
+                default:
+                    return TypeOfLayer.None;
+            }
+        }
+
         public static VectorLayer GetLayer(ILayer layer)
         {
+            if (layer == null)
+                return null;
+
             return Layers.Aggregate<VectorLayer, VectorLayer>(null,
                                                               (current, layerCheck) =>
-                                                              (layerCheck._layer == layer) ? layerCheck : current);
+                                                              (layerCheck._layer?.Name == layer?.Name) ? layerCheck : current);
         }
 
         public static VectorLayer GetLayer(IFeatureClass featureClass)
@@ -339,19 +239,12 @@ namespace StreetSmartArcMap.Layers
 
         public static VectorLayer GetLayer(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
-            VectorLayer result = null;
+            var featureClass = feature?.Class as IFeatureClass;
 
-            if (feature != null)
-            {
-                var featureClass = feature.Class as IFeatureClass;
-
-                if (featureClass != null)
-                {
-                    result = GetLayer(featureClass);
-                }
-            }
-
-            return result;
+            if (featureClass != null)
+                return GetLayer(featureClass);
+            else
+                return null;
         }
 
         public static IList<VectorLayer> DetectVectorLayers(bool initEvents)
@@ -361,7 +254,6 @@ namespace StreetSmartArcMap.Layers
 
             if (map != null)
             {
-                // ReSharper disable UseIndexedProperty
                 var layers = map.get_Layers();
                 ILayer layer;
 
@@ -369,15 +261,13 @@ namespace StreetSmartArcMap.Layers
                 {
                     AvItemAdded(layer);
                 }
-
-                // ReSharper restore UseIndexedProperty
             }
 
             var editor = ArcUtils.Editor;
 
             if (editor.EditState != esriEditState.esriStateNotEditing)
             {
-                OnSelectionChanged();
+                //OnSelectionChanged();
             }
 
             if (initEvents)
@@ -418,7 +308,9 @@ namespace StreetSmartArcMap.Layers
                 editEvents.OnDeleteFeature += OnDeleteFeature;
                 editEvents.OnSketchModified += OnSketchModified;
                 editEvents.OnSketchFinished += OnSketchFinished;
-                editEvents.OnCurrentTaskChanged += OnCurrentTaskChanged;
+
+                //TODO: uncomment?
+                //editEvents.OnCurrentTaskChanged += OnCurrentTaskChanged;
             }
 
             if (editEvents5 != null)
@@ -451,6 +343,23 @@ namespace StreetSmartArcMap.Layers
             return result;
         }
 
+        public static void UpdateEditGeometry(IEditor3 editor, ICommand command)
+        {
+            var sketch = editor as IEditSketch3;
+
+            if (sketch != null)
+            {
+                var geometry = sketch.Geometry;
+
+                if (!(command is IEditTool) && editor.EditState != esriEditState.esriStateNotEditing && StartMeasurementEvent != null)
+                {
+                    var typeOfLayer = GetTypeOfLayer(geometry.GeometryType);
+
+                    StartMeasurementEvent(typeOfLayer);
+                }
+            }
+        }
+
         #endregion functions (static)
 
         #region functions (public)
@@ -458,17 +367,93 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         // Functions (Public)
         // =========================================================================
+
+
+
+        public void SetVisibility(bool isVisible)
+        {
+            OnLayerChanged(this);
+
+            IEditor3 editor = ArcUtils.Editor;
+
+            if (editor != null)
+            {
+                UpdateCurrentLayer(editor as IEditLayers, isVisible);
+                UpdateEditFeature(editor as IEditSketch3, isVisible);
+            }
+        }
+
+        public void UpdateCurrentLayer(IEditLayers editor, bool isVisible)
+        {
+            if (editor != null && editor.CurrentLayer != null)
+            {
+                VectorLayer vectorLayer = GetLayer(editor.CurrentLayer);
+
+                if (vectorLayer == this)
+                {
+                    if (isVisible)
+                    {
+                        OnSketchModified();
+                    }
+                    else if (CheckEditTask() && SketchFinishedEvent != null)
+                    {
+                        SketchFinishedEvent();
+                        AvContentChanged();
+                    }
+                }
+            }
+        }
+
+        public void UpdateEditFeature(IEditSketch3 editor, bool isVisible)
+        {
+            foreach (var editFeature in EditFeatures)
+            {
+                VectorLayer vectorLayer = GetLayer(editFeature);
+
+                if (vectorLayer == this)
+                {
+                    if (isVisible)
+                    {
+                        var sketch = editor as IEditSketch3;
+
+                        if (sketch?.Geometry != null)
+                        {
+                            var typeOfLayer = GetTypeOfLayer(sketch.Geometry.GeometryType);
+
+                            StartMeasurementEvent(typeOfLayer);
+                        }
+                    }
+                    else
+                    {
+                        FeatureDeleteEvent(editFeature);
+                    }
+                }
+            }
+        }
+
         public Color GetColor(out Color outline)
         {
             outline = Color.Black;
 
             if (_layer != null)
-            {
-                var color = ArcUtils.GetColorFromLayer(_layer, out outline);
-                return color;
-            }
+                return ArcUtils.GetColorFromLayer(_layer, out outline);
+            else
+                return Color.Black;
+        }
 
-            return Color.Black; // unknown
+        public ISymbolizer CreateSymbolizer(Color color, Color outline)
+        {
+            switch (TypeOfLayer)
+            {
+                case TypeOfLayer.Point:
+                    return SLDFactory.CreateStylePoint(SymbolizerType.Circle, 10, color, 75, outline, 0);
+                case TypeOfLayer.Line:
+                    return SLDFactory.CreateStyleLine(color);
+                case TypeOfLayer.Polygon:
+                    return SLDFactory.CreateStylePolygon(color, 75);
+                default:
+                    return default(ISymbolizer);
+            }
         }
 
         public IStyledLayerDescriptor CreateSld(IFeatureCollection featureCollection, Color color, Color outline)
@@ -476,27 +461,17 @@ namespace StreetSmartArcMap.Layers
             // according to specs, we only need color.
             if (featureCollection.Features.Count >= 1)
             {
-                // use SLDFactory for this.
                 Sld = SLDFactory.CreateEmptyStyle();
-                ISymbolizer symbolizer = default(ISymbolizer);
-                switch (TypeOfLayer)
-                {
-                    case TypeOfLayer.Point:
-                        symbolizer = SLDFactory.CreateStylePoint(SymbolizerType.Circle, 10, color, 75, outline, 0);
-                        break;
-                    case TypeOfLayer.Line:
-                        symbolizer = SLDFactory.CreateStyleLine(color);
-                        break;
-                    case TypeOfLayer.Polygon:
-                        symbolizer = SLDFactory.CreateStylePolygon(color, 75);
-                        break;
-                }
+
+                var symbolizer = CreateSymbolizer(color, outline);
                 var rule = SLDFactory.CreateRule(symbolizer);
+
                 SLDFactory.AddRuleToStyle(Sld, rule);
             }
+
             return Sld;
         }
-        
+
         public IFeatureCollection GenerateJson(IList<IRecording> recordingLocations)
         {
             var spatRel = Config.SpatialReference;
@@ -505,50 +480,21 @@ namespace StreetSmartArcMap.Layers
             int srs = int.Parse(srsName.Replace("EPSG:", string.Empty));
             var featureCollection = GeoJsonFactory.CreateFeatureCollection(srs);
 
-            var featureLayer = (IFeatureLayer)_layer;
+            var featureLayer = _layer as IFeatureLayer;
             if (featureLayer != null)
             {
                 IFeatureClass fc = featureLayer.FeatureClass;
-                double distance = Config.OverlayDrawDistanceInMeters * 1.0;
 
                 ESRI.ArcGIS.Geometry.IGeometry geometryBag = new GeometryBag();
                 var geometryCollection = geometryBag as IGeometryCollection;
                 ISpatialReference gsSpatialReference = (spatRel == null) ? ArcUtils.SpatialReference : spatRel.SpatialRef;
-                var projCoord = gsSpatialReference as IProjectedCoordinateSystem;
 
-                if (projCoord == null)
-                {
-                    var geoCoord = gsSpatialReference as IGeographicCoordinateSystem;
-
-                    if (geoCoord != null)
-                    {
-                        IAngularUnit unit = geoCoord.CoordinateUnit;
-                        double factor = unit.ConversionFactor;
-                        distance = distance * factor;
-                    }
-                }
-                else
-                {
-                    ILinearUnit unit = projCoord.CoordinateUnit;
-                    double factor = unit.ConversionFactor;
-                    distance = distance / factor;
-                }
+                double distance = CalculateDistance(gsSpatialReference);
 
                 foreach (var recordingLocation in recordingLocations)
                 {
-                    double x = recordingLocation.XYZ.X.Value;
-                    double y = recordingLocation.XYZ.Y.Value;
+                    var envelope = CreateEnvelope(recordingLocation, distance, gsSpatialReference, SpatialReference);
 
-                    var envelope = (IEnvelope2)new Envelope()
-                    {
-                        XMin = x - distance,
-                        XMax = x + distance,
-                        YMin = y - distance,
-                        YMax = y + distance,
-                    };
-                    envelope.SpatialReference = gsSpatialReference;
-
-                    envelope.Project(SpatialReference);
                     geometryCollection.AddGeometry(envelope);
                 }
 
@@ -563,77 +509,95 @@ namespace StreetSmartArcMap.Layers
                     SpatialRel = esriSpatialRelEnum.esriSpatialRelIntersects
                 };
 
-                var featureCursor = _featureClass.Search(spatialFilter, false);
-                var featureCount = _featureClass.FeatureCount(spatialFilter);
-                var shapeId = featureCursor.FindField(_featureClass.ShapeFieldName);
+                UpdateFeatures(featureCollection, spatialFilter, srs, gsSpatialReference);
+            }
 
-                for (int i = 0; i < featureCount; i++)
+            ContentsChanged = featureCollection != _contents;
+            _contents = featureCollection;
+            return featureCollection;
+        }
+
+        public double CalculateDistance(ISpatialReference sourceSpatialReference)
+        {
+            double distance = Config.OverlayDrawDistanceInMeters * 1.0;
+
+            var projCoord = sourceSpatialReference as IProjectedCoordinateSystem;
+            if (projCoord == null)
+            {
+                var geoCoord = sourceSpatialReference as IGeographicCoordinateSystem;
+
+                if (geoCoord != null)
+                    distance *= geoCoord.CoordinateUnit.ConversionFactor;
+            }
+            else
+            {
+                distance /= projCoord.CoordinateUnit.ConversionFactor;
+            }
+
+            return distance;
+        }
+
+        public IEnvelope2 CreateEnvelope(IRecording recordingLocation, double distance, ISpatialReference sourceSpatialReference, ISpatialReference targetSpatialReference)
+        {
+            double x = recordingLocation.XYZ.X.Value;
+            double y = recordingLocation.XYZ.Y.Value;
+
+            var result = new Envelope()
+            {
+                XMin = x - distance,
+                XMax = x + distance,
+                YMin = y - distance,
+                YMax = y + distance,
+            } as IEnvelope2;
+
+            result.SpatialReference = sourceSpatialReference;
+            result.Project(targetSpatialReference);
+
+            return result;
+        }
+
+        public void UpdateFeatures(IFeatureCollection features, ISpatialFilter spatialFilter, int srs, ISpatialReference spatialReference)
+        {
+            var featureCursor = _featureClass.Search(spatialFilter, false);
+            var featureCount = _featureClass.FeatureCount(spatialFilter);
+            var shapeId = featureCursor.FindField(_featureClass.ShapeFieldName);
+
+            for (int i = 0; i < featureCount; i++)
+            {
+                var feature = featureCursor.NextFeature();
+
+                if (!EditFeatures.Contains(feature))
                 {
-                    var feature = featureCursor.NextFeature();
+                    var fields = feature.Fields;
+                    var fieldValues = new Dictionary<string, string> { { "FEATURECLASSNAME", _featureClass.AliasName } };
 
-                    if (!EditFeatures.Contains(feature))
+                    for (int j = 0; j < fields.FieldCount; j++)
                     {
-                        var fields = feature.Fields;
-                        var fieldValues = new Dictionary<string, string> { { "FEATURECLASSNAME", _featureClass.AliasName } };
+                        var field = fields.Field[j];
+                        string name = field.Name;
+                        int id = featureCursor.FindField(name);
 
-                        for (int j = 0; j < fields.FieldCount; j++)
+                        string value = (id != shapeId)
+                          ? feature.get_Value(id).ToString()
+                          : _featureClass.ShapeType.ToString().Replace("esriGeometry", string.Empty);
+                        fieldValues.Add(name, value);
+                    }
+
+                    var shapeVar = feature.get_Value(shapeId);
+                    var geometry = shapeVar as ESRI.ArcGIS.Geometry.IGeometry;
+                    if (geometry != null)
+                    {
+                        var cyclSpatialRef = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs);
+                        geometry.Project((Config.ApiSRS == null) ? spatialReference : cyclSpatialRef);
+
+                        var pointCollection = geometry as IPointCollection4;
+
+                        if (pointCollection != null)
                         {
-                            var field = fields.Field[j];
-                            string name = field.Name;
-                            int id = featureCursor.FindField(name);
-
-                            string value = (id != shapeId)
-                              ? feature.get_Value(id).ToString()
-                              : _featureClass.ShapeType.ToString().Replace("esriGeometry", string.Empty);
-                            fieldValues.Add(name, value);
-                        }
-
-                        var shapeVar = feature.get_Value(shapeId);
-                        var geometry = shapeVar as ESRI.ArcGIS.Geometry.IGeometry;
-                        if (geometry != null)
-                        {
-                            var cyclSpatialRef = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs);
-                            geometry.Project((Config.ApiSRS == null) ? gsSpatialReference : cyclSpatialRef);
-
-                            var pointCollection = geometry as IPointCollection4;
-
-                            if (pointCollection != null)
+                            var pointCollectionJson = new List<ICoordinate>();
+                            for (int j = 0; j < pointCollection.PointCount; j++)
                             {
-                                var pointCollectionJson = new List<ICoordinate>();
-                                for (int j = 0; j < pointCollection.PointCount; j++)
-                                {
-                                    ESRI.ArcGIS.Geometry.IPoint point = pointCollection.Point[j];
-
-                                    if (point != null)
-                                    {
-                                        if (!HasZ)
-                                        {
-                                            point.Z = double.NaN;
-                                        }
-                                    }
-                                    ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y);
-                                    pointCollectionJson.Add(pJson);
-                                }
-
-                                var points = new List<IList<ICoordinate>> { pointCollectionJson };
-
-                                if (TypeOfLayer == TypeOfLayer.Line)
-                                {
-                                    if (points.Count > 0)
-                                    {
-                                        var geomJson = GeoJsonFactory.CreateLineFeature(points.FirstOrDefault());
-                                        featureCollection.Features.Add(geomJson);
-                                    }
-                                }
-                                else if (TypeOfLayer == TypeOfLayer.Polygon)
-                                {
-                                    var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
-                                    featureCollection.Features.Add(geomJson);
-                                }
-                            }
-                            else
-                            {
-                                var point = geometry as ESRI.ArcGIS.Geometry.IPoint;
+                                ESRI.ArcGIS.Geometry.IPoint point = pointCollection.Point[j];
 
                                 if (point != null)
                                 {
@@ -641,32 +605,57 @@ namespace StreetSmartArcMap.Layers
                                     {
                                         point.Z = double.NaN;
                                     }
-                                    shapeVar = point;
-                                    ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y);
-                                    var geomJson = GeoJsonFactory.CreatePointFeature(pJson);
-                                    featureCollection.Features.Add(geomJson);
+                                }
+                                ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y);
+                                pointCollectionJson.Add(pJson);
+                            }
+
+                            var points = new List<IList<ICoordinate>> { pointCollectionJson };
+
+                            if (TypeOfLayer == TypeOfLayer.Line)
+                            {
+                                if (points.Count > 0)
+                                {
+                                    var geomJson = GeoJsonFactory.CreateLineFeature(points.FirstOrDefault());
+                                    features.Features.Add(geomJson);
                                 }
                             }
-
-                        }
-
-                        foreach (var fieldValue in fieldValues)
-                        {
-                            if (featureCollection.Features.Count >= 1)
+                            else if (TypeOfLayer == TypeOfLayer.Polygon)
                             {
-                                var properties = featureCollection.Features[featureCollection.Features.Count - 1].Properties;
-
-                                if (!properties.ContainsKey(fieldValue.Key))
-                                    properties.Add(fieldValue.Key, fieldValue.Value);
+                                var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
+                                features.Features.Add(geomJson);
                             }
                         }
+                        else
+                        {
+                            var point = geometry as ESRI.ArcGIS.Geometry.IPoint;
 
+                            if (point != null)
+                            {
+                                if (!HasZ)
+                                {
+                                    point.Z = double.NaN;
+                                }
+                                shapeVar = point;
+                                ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y);
+                                var geomJson = GeoJsonFactory.CreatePointFeature(pJson);
+                                features.Features.Add(geomJson);
+                            }
+                        }
+                    }
+
+                    foreach (var fieldValue in fieldValues)
+                    {
+                        if (features.Features.Count >= 1)
+                        {
+                            var properties = features.Features[features.Features.Count - 1].Properties;
+
+                            if (!properties.ContainsKey(fieldValue.Key))
+                                properties.Add(fieldValue.Key, fieldValue.Value);
+                        }
                     }
                 }
             }
-            ContentsChanged = featureCollection != _contents;
-            _contents = featureCollection;
-            return featureCollection;
         }
 
         #endregion functions (public)
@@ -780,10 +769,7 @@ namespace StreetSmartArcMap.Layers
                         {
                             if (Layers[i]._layer == featureLayer)
                             {
-                                if (LayerRemoveEvent != null)
-                                {
-                                    LayerRemoveEvent(Layers[i]);
-                                }
+                                LayerRemoveEvent?.Invoke(Layers[i]);
 
                                 Layers.RemoveAt(i);
                             }
@@ -803,40 +789,28 @@ namespace StreetSmartArcMap.Layers
 
         private static void AvContentChanged()
         {
-            //OnLayerChanged(null);
+            OnLayerChanged(null);
 
-            //_layers = new List<VectorLayer>();
-            //IMap map = ArcUtils.Map;
+            _layers = new List<VectorLayer>();
+            IMap map = ArcUtils.Map;
 
-            //if (map != null)
-            //{
-            //    // ReSharper disable UseIndexedProperty
-            //    var layers = map.get_Layers();
-            //    ILayer layer;
+            if (map != null)
+            {
+                var layers = map.get_Layers();
+                ILayer layer;
 
-            //    while ((layer = layers.Next()) != null)
-            //    {
-            //        AvItemAdded(layer);
-            //    }
-
-            //    // ReSharper restore UseIndexedProperty
-            //}
+                while ((layer = layers.Next()) != null)
+                {
+                    AvItemAdded(layer);
+                }
+            }
         }
 
         private static void OnStartEditing()
         {
-            IEditor3 editor = ArcUtils.Editor;
             LogClient.Info("On StartEditing");
 
-            if (editor != null)
-            {
-                IMap map = editor.Map;
-
-                if (map != null)
-                {
-                    map.ClearSelection();
-                }
-            }
+            ArcUtils.Editor?.Map?.ClearSelection();
         }
 
         private static void OnLayerChanged(VectorLayer layer)
@@ -926,7 +900,8 @@ namespace StreetSmartArcMap.Layers
 
                             if ((_doSelection && (name != "Query_SelectFeatures")) || (!isPointLayer))
                             {
-                                FeatureStartEditEvent(geometries);
+                                FeatureStartEditEvent?.Invoke(geometries);
+
                                 AvContentChanged();
 
                                 _doSelection = false;
@@ -965,7 +940,7 @@ namespace StreetSmartArcMap.Layers
                 var feature = obj as ESRI.ArcGIS.Geodatabase.IFeature;
                 LogClient.Info(string.Format("On Delete Feature: {0}", ((feature != null) ? feature.Class.AliasName : string.Empty)));
 
-                if ((FeatureDeleteEvent != null) && (feature != null))
+                if (FeatureDeleteEvent != null && feature != null)
                 {
                     if (EditFeatures.Contains(feature))
                     {
@@ -1037,37 +1012,20 @@ namespace StreetSmartArcMap.Layers
                     var sketch = editor as IEditSketch3;
                     var editLayers = editor as IEditLayers;
 
-                    if ((sketch != null) && (editLayers != null))
+                    if (sketch != null && editLayers != null)
                     {
                         ILayer currentLayer = editLayers.CurrentLayer;
                         VectorLayer vectorLayer = GetLayer(currentLayer);
-
-                        if ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart) && CheckEditTask())
+                    
+                        if (vectorLayer != null && vectorLayer.IsVisibleInStreetSmart && CheckEditTask())
                         {
                             var geometry = sketch.Geometry;
                             var lastPoint = sketch.LastPoint;
-                            // ReSharper disable CompareOfFloatsByEqualityOperator
 
-                            if (lastPoint != null)
-                            {
-                                if ((lastPoint.Z == 0) && (SketchCreateEvent != null) && sketch.ZAware)
-                                {
-                                    SketchCreateEvent(sketch);
-                                }
-                            }
-                            else
-                            {
-                                if ((editor.EditState != esriEditState.esriStateNotEditing) && (StartMeasurementEvent != null))
-                                {
-                                    StartMeasurementEvent(geometry);
-                                }
-                            }
+                            if (lastPoint != null && lastPoint.Z == 0 && SketchCreateEvent != null && sketch.ZAware)
+                                SketchCreateEvent(sketch);
 
-                            // ReSharper restore CompareOfFloatsByEqualityOperator
-                            if (SketchModifiedEvent != null)
-                            {
-                                SketchModifiedEvent(geometry);
-                            }
+                            SketchModifiedEvent?.Invoke(geometry);
                         }
                     }
                 }
@@ -1096,7 +1054,7 @@ namespace StreetSmartArcMap.Layers
                         ILayer currentLayer = editLayers.CurrentLayer;
                         VectorLayer vectorLayer = GetLayer(currentLayer);
 
-                        if (CheckEditTask() && ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart)))
+                        if (CheckEditTask() && vectorLayer != null && vectorLayer.IsVisibleInStreetSmart)
                         {
                             if (SketchFinishedEvent != null)
                             {
@@ -1116,108 +1074,6 @@ namespace StreetSmartArcMap.Layers
             }
         }
 
-        private static void OnCurrentTaskChanged()
-        {
-            try
-            {
-                IEditor3 editor = ArcUtils.Editor;
-                LogClient.Info("On CurrentTask Changed");
-                _doSelection = true;
-
-                if (editor != null)
-                {
-                    var sketch = editor as IEditSketch3;
-                    var editLayers = editor as IEditLayers;
-
-                    if ((sketch != null) && (editLayers != null))
-                    {
-                        IEditTask task = editor.CurrentTask;
-                        ILayer currentLayer = editLayers.CurrentLayer;
-                        VectorLayer vectorLayer = (EditFeatures.Count != 1)
-                          ? ((currentLayer == null) ? null : GetLayer(currentLayer))
-                          : GetLayer(EditFeatures[0]);
-
-                        if ((task != null) && ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart)))
-                        {
-                            var taskName = task as IEditTaskName;
-
-                            if (taskName != null)
-                            {
-                                var geometry = sketch.Geometry;
-                                string name = taskName.UniqueName;
-
-                                //if (name == "GarciaUI_ModifyFeatureTask")
-                                //{
-                                //    Measurement measurement = Measurement.Get(geometry, false);
-
-                                //    if (measurement != null)
-                                //    {
-                                //        int nrPoints;
-                                //        var ptColl = measurement.ToPointCollection(geometry, out nrPoints);
-
-                                //        if (ptColl != null)
-                                //        {
-                                //            ISketchOperation2 sketchOp = new SketchOperationClass();
-                                //            sketchOp.Start(editor);
-
-                                //            for (int j = 0; j < nrPoints; j++)
-                                //            {
-                                //                IPoint point = ptColl.Point[j];
-                                //                MeasurementPoint mpoint = measurement.IsPointMeasurement
-                                //                  ? measurement.GetPoint(point, false)
-                                //                  : measurement.GetPoint(point);
-
-                                //                double m = (mpoint == null) ? double.NaN : mpoint.M;
-                                //                double z = (mpoint == null) ? double.NaN : mpoint.Z;
-                                //                IPoint point2 = new ESRI.ArcGIS.Geometry.Point() { X = point.X, Y = point.Y, Z = z, M = m, ZAware = sketch.ZAware };
-                                //                ptColl.UpdatePoint(j, point2);
-
-                                //                if (measurement.IsPointMeasurement)
-                                //                {
-                                //                    sketch.Geometry = point2;
-                                //                }
-                                //            }
-
-                                //            if (!measurement.IsPointMeasurement)
-                                //            {
-                                //                sketch.Geometry = ptColl as IGeometry;
-                                //            }
-
-                                //            geometry = sketch.Geometry;
-
-                                //            if (geometry != null)
-                                //            {
-                                //                sketchOp.Finish(geometry.Envelope, esriSketchOperationType.esriSketchOperationGeneral, geometry);
-                                //            }
-                                //        }
-
-                                //        measurement.SetSketch();
-                                //        measurement.OpenMeasurement();
-                                //        measurement.DisableMeasurementSeries();
-                                //    }
-                                //}
-                                //else
-                                //{
-                                //    Measurement measurement = Measurement.Get(geometry, false);
-
-                                //    if (measurement != null)
-                                //    {
-                                //        measurement.EnableMeasurementSeries();
-                                //    }
-
-                                //    OnSelectionChanged();
-                                //}
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogClient.Error("VectorLayer.OnCurrentTaskChanged", ex.Message, ex);
-                Trace.WriteLine(ex.Message, "VectorLayer.OnCurrentTaskChanged");
-            }
-        }
 
         private static void OnVertexSelectionChanged()
         {
@@ -1236,9 +1092,8 @@ namespace StreetSmartArcMap.Layers
                     {
                         var currentLayer = editLayers.CurrentLayer;
                         var geometry = sketch.Geometry;
-                        VectorLayer vectorLayer = (EditFeatures.Count != 1)
-                          ? ((currentLayer == null) ? null : GetLayer(currentLayer))
-                          : GetLayer(EditFeatures[0]);
+
+                        VectorLayer vectorLayer = EditFeatures.Count != 1 ? GetLayer(currentLayer) : GetLayer(EditFeatures[0]);
 
                         if ((geometry != null) && ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart)))
                         {
@@ -1346,17 +1201,7 @@ namespace StreetSmartArcMap.Layers
 
                                 if (category == editorCategory)
                                 {
-                                    var sketch = editor as IEditSketch3;
-
-                                    if (sketch != null)
-                                    {
-                                        var geometry = sketch.Geometry;
-
-                                        if ((!(command is IEditTool)) && (editor.EditState != esriEditState.esriStateNotEditing) && (StartMeasurementEvent != null))
-                                        {
-                                            StartMeasurementEvent(geometry);
-                                        }
-                                    }
+                                    UpdateEditGeometry(editor, command);
                                 }
                             }
                             else

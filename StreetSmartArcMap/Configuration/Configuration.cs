@@ -58,12 +58,13 @@ namespace StreetSmartArcMap.Configuration
         public bool UseDefaultBaseUrl { get; set; }
         public string BaseUrl { get; set; }
 
+        public bool DevTools { get; set; }
 
         public bool UseDefaultStreetSmartLocation { get; set; }
         public string StreetSmartLocation { get; set; }
 
         [XmlIgnore()]
-        public string BaseUrlToUse => UseDefaultBaseUrl || string.IsNullOrWhiteSpace(BaseUrl) ? Urls.BaseUrl : BaseUrl.ToLower().Replace("/configuration",string.Empty);
+        public string BaseUrlToUse => UseDefaultBaseUrl || string.IsNullOrWhiteSpace(BaseUrl) ? Urls.BaseUrl : BaseUrl.ToLower().Replace("/configuration", string.Empty);
         [XmlIgnore()]
         public string RecordingsServiceUrlToUse => $"{BaseUrlToUse}{Urls.RecordingsServiceUrl}";
         [XmlIgnore()]
@@ -72,8 +73,8 @@ namespace StreetSmartArcMap.Configuration
         [XmlIgnore()]
         public string StreetSmartLocationToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.ApiUrl}" : StreetSmartLocation;
         [XmlIgnore()]
-        public string SpatialReferencesUrlToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.SpatialReferencesUrl}" : $"{StreetSmartLocation.ToLower().Replace("/api-dotnet.html",string.Empty)}{Urls.SpatialReferencesUrl}";
-        
+        public string SpatialReferencesUrlToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.SpatialReferencesUrl}" : $"{StreetSmartLocation.ToLower().Replace("/api-dotnet.html", string.Empty)}{Urls.SpatialReferencesUrl}";
+
 
         [XmlIgnore()]
         public string LocaleToUse => Culture;
@@ -123,6 +124,8 @@ namespace StreetSmartArcMap.Configuration
 
         #region Properties
 
+        public ApplicationConfiguration ApplicationConfiguration { get; set; }
+        
         public static Configuration Instance
         {
             get
@@ -190,6 +193,11 @@ namespace StreetSmartArcMap.Configuration
                     IsLoading = false;
                 }
             }
+        }
+
+        private bool CheckFunctionality(string name)
+        {
+            return ApplicationConfiguration?.GetFunctionality(name) != null;
         }
 
         public void SetCulture()

@@ -172,9 +172,9 @@ namespace StreetSmartArcMap.Client
 
         public Stream DownloadGlobeSpotterConfiguration()
         {
-            
             const string postItem = @"<Authorization />";
             string authorizationService = string.Format(AuthorizationRequest, Config.BaseUrlToUse);
+
             return PostRequest(authorizationService, GetStreamCallback, postItem, XmlConfig) as Stream;
         }
 

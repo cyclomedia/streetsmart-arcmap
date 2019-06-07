@@ -23,12 +23,16 @@ using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using StreetSmart.Common.Interfaces.Data;
 using StreetSmartArcMap.AddIns;
+using StreetSmartArcMap.Client;
+using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StreetSmartArcMap.DockableWindows
@@ -71,6 +75,8 @@ namespace StreetSmartArcMap.DockableWindows
         public bool _toUpdateCones { get; private set; }
         public System.Threading.Timer _updateTimer { get; private set; }
 
+        private string _measurementName { get; set; }
+
         #endregion Private members
 
         #region Constructor
@@ -88,6 +94,8 @@ namespace StreetSmartArcMap.DockableWindows
             API.OnVectorLayerChanged += API_OnVectorLayerChanged;
             API.OnSelectedFeatureChanged += API_OnSelectedFeatureChanged;
             API.OnFeatureClicked += API_OnFeatureClicked;
+
+            //VectorLayer.StartMeasurementEvent += VectorLayer_StartMeasurementEvent;
 
             this.Controls.Add(API.StreetSmartGUI);
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
@@ -393,5 +401,17 @@ namespace StreetSmartArcMap.DockableWindows
                 base.Dispose(disposing);
             }
         }
+
+        //private void OnStartMeasurement(IGeometry geometry)
+        //{
+        //    if (Config.MeasurePermissions)
+        //    {
+        //        Measurement measurement = Measurement.Sketch;
+        //        StartMeasurement(geometry, measurement, true);
+        //    }
+        //}
+
+
+
     }
 }

@@ -1,28 +1,10 @@
-﻿/*
- * Integration in ArcMap for StreetSmart
- * Copyright (c) 2019, CycloMedia, All rights reserved.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library.
- */
-
-using StreetSmartArcMap.Configuration;
+﻿using StreetSmartArcMap.Client;
 using System;
 using System.IO;
 using System.Net;
 using System.Xml.Serialization;
 
-namespace StreetSmartArcMap.Client
+namespace StreetSmartArcMap.Configuration
 {
     [XmlType(AnonymousType = true, Namespace = "https://www.globespotter.com/gsc")]
     [XmlRoot(Namespace = "https://www.globespotter.com/gsc", IsNullable = false)]
@@ -33,7 +15,7 @@ namespace StreetSmartArcMap.Client
         private static readonly XmlSerializer XmlstreetSmartconfiguration;
         private static readonly Web Web;
 
-        private static GlobeSpotterConfiguration _globeSpotterConfiguration;
+        private static GlobeSpotterConfiguration _GlobeSpotterConfiguration;
 
         #endregion
 
@@ -86,7 +68,7 @@ namespace StreetSmartArcMap.Client
                 bool loginFailed = false;
                 Exception exception = null;
 
-                if (_globeSpotterConfiguration == null)
+                if (_GlobeSpotterConfiguration == null)
                 {
                     try
                     {
@@ -98,7 +80,7 @@ namespace StreetSmartArcMap.Client
 
                         if (ex.Response is HttpWebResponse)
                         {
-                            var response = ex.Response as HttpWebResponse;
+                            HttpWebResponse response = ex.Response as HttpWebResponse;
 
                             if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden || response.StatusCode == HttpStatusCode.NotFound)
                                 loginFailed = true;
@@ -117,7 +99,7 @@ namespace StreetSmartArcMap.Client
                     }
                 }
 
-                return _globeSpotterConfiguration ?? (_globeSpotterConfiguration = new GlobeSpotterConfiguration
+                return _GlobeSpotterConfiguration ?? (_GlobeSpotterConfiguration = new GlobeSpotterConfiguration
                 {
                     LoadException = loadException,
                     LoginFailed = loginFailed,
@@ -139,11 +121,13 @@ namespace StreetSmartArcMap.Client
         {
             try
             {
-                using (var input = Web.DownloadGlobeSpotterConfiguration())
+                using (Stream input = Web.DownloadGlobeSpotterConfiguration())
                 {
-                    input.Position = 0;
-
-                    _globeSpotterConfiguration = (GlobeSpotterConfiguration)XmlstreetSmartconfiguration.Deserialize(input);
+                    if (input != null)
+                    {
+                        input.Position = 0;
+                        _GlobeSpotterConfiguration = (GlobeSpotterConfiguration)XmlstreetSmartconfiguration.Deserialize(input);
+                    }
                 }
             }
             catch
@@ -151,12 +135,12 @@ namespace StreetSmartArcMap.Client
                 // ignored
             }
 
-            return _globeSpotterConfiguration;
+            return _GlobeSpotterConfiguration;
         }
 
         public static void Delete()
         {
-            _globeSpotterConfiguration = null;
+            _GlobeSpotterConfiguration = null;
         }
 
         public static bool CheckCredentials()

@@ -19,6 +19,7 @@
 using ESRI.ArcGIS.ArcMapUI;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.Geometry;
 using StreetSmart.Common.Exceptions;
 using StreetSmart.Common.Factories;
 using StreetSmart.Common.Interfaces.API;
@@ -83,6 +84,7 @@ namespace StreetSmartArcMap.Logic
         #region private properties
 
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
+
         private bool Loading = false;
         private IPanoramaViewerOptions DefaultPanoramaOptions { get; set; }
         private IList<ViewerType> ViewerTypes { get; set; }
@@ -96,6 +98,10 @@ namespace StreetSmartArcMap.Logic
         private string RequestSRS { get; set; }
         private readonly IList<VectorLayer> _vectorLayers;
         private readonly IList<VectorLayer> _vectorLayerInChange;
+        private readonly LogClient _logClient;
+        private bool _screenPointAdded;
+        private bool _mapPointAdded;
+        private IFeatureCollection ActiveMeasurement { get; set; }
 
         #endregion private properties
 
@@ -121,6 +127,8 @@ namespace StreetSmartArcMap.Logic
         public VectorLayerChangeEventDelegate OnVectorLayerChanged;
         public SelectedFeatureChangeEventDelegate OnSelectedFeatureChanged;
         public FeatureClickEventDelegate OnFeatureClicked;
+        private bool _drawPoint;
+        private bool _sketchModified;
 
         #endregion Events
 
@@ -167,7 +175,8 @@ namespace StreetSmartArcMap.Logic
 
                 if (StreetSmartOptions != null)
                 {
-                    //StreetSmartAPI.ShowDevTools();
+                    if (Config.DevTools)
+                        StreetSmartAPI.ShowDevTools();
 
                     IAddressSettings addressSettings = AddressSettingsFactory.Create(StreetSmartOptions.AddressLocale, StreetSmartOptions.AddressDatabase);
                     IDomElement element = DomElementFactory.Create();
@@ -177,7 +186,7 @@ namespace StreetSmartArcMap.Logic
 
                     await StreetSmartAPI.Init(ApiOptions);
 
-                    
+
                 }
 
                 VectorLayer.DetectVectorLayers(true);
@@ -211,12 +220,19 @@ namespace StreetSmartArcMap.Logic
                 if (RequestOpen)
                     await Open(RequestSRS, RequestQuery);
 
+                StreetSmartAPI.MeasurementChanged += StreetSmartAPI_MeasurementChanged;
+
                 OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = new List<string>() });
             }
             catch (StreetSmartLoginFailedException)
             {
                 MessageBox.Show("api laden >> login failed");
             }
+        }
+
+        private void StreetSmartAPI_MeasurementChanged(object sender, IEventArgs<IFeatureCollection> e)
+        {
+            ActiveMeasurement = e.Value;
         }
 
         private async Task<List<IRecording>> GetRecordings()
@@ -290,7 +306,7 @@ namespace StreetSmartArcMap.Logic
 
         private bool AddVectorInChange(VectorLayer layer)
         {
-            if( _vectorLayerInChange.Any(v => v.Name == layer.Name))
+            if (_vectorLayerInChange.Any(v => v.Name == layer.Name))
             {
                 return false;
             }
@@ -385,181 +401,165 @@ namespace StreetSmartArcMap.Logic
                         RemoveVectorInchange(layer);
                     }
                 }
-
-                //What does this code do?
-                //else
-                //{
-                //    IList<VectorLayer> vectorLayers = VectorLayer.Layers;
-                //    int i = 0;
-
-                //    while (i < _vectorLayers.Count)
-                //    {
-                //        var lay = _vectorLayers.ElementAt(i);
-
-                //        if (!vectorLayers.Contains(lay))
-                //        {
-                //            await StreetSmartAPI.RemoveOverlay(lay.Overlay.Id);
-                //            _vectorLayers.Remove(lay);
-                //        }
-                //        else
-                //        {
-                //            i++;
-                //        }
-                //    }
-
-                //    foreach (var vectorLayer in vectorLayers)
-                //    {
-                //        if (!_vectorLayers.Contains(vectorLayer))
-                //        {
-                //            VectorLayer_LayerAddEvent(vectorLayer);
-                //        }
-                //        else
-                //        {
-                //            if (vectorLayer.IsVisibleInStreetSmart)
-                //            {
-                //                VectorLayer_LayerAddEvent(vectorLayer);
-                //            }
-                //            else
-                //            {
-                //                if (_vectorLayers.Contains(vectorLayer))
-                //                {
-                //                    await StreetSmartAPI.RemoveOverlay(vectorLayer.Overlay.Id);
-                //                    _vectorLayers.Remove(vectorLayer);
-                //                }
-                //            }
-                //        }
-                //    }
-                //}
             }
         }
 
         private void VectorLayer_FeatureStartEditEvent(IList<ESRI.ArcGIS.Geometry.IGeometry> geometries)
         {
-            //if (Config.MeasurePermissions && (geometries != null))
-            //{
-            //    var usedMeasurements = new List<Measurement>();
+            UpdateActiveMeasurement(geometries);
+        }
 
-            //    foreach (ESRI.ArcGIS.Geometry.IGeometry geometry in geometries)
-            //    {
-            //        if (geometry != null)
-            //        {
-            //            Measurement measurement = Measurement.Get(geometry);
-            //            _drawPoint = false;
-            //            measurement = StartMeasurement(geometry, measurement, false);
-            //            _drawPoint = true;
+        private void UpdateActiveMeasurement(IList<ESRI.ArcGIS.Geometry.IGeometry> geometries)
+        {
+            if (GlobeSpotterConfiguration.MeasurePermissions && geometries != null && ActiveMeasurement != null)
+            {
+                var collection = GeoJsonFactory.CloneFeatureCollection(ActiveMeasurement);
 
-            //            if (measurement != null)
-            //            {
-            //                measurement.UpdateMeasurementPoints(geometry);
-            //                measurement.CloseMeasurement();
-            //                usedMeasurements.Add(measurement);
-            //            }
-            //        }
-            //    }
+                for (int i = 0; i < collection.Features.Count; i++)
+                {
+                    if (i < geometries.Count)
+                        collection.Features[i].Geometry = ConvertGeometry(geometries[i]);
+                    else
+                    {
+                        collection.Features[i].Geometry = GeoJsonFactory.CreatePointGeometry(null);
 
-            //    Measurement.RemoveUnusedMeasurements(usedMeasurements);
-            //}
+                        var measurementProperties = collection.Features[i].Properties as IMeasurementProperties;
+                        measurementProperties?.MeasureDetails?.Clear();
+                    }
+                }
+
+                while (geometries.Count > collection.Features.Count)
+                {
+                    var geometry = geometries[collection.Features.Count];
+                    var feature = ConvertFeature(geometry);
+
+                    collection.Features.Add(feature);
+                }
+
+                StreetSmartAPI.SetActiveMeasurement(collection);
+            }
         }
 
         private void VectorLayer_FeatureUpdateEditEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
-            //if (Config.MeasurePermissions && (feature != null))
-            //{
-            //    ESRI.ArcGIS.Geometry.IGeometry geometry = feature.Shape;
+            if (GlobeSpotterConfiguration.MeasurePermissions && feature != null && ActiveMeasurement != null)
+            {
+                var collection = GeoJsonFactory.CreateFeatureCollection(ArcUtils.SpatialReference.FactoryCode);
 
-            //    if (geometry != null)
-            //    {
-            //        Measurement measurement = Measurement.Get(geometry);
+                var item = ConvertFeature(feature);
 
-            //        if (measurement != null)
-            //        {
-            //            measurement.UpdateMeasurementPoints(geometry);
-            //        }
-            //    }
-            //}
+                if (item != null)
+                    collection.Features.Add(item);
+
+                StreetSmartAPI.SetActiveMeasurement(collection);
+            }
         }
 
         private void VectorLayer_FeatureDeleteEvent(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
-            //if (Config.MeasurePermissions)
-            //{
-            //     ESRI.ArcGIS.Geometry.IGeometry geometry = feature.Shape;
+            if (GlobeSpotterConfiguration.MeasurePermissions && ActiveMeasurement != null)
+            {
+                var collection = GeoJsonFactory.CreateFeatureCollection(ArcUtils.SpatialReference.FactoryCode);
 
-            //    if (geometry != null)
-            //    {
-            //        Measurement measurement = Measurement.Get(geometry);
-
-            //        if (measurement != null)
-            //        {
-            //            measurement.RemoveMeasurement();
-            //        }
-            //    }
-            //}
+                StreetSmartAPI.SetActiveMeasurement(collection);
+            }
         }
 
         private void VectorLayer_StopEditEvent()
         {
-            //if (Config.MeasurePermissions)
-            //{
-            //    _drawingSketch = false;
-            //    Measurement.RemoveAll();
-            //    FrmMeasurement.Close();
-            //}
-        }
-
-        private void VectorLayer_StartMeasurementEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
-        {
-            //if (Config.MeasurePermissions)
-            //{
-            //    Measurement measurement = Measurement.Sketch;
-            //    StartMeasurement(geometry, measurement, true);
-            //}
+            if (GlobeSpotterConfiguration.MeasurePermissions && ActiveMeasurement != null)
+            {
+                StopMeasurement();
+            }
         }
 
         private void VectorLayer_SketchCreateEvent(ESRI.ArcGIS.Editor.IEditSketch3 sketch)
         {
-            //if (Config.MeasurePermissions && (!_sketchModified) && (!_screenPointAdded) && (_layer != null))
-            //{
-            //    _sketchModified = true;
-            //    _layer.AddZToSketch(sketch);
-            //    _sketchModified = false;
-            //}
+
+            if (GlobeSpotterConfiguration.MeasurePermissions && (!_sketchModified) && (!_screenPointAdded))
+            {
+                var geometry = sketch.Geometry;
+                //VectorLayer_FeatureStartEditEvent(new List<ESRI.ArcGIS.Geometry.IGeometry>() { geometry });
+            }
         }
 
         private void VectorLayer_SketchModifiedEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
         {
-            //if (Config.MeasurePermissions)
-            //{
-            //    _mapPointAdded = !_screenPointAdded;
-            //    Measurement measurement = Measurement.Sketch;
-
-            //    if (geometry != null)
-            //    {
-            //        if (((!_drawingSketch) && (!geometry.IsEmpty)) || (measurement == null))
-            //        {
-            //            _drawingSketch = true;
-            //            measurement = StartMeasurement(geometry, measurement, true);
-            //        }
-
-            //        if (measurement != null)
-            //        {
-            //            measurement.UpdateMeasurementPoints(geometry);
-            //        }
-            //    }
-
-            //    _mapPointAdded = false;
-            //}
+            if (GlobeSpotterConfiguration.MeasurePermissions)
+            {
+                // TODO MEASUREMENT: Do we need this event at all?
+            }
         }
 
         private void VectorLayer_SketchFinishedEvent()
         {
-            //if (Config.MeasurePermissions)
-            //{
-            //    _screenPointAdded = false;
-            //    _mapPointAdded = false;
-            //    _drawingSketch = false;
-            //    Measurement.RemoveSketch();
-            //}
+            if (GlobeSpotterConfiguration.MeasurePermissions)
+            {
+                // TODO MEASUREMENT: Do we need this event at all?
+            }
+        }
+
+        public async Task<bool> CreateMeasurement(TypeOfLayer typeOfLayer)
+        {
+            if (ActiveMeasurement == null)
+            {
+                var viewers = await StreetSmartAPI.GetViewers();
+                var panoramaViewer = viewers?.ToList().Where(v => v is IPanoramaViewer).Select(v => v as IPanoramaViewer).LastOrDefault();
+
+                if (panoramaViewer != null)
+                {
+                    switch (typeOfLayer)
+                    {
+                        case TypeOfLayer.Point:
+                            CreatePointMeasurement(panoramaViewer);
+                            break;
+                        case TypeOfLayer.Line:
+                            CreateLineMeasurement(panoramaViewer);
+                            break;
+                        case TypeOfLayer.Polygon:
+                            CreatePolygonMeasurement(panoramaViewer);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public void CreatePointMeasurement(IPanoramaViewer viewer)
+        {
+            if (GlobeSpotterConfiguration.MeasurePoint)
+            {
+                var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.Point);
+
+                StreetSmartAPI.StartMeasurementMode(viewer, options);
+            }
+        }
+
+        public void CreateLineMeasurement(IPanoramaViewer viewer)
+        {
+            if (GlobeSpotterConfiguration.MeasureLine)
+            {
+                var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.LineString);
+
+                StreetSmartAPI.StartMeasurementMode(viewer, options);
+            }
+        }
+
+        public void CreatePolygonMeasurement(IPanoramaViewer viewer)
+        {
+            if (GlobeSpotterConfiguration.MeasurePolygon)
+            {
+                var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.Polygon);
+
+                StreetSmartAPI.StartMeasurementMode(viewer, options);
+            }
         }
 
         private async Task DeinitApi()
@@ -597,10 +597,6 @@ namespace StreetSmartArcMap.Logic
                     await DeinitApi();
                     await InitApi(options);
                 }
-
-                ////Open request
-                //if (Initialised && RequestQuery != null)
-                //    await Open(RequestSRS, RequestQuery);
             }
             catch
             {
@@ -622,8 +618,8 @@ namespace StreetSmartArcMap.Logic
                     StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
                     StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
                     StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
+                    StreetSmartAPI.MeasurementChanged += StreetSmartAPI_MeasurementChanged;
 
-                    
                 }
                 else
                 {
@@ -638,6 +634,16 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
+        public async void StopMeasurement()
+        {
+            ActiveMeasurement = null;
+
+            if (await StreetSmartAPI.GetApiReadyState())
+            {
+                StreetSmartAPI.StopMeasurementMode();
+            }
+        }
+
         private async void NotifyViewerChange()
         {
             var viewers = await StreetSmartAPI.GetViewers();
@@ -649,7 +655,7 @@ namespace StreetSmartArcMap.Logic
             }
             //viewers.
             // TODO: remove viewing cone of the removed viewers!
-            OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = viewerIds });            
+            OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = viewerIds });
         }
 
         private async void StreetSmartAPI_ViewerAdded(object sender, IEventArgs<IViewer> e)
@@ -660,11 +666,16 @@ namespace StreetSmartArcMap.Logic
             {
                 var viewer = e.Value as IPanoramaViewer;
 
+                viewer.ToggleButtonEnabled(PanoramaViewerButtons.ZoomIn, false);
+                viewer.ToggleButtonEnabled(PanoramaViewerButtons.ZoomOut, false);
+                viewer.ToggleButtonEnabled(PanoramaViewerButtons.Measure, false);
+
                 viewer.ImageChange += Viewer_ImageChange;
                 viewer.ViewChange += Viewer_ViewChange;
                 viewer.FeatureSelectionChange += Viewer_FeatureSelectionChange;
                 viewer.LayerVisibilityChange += Viewer_LayerVisibilityChange;
                 viewer.FeatureClick += Viewer_FeatureClick;
+
                 await InvokeOnViewingConeChanged(viewer);
                 InvokeOnVectorLayerChanged();
             }
@@ -713,7 +724,7 @@ namespace StreetSmartArcMap.Logic
 
             OnFeatureClicked?.Invoke(args);
         }
-        
+
         private async Task InvokeOnSelectedFeatureChanged(IPanoramaViewer viewer, IFeatureInfo featureInfo)
         {
             var args = new SelectedFeatureChangedEventArgs()
@@ -790,7 +801,7 @@ namespace StreetSmartArcMap.Logic
             };
         }
 
-        private async void StreetSmartAPI_ViewerRemoved(object sender, IEventArgs<IViewer> e)
+        private void StreetSmartAPI_ViewerRemoved(object sender, IEventArgs<IViewer> e)
         {
             // TODO: remove this viewer from the viewercones
 
@@ -913,6 +924,114 @@ namespace StreetSmartArcMap.Logic
             {
                 //MessageBox.Show("image openen >> kapot");
             }
+        }
+
+        public async Task StartMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry, bool sketch)
+        {
+            if (GlobeSpotterConfiguration.MeasurePermissions && StreetSmartAPI != null)
+            {
+                var typeOfLayer = VectorLayer.GetTypeOfLayer(geometry.GeometryType);
+
+                if (typeOfLayer != TypeOfLayer.None)
+                {
+                    await CreateMeasurement(typeOfLayer);
+                }
+            }
+        }
+
+        private async void VectorLayer_StartMeasurementEvent(TypeOfLayer typeOfLayer)
+        {
+            if (GlobeSpotterConfiguration.MeasurePermissions)
+            {
+                await CreateMeasurement(typeOfLayer);
+            }
+        }
+
+        public static IFeature ConvertFeature(ESRI.ArcGIS.Geodatabase.IFeature feature)
+        {
+            if (feature != null && feature.Shape != null)
+            {
+                return ConvertFeature(feature.Shape);
+            }
+
+            return null;
+        }
+
+        public static IFeature ConvertFeature(ESRI.ArcGIS.Geometry.IGeometry geometry)
+        {
+            if (geometry != null)
+            {
+                var type = VectorLayer.GetTypeOfLayer(geometry.GeometryType);
+
+                switch (type)
+                {
+                    case TypeOfLayer.Point:
+                        return GeoJsonFactory.CreatePointFeature(ToCoordinate(geometry as ESRI.ArcGIS.Geometry.IPoint));
+                    case TypeOfLayer.Line:
+                        return GeoJsonFactory.CreateLineFeature(ToCoordinate(geometry as ESRI.ArcGIS.Geometry.Polyline));
+                    case TypeOfLayer.Polygon:
+                        return GeoJsonFactory.CreatePolygonFeature(ToCoordinate(geometry as ESRI.ArcGIS.Geometry.Polygon));
+                    default:
+                        throw new NotImplementedException();
+                }
+            }
+
+            return null;
+        }
+
+        public static StreetSmart.Common.Interfaces.GeoJson.IGeometry ConvertGeometry(ESRI.ArcGIS.Geometry.IGeometry geometry)
+        {
+            if (geometry != null)
+            {
+                var type = VectorLayer.GetTypeOfLayer(geometry.GeometryType);
+
+                switch (type)
+                {
+                    case TypeOfLayer.Point:
+                        return GeoJsonFactory.CreatePointGeometry(ToCoordinate(geometry as ESRI.ArcGIS.Geometry.IPoint));
+                    case TypeOfLayer.Line:
+                        return GeoJsonFactory.CreateLineGeometry(ToCoordinate(geometry as ESRI.ArcGIS.Geometry.Polyline));
+                    case TypeOfLayer.Polygon:
+                        return GeoJsonFactory.CreatePolygonGeometry(ToCoordinate(geometry as ESRI.ArcGIS.Geometry.Polygon));
+                    default:
+                        return null;
+                }
+            }
+
+            return null;
+        }
+
+        public static ICoordinate ToCoordinate(ESRI.ArcGIS.Geometry.IPoint point)
+        {
+            return CoordinateFactory.Create(point.X, point.Y, point.Z);
+        }
+
+        public static List<ICoordinate> ToCoordinate(ESRI.ArcGIS.Geometry.Polyline polyline)
+        {
+            List<ICoordinate> coordinates = new List<ICoordinate>();
+
+            for (int i = 0; i < polyline.PointCount; i++)
+            {
+                var coordinate = ToCoordinate(polyline.Point[i]);
+
+                coordinates.Add(coordinate);
+            }
+
+            return coordinates;
+        }
+
+        public static IList<IList<ICoordinate>> ToCoordinate(ESRI.ArcGIS.Geometry.Polygon polygon)
+        {
+            List<ICoordinate> coordinates = new List<ICoordinate>();
+
+            for (int i = 0; i < polygon.PointCount; i++)
+            {
+                var coordinate = ToCoordinate(polygon.Point[i]);
+
+                coordinates.Add(coordinate);
+            }
+
+            return new List<IList<ICoordinate>> { coordinates };
         }
 
         #endregion public functions

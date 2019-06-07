@@ -18,6 +18,7 @@
 
 using ESRI.ArcGIS.ArcMapUI;
 using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.esriSystem;
 using ESRI.ArcGIS.Geometry;
 using StreetSmart.Common.Exceptions;
@@ -499,37 +500,40 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        public async Task<bool> CreateMeasurement(TypeOfLayer typeOfLayer)
+        //public async Task CreateMeasurement()
+        //{
+        //    var editor = ArcUtils.Editor as IEditLayers;
+
+        //    if (editor != null && editor.CurrentLayer != null)
+        //    {
+        //        var layer = VectorLayer.GetLayer(editor.CurrentLayer);
+
+        //        await CreateMeasurement(layer.TypeOfLayer);
+        //    }
+        //}
+
+        public async Task CreateMeasurement(TypeOfLayer typeOfLayer)
         {
-            if (ActiveMeasurement == null)
+            var viewers = await StreetSmartAPI.GetViewers();
+            var panoramaViewer = viewers?.ToList().Where(v => v is IPanoramaViewer).Select(v => v as IPanoramaViewer).LastOrDefault();
+
+            if (panoramaViewer != null)
             {
-                var viewers = await StreetSmartAPI.GetViewers();
-                var panoramaViewer = viewers?.ToList().Where(v => v is IPanoramaViewer).Select(v => v as IPanoramaViewer).LastOrDefault();
-
-                if (panoramaViewer != null)
+                switch (typeOfLayer)
                 {
-                    switch (typeOfLayer)
-                    {
-                        case TypeOfLayer.Point:
-                            CreatePointMeasurement(panoramaViewer);
-                            break;
-                        case TypeOfLayer.Line:
-                            CreateLineMeasurement(panoramaViewer);
-                            break;
-                        case TypeOfLayer.Polygon:
-                            CreatePolygonMeasurement(panoramaViewer);
-                            break;
-                        default:
-                            break;
-                    }
-
-                    return true;
+                    case TypeOfLayer.Point:
+                        CreatePointMeasurement(panoramaViewer);
+                        break;
+                    case TypeOfLayer.Line:
+                        CreateLineMeasurement(panoramaViewer);
+                        break;
+                    case TypeOfLayer.Polygon:
+                        CreatePolygonMeasurement(panoramaViewer);
+                        break;
+                    default:
+                        break;
                 }
-
-                return false;
             }
-
-            return true;
         }
 
         public void CreatePointMeasurement(IPanoramaViewer viewer)
@@ -1003,7 +1007,10 @@ namespace StreetSmartArcMap.Logic
 
         public static ICoordinate ToCoordinate(ESRI.ArcGIS.Geometry.IPoint point)
         {
-            return CoordinateFactory.Create(point.X, point.Y, point.Z);
+            if (point != null)
+                return CoordinateFactory.Create(point.X, point.Y, point.Z);
+            else
+                return null;
         }
 
         public static List<ICoordinate> ToCoordinate(ESRI.ArcGIS.Geometry.Polyline polyline)
@@ -1014,7 +1021,8 @@ namespace StreetSmartArcMap.Logic
             {
                 var coordinate = ToCoordinate(polyline.Point[i]);
 
-                coordinates.Add(coordinate);
+                if (coordinate != null)
+                    coordinates.Add(coordinate);
             }
 
             return coordinates;
@@ -1028,7 +1036,8 @@ namespace StreetSmartArcMap.Logic
             {
                 var coordinate = ToCoordinate(polygon.Point[i]);
 
-                coordinates.Add(coordinate);
+                if (coordinate != null)
+                    coordinates.Add(coordinate);
             }
 
             return new List<IList<ICoordinate>> { coordinates };

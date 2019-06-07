@@ -212,7 +212,7 @@ namespace StreetSmartArcMap.Layers
                 case esriGeometryType.esriGeometryPolyline:
                     return TypeOfLayer.Line;
                 case esriGeometryType.esriGeometryPolygon:
-                    return TypeOfLayer.Point;
+                    return TypeOfLayer.Polygon;
                 default:
                     return TypeOfLayer.None;
             }
@@ -308,15 +308,18 @@ namespace StreetSmartArcMap.Layers
                 editEvents.OnDeleteFeature += OnDeleteFeature;
                 editEvents.OnSketchModified += OnSketchModified;
                 editEvents.OnSketchFinished += OnSketchFinished;
-
-                //TODO: uncomment?
-                //editEvents.OnCurrentTaskChanged += OnCurrentTaskChanged;
+                editEvents.OnCurrentTaskChanged += OnCurrentTaskChanged;
             }
 
             if (editEvents5 != null)
             {
                 editEvents5.OnVertexSelectionChanged += OnVertexSelectionChanged;
             }
+        }
+
+        private static void OnCurrentTaskChanged()
+        {
+            //
         }
 
         private static bool CheckEditTask()
@@ -1182,23 +1185,7 @@ namespace StreetSmartArcMap.Layers
                                 string editorCategory = (editorMenu != null) ? editorMenu.Category : string.Empty;
                                 ICommand command = tool.Command;
                                 string category = tool.Category;
-
-                                // TODO: Measurement
-                                //if (!FrmMeasurement.IsPointOpen())
-                                //{
-                                //  if (((command is IEditTool) || (category != editorCategory)) && (category != "CycloMedia"))
-                                //  {
-                                //    OnSketchFinished();
-                                //  }
-                                //}
-                                //else
-                                //{
-                                //  if ((!(command is IEditTool)) && (category == editorCategory))
-                                //  {
-                                //    FrmMeasurement.DoCloseMeasurementPoint();
-                                //  }
-                                //}
-
+                                
                                 if (category == editorCategory)
                                 {
                                     UpdateEditGeometry(editor, command);

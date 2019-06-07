@@ -419,13 +419,13 @@ namespace StreetSmartArcMap.Logic
                     if (i < geometries.Count)
                         collection.Features[i].Geometry = ConvertGeometry(geometries[i]);
                     else
+                    {
                         collection.Features[i].Geometry = GeoJsonFactory.CreatePointGeometry(null);
-                }
 
-                //while (collection.Features.Count > geometries.Count)
-                //{
-                //    collection.Features.RemoveAt(collection.Features.Count - 1);
-                //}
+                        var measurementProperties = collection.Features[i].Properties as IMeasurementProperties;
+                        measurementProperties?.MeasureDetails?.Clear();
+                    }
+                }
 
                 while (geometries.Count > collection.Features.Count)
                 {

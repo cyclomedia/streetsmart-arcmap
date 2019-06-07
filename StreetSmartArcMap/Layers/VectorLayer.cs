@@ -209,6 +209,8 @@ namespace StreetSmartArcMap.Layers
                     return TypeOfLayer.Point;
                 case esriGeometryType.esriGeometryLine:
                     return TypeOfLayer.Line;
+                case esriGeometryType.esriGeometryPolyline:
+                    return TypeOfLayer.Line;
                 case esriGeometryType.esriGeometryPolygon:
                     return TypeOfLayer.Point;
                 default:
@@ -898,7 +900,8 @@ namespace StreetSmartArcMap.Layers
 
                             if ((_doSelection && (name != "Query_SelectFeatures")) || (!isPointLayer))
                             {
-                                FeatureStartEditEvent(geometries);
+                                FeatureStartEditEvent?.Invoke(geometries);
+
                                 AvContentChanged();
 
                                 _doSelection = false;

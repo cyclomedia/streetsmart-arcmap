@@ -58,6 +58,7 @@ namespace StreetSmartArcMap.Configuration
         public bool UseDefaultBaseUrl { get; set; }
         public string BaseUrl { get; set; }
 
+        public bool DevTools { get; set; }
 
         public bool UseDefaultStreetSmartLocation { get; set; }
         public string StreetSmartLocation { get; set; }

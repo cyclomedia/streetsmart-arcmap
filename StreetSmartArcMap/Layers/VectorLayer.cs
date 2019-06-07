@@ -361,6 +361,14 @@ namespace StreetSmartArcMap.Layers
                     StartMeasurementEvent(typeOfLayer);
                 }
             }
+
+            //TODO: Color from layer
+            //var editLayers = editor as IEditLayers;
+            //if (editLayers != null && editLayers.CurrentLayer != null) 
+            //{
+            //    Color outline;
+            //    Color color = ArcUtils.GetColorFromLayer(editLayers.CurrentLayer, out outline);
+            //}
         }
 
         #endregion functions (static)
@@ -1019,7 +1027,7 @@ namespace StreetSmartArcMap.Layers
                     {
                         ILayer currentLayer = editLayers.CurrentLayer;
                         VectorLayer vectorLayer = GetLayer(currentLayer);
-                    
+
                         if (vectorLayer != null && vectorLayer.IsVisibleInStreetSmart && CheckEditTask())
                         {
                             var geometry = sketch.Geometry;
@@ -1185,7 +1193,7 @@ namespace StreetSmartArcMap.Layers
                                 string editorCategory = (editorMenu != null) ? editorMenu.Category : string.Empty;
                                 ICommand command = tool.Command;
                                 string category = tool.Category;
-                                
+
                                 if (category == editorCategory)
                                 {
                                     UpdateEditGeometry(editor, command);

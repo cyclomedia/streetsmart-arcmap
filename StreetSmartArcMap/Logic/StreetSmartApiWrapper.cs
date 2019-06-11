@@ -240,10 +240,10 @@ namespace StreetSmartArcMap.Logic
 
             var args = new MeasuremenChangeEventArgs
             {
-                //
+                Features = e.Value
             };
 
-            OnMeasuremenChanged?.Invoke(new MeasuremenChangeEventArgs());
+            OnMeasuremenChanged?.Invoke(args);
         }
 
         private async Task<List<IRecording>> GetRecordings()
@@ -1053,48 +1053,48 @@ namespace StreetSmartArcMap.Logic
             return new List<IList<ICoordinate>> { coordinates };
         }
 
-        public static ESRI.ArcGIS.Geometry.IPoint ToPoint(ICoordinate coordinate)
-        {
-            if (coordinate != null)
-                return new ESRI.ArcGIS.Geometry.Point
-                {
-                    X = coordinate.X ?? 0,
-                    Y = coordinate.Y ?? 0,
-                    Z = coordinate.Z ?? 0,
-                    SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(Configuration.Configuration.Instance.ApiSSRAsInt),
-                };
-            else
-                return null;
-        }
+        //public static ESRI.ArcGIS.Geometry.IPoint ToPoint(ICoordinate coordinate)
+        //{
+        //    if (coordinate != null && coordinate.X.HasValue && coordinate.Y.HasValue)
+        //        return new ESRI.ArcGIS.Geometry.Point
+        //        {
+        //            X = coordinate.X ?? 0,
+        //            Y = coordinate.Y ?? 0,
+        //            Z = coordinate.Z ?? 0,
+        //            SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(Configuration.Configuration.Instance.ApiSSRAsInt),
+        //        };
+        //    else
+        //        return null;
+        //}
 
-        public static Polyline ToPolyline(List<ICoordinate> coordinates)
-        {
-            if (coordinates != null)
-            {
-                var result = new PolylineClass
-                {
-                    SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(Configuration.Configuration.Instance.ApiSSRAsInt)
-                };
+        //public static Polyline ToPolyline(List<ICoordinate> coordinates)
+        //{
+        //    if (coordinates != null)
+        //    {
+        //        var result = new PolylineClass
+        //        {
+        //            SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(Configuration.Configuration.Instance.ApiSSRAsInt)
+        //        };
 
-                foreach (var coordinate in coordinates)
-                {
-                    var point = ToPoint(coordinate);
+        //        foreach (var coordinate in coordinates)
+        //        {
+        //            var point = ToPoint(coordinate);
 
-                    result.AddPoint(point);
-                }
+        //            result.AddPoint(point);
+        //        }
 
-                return result;
-            }
-            else
-            {
-                return null;
-            }
-        }
+        //        return result;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
 
-        public static Polygon ToPolygon(IList<IList<ICoordinate>> coordinates)
-        {
-            throw new NotImplementedException();
-        }
+        //public static Polygon ToPolygon(IList<IList<ICoordinate>> coordinates)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         #endregion public functions
     }

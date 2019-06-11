@@ -17,6 +17,7 @@
  */
 
 using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.Framework;
 using ESRI.ArcGIS.Geodatabase;
@@ -28,6 +29,7 @@ using StreetSmart.Common.Interfaces.GeoJson;
 using StreetSmart.Common.Interfaces.SLD;
 using StreetSmartArcMap.AddIns;
 using StreetSmartArcMap.Client;
+using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
 using System;
@@ -364,17 +366,30 @@ namespace StreetSmartArcMap.Layers
                     StartMeasurementEvent(typeOfLayer);
                 }
             }
-
-            //Use ArcUtils.GetColorFromEditor to get color.
         }
 
-        public static void CreateMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry)
+        public static void CreateMeasurement(IFeatureCollection features)
         {
-            var editor = ArcUtils.Editor as IEditLayers;
+            //var activeView = ArcUtils.ActiveView;
+            //var display = activeView.ScreenDisplay;
+            //var editor = ArcUtils.Editor as IEditLayers;
+            //var layer = VectorLayer.GetLayer(editor.CurrentLayer);
 
-            if (editor != null && editor.CurrentLayer != null)
+            using (var drawer = new DisplayDrawer())
             {
-                var layer = VectorLayer.GetLayer(editor.CurrentLayer);
+                foreach (var feature in features.Features)
+                {
+                    switch (feature.Geometry.Type)
+                    {
+                        case GeometryType.Point:
+                            drawer.DrawPoint(feature.Geometry as ICoordinate);
+
+                            break;
+                        default:
+                            //TODO: Measurement Implenent other types
+                            throw new NotImplementedException();
+                    }
+                }
             }
         }
 

@@ -326,8 +326,8 @@ namespace StreetSmartArcMap.DockableWindows
             }
             else
             {
-                if (args.Geometry != null)
-                    VectorLayer.CreateMeasurement(args.Geometry);
+                if (args.Features != null)
+                    VectorLayer.CreateMeasurement(args.Features);
             }
         }
 

@@ -172,6 +172,7 @@
     <Compile Include="Logic\StreetSmartApiWrapper.cs" />
     <Compile Include="Logic\Utilities\FileUtils.cs" />
     <Compile Include="Logic\Utilities\MakeTransparant.cs" />
+    <Compile Include="MeasuremenChangeEventArgs.cs" />
     <Compile Include="Objects\ViewingCone.cs" />
     <Compile Include="SelectedFeatureChangedEventArgs.cs" />
     <Compile Include="VectorLayerChangeEventArgs.cs" />

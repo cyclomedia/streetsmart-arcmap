@@ -160,9 +160,12 @@ namespace StreetSmartArcMap.Layers
             }
             set
             {
-                _isVisibleInStreetSmart = value;
+                if (IsVisibleInStreetSmart != value)
+                {
+                    _isVisibleInStreetSmart = value;
 
-                SetVisibility(value);
+                    SetVisibility(value);
+                }
             }
         }
 
@@ -363,6 +366,16 @@ namespace StreetSmartArcMap.Layers
             }
 
             //Use ArcUtils.GetColorFromEditor to get color.
+        }
+
+        public static void CreateMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry)
+        {
+            var editor = ArcUtils.Editor as IEditLayers;
+
+            if (editor != null && editor.CurrentLayer != null)
+            {
+                var layer = VectorLayer.GetLayer(editor.CurrentLayer);
+            }
         }
 
         #endregion functions (static)

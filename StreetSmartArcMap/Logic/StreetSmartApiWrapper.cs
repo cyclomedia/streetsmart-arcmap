@@ -619,11 +619,11 @@ namespace StreetSmartArcMap.Logic
                         StreetSmartAPI = StreetSmartAPIFactory.Create();
                     else
                         StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse);
+
                     StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
                     StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
                     StreetSmartAPI.ViewerAdded += StreetSmartAPI_ViewerAdded;
                     StreetSmartAPI.MeasurementChanged += StreetSmartAPI_MeasurementChanged;
-
                 }
                 else
                 {
@@ -679,7 +679,7 @@ namespace StreetSmartArcMap.Logic
                 viewer.FeatureSelectionChange += Viewer_FeatureSelectionChange;
                 viewer.LayerVisibilityChange += Viewer_LayerVisibilityChange;
                 viewer.FeatureClick += Viewer_FeatureClick;
-
+                
                 await InvokeOnViewingConeChanged(viewer);
                 InvokeOnVectorLayerChanged();
             }
@@ -1042,6 +1042,14 @@ namespace StreetSmartArcMap.Logic
 
             return new List<IList<ICoordinate>> { coordinates };
         }
+
+        //public static ESRI.ArcGIS.Geometry.IPoint ToPoint(ICoordinate coordinate)
+        //{
+        //    if (coordinate != null)
+        //        return new ESRI.ArcGIS.Geometry.Point { X = coordinate.X ?? 0, Y = coordinate.Y ?? 0, Z = coordinate.Z ?? 0 };
+        //    else
+        //        return null;
+        //}
 
         #endregion public functions
     }

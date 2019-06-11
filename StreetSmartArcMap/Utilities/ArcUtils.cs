@@ -265,6 +265,21 @@ namespace StreetSmartArcMap.Utilities
             }
         }
 
+        public static Color GetColorFromEditor(IEditor3 editor, out Color outline)
+        {
+            Color result = Color.White;
+            outline = Color.White;
+
+            var editLayers = editor as IEditLayers;
+
+            if (editLayers != null && editLayers.CurrentLayer != null)
+            {
+                result = ArcUtils.GetColorFromLayer(editLayers.CurrentLayer, out outline);
+            }
+
+            return result;
+        }
+
         public static Color GetColorFromLayer(ILayer layer, out Color outline)
         {
             Color result = Color.White;

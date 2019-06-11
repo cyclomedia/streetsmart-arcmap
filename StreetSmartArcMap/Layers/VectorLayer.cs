@@ -362,13 +362,7 @@ namespace StreetSmartArcMap.Layers
                 }
             }
 
-            //TODO: Color from layer
-            //var editLayers = editor as IEditLayers;
-            //if (editLayers != null && editLayers.CurrentLayer != null) 
-            //{
-            //    Color outline;
-            //    Color color = ArcUtils.GetColorFromLayer(editLayers.CurrentLayer, out outline);
-            //}
+            //Use ArcUtils.GetColorFromEditor to get color.
         }
 
         #endregion functions (static)

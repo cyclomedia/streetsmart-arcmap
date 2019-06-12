@@ -28,7 +28,8 @@ namespace StreetSmartArcMap.Logic
             if (point != null)
             {
                 //TODO: Measurement - Draw point to map
-                //Display.DrawPoint(point);
+                //Display.SetSymbol();
+                Display.DrawPoint(point);
             }
         }
 

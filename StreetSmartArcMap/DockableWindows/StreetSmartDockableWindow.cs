@@ -23,7 +23,6 @@ using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using StreetSmart.Common.Interfaces.Data;
 using StreetSmartArcMap.AddIns;
-using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Layers;
 using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Objects;
@@ -31,8 +30,6 @@ using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StreetSmartArcMap.DockableWindows
@@ -160,7 +157,7 @@ namespace StreetSmartArcMap.DockableWindows
                             {
                                 var feature = featureCursor.NextFeature();
 
-                                ArcUtils.Map?.SelectFeature(layer, feature); 
+                                ArcUtils.Map?.SelectFeature(layer, feature);
                             }
                         }
                     }
@@ -327,8 +324,8 @@ namespace StreetSmartArcMap.DockableWindows
             else
             {
                 // TODO: this may cause an infinite loop!
-                //if (args.Features != null)
-                //    VectorLayer.CreateMeasurement(args.Features);
+                if (args.Features != null)
+                    VectorLayer.CreateMeasurement(args.Features);
             }
         }
 
@@ -425,8 +422,5 @@ namespace StreetSmartArcMap.DockableWindows
         //        StartMeasurement(geometry, measurement, true);
         //    }
         //}
-
-
-
     }
 }

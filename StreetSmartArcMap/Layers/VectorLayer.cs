@@ -127,7 +127,6 @@ namespace StreetSmartArcMap.Layers
         public IOverlay Overlay;
 
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
-
         #endregion members
 
         #region constructor
@@ -327,11 +326,6 @@ namespace StreetSmartArcMap.Layers
                 editEvents.OnSketchFinished += OnSketchFinished;
                 editEvents.OnCurrentTaskChanged += OnCurrentTaskChanged;
             }
-
-            if (editEvents5 != null)
-            {
-                editEvents5.OnVertexSelectionChanged += OnVertexSelectionChanged;
-            }
         }
 
         private static void OnCurrentTaskChanged()
@@ -379,6 +373,23 @@ namespace StreetSmartArcMap.Layers
                 }
             }
         }
+        private static ESRI.ArcGIS.Geometry.Point ConvertToPoint(ICoordinate coord, bool withZ)
+        {
+            if (coord.X.HasValue && coord.Y.HasValue)
+            {
+                var newEditPoint = new ESRI.ArcGIS.Geometry.Point();
+                newEditPoint.X = coord.X.Value;
+                newEditPoint.Y = coord.Y.Value;
+                if (withZ)
+                {
+                    (newEditPoint as IZAware).ZAware = true;
+                    newEditPoint.Z = coord.Z.HasValue ? coord.Z.Value : 0;
+                }
+
+                return newEditPoint;
+            }
+            return null;
+        }
 
         public static void CreateMeasurement(IFeatureCollection features)
         {
@@ -391,40 +402,52 @@ namespace StreetSmartArcMap.Layers
             {
                 foreach (var feature in features.Features)
                 {
-                    var newEditFeature = layer._featureClass.CreateFeature();
                     switch (feature.Geometry.Type)
                     {
                         case GeometryType.Point:
                             var coord = feature.Geometry as ICoordinate;
-                            if (coord.X.HasValue && coord.Z.HasValue)
+                            var point = ConvertToPoint(coord, layer.HasZ);
+                            if (point != null)
                             {
-                                
-                                if (layer.HasZ)
-                                {
-
-                                    var newEditPoint = new ESRI.ArcGIS.Geometry.Point();
-                                    (newEditPoint as IZAware).ZAware = true;
-
-                                    newEditPoint.X = coord.X.Value;
-                                    newEditPoint.Y = coord.Y.Value;
-                                    newEditPoint.Z = coord.Z.Value;
-                                    newEditFeature.Shape = newEditPoint;
-                                }
-                                else
-                                {
-                                    var newEditPoint = new ESRI.ArcGIS.Geometry.Point()
-                                    {
-                                        X = coord.X.Value,
-                                        Y = coord.Y.Value
-                                    };
-                                    newEditFeature.Shape = newEditPoint;
-                                }
+                                var newEditFeature = layer._featureClass.CreateFeature();
+                                newEditFeature.Shape = point;
+                                newEditFeature.Store();
                             }
-
                             break;
 
                         case GeometryType.LineString:
                             //TODO: (STREET-1999) Measurement Implement other types
+                            var coords = feature.Geometry as List<ICoordinate>;
+                            if (coords != null)
+                            {
+                                var newPolyline = new ESRI.ArcGIS.Geometry.Polyline();
+                                
+                                foreach (var coordinate in coords)
+                                {
+                                    var pointInLine = ConvertToPoint(coordinate, layer.HasZ);
+                                    newPolyline.AddPoint(pointInLine);
+                                }
+                                if (newPolyline.PointCount > 0)
+                                {
+                                    // TODO (STREET-1999) we need something to identify the current layer objects with. I would think a dictionary with layer OID and StreetSmart ID should work.
+                                    //var cursor = layer._featureClass.Update(new QueryFilter() { WhereClause = $"{layer._featureClass.OIDFieldName}={feature.Properties["id"]}" },true);
+                                    //var origFeature = cursor.NextFeature();
+                                    
+                                    //if (origFeature != null)
+                                    //{
+                                    //    origFeature.Shape = (ESRI.ArcGIS.Geometry.IGeometry)newPolyline;
+                                    //    cursor.UpdateFeature(origFeature);
+                                    //}
+                                    //else
+                                    //{
+                                    var newEditFeature = layer._featureClass.CreateFeature();
+                                    (newPolyline as IZAware).ZAware = true;
+                                    newEditFeature.Shape = (ESRI.ArcGIS.Geometry.IGeometry)newPolyline;
+                                    newEditFeature.Store();
+                                    //}
+                                    
+                                }
+                            }
                             break;
 
                         case GeometryType.Polygon:
@@ -435,7 +458,7 @@ namespace StreetSmartArcMap.Layers
                             throw new NotImplementedException();
                     }
 
-                    newEditFeature.Store();
+                    
                 }
                 activeView.Refresh();
             }
@@ -1153,53 +1176,6 @@ namespace StreetSmartArcMap.Layers
             {
                 LogClient.Error("VectorLayer.OnSketchFinished", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnSketchFinished");
-            }
-        }
-
-        private static void OnVertexSelectionChanged()
-        {
-            try
-            {
-                IEditor3 editor = ArcUtils.Editor;
-                LogClient.Info("On vertex selection Changed");
-                _doSelection = true;
-
-                if (editor != null)
-                {
-                    var sketch = editor as IEditSketch3;
-                    var editLayers = editor as IEditLayers;
-
-                    if ((sketch != null) && (editLayers != null))
-                    {
-                        var currentLayer = editLayers.CurrentLayer;
-                        var geometry = sketch.Geometry;
-
-                        VectorLayer vectorLayer = EditFeatures.Count != 1 ? GetLayer(currentLayer) : GetLayer(EditFeatures[0]);
-
-                        if ((geometry != null) && ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart)))
-                        {
-                            // TODO: Measurement
-                            //Measurement measurement = Measurement.Get(geometry, false);
-
-                            //if (measurement != null)
-                            //{
-                            //  if (!measurement.CheckSelectedVertex())
-                            //  {
-                            //    SketchFinishedEvent();
-                            //  }
-                            //}
-                            //else
-                            //{
-                            //  SketchFinishedEvent();
-                            //}
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogClient.Error("VectorLayer.OnVertexSelectionChanged", ex.Message, ex);
-                Trace.WriteLine(ex.Message, "VectorLayer.OnVertexSelectionChanged");
             }
         }
 

@@ -323,7 +323,6 @@ namespace StreetSmartArcMap.DockableWindows
             }
             else
             {
-                // TODO: this may cause an infinite loop!
                 if (args.Features != null)
                     VectorLayer.CreateMeasurement(args.Features);
             }

@@ -119,6 +119,11 @@ namespace StreetSmartArcMap.Logic
         /// </summary>
         public bool Initialised { get; private set; }
 
+        /// <summary>
+        /// Check if the API is currently receiving an initialisation so we won't get stuck in an infinite loop.
+        /// </summary>
+        public bool BusyForMeasurement { get; private set; }
+
         #endregion public properties
 
         #region Events
@@ -130,10 +135,7 @@ namespace StreetSmartArcMap.Logic
         public MeasuremenChangeEventDelegate OnMeasuremenChanged;
         public SelectedFeatureChangeEventDelegate OnSelectedFeatureChanged;
         public FeatureClickEventDelegate OnFeatureClicked;
-
-        private bool _drawPoint;
-        private bool _sketchModified;
-
+        
         #endregion Events
 
         #region private functions
@@ -431,6 +433,7 @@ namespace StreetSmartArcMap.Logic
         {
             if (GlobeSpotterConfiguration.MeasurePermissions && geometries != null && ActiveMeasurement != null)
             {
+
                 var collection = GeoJsonFactory.CloneFeatureCollection(ActiveMeasurement);
 
                 for (int i = 0; i < collection.Features.Count; i++)
@@ -452,8 +455,15 @@ namespace StreetSmartArcMap.Logic
                         }
                     }
                 }
-                
-                StreetSmartAPI.SetActiveMeasurement(collection);
+                try
+                {
+                    BusyForMeasurement = true;
+                    StreetSmartAPI.SetActiveMeasurement(collection);
+                }
+                finally
+                {
+                    BusyForMeasurement = false;
+                }
             }
         }
 
@@ -493,7 +503,7 @@ namespace StreetSmartArcMap.Logic
         private void VectorLayer_SketchCreateEvent(ESRI.ArcGIS.Editor.IEditSketch3 sketch)
         {
 
-            if (GlobeSpotterConfiguration.MeasurePermissions && (!_sketchModified) && (!_screenPointAdded))
+            if (GlobeSpotterConfiguration.MeasurePermissions && (!_screenPointAdded))
             {
                 var geometry = sketch.Geometry;
                 //VectorLayer_FeatureStartEditEvent(new List<ESRI.ArcGIS.Geometry.IGeometry>() { geometry });
@@ -555,7 +565,6 @@ namespace StreetSmartArcMap.Logic
             if (GlobeSpotterConfiguration.MeasureLine)
             {
                 var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.LineString);
-
                 StreetSmartAPI.StartMeasurementMode(viewer, options);
             }
         }
@@ -931,19 +940,6 @@ namespace StreetSmartArcMap.Logic
             catch (StreetSmartImageNotFoundException)
             {
                 //MessageBox.Show("image openen >> kapot");
-            }
-        }
-
-        public async Task StartMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry, bool sketch)
-        {
-            if (GlobeSpotterConfiguration.MeasurePermissions && StreetSmartAPI != null)
-            {
-                var typeOfLayer = VectorLayer.GetTypeOfLayer(geometry.GeometryType);
-
-                if (typeOfLayer != TypeOfLayer.None)
-                {
-                    await CreateMeasurement(typeOfLayer);
-                }
             }
         }
 

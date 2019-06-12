@@ -17,7 +17,6 @@
  */
 
 using ESRI.ArcGIS.Carto;
-using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.Framework;
 using ESRI.ArcGIS.Geodatabase;
@@ -30,7 +29,6 @@ using StreetSmart.Common.Interfaces.SLD;
 using StreetSmartArcMap.AddIns;
 using StreetSmartArcMap.Client;
 using StreetSmartArcMap.Logic;
-using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
 using System;
 using System.Collections.Generic;
@@ -90,15 +88,25 @@ namespace StreetSmartArcMap.Layers
         // Members
         // =========================================================================
         public static event VectorLayerAddDelegate LayerAddEvent;
+
         public static event VectorLayerRemoveDelegate LayerRemoveEvent;
+
         public static event VectorLayerChangedDelegate LayerChangedEvent;
+
         public static event FeatureStartEditDelegate FeatureStartEditEvent;
+
         public static event FeatureUpdateEditDelegate FeatureUpdateEditEvent;
+
         public static event FeatureDeleteDelegate FeatureDeleteEvent;
+
         public static event StopEditDelegate StopEditEvent;
+
         public static event StartMeasurementDelegate StartMeasurementEvent;
+
         public static event SketchCreateDelegate SketchCreateEvent;
+
         public static event SketchModifiedDelegate SketchModifiedEvent;
+
         public static event SketchFinishedDelegate SketchFinishedEvent;
 
         public IStyledLayerDescriptor Sld { get; private set; }
@@ -212,12 +220,16 @@ namespace StreetSmartArcMap.Layers
             {
                 case esriGeometryType.esriGeometryPoint:
                     return TypeOfLayer.Point;
+
                 case esriGeometryType.esriGeometryLine:
                     return TypeOfLayer.Line;
+
                 case esriGeometryType.esriGeometryPolyline:
                     return TypeOfLayer.Line;
+
                 case esriGeometryType.esriGeometryPolygon:
                     return TypeOfLayer.Polygon;
+
                 default:
                     return TypeOfLayer.None;
             }
@@ -370,28 +382,62 @@ namespace StreetSmartArcMap.Layers
 
         public static void CreateMeasurement(IFeatureCollection features)
         {
-            //var activeView = ArcUtils.ActiveView;
-            //var display = activeView.ScreenDisplay;
-            //var editor = ArcUtils.Editor as IEditLayers;
-            //var layer = VectorLayer.GetLayer(editor.CurrentLayer);
+            var activeView = ArcUtils.ActiveView;
+            var display = activeView.ScreenDisplay;
+            var editor = ArcUtils.Editor as IEditLayers;
+            var layer = VectorLayer.GetLayer(editor.CurrentLayer);
 
-            using (var drawer = new DisplayDrawer())
+            if (!StreetSmartApiWrapper.Instance.BusyForMeasurement)
             {
                 foreach (var feature in features.Features)
                 {
+                    var newEditFeature = layer._featureClass.CreateFeature();
                     switch (feature.Geometry.Type)
                     {
                         case GeometryType.Point:
-                            drawer.DrawPoint(feature.Geometry as ICoordinate);
-                        //case GeometryType.LineString:
-                        //    drawer.
+                            var coord = feature.Geometry as ICoordinate;
+                            if (coord.X.HasValue && coord.Z.HasValue)
+                            {
+                                
+                                if (layer.HasZ)
+                                {
+
+                                    var newEditPoint = new ESRI.ArcGIS.Geometry.Point();
+                                    (newEditPoint as IZAware).ZAware = true;
+
+                                    newEditPoint.X = coord.X.Value;
+                                    newEditPoint.Y = coord.Y.Value;
+                                    newEditPoint.Z = coord.Z.Value;
+                                    newEditFeature.Shape = newEditPoint;
+                                }
+                                else
+                                {
+                                    var newEditPoint = new ESRI.ArcGIS.Geometry.Point()
+                                    {
+                                        X = coord.X.Value,
+                                        Y = coord.Y.Value
+                                    };
+                                    newEditFeature.Shape = newEditPoint;
+                                }
+                            }
 
                             break;
+
+                        case GeometryType.LineString:
+                            //TODO: (STREET-1999) Measurement Implement other types
+                            break;
+
+                        case GeometryType.Polygon:
+                            //TODO: (STREET-1999) Measurement Implement other types
+                            break;
+
                         default:
-                            //TODO: Measurement Implenent other types
                             throw new NotImplementedException();
                     }
+
+                    newEditFeature.Store();
                 }
+                activeView.Refresh();
             }
         }
 
@@ -402,8 +448,6 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         // Functions (Public)
         // =========================================================================
-
-
 
         public void SetVisibility(bool isVisible)
         {
@@ -482,10 +526,13 @@ namespace StreetSmartArcMap.Layers
             {
                 case TypeOfLayer.Point:
                     return SLDFactory.CreateStylePoint(SymbolizerType.Circle, 10, color, 75, outline, 0);
+
                 case TypeOfLayer.Line:
                     return SLDFactory.CreateStyleLine(color);
+
                 case TypeOfLayer.Polygon:
                     return SLDFactory.CreateStylePolygon(color, 75);
+
                 default:
                     return default(ISymbolizer);
             }
@@ -1108,7 +1155,6 @@ namespace StreetSmartArcMap.Layers
                 Trace.WriteLine(ex.Message, "VectorLayer.OnSketchFinished");
             }
         }
-
 
         private static void OnVertexSelectionChanged()
         {

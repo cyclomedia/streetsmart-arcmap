@@ -383,6 +383,8 @@ namespace StreetSmartArcMap.Layers
                     {
                         case GeometryType.Point:
                             drawer.DrawPoint(feature.Geometry as ICoordinate);
+                        //case GeometryType.LineString:
+                        //    drawer.
 
                             break;
                         default:

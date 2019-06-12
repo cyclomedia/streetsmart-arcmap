@@ -92,6 +92,7 @@ namespace StreetSmartArcMap.DockableWindows
             API.OnViewerChangeEvent += API_OnViewerChangeEvent;
             API.OnViewingConeChanged += API_OnViewingConeChanged;
             API.OnVectorLayerChanged += API_OnVectorLayerChanged;
+            API.OnMeasuremenChanged += API_OnMeasuremenChanged;
             API.OnSelectedFeatureChanged += API_OnSelectedFeatureChanged;
             API.OnFeatureClicked += API_OnFeatureClicked;
 
@@ -314,6 +315,20 @@ namespace StreetSmartArcMap.DockableWindows
             else
             {
                 args.Layer.IsVisibleInStreetSmart = true; // is this correct???
+            }
+        }
+
+        private void API_OnMeasuremenChanged(MeasuremenChangeEventArgs args)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => API_OnMeasuremenChanged(args)));
+            }
+            else
+            {
+                // TODO: this may cause an infinite loop!
+                //if (args.Features != null)
+                //    VectorLayer.CreateMeasurement(args.Features);
             }
         }
 

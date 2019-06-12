@@ -52,6 +52,7 @@ namespace StreetSmartArcMap.Configuration
         public string AddressDefaultQuery { get; set; }
 
         public string ApiSRS { get; set; }
+        public int ApiSSRAsInt => int.Parse(ApiSRS.Substring(ApiSRS.IndexOf(":") + 1));
         public string ApiUsername { get; set; }
         public string ApiPassword { get; set; }
 

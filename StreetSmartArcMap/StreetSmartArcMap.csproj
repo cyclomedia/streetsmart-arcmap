@@ -150,6 +150,7 @@
     <Compile Include="Layers\VectorLayer.cs" />
     <Compile Include="Layers\WfsLayer.cs" />
     <Compile Include="Logic\Configuration\Configuration.cs" />
+    <Compile Include="Logic\DisplayDrawer.cs" />
     <Compile Include="Logic\IStreetSmartOptions.cs" />
     <Compile Include="Logic\Model\Atlas\Height.cs" />
     <Compile Include="Logic\Model\Atlas\Image.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="Logic\StreetSmartApiWrapper.cs" />
     <Compile Include="Logic\Utilities\FileUtils.cs" />
     <Compile Include="Logic\Utilities\MakeTransparant.cs" />
+    <Compile Include="MeasuremenChangeEventArgs.cs" />
     <Compile Include="Objects\ViewingCone.cs" />
     <Compile Include="SelectedFeatureChangedEventArgs.cs" />
     <Compile Include="VectorLayerChangeEventArgs.cs" />

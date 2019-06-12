@@ -17,6 +17,7 @@
  */
 
 using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Editor;
 using ESRI.ArcGIS.Framework;
 using ESRI.ArcGIS.Geodatabase;
@@ -28,6 +29,7 @@ using StreetSmart.Common.Interfaces.GeoJson;
 using StreetSmart.Common.Interfaces.SLD;
 using StreetSmartArcMap.AddIns;
 using StreetSmartArcMap.Client;
+using StreetSmartArcMap.Logic;
 using StreetSmartArcMap.Objects;
 using StreetSmartArcMap.Utilities;
 using System;
@@ -160,9 +162,12 @@ namespace StreetSmartArcMap.Layers
             }
             set
             {
-                _isVisibleInStreetSmart = value;
+                if (IsVisibleInStreetSmart != value)
+                {
+                    _isVisibleInStreetSmart = value;
 
-                SetVisibility(value);
+                    SetVisibility(value);
+                }
             }
         }
 
@@ -212,7 +217,7 @@ namespace StreetSmartArcMap.Layers
                 case esriGeometryType.esriGeometryPolyline:
                     return TypeOfLayer.Line;
                 case esriGeometryType.esriGeometryPolygon:
-                    return TypeOfLayer.Point;
+                    return TypeOfLayer.Polygon;
                 default:
                     return TypeOfLayer.None;
             }
@@ -308,15 +313,18 @@ namespace StreetSmartArcMap.Layers
                 editEvents.OnDeleteFeature += OnDeleteFeature;
                 editEvents.OnSketchModified += OnSketchModified;
                 editEvents.OnSketchFinished += OnSketchFinished;
-
-                //TODO: uncomment?
-                //editEvents.OnCurrentTaskChanged += OnCurrentTaskChanged;
+                editEvents.OnCurrentTaskChanged += OnCurrentTaskChanged;
             }
 
             if (editEvents5 != null)
             {
                 editEvents5.OnVertexSelectionChanged += OnVertexSelectionChanged;
             }
+        }
+
+        private static void OnCurrentTaskChanged()
+        {
+            //
         }
 
         private static bool CheckEditTask()
@@ -356,6 +364,33 @@ namespace StreetSmartArcMap.Layers
                     var typeOfLayer = GetTypeOfLayer(geometry.GeometryType);
 
                     StartMeasurementEvent(typeOfLayer);
+                }
+            }
+        }
+
+        public static void CreateMeasurement(IFeatureCollection features)
+        {
+            //var activeView = ArcUtils.ActiveView;
+            //var display = activeView.ScreenDisplay;
+            //var editor = ArcUtils.Editor as IEditLayers;
+            //var layer = VectorLayer.GetLayer(editor.CurrentLayer);
+
+            using (var drawer = new DisplayDrawer())
+            {
+                foreach (var feature in features.Features)
+                {
+                    switch (feature.Geometry.Type)
+                    {
+                        case GeometryType.Point:
+                            drawer.DrawPoint(feature.Geometry as ICoordinate);
+                        //case GeometryType.LineString:
+                        //    drawer.
+
+                            break;
+                        default:
+                            //TODO: Measurement Implenent other types
+                            throw new NotImplementedException();
+                    }
                 }
             }
         }
@@ -1016,7 +1051,7 @@ namespace StreetSmartArcMap.Layers
                     {
                         ILayer currentLayer = editLayers.CurrentLayer;
                         VectorLayer vectorLayer = GetLayer(currentLayer);
-                    
+
                         if (vectorLayer != null && vectorLayer.IsVisibleInStreetSmart && CheckEditTask())
                         {
                             var geometry = sketch.Geometry;
@@ -1182,22 +1217,6 @@ namespace StreetSmartArcMap.Layers
                                 string editorCategory = (editorMenu != null) ? editorMenu.Category : string.Empty;
                                 ICommand command = tool.Command;
                                 string category = tool.Category;
-
-                                // TODO: Measurement
-                                //if (!FrmMeasurement.IsPointOpen())
-                                //{
-                                //  if (((command is IEditTool) || (category != editorCategory)) && (category != "CycloMedia"))
-                                //  {
-                                //    OnSketchFinished();
-                                //  }
-                                //}
-                                //else
-                                //{
-                                //  if ((!(command is IEditTool)) && (category == editorCategory))
-                                //  {
-                                //    FrmMeasurement.DoCloseMeasurementPoint();
-                                //  }
-                                //}
 
                                 if (category == editorCategory)
                                 {

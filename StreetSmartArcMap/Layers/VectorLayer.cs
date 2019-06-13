@@ -474,24 +474,22 @@ namespace StreetSmartArcMap.Layers
                             break;
 
                         case GeometryType.Polygon:
-                            //TODO: (STREET-1999) Measurement Implement other types
-                            var polgons = feature.Geometry as List<List<ICoordinate>>;
-                            if (polgons != null)
+                            //TODO: (STREET-1999) check what is returned on emptying the polygon
+                            var polygon = feature.Geometry as StreetSmart.Common.Interfaces.GeoJson.IPolygon; // this doesn't seem to be the correct type!
+                            if (polygon != null)
                             {
+                                var sketch = editor as IEditSketch3;
                                 var newPolygon = new ESRI.ArcGIS.Geometry.Polygon();
 
-                                foreach (var polygon in polgons)
+                                
+                                foreach (var coordinate in polygon[0])
                                 {
-                                    //newPolygon.a
-                                    foreach (var coordinate in polygon)
-                                    {
-                                        var pointInPolygon = ConvertToPoint(coordinate, layer.HasZ);
-                                        newPolygon.AddPoint(pointInPolygon);
-                                    }
+                                    var pointInPolygon = ConvertToPoint(coordinate, layer.HasZ);
+                                    newPolygon.AddPoint(pointInPolygon);
                                 }
+
                                 if (newPolygon.PointCount > 0)
                                 {
-                                    var sketch = editor as IEditSketch3;
 
                                     if (sketch != null)
                                     {

@@ -520,8 +520,7 @@ namespace StreetSmartArcMap.Logic
         {
             if (GlobeSpotterConfiguration.MeasurePermissions)
             {
-                //UpdateActiveMeasurement(null);
-                //await StopMeasurement();
+                await StopMeasurement();
             }
         }
 

@@ -122,7 +122,7 @@ namespace StreetSmartArcMap.Logic
         /// <summary>
         /// Check if the API is currently receiving an initialisation so we won't get stuck in an infinite loop.
         /// </summary>
-        public bool BusyForMeasurement { get; private set; }
+        public bool BusyForMeasurement { get; set; }
 
         #endregion public properties
 
@@ -201,8 +201,8 @@ namespace StreetSmartArcMap.Logic
                 VectorLayer.LayerRemoveEvent += VectorLayer_LayerRemoveEvent;
                 VectorLayer.LayerChangedEvent += VectorLayer_LayerChangedEvent;
 
-                // these events still need to be implemented:
                 VectorLayer.FeatureStartEditEvent += VectorLayer_FeatureStartEditEvent;
+                // these events still need to be implemented:
                 VectorLayer.FeatureUpdateEditEvent += VectorLayer_FeatureUpdateEditEvent;
                 VectorLayer.FeatureDeleteEvent += VectorLayer_FeatureDeleteEvent;
 
@@ -225,8 +225,6 @@ namespace StreetSmartArcMap.Logic
 
                 if (RequestOpen)
                     await Open(RequestSRS, RequestQuery);
-
-                StreetSmartAPI.MeasurementChanged += StreetSmartAPI_MeasurementChanged;
 
                 OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = new List<string>() });
             }
@@ -492,11 +490,11 @@ namespace StreetSmartArcMap.Logic
             //}
         }
 
-        private void VectorLayer_StopEditEvent()
+        private async void VectorLayer_StopEditEvent()
         {
             if (GlobeSpotterConfiguration.MeasurePermissions && ActiveMeasurement != null)
             {
-                StopMeasurement();
+                await StopMeasurement();
             }
         }
 
@@ -518,11 +516,12 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        private void VectorLayer_SketchFinishedEvent()
+        private async void VectorLayer_SketchFinishedEvent()
         {
             if (GlobeSpotterConfiguration.MeasurePermissions)
             {
-                // TODO MEASUREMENT: Do we need this event at all?
+                //UpdateActiveMeasurement(null);
+                //await StopMeasurement();
             }
         }
 
@@ -651,7 +650,7 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        public async void StopMeasurement()
+        public async Task StopMeasurement()
         {
             ActiveMeasurement = null;
 

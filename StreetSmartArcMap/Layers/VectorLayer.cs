@@ -160,6 +160,7 @@ namespace StreetSmartArcMap.Layers
         public ISpatialReference SpatialReference => GeometryDef.SpatialReference;
         public static IList<ESRI.ArcGIS.Geodatabase.IFeature> EditFeatures => _editFeatures ?? (_editFeatures = new List<ESRI.ArcGIS.Geodatabase.IFeature>());
         public static IList<VectorLayer> Layers => _layers ?? (_layers = DetectVectorLayers(false));
+        public static Dictionary<VectorLayer, ESRI.ArcGIS.Geodatabase.IFeature> MeasurementsList = new Dictionary<VectorLayer, ESRI.ArcGIS.Geodatabase.IFeature>();
 
         public bool IsVisibleInStreetSmart
         {
@@ -390,21 +391,34 @@ namespace StreetSmartArcMap.Layers
             }
             return null;
         }
-
         public static void CreateMeasurement(IFeatureCollection features)
         {
             var activeView = ArcUtils.ActiveView;
             var display = activeView.ScreenDisplay;
             var editor = ArcUtils.Editor as IEditLayers;
             var layer = VectorLayer.GetLayer(editor.CurrentLayer);
+            if (layer == null)
+                return; // nothing to draw in!
+
+            if (features.Type == FeatureType.Unknown)
+            {
+                var sketch = editor as IEditSketch3;
+                if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
+                {
+                    sketch.FinishSketch();
+                }
+                ArcUtils.Editor.StopEditing(true); // stop the entire edit mode.
+            }
+
 
             if (!StreetSmartApiWrapper.Instance.BusyForMeasurement)
             {
+                StreetSmartApiWrapper.Instance.BusyForMeasurement = true;
                 foreach (var feature in features.Features)
                 {
                     switch (feature.Geometry.Type)
                     {
-                        case GeometryType.Point:
+                        case GeometryType.Point: // always add a new point
                             var coord = feature.Geometry as ICoordinate;
                             var point = ConvertToPoint(coord, layer.HasZ);
                             if (point != null)
@@ -415,43 +429,79 @@ namespace StreetSmartArcMap.Layers
                             }
                             break;
 
-                        case GeometryType.LineString:
+                        case GeometryType.LineString: // change the current edit
                             //TODO: (STREET-1999) Measurement Implement other types
                             var coords = feature.Geometry as List<ICoordinate>;
                             if (coords != null)
                             {
-                                var newPolyline = new ESRI.ArcGIS.Geometry.Polyline();
-                                
-                                foreach (var coordinate in coords)
+                                var sketch = editor as IEditSketch3;
+                                if (coords.Count == 0) // reset, save current and start a new
                                 {
-                                    var pointInLine = ConvertToPoint(coordinate, layer.HasZ);
-                                    newPolyline.AddPoint(pointInLine);
+                                    if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
+                                    {
+                                        sketch.FinishSketch();
+                                        ArcUtils.Editor.StopOperation("");
+                                        break;
+                                    }
                                 }
-                                if (newPolyline.PointCount > 0)
+                                else
                                 {
-                                    // TODO (STREET-1999) we need something to identify the current layer objects with. I would think a dictionary with layer OID and StreetSmart ID should work.
-                                    //var cursor = layer._featureClass.Update(new QueryFilter() { WhereClause = $"{layer._featureClass.OIDFieldName}={feature.Properties["id"]}" },true);
-                                    //var origFeature = cursor.NextFeature();
-                                    
-                                    //if (origFeature != null)
-                                    //{
-                                    //    origFeature.Shape = (ESRI.ArcGIS.Geometry.IGeometry)newPolyline;
-                                    //    cursor.UpdateFeature(origFeature);
-                                    //}
-                                    //else
-                                    //{
-                                    var newEditFeature = layer._featureClass.CreateFeature();
-                                    (newPolyline as IZAware).ZAware = true;
-                                    newEditFeature.Shape = (ESRI.ArcGIS.Geometry.IGeometry)newPolyline;
-                                    newEditFeature.Store();
-                                    //}
-                                    
+                                    if (!sketch.Geometry.IsEmpty)
+                                    {
+                                        // TODO: detect if this is the line we just ended....
+                                        var newPolyline = new ESRI.ArcGIS.Geometry.Polyline();
+
+                                        foreach (var coordinate in coords)
+                                        {
+                                            var pointInLine = ConvertToPoint(coordinate, layer.HasZ);
+                                            newPolyline.AddPoint(pointInLine);
+                                        }
+                                        if (newPolyline.PointCount > 0)
+                                        {
+                                            //var sketch = editor as IEditSketch3;
+
+                                            if (sketch != null)
+                                            {
+                                                (newPolyline as IZAware).ZAware = true;
+                                                sketch.Geometry = (ESRI.ArcGIS.Geometry.IGeometry)newPolyline;
+                                                sketch.RefreshSketch();
+                                            }
+                                        }
+                                    }
                                 }
+
                             }
                             break;
 
                         case GeometryType.Polygon:
                             //TODO: (STREET-1999) Measurement Implement other types
+                            var polgons = feature.Geometry as List<List<ICoordinate>>;
+                            if (polgons != null)
+                            {
+                                var newPolygon = new ESRI.ArcGIS.Geometry.Polygon();
+
+                                foreach (var polygon in polgons)
+                                {
+                                    //newPolygon.a
+                                    foreach (var coordinate in polygon)
+                                    {
+                                        var pointInPolygon = ConvertToPoint(coordinate, layer.HasZ);
+                                        newPolygon.AddPoint(pointInPolygon);
+                                    }
+                                }
+                                if (newPolygon.PointCount > 0)
+                                {
+                                    var sketch = editor as IEditSketch3;
+
+                                    if (sketch != null)
+                                    {
+                                        (newPolygon as IZAware).ZAware = true;
+                                        sketch.Geometry = (ESRI.ArcGIS.Geometry.IGeometry)newPolygon;
+                                        sketch.RefreshSketch();
+                                    }
+                                }
+
+                            }
                             break;
 
                         default:
@@ -460,7 +510,7 @@ namespace StreetSmartArcMap.Layers
 
                     
                 }
-                activeView.Refresh();
+                StreetSmartApiWrapper.Instance.BusyForMeasurement = false;
             }
         }
 
@@ -1005,7 +1055,8 @@ namespace StreetSmartArcMap.Layers
 
                             if ((_doSelection && (name != "Query_SelectFeatures")) || (!isPointLayer))
                             {
-                                FeatureStartEditEvent?.Invoke(geometries);
+                                //TODO: I think this is breaking more then it fixes...
+                                //FeatureStartEditEvent?.Invoke(geometries);
 
                                 AvContentChanged();
 
@@ -1130,7 +1181,8 @@ namespace StreetSmartArcMap.Layers
                             if (lastPoint != null && lastPoint.Z == 0 && SketchCreateEvent != null && sketch.ZAware)
                                 SketchCreateEvent(sketch);
 
-                            SketchModifiedEvent?.Invoke(geometry);
+                            if (!StreetSmartApiWrapper.Instance.BusyForMeasurement)
+                                SketchModifiedEvent?.Invoke(geometry);
                         }
                     }
                 }

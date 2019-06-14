@@ -331,7 +331,17 @@ namespace StreetSmartArcMap.Layers
 
         private static void OnCurrentTaskChanged()
         {
-            //
+            //var editor = ArcUtils.Editor;
+            //var sketch = editor as IEditSketch3; ;
+
+            //if (sketch != null && sketch.Geometry != null && editor.EditState != esriEditState.esriStateNotEditing)
+            //{
+            //    var typeOfLayer = GetTypeOfLayer(sketch.Geometry.GeometryType);
+
+            //    StartMeasurementEvent(typeOfLayer);
+
+            //    OnSketchModified();
+            //}
         }
 
         private static bool CheckEditTask()
@@ -350,7 +360,7 @@ namespace StreetSmartArcMap.Layers
                     if (uniqueName != null)
                     {
                         string name = uniqueName.UniqueName;
-                        result = (name == "GarciaUI_CreateNewFeatureTask") || (name == "GarciaUI_ReshapeFeatureTask");
+                        result = (name == "GarciaUI_CreateNewFeatureTask") || (name == "GarciaUI_ReshapeFeatureTask") || (name == "GarciaUI_ModifyFeatureTask");
                     }
                 }
             }

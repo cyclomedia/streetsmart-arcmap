@@ -447,6 +447,9 @@ namespace StreetSmartArcMap.Logic
                     var measurementProperties = feature.Properties as IMeasurementProperties;
                     if (measurementProperties != null)
                     {
+                        if (feature.Geometry.Type == GeometryType.Polygon)
+                            count -= 1;
+
                         for (int c = measurementProperties.MeasureDetails.Count; c < count; c++)
                         {
                             measurementProperties.MeasureDetails.Add(GeoJsonFactory.CreateMeasureDetails());

@@ -431,7 +431,6 @@ namespace StreetSmartArcMap.Layers
                 ArcUtils.Editor.StopEditing(true);
             }
 
-
             if (!StreetSmartApiWrapper.Instance.BusyForMeasurement)
             {
                 StreetSmartApiWrapper.Instance.BusyForMeasurement = true;
@@ -452,15 +451,16 @@ namespace StreetSmartArcMap.Layers
 
                         case GeometryType.LineString:
                             var coords = feature.Geometry as List<ICoordinate>;
+
                             if (coords != null)
                             {
                                 var sketch = editor as IEditSketch3;
-                                
-                                if (coords.Count == 0) // reset, save current and start a new
+
+                                if (coords.Count == 0)
                                 {
                                     if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
                                     {
-                                        sketch.FinishSketch();
+                                        //sketch.FinishSketch();
                                         ArcUtils.Editor.StopOperation("");
                                         break;
                                     }
@@ -470,45 +470,39 @@ namespace StreetSmartArcMap.Layers
                                     sketch.Geometry = ConvertToPolyline(coords, layer.HasZ) as ESRI.ArcGIS.Geometry.IGeometry;
                                     sketch.RefreshSketch();
                                 }
-
                             }
+
                             break;
 
                         case GeometryType.Polygon:
-                            //TODO: (STREET-1999) check what is returned on emptying the polygon
-                            var polygon = feature.Geometry as StreetSmart.Common.Interfaces.GeoJson.IPolygon; // this doesn't seem to be the correct type!
+                            var polygon = feature.Geometry as StreetSmart.Common.Interfaces.GeoJson.IPolygon;
                             if (polygon != null)
                             {
                                 var sketch = editor as IEditSketch3;
                                 var newPolygon = new ESRI.ArcGIS.Geometry.Polygon();
 
-
                                 foreach (var coordinate in polygon[0])
                                 {
                                     var pointInPolygon = ConvertToPoint(coordinate, layer.HasZ);
+
                                     newPolygon.AddPoint(pointInPolygon);
                                 }
 
-                                if (newPolygon.PointCount > 0)
+                                if (sketch != null && newPolygon.PointCount > 0)
                                 {
+                                    (newPolygon as IZAware).ZAware = true;
 
-                                    if (sketch != null)
-                                    {
-                                        (newPolygon as IZAware).ZAware = true;
-                                        sketch.Geometry = (ESRI.ArcGIS.Geometry.IGeometry)newPolygon;
-                                        sketch.RefreshSketch();
-                                    }
+                                    sketch.Geometry = (ESRI.ArcGIS.Geometry.IGeometry)newPolygon;
+                                    sketch.RefreshSketch();
                                 }
-
                             }
                             break;
 
                         default:
                             throw new NotImplementedException();
                     }
-
-
                 }
+
                 StreetSmartApiWrapper.Instance.BusyForMeasurement = false;
             }
         }

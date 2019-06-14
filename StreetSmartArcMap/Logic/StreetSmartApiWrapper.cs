@@ -657,6 +657,8 @@ namespace StreetSmartArcMap.Logic
             {
                 StreetSmartAPI.StopMeasurementMode();
             }
+
+            VectorLayer.FinishMeasurement();
         }
 
         private async void NotifyViewerChange()

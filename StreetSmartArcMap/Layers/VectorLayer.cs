@@ -374,6 +374,7 @@ namespace StreetSmartArcMap.Layers
                 }
             }
         }
+
         private static ESRI.ArcGIS.Geometry.Point ConvertToPoint(ICoordinate coord, bool withZ)
         {
             if (coord.X.HasValue && coord.Y.HasValue)
@@ -391,6 +392,29 @@ namespace StreetSmartArcMap.Layers
             }
             return null;
         }
+
+        private static Polyline ConvertToPolyline(List<ICoordinate> coords, bool withZ)
+        {
+            Polyline polyline = new Polyline();
+
+            foreach (var coord in coords)
+            {
+                var point = ConvertToPoint(coord, withZ);
+
+                polyline.AddPoint(point);
+            }
+
+            return polyline;
+        }
+
+        public static void FinishMeasurement()
+        {
+            var sketch = ArcUtils.Editor as IEditSketch3;
+
+            if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
+                sketch.FinishSketch();
+        }
+
         public static void CreateMeasurement(IFeatureCollection features)
         {
             var activeView = ArcUtils.ActiveView;
@@ -402,12 +426,9 @@ namespace StreetSmartArcMap.Layers
 
             if (features.Type == FeatureType.Unknown)
             {
-                var sketch = editor as IEditSketch3;
-                if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
-                {
-                    sketch.FinishSketch();
-                }
-                ArcUtils.Editor.StopEditing(true); // stop the entire edit mode.
+                FinishMeasurement();
+
+                ArcUtils.Editor.StopEditing(true);
             }
 
 
@@ -429,12 +450,12 @@ namespace StreetSmartArcMap.Layers
                             }
                             break;
 
-                        case GeometryType.LineString: // change the current edit
-                            //TODO: (STREET-1999) Measurement Implement other types
+                        case GeometryType.LineString:
                             var coords = feature.Geometry as List<ICoordinate>;
                             if (coords != null)
                             {
                                 var sketch = editor as IEditSketch3;
+                                
                                 if (coords.Count == 0) // reset, save current and start a new
                                 {
                                     if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
@@ -446,28 +467,8 @@ namespace StreetSmartArcMap.Layers
                                 }
                                 else
                                 {
-                                    if (!sketch.Geometry.IsEmpty)
-                                    {
-                                        // TODO: detect if this is the line we just ended....
-                                        var newPolyline = new ESRI.ArcGIS.Geometry.Polyline();
-
-                                        foreach (var coordinate in coords)
-                                        {
-                                            var pointInLine = ConvertToPoint(coordinate, layer.HasZ);
-                                            newPolyline.AddPoint(pointInLine);
-                                        }
-                                        if (newPolyline.PointCount > 0)
-                                        {
-                                            //var sketch = editor as IEditSketch3;
-
-                                            if (sketch != null)
-                                            {
-                                                (newPolyline as IZAware).ZAware = true;
-                                                sketch.Geometry = (ESRI.ArcGIS.Geometry.IGeometry)newPolyline;
-                                                sketch.RefreshSketch();
-                                            }
-                                        }
-                                    }
+                                    sketch.Geometry = ConvertToPolyline(coords, layer.HasZ) as ESRI.ArcGIS.Geometry.IGeometry;
+                                    sketch.RefreshSketch();
                                 }
 
                             }
@@ -481,7 +482,7 @@ namespace StreetSmartArcMap.Layers
                                 var sketch = editor as IEditSketch3;
                                 var newPolygon = new ESRI.ArcGIS.Geometry.Polygon();
 
-                                
+
                                 foreach (var coordinate in polygon[0])
                                 {
                                     var pointInPolygon = ConvertToPoint(coordinate, layer.HasZ);
@@ -506,7 +507,7 @@ namespace StreetSmartArcMap.Layers
                             throw new NotImplementedException();
                     }
 
-                    
+
                 }
                 StreetSmartApiWrapper.Instance.BusyForMeasurement = false;
             }

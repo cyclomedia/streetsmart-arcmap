@@ -127,7 +127,7 @@ namespace StreetSmartArcMap.Layers
 
         public IOverlay Overlay;
 
-        private static ESRI.ArcGIS.Geometry.IGeometry ActiveMeasurement;
+        private static string CurrentMeasurementID = "";
 
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
         #endregion members
@@ -495,6 +495,23 @@ namespace StreetSmartArcMap.Layers
                 sketch.FinishSketch();
         }
 
+        public static bool IsNewMeasurement(IFeatureCollection features)
+        {
+            if (features != null && features.Features.Count > 0)
+            {
+                var id = features.Features.First().Properties.Where(p => p.Key == "Id").Select(p => p.Value.ToString()).FirstOrDefault();
+
+                if (CurrentMeasurementID != id)
+                {
+                    CurrentMeasurementID = id;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static void CreateMeasurement(IFeatureCollection features)
         {
             var activeView = ArcUtils.ActiveView;
@@ -503,6 +520,8 @@ namespace StreetSmartArcMap.Layers
             var layer = VectorLayer.GetLayer(editor.CurrentLayer);
             if (layer == null)
                 return; // nothing to draw in!
+
+            var isNew = IsNewMeasurement(features);
 
             //Type is unknown when measurement is closed in Street Smart or a new one is started.
             if (features.Type == FeatureType.Unknown)
@@ -515,7 +534,6 @@ namespace StreetSmartArcMap.Layers
             if (!StreetSmartApiWrapper.Instance.BusyForMeasurement)
             {
                 StreetSmartApiWrapper.Instance.BusyForMeasurement = true;
-                ActiveMeasurement = null;
 
                 foreach (var feature in features.Features)
                 {
@@ -531,8 +549,6 @@ namespace StreetSmartArcMap.Layers
                                 newEditFeature.Store();
                             }
 
-                            ActiveMeasurement = point;
-
                             break;
 
                         case GeometryType.LineString:
@@ -542,10 +558,16 @@ namespace StreetSmartArcMap.Layers
                             {
                                 var sketch = editor as IEditSketch3;
 
-                                sketch.Geometry = ConvertToPolyline(coords, layer.HasZ) as ESRI.ArcGIS.Geometry.IGeometry;
-                                sketch.RefreshSketch();
-
-                                ActiveMeasurement = sketch.Geometry;
+                                if (isNew)
+                                {
+                                    if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
+                                        sketch.FinishSketch();
+                                }
+                                else
+                                {
+                                    sketch.Geometry = ConvertToPolyline(coords, layer.HasZ) as ESRI.ArcGIS.Geometry.IGeometry;
+                                    sketch.RefreshSketch();
+                                }
                             }
 
                             break;
@@ -570,8 +592,6 @@ namespace StreetSmartArcMap.Layers
 
                                     sketch.Geometry = (ESRI.ArcGIS.Geometry.IGeometry)newPolygon;
                                     sketch.RefreshSketch();
-
-                                    ActiveMeasurement = sketch.Geometry;
                                 }
                             }
 

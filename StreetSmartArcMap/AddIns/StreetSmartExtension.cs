@@ -229,6 +229,9 @@ namespace StreetSmartArcMap.AddIns
         public void RemoveLayer(string name)
         {
             CycloMediaGroupLayer?.RemoveLayer(name);
+
+            CycloMediaGroupLayer?.Dispose();
+            CycloMediaGroupLayer = null;
         }
 
         public void RemoveLayers()

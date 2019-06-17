@@ -434,6 +434,7 @@ namespace StreetSmartArcMap.Layers
             if (layer == null)
                 return; // nothing to draw in!
 
+            //Type is unknown when measurement is closed in Street Smart or a new one is started.
             if (features.Type == FeatureType.Unknown)
             {
                 FinishMeasurement();
@@ -468,12 +469,7 @@ namespace StreetSmartArcMap.Layers
 
                                 if (coords.Count == 0)
                                 {
-                                    if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
-                                    {
-                                        //sketch.FinishSketch();
-                                        ArcUtils.Editor.StopOperation("");
-                                        break;
-                                    }
+                                    FinishMeasurement();
                                 }
                                 else
                                 {

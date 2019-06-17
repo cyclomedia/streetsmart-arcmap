@@ -406,6 +406,7 @@ namespace StreetSmartArcMap.Layers
         private static Polyline ConvertToPolyline(List<ICoordinate> coords, bool withZ)
         {
             Polyline polyline = new Polyline();
+            ((PolylineClass)(polyline)).ZAware = withZ;
 
             foreach (var coord in coords)
             {
@@ -467,15 +468,8 @@ namespace StreetSmartArcMap.Layers
                             {
                                 var sketch = editor as IEditSketch3;
 
-                                if (coords.Count == 0)
-                                {
-                                    FinishMeasurement();
-                                }
-                                else
-                                {
-                                    sketch.Geometry = ConvertToPolyline(coords, layer.HasZ) as ESRI.ArcGIS.Geometry.IGeometry;
-                                    sketch.RefreshSketch();
-                                }
+                                sketch.Geometry = ConvertToPolyline(coords, layer.HasZ) as ESRI.ArcGIS.Geometry.IGeometry;
+                                sketch.RefreshSketch();
                             }
 
                             break;
@@ -760,7 +754,7 @@ namespace StreetSmartArcMap.Layers
                                         point.Z = double.NaN;
                                     }
                                 }
-                                ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y);
+                                ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y, point.Z);
                                 pointCollectionJson.Add(pJson);
                             }
 

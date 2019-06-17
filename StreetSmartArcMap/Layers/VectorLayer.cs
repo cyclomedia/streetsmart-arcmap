@@ -561,7 +561,14 @@ namespace StreetSmartArcMap.Layers
                                 if (isNew)
                                 {
                                     if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
+                                    {
+                                        // New measurement from Street Smart
                                         sketch.FinishSketch();
+                                    }
+                                    else
+                                    {
+                                        // New measurement from map
+                                    }
                                 }
                                 else
                                 {

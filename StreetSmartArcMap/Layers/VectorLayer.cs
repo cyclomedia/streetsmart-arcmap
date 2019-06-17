@@ -390,6 +390,23 @@ namespace StreetSmartArcMap.Layers
             return (distance * 3) / 4;
         }
 
+        private static ESRI.ArcGIS.Geometry.IPolygon GetLabelBox(IDisplay display, ESRI.ArcGIS.Geometry.IPoint point)
+        {
+            IDisplayTransformation dispTrans = display.DisplayTransformation;
+
+            var polygon = new PolygonClass();
+
+            //TODO: STREET-2002
+            polygon.AddPoint(new PointClass { X = point.X - dispTrans.FromPoints(8), Y = point.Y - dispTrans.FromPoints(8) });
+            polygon.AddPoint(new PointClass { X = point.X + dispTrans.FromPoints(8), Y = point.Y - dispTrans.FromPoints(8) });
+            polygon.AddPoint(new PointClass { X = point.X + dispTrans.FromPoints(8), Y = point.Y + dispTrans.FromPoints(8) });
+            polygon.AddPoint(new PointClass { X = point.X - dispTrans.FromPoints(8), Y = point.Y + dispTrans.FromPoints(8) });
+
+            polygon.Close();
+
+            return polygon;
+        }
+
         private static void AvEvents_AfterDraw(IDisplay display, esriViewDrawPhase phase)
         {
             var sketch = ArcUtils.Editor as IEditSketch3;
@@ -409,18 +426,27 @@ namespace StreetSmartArcMap.Layers
 
                 var offset = GetLabelOffset(display);
 
-                RgbColor color = new RgbColorClass { Red = 255, Green = 255, Blue = 255 };
-                ISymbol textSymbol = new TextSymbolClass { Font = fontDisp as stdole.IFontDisp, Color = color };
+                RgbColor white = new RgbColorClass { Red = 255, Green = 255, Blue = 255 };
+                RgbColor black = new RgbColorClass { Red = 0, Green = 0, Blue = 0 };
+                ISymbol textSymbol = new TextSymbolClass { Font = fontDisp as stdole.IFontDisp, Color = black };
                 display.SetSymbol(textSymbol);
+
+                ISimpleFillSymbol simpleFillSymbol = new SimpleFillSymbolClass { Color = white };
+                ISymbol boxSymbol = simpleFillSymbol as ISymbol;
+                boxSymbol.ROP2 = esriRasterOpCode.esriROPWhite;
 
                 var points = GetGeometryPoints(sketch.Geometry);
 
                 for (int i = 0; i < points.Count; i++)
                 {
                     var point = points[i];
-
                     var labelPoint = new PointClass { X = point.X + offset, Y = point.Y + offset };
                     var labelText = (i + 1).ToString();
+
+                    display.SetSymbol(boxSymbol);
+                    display.DrawPolygon(GetLabelBox(display, labelPoint));
+
+                    display.SetSymbol(textSymbol);
                     display.DrawText(labelPoint, labelText);
                 }
 

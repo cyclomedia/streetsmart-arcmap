@@ -317,7 +317,8 @@ namespace StreetSmartArcMap.Layers
                 avEvents.ItemDeleted += AvItemDeleted;
                 avEvents.ContentsChanged += AvContentChanged;
                 avEvents.ViewRefreshed += AvViewRefreshed;
-                //avEvents.AfterDraw += AvEvents_AfterDraw;
+                //TODO: STREET-2002
+                avEvents.AfterDraw += AvEvents_AfterDraw;
             }
 
             if (editEvents != null)
@@ -380,6 +381,15 @@ namespace StreetSmartArcMap.Layers
             return points;
         }
 
+        private static double GetLabelOffset(IDisplay display)
+        {
+            IDisplayTransformation dispTrans = display.DisplayTransformation;
+
+            double distance = dispTrans.FromPoints(8);
+
+            return (distance * 3) / 4;
+        }
+
         private static void AvEvents_AfterDraw(IDisplay display, esriViewDrawPhase phase)
         {
             var sketch = ArcUtils.Editor as IEditSketch3;
@@ -396,6 +406,9 @@ namespace StreetSmartArcMap.Layers
                     Underline = false,
                     Size = 8,
                 };
+
+                var offset = GetLabelOffset(display);
+
                 RgbColor color = new RgbColorClass { Red = 255, Green = 255, Blue = 255 };
                 ISymbol textSymbol = new TextSymbolClass { Font = fontDisp as stdole.IFontDisp, Color = color };
                 display.SetSymbol(textSymbol);
@@ -406,7 +419,9 @@ namespace StreetSmartArcMap.Layers
                 {
                     var point = points[i];
 
-                    display.DrawText(point, (i + 1).ToString());
+                    var labelPoint = new PointClass { X = point.X + offset, Y = point.Y + offset };
+                    var labelText = (i + 1).ToString();
+                    display.DrawText(labelPoint, labelText);
                 }
 
                 display.FinishDrawing();

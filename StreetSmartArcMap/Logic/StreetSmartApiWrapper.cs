@@ -177,8 +177,6 @@ namespace StreetSmartArcMap.Logic
         {
             try
             {
-                //await RestartStreetSmartAPI(StreetSmartOptions);
-
                 if (StreetSmartOptions != null)
                 {
                     if (Config.DevTools)
@@ -191,8 +189,6 @@ namespace StreetSmartArcMap.Logic
                         OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, StreetSmartOptions.ConfigurationUrlToUse, addressSettings, element);
 
                     await StreetSmartAPI.Init(ApiOptions);
-
-
                 }
 
                 VectorLayer.DetectVectorLayers(true);
@@ -202,7 +198,6 @@ namespace StreetSmartArcMap.Logic
                 VectorLayer.LayerChangedEvent += VectorLayer_LayerChangedEvent;
 
                 VectorLayer.FeatureStartEditEvent += VectorLayer_FeatureStartEditEvent;
-                // these events still need to be implemented:
                 VectorLayer.FeatureUpdateEditEvent += VectorLayer_FeatureUpdateEditEvent;
                 VectorLayer.FeatureDeleteEvent += VectorLayer_FeatureDeleteEvent;
 

@@ -98,6 +98,8 @@ namespace StreetSmartArcMap.Layers
         public override int SizeLayer { get { return 7; } }
         public override bool UseDateRange { get { return false; } }
 
+        public bool HasBeenAdded { get; private set; }
+
         public override string WfsRequest
         {
             get
@@ -156,39 +158,44 @@ namespace StreetSmartArcMap.Layers
 
         protected override void PostEntryStep()
         {
-            IActiveView activeView = ArcUtils.ActiveView;
-            IEnvelope envelope = activeView.Extent;
-
-            var geoFeatureLayer = Layer as IGeoFeatureLayer;
-
-            if (geoFeatureLayer != null)
+            if (!HasBeenAdded)
             {
-                var featureRenderer = geoFeatureLayer.Renderer;
-                var uniqueValueRenderer = featureRenderer as IUniqueValueRenderer;
+                IActiveView activeView = ArcUtils.ActiveView;
+                IEnvelope envelope = activeView.Extent;
 
-                if (uniqueValueRenderer != null)
+                var geoFeatureLayer = Layer as IGeoFeatureLayer;
+
+                if (geoFeatureLayer != null)
                 {
-                    var hasDepthMarker = new SimpleMarkerSymbol()
+                    var featureRenderer = geoFeatureLayer.Renderer;
+                    var uniqueValueRenderer = featureRenderer as IUniqueValueRenderer;
+
+                    if (uniqueValueRenderer != null)
                     {
-                        Color = Converter.ToRGBColor(Color.FromArgb(170, 152, 194, 60)),
-                        Size = SizeLayer
-                    };
-                    var className = string.Format("{0}", true);
-                    uniqueValueRenderer.AddValue(className, string.Empty, hasDepthMarker as ISymbol);
+                        var hasDepthMarker = new SimpleMarkerSymbol()
+                        {
+                            Color = Converter.ToRGBColor(Color.FromArgb(170, 152, 194, 60)),
+                            Size = SizeLayer
+                        };
+                        var className = string.Format("{0}", true);
+                        uniqueValueRenderer.AddValue(className, string.Empty, hasDepthMarker as ISymbol);
 
-                    uniqueValueRenderer.Label[className] = Properties.Resources.WithDepthMap;
-                    var hasNoDepthMarker = new SimpleMarkerSymbol()
-                    {
-                        Color = Converter.ToRGBColor(Color.FromArgb(170, 128, 176, 255)),
-                        Size = SizeLayer
-                    };
+                        uniqueValueRenderer.Label[className] = Properties.Resources.WithDepthMap;
+                        var hasNoDepthMarker = new SimpleMarkerSymbol()
+                        {
+                            Color = Converter.ToRGBColor(Color.FromArgb(170, 128, 176, 255)),
+                            Size = SizeLayer
+                        };
 
-                    className = string.Format("{0}", false);
-                    uniqueValueRenderer.AddValue(className, string.Empty, hasNoDepthMarker as ISymbol);
+                        className = string.Format("{0}", false);
+                        uniqueValueRenderer.AddValue(className, string.Empty, hasNoDepthMarker as ISymbol);
 
-                    uniqueValueRenderer.Label[className] = Properties.Resources.WithoutDepthMap;
-                    activeView.ContentsChanged();
+                        uniqueValueRenderer.Label[className] = Properties.Resources.WithoutDepthMap;
+                        activeView.ContentsChanged();
+                    }
                 }
+
+                HasBeenAdded = true;
             }
         }
 
@@ -303,10 +310,9 @@ namespace StreetSmartArcMap.Layers
             _minimumScale = 2000.0;
         }
 
-        public RecordingLayer(CycloMediaGroupLayer layer)
-          : base(layer)
+        public RecordingLayer(CycloMediaGroupLayer layer) : base(layer)
         {
-            // empty
+            //
         }
 
         #endregion constructor

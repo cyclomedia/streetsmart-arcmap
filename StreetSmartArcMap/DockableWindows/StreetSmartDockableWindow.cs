@@ -181,7 +181,7 @@ namespace StreetSmartArcMap.DockableWindows
                 //Deselect
                 if (args == null || args.FeatureInfo == null || string.IsNullOrWhiteSpace(args.FeatureInfo.LayerId))
                 {
-                    ArcUtils.Map.ClearSelection();
+                    ArcUtils.Map?.ClearSelection();
                     ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
                 }
             }
@@ -323,7 +323,6 @@ namespace StreetSmartArcMap.DockableWindows
             }
             else
             {
-                // TODO: this may cause an infinite loop!
                 if (args.Features != null)
                     VectorLayer.CreateMeasurement(args.Features);
             }

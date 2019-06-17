@@ -150,7 +150,6 @@
     <Compile Include="Layers\VectorLayer.cs" />
     <Compile Include="Layers\WfsLayer.cs" />
     <Compile Include="Logic\Configuration\Configuration.cs" />
-    <Compile Include="Logic\DisplayDrawer.cs" />
     <Compile Include="Logic\IStreetSmartOptions.cs" />
     <Compile Include="Logic\Model\Atlas\Height.cs" />
     <Compile Include="Logic\Model\Atlas\Image.cs" />

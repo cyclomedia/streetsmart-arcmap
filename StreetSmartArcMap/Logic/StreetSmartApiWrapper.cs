@@ -122,7 +122,7 @@ namespace StreetSmartArcMap.Logic
         /// <summary>
         /// Check if the API is currently receiving an initialisation so we won't get stuck in an infinite loop.
         /// </summary>
-        public bool BusyForMeasurement { get; private set; }
+        public bool BusyForMeasurement { get; set; }
 
         #endregion public properties
 
@@ -177,8 +177,6 @@ namespace StreetSmartArcMap.Logic
         {
             try
             {
-                //await RestartStreetSmartAPI(StreetSmartOptions);
-
                 if (StreetSmartOptions != null)
                 {
                     if (Config.DevTools)
@@ -191,8 +189,6 @@ namespace StreetSmartArcMap.Logic
                         OptionsFactory.Create(StreetSmartOptions.ApiUsername, StreetSmartOptions.ApiPassword, ApiKey, StreetSmartOptions.ApiSRS, StreetSmartOptions.LocaleToUse, StreetSmartOptions.ConfigurationUrlToUse, addressSettings, element);
 
                     await StreetSmartAPI.Init(ApiOptions);
-
-
                 }
 
                 VectorLayer.DetectVectorLayers(true);
@@ -201,7 +197,6 @@ namespace StreetSmartArcMap.Logic
                 VectorLayer.LayerRemoveEvent += VectorLayer_LayerRemoveEvent;
                 VectorLayer.LayerChangedEvent += VectorLayer_LayerChangedEvent;
 
-                // these events still need to be implemented:
                 VectorLayer.FeatureStartEditEvent += VectorLayer_FeatureStartEditEvent;
                 VectorLayer.FeatureUpdateEditEvent += VectorLayer_FeatureUpdateEditEvent;
                 VectorLayer.FeatureDeleteEvent += VectorLayer_FeatureDeleteEvent;
@@ -225,8 +220,6 @@ namespace StreetSmartArcMap.Logic
 
                 if (RequestOpen)
                     await Open(RequestSRS, RequestQuery);
-
-                StreetSmartAPI.MeasurementChanged += StreetSmartAPI_MeasurementChanged;
 
                 OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = new List<string>() });
             }
@@ -449,6 +442,9 @@ namespace StreetSmartArcMap.Logic
                     var measurementProperties = feature.Properties as IMeasurementProperties;
                     if (measurementProperties != null)
                     {
+                        if (feature.Geometry.Type == GeometryType.Polygon)
+                            count -= 1;
+
                         for (int c = measurementProperties.MeasureDetails.Count; c < count; c++)
                         {
                             measurementProperties.MeasureDetails.Add(GeoJsonFactory.CreateMeasureDetails());
@@ -492,11 +488,11 @@ namespace StreetSmartArcMap.Logic
             //}
         }
 
-        private void VectorLayer_StopEditEvent()
+        private async void VectorLayer_StopEditEvent()
         {
             if (GlobeSpotterConfiguration.MeasurePermissions && ActiveMeasurement != null)
             {
-                StopMeasurement();
+                await StopMeasurement();
             }
         }
 
@@ -518,11 +514,11 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        private void VectorLayer_SketchFinishedEvent()
+        private async void VectorLayer_SketchFinishedEvent()
         {
             if (GlobeSpotterConfiguration.MeasurePermissions)
             {
-                // TODO MEASUREMENT: Do we need this event at all?
+                await StopMeasurement();
             }
         }
 
@@ -651,7 +647,7 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        public async void StopMeasurement()
+        public async Task StopMeasurement()
         {
             ActiveMeasurement = null;
 
@@ -659,6 +655,8 @@ namespace StreetSmartArcMap.Logic
             {
                 StreetSmartAPI.StopMeasurementMode();
             }
+
+            VectorLayer.FinishMeasurement();
         }
 
         private async void NotifyViewerChange()

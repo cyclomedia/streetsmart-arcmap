@@ -561,9 +561,30 @@ namespace StreetSmartArcMap.Layers
             var activeView = ArcUtils.ActiveView;
             var display = activeView.ScreenDisplay;
             var editor = ArcUtils.Editor as IEditLayers;
+
+            
+
             var layer = VectorLayer.GetLayer(editor.CurrentLayer);
             if (layer == null)
-                return; // nothing to draw in!
+            {
+
+                var selection = (IEnumFeature)ArcUtils.ActiveView.FocusMap.FeatureSelection;
+                var f = selection.Next();
+                if (f != null)
+                {
+                    var l = VectorLayer.GetLayer(f);
+                    if (l != null)
+                    {
+                        editor.SetCurrentLayer((IFeatureLayer)l._layer, 0);
+                        layer = l;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+                
 
             var isNew = IsNewMeasurement(features);
 
@@ -1180,9 +1201,12 @@ namespace StreetSmartArcMap.Layers
                         }
                         if (EditFeatures.Count > 0 && !StreetSmartApiWrapper.Instance.BusyForMeasurement)
                         {
-                           
                             await StreetSmartApiWrapper.Instance.CreateMeasurement(GetTypeOfLayer(EditFeatures[0].Shape.GeometryType));
-                            StreetSmartApiWrapper.Instance.UpdateActiveMeasurement(EditFeatures[0].Shape);
+
+                            if (EditFeatures.Count > 0 && !StreetSmartApiWrapper.Instance.BusyForMeasurement) //the await can remove the selection in between, so recheck to be sure.
+                            {
+                                StreetSmartApiWrapper.Instance.UpdateActiveMeasurement(EditFeatures[0].Shape);
+                            }
                         }
                         if (FeatureStartEditEvent != null)
                         {

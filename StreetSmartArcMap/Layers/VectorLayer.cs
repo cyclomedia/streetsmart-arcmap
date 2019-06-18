@@ -1153,7 +1153,7 @@ namespace StreetSmartArcMap.Layers
             }
         }
 
-        private static void OnSelectionChanged()
+        private static async void OnSelectionChanged()
         {
             try
             {
@@ -1178,7 +1178,12 @@ namespace StreetSmartArcMap.Layers
                         {
                             EditFeatures.Add(feature);
                         }
-
+                        if (EditFeatures.Count > 0 && !StreetSmartApiWrapper.Instance.BusyForMeasurement)
+                        {
+                           
+                            await StreetSmartApiWrapper.Instance.CreateMeasurement(GetTypeOfLayer(EditFeatures[0].Shape.GeometryType));
+                            StreetSmartApiWrapper.Instance.UpdateActiveMeasurement(EditFeatures[0].Shape);
+                        }
                         if (FeatureStartEditEvent != null)
                         {
                             var geometries = new List<ESRI.ArcGIS.Geometry.IGeometry>();
@@ -1208,7 +1213,7 @@ namespace StreetSmartArcMap.Layers
                                 if (_nextSelectionTimer == null)
                                 {
                                     var checkEvent = new AutoResetEvent(true);
-                                    const int timeOutTime = 1500;
+                                    const int timeOutTime = 1500; 
 
                                     var checkTimerCallBack = new TimerCallback(CheckTimerCallBack);
 

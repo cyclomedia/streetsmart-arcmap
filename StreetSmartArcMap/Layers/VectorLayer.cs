@@ -1178,12 +1178,12 @@ namespace StreetSmartArcMap.Layers
                         {
                             EditFeatures.Add(feature);
                         }
-                        if (EditFeatures.Count > 0 && !StreetSmartApiWrapper.Instance.BusyForMeasurement)
-                        {
+                        //if (EditFeatures.Count > 0 && !StreetSmartApiWrapper.Instance.BusyForMeasurement)
+                        //{
                            
-                            await StreetSmartApiWrapper.Instance.CreateMeasurement(GetTypeOfLayer(EditFeatures[0].Shape.GeometryType));
-                            StreetSmartApiWrapper.Instance.UpdateActiveMeasurement(EditFeatures[0].Shape);
-                        }
+                        //    await StreetSmartApiWrapper.Instance.CreateMeasurement(GetTypeOfLayer(EditFeatures[0].Shape.GeometryType));
+                        //    StreetSmartApiWrapper.Instance.UpdateActiveMeasurement(EditFeatures[0].Shape);
+                        //}
                         if (FeatureStartEditEvent != null)
                         {
                             var geometries = new List<ESRI.ArcGIS.Geometry.IGeometry>();

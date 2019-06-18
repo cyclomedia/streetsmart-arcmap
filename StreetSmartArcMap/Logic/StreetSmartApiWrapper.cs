@@ -687,7 +687,7 @@ namespace StreetSmartArcMap.Logic
 
                 viewer.ImageChange += Viewer_ImageChange;
                 viewer.ViewChange += Viewer_ViewChange;
-                viewer.FeatureSelectionChange += Viewer_FeatureSelectionChange;
+                //viewer.FeatureSelectionChange += Viewer_FeatureSelectionChange;
                 viewer.LayerVisibilityChange += Viewer_LayerVisibilityChange;
                 viewer.FeatureClick += Viewer_FeatureClick;
 
@@ -706,15 +706,15 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        private async void Viewer_FeatureSelectionChange(object sender, IEventArgs<IFeatureInfo> e)
-        {
-            if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
-            {
-                var viewer = sender as IPanoramaViewer;
-                IFeatureInfo featureInfo = e.Value;
-                await InvokeOnSelectedFeatureChanged(viewer, featureInfo);
-            }
-        }
+        //private async void Viewer_FeatureSelectionChange(object sender, IEventArgs<IFeatureInfo> e)
+        //{
+        //    if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
+        //    {
+        //        var viewer = sender as IPanoramaViewer;
+        //        IFeatureInfo featureInfo = e.Value;
+        //        await InvokeOnSelectedFeatureChanged(viewer, featureInfo);
+        //    }
+        //}
 
         private void Viewer_LayerVisibilityChange(object sender, IEventArgs<StreetSmart.Common.Interfaces.Data.ILayerInfo> e)
         {

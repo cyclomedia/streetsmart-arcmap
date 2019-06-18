@@ -192,7 +192,7 @@ namespace StreetSmartArcMap.AddIns
                 {
                     arcEvents.ItemDeleted -= ItemDeleted;
                     arcEvents.AfterDraw -= Afterdraw;
-                    //arcEvents.SelectionChanged -= SelectionChanged;
+                    arcEvents.SelectionChanged -= SelectionChanged;
 
                 }
 
@@ -279,7 +279,7 @@ namespace StreetSmartArcMap.AddIns
                 {
                     arcEvents.ItemDeleted += ItemDeleted;
                     arcEvents.AfterDraw += Afterdraw;
-                    //arcEvents.SelectionChanged += SelectionChanged;
+                    arcEvents.SelectionChanged += SelectionChanged;
                 }
 
                 OpenDocumentEvent?.Invoke();
@@ -296,27 +296,27 @@ namespace StreetSmartArcMap.AddIns
             StreetSmartRecordingsLayer.AddToMenu();
         }
 
-        //private async void SelectionChanged()
-        //{
-        //    var map = ArcUtils.Map;
-        //    var setup = (IEnumFeatureSetup)map.FeatureSelection;
-        //    setup.AllFields = true;
-        //    var selection = (IEnumFeature)map.FeatureSelection;
-        //    IFeature feature = selection.Next();
+        private async void SelectionChanged()
+        {
+            var map = ArcUtils.Map;
+            var setup = (IEnumFeatureSetup)map.FeatureSelection;
+            setup.AllFields = true;
+            var selection = (IEnumFeature)map.FeatureSelection;
+            IFeature feature = selection.Next();
 
-        //    if (feature == null) // no selection
-        //    {
-        //        await StreetSmartApiWrapper.Instance.DeselectAll();
-        //    }
+            if (feature == null) // no selection
+            {
+                await StreetSmartApiWrapper.Instance.DeselectAll();
+            }
 
-        //    while (feature != null)
-        //    {
-        //        await StreetSmartApiWrapper.Instance.Select(feature);
-        //        feature = selection.Next();
-        //    }
+            while (feature != null)
+            {
+                await StreetSmartApiWrapper.Instance.Select(feature);
+                feature = selection.Next();
+            }
 
-        //    ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
-        //}
+            ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
+        }
 
         private void CloseDocument()
         {

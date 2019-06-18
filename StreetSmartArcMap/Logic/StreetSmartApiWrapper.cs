@@ -191,8 +191,6 @@ namespace StreetSmartArcMap.Logic
                     await StreetSmartAPI.Init(ApiOptions);
                 }
 
-                VectorLayer.DetectVectorLayers(true);
-
                 VectorLayer.LayerAddEvent += VectorLayer_LayerAddEvent;
                 VectorLayer.LayerRemoveEvent += VectorLayer_LayerRemoveEvent;
                 VectorLayer.LayerChangedEvent += VectorLayer_LayerChangedEvent;
@@ -207,6 +205,9 @@ namespace StreetSmartArcMap.Logic
                 VectorLayer.SketchCreateEvent += VectorLayer_SketchCreateEvent;
                 VectorLayer.SketchModifiedEvent += VectorLayer_SketchModifiedEvent;
                 VectorLayer.SketchFinishedEvent += VectorLayer_SketchFinishedEvent;
+
+                VectorLayer.DetectVectorLayers(true);
+
 
                 // Open image
                 ViewerTypes = new List<ViewerType> { ViewerType.Panorama };
@@ -310,7 +311,7 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        private bool AddVectorInChange(VectorLayer layer)
+        private bool AddVectorInChange(VectorLayer layer) 
         {
             if (_vectorLayerInChange.Any(v => v.Name == layer.Name))
             {
@@ -384,7 +385,7 @@ namespace StreetSmartArcMap.Logic
         {
             if (StreetSmartAPI != null && layer != null)
             {
-                if (AddVectorInChange(layer))
+                if (AddVectorInChange(layer)) // TODO some other proces is locking this layer, that's the reason we don't add it....
                 {
                     try
                     {

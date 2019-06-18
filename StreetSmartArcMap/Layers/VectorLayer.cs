@@ -990,7 +990,6 @@ namespace StreetSmartArcMap.Layers
             try
             {
                 DetectVectorLayers(false);
-                //AddEvents();
             }
             catch (Exception ex)
             {

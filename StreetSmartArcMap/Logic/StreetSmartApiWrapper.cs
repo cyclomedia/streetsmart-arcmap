@@ -415,7 +415,7 @@ namespace StreetSmartArcMap.Logic
             UpdateActiveMeasurement(geometries);
         }
 
-        private void UpdateActiveMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry)
+        public void UpdateActiveMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry)
         {
             var geometries = new List<ESRI.ArcGIS.Geometry.IGeometry> { geometry };
 

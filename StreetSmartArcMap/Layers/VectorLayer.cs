@@ -317,7 +317,8 @@ namespace StreetSmartArcMap.Layers
                 avEvents.ItemDeleted += AvItemDeleted;
                 avEvents.ContentsChanged += AvContentChanged;
                 avEvents.ViewRefreshed += AvViewRefreshed;
-                //avEvents.AfterDraw += AvEvents_AfterDraw;
+                //TODO: STREET-2002
+                avEvents.AfterDraw += AvEvents_AfterDraw;
             }
 
             if (editEvents != null)
@@ -380,6 +381,32 @@ namespace StreetSmartArcMap.Layers
             return points;
         }
 
+        private static double GetLabelOffset(IDisplay display)
+        {
+            IDisplayTransformation dispTrans = display.DisplayTransformation;
+
+            double distance = dispTrans.FromPoints(8);
+
+            return (distance * 3) / 4;
+        }
+
+        private static ESRI.ArcGIS.Geometry.IPolygon GetLabelBox(IDisplay display, ESRI.ArcGIS.Geometry.IPoint point)
+        {
+            IDisplayTransformation dispTrans = display.DisplayTransformation;
+
+            var polygon = new PolygonClass();
+
+            //TODO: STREET-2002
+            polygon.AddPoint(new PointClass { X = point.X - dispTrans.FromPoints(8), Y = point.Y - dispTrans.FromPoints(8) });
+            polygon.AddPoint(new PointClass { X = point.X + dispTrans.FromPoints(8), Y = point.Y - dispTrans.FromPoints(8) });
+            polygon.AddPoint(new PointClass { X = point.X + dispTrans.FromPoints(8), Y = point.Y + dispTrans.FromPoints(8) });
+            polygon.AddPoint(new PointClass { X = point.X - dispTrans.FromPoints(8), Y = point.Y + dispTrans.FromPoints(8) });
+
+            polygon.Close();
+
+            return polygon;
+        }
+
         private static void AvEvents_AfterDraw(IDisplay display, esriViewDrawPhase phase)
         {
             var sketch = ArcUtils.Editor as IEditSketch3;
@@ -390,23 +417,41 @@ namespace StreetSmartArcMap.Layers
 
                 var fontDisp = new stdole.StdFontClass
                 {
-                    Bold = false,
+                    Bold = true,
                     Name = "Arial",
                     Italic = false,
                     Underline = false,
-                    Size = 8,
+                    Size = 8
                 };
-                RgbColor color = new RgbColorClass { Red = 255, Green = 255, Blue = 255 };
-                ISymbol textSymbol = new TextSymbolClass { Font = fontDisp as stdole.IFontDisp, Color = color };
+
+                var offset = GetLabelOffset(display);
+
+                RgbColor white = new RgbColorClass { Red = 255, Green = 255, Blue = 255 };
+                RgbColor black = new RgbColorClass { Red = 0, Green = 0, Blue = 0 };
+                ISymbol textSymbol = new TextSymbolClass { Font = fontDisp as stdole.IFontDisp, Color = black,  };
                 display.SetSymbol(textSymbol);
 
-                var points = GetGeometryPoints(sketch.Geometry);
+                ISimpleFillSymbol simpleFillSymbol = new SimpleFillSymbolClass { Color = white };
+                ISymbol boxSymbol = simpleFillSymbol as ISymbol;
+                boxSymbol.ROP2 = esriRasterOpCode.esriROPWhite;
 
+                var points = GetGeometryPoints(sketch.Geometry);
+                
                 for (int i = 0; i < points.Count; i++)
                 {
-                    var point = points[i];
+                    if (sketch.GeometryType == esriGeometryType.esriGeometryPolygon && i == points.Count - 1)
+                        break; // a polygon always has the starting/end point twice, so skip the end point label for polygons.
 
-                    display.DrawText(point, (i + 1).ToString());
+                    var point = points[i];
+                    var originPoint = new PointClass { X = point.X + offset, Y = point.Y + offset };
+                    var labelPoint = new PointClass { X = point.X + offset, Y = point.Y + offset/2 };
+                    var labelText = (i+1).ToString();
+
+                    display.SetSymbol(boxSymbol);
+                    display.DrawPolygon(GetLabelBox(display, originPoint));
+
+                    display.SetSymbol(textSymbol);
+                    display.DrawText(labelPoint, labelText);
                 }
 
                 display.FinishDrawing();
@@ -1109,7 +1154,7 @@ namespace StreetSmartArcMap.Layers
             }
         }
 
-        private static void OnSelectionChanged()
+        private static async void OnSelectionChanged()
         {
             try
             {
@@ -1134,7 +1179,12 @@ namespace StreetSmartArcMap.Layers
                         {
                             EditFeatures.Add(feature);
                         }
-
+                        //if (EditFeatures.Count > 0 && !StreetSmartApiWrapper.Instance.BusyForMeasurement)
+                        //{
+                           
+                        //    await StreetSmartApiWrapper.Instance.CreateMeasurement(GetTypeOfLayer(EditFeatures[0].Shape.GeometryType));
+                        //    StreetSmartApiWrapper.Instance.UpdateActiveMeasurement(EditFeatures[0].Shape);
+                        //}
                         if (FeatureStartEditEvent != null)
                         {
                             var geometries = new List<ESRI.ArcGIS.Geometry.IGeometry>();
@@ -1164,7 +1214,7 @@ namespace StreetSmartArcMap.Layers
                                 if (_nextSelectionTimer == null)
                                 {
                                     var checkEvent = new AutoResetEvent(true);
-                                    const int timeOutTime = 1500;
+                                    const int timeOutTime = 1500; 
 
                                     var checkTimerCallBack = new TimerCallback(CheckTimerCallBack);
 

@@ -417,18 +417,18 @@ namespace StreetSmartArcMap.Layers
 
                 var fontDisp = new stdole.StdFontClass
                 {
-                    Bold = false,
+                    Bold = true,
                     Name = "Arial",
                     Italic = false,
                     Underline = false,
-                    Size = 8,
+                    Size = 8
                 };
 
                 var offset = GetLabelOffset(display);
 
                 RgbColor white = new RgbColorClass { Red = 255, Green = 255, Blue = 255 };
                 RgbColor black = new RgbColorClass { Red = 0, Green = 0, Blue = 0 };
-                ISymbol textSymbol = new TextSymbolClass { Font = fontDisp as stdole.IFontDisp, Color = black };
+                ISymbol textSymbol = new TextSymbolClass { Font = fontDisp as stdole.IFontDisp, Color = black,  };
                 display.SetSymbol(textSymbol);
 
                 ISimpleFillSymbol simpleFillSymbol = new SimpleFillSymbolClass { Color = white };
@@ -443,11 +443,12 @@ namespace StreetSmartArcMap.Layers
                         break; // a polygon always has the starting/end point twice, so skip the end point label for polygons.
 
                     var point = points[i];
-                    var labelPoint = new PointClass { X = point.X + offset, Y = point.Y + offset };
+                    var originPoint = new PointClass { X = point.X + offset, Y = point.Y + offset };
+                    var labelPoint = new PointClass { X = point.X + offset, Y = point.Y + offset/2 };
                     var labelText = (i+1).ToString();
 
                     display.SetSymbol(boxSymbol);
-                    display.DrawPolygon(GetLabelBox(display, labelPoint));
+                    display.DrawPolygon(GetLabelBox(display, originPoint));
 
                     display.SetSymbol(textSymbol);
                     display.DrawText(labelPoint, labelText);

@@ -436,23 +436,24 @@ namespace StreetSmartArcMap.Layers
                 boxSymbol.ROP2 = esriRasterOpCode.esriROPWhite;
 
                 var points = GetGeometryPoints(sketch.Geometry);
-                
-                for (int i = 0; i < points.Count; i++)
+                if (sketch.GeometryType != esriGeometryType.esriGeometryPoint) // a point always gives an invalid geometry in this scenario...
                 {
-                    if (sketch.GeometryType == esriGeometryType.esriGeometryPolygon && i == points.Count - 1)
-                        break; // a polygon always has the starting/end point twice, so skip the end point label for polygons.
+                    for (int i = 0; i < points.Count; i++)
+                    {
+                        if (sketch.GeometryType == esriGeometryType.esriGeometryPolygon && i == points.Count - 1)
+                            break; // a polygon always has the starting/end point twice, so skip the end point label for polygons.
 
-                    var point = points[i];
-                    var labelPoint = new PointClass { X = point.X + offset, Y = point.Y + offset };
-                    var labelText = (i+1).ToString();
+                        var point = points[i];
+                        var labelPoint = new PointClass { X = point.X + offset, Y = point.Y + offset };
+                        var labelText = (i + 1).ToString();
 
-                    display.SetSymbol(boxSymbol);
-                    display.DrawPolygon(GetLabelBox(display, labelPoint));
+                        display.SetSymbol(boxSymbol);
+                        display.DrawPolygon(GetLabelBox(display, labelPoint));
 
-                    display.SetSymbol(textSymbol);
-                    display.DrawText(labelPoint, labelText);
+                        display.SetSymbol(textSymbol);
+                        display.DrawText(labelPoint, labelText);
+                    }
                 }
-
                 display.FinishDrawing();
             }
         }

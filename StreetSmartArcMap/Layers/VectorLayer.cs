@@ -436,11 +436,12 @@ namespace StreetSmartArcMap.Layers
                 boxSymbol.ROP2 = esriRasterOpCode.esriROPWhite;
 
                 var points = GetGeometryPoints(sketch.Geometry);
-                
-                for (int i = 0; i < points.Count; i++)
+                if (sketch.GeometryType != esriGeometryType.esriGeometryPoint) // a point always gives an invalid geometry in this scenario...
                 {
-                    if (sketch.GeometryType == esriGeometryType.esriGeometryPolygon && i == points.Count - 1)
-                        break; // a polygon always has the starting/end point twice, so skip the end point label for polygons.
+                    for (int i = 0; i < points.Count; i++)
+                    {
+                        if (sketch.GeometryType == esriGeometryType.esriGeometryPolygon && i == points.Count - 1)
+                            break; // a polygon always has the starting/end point twice, so skip the end point label for polygons.
 
                     var point = points[i];
                     var originPoint = new PointClass { X = point.X + offset, Y = point.Y + offset };
@@ -450,10 +451,10 @@ namespace StreetSmartArcMap.Layers
                     display.SetSymbol(boxSymbol);
                     display.DrawPolygon(GetLabelBox(display, originPoint));
 
-                    display.SetSymbol(textSymbol);
-                    display.DrawText(labelPoint, labelText);
+                        display.SetSymbol(textSymbol);
+                        display.DrawText(labelPoint, labelText);
+                    }
                 }
-
                 display.FinishDrawing();
             }
         }
@@ -562,9 +563,30 @@ namespace StreetSmartArcMap.Layers
             var activeView = ArcUtils.ActiveView;
             var display = activeView.ScreenDisplay;
             var editor = ArcUtils.Editor as IEditLayers;
+
+            
+
             var layer = VectorLayer.GetLayer(editor.CurrentLayer);
             if (layer == null)
-                return; // nothing to draw in!
+            {
+
+                var selection = (IEnumFeature)ArcUtils.ActiveView.FocusMap.FeatureSelection;
+                var f = selection.Next();
+                if (f != null)
+                {
+                    var l = VectorLayer.GetLayer(f);
+                    if (l != null)
+                    {
+                        editor.SetCurrentLayer((IFeatureLayer)l._layer, 0);
+                        layer = l;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+                
 
             var isNew = IsNewMeasurement(features);
 

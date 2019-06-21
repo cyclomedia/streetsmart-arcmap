@@ -130,6 +130,7 @@ namespace StreetSmartArcMap.Layers
         private static string CurrentMeasurementID = "";
 
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
+
         #endregion members
 
         #region constructor
@@ -350,6 +351,7 @@ namespace StreetSmartArcMap.Layers
                     }
 
                     break;
+
                 case TypeOfLayer.Line:
                     var polyline = geometry as Polyline;
 
@@ -362,6 +364,7 @@ namespace StreetSmartArcMap.Layers
                     }
 
                     break;
+
                 case TypeOfLayer.Polygon:
                     var polygon = geometry as Polygon;
 
@@ -374,6 +377,7 @@ namespace StreetSmartArcMap.Layers
                     }
 
                     break;
+
                 default:
                     break;
             }
@@ -417,18 +421,18 @@ namespace StreetSmartArcMap.Layers
 
                 var fontDisp = new stdole.StdFontClass
                 {
-                    Bold = false,
+                    Bold = true,
                     Name = "Arial",
                     Italic = false,
                     Underline = false,
-                    Size = 8,
+                    Size = 8
                 };
 
                 var offset = GetLabelOffset(display);
 
                 RgbColor white = new RgbColorClass { Red = 255, Green = 255, Blue = 255 };
                 RgbColor black = new RgbColorClass { Red = 0, Green = 0, Blue = 0 };
-                ISymbol textSymbol = new TextSymbolClass { Font = fontDisp as stdole.IFontDisp, Color = black };
+                ISymbol textSymbol = new TextSymbolClass { Font = fontDisp as stdole.IFontDisp, Color = black, };
                 display.SetSymbol(textSymbol);
 
                 ISimpleFillSymbol simpleFillSymbol = new SimpleFillSymbolClass { Color = white };
@@ -444,11 +448,12 @@ namespace StreetSmartArcMap.Layers
                             break; // a polygon always has the starting/end point twice, so skip the end point label for polygons.
 
                         var point = points[i];
-                        var labelPoint = new PointClass { X = point.X + offset, Y = point.Y + offset };
+                        var originPoint = new PointClass { X = point.X + offset, Y = point.Y + offset };
+                        var labelPoint = new PointClass { X = point.X + offset, Y = point.Y + offset / 2 };
                         var labelText = (i + 1).ToString();
 
                         display.SetSymbol(boxSymbol);
-                        display.DrawPolygon(GetLabelBox(display, labelPoint));
+                        display.DrawPolygon(GetLabelBox(display, originPoint));
 
                         display.SetSymbol(textSymbol);
                         display.DrawText(labelPoint, labelText);
@@ -563,12 +568,9 @@ namespace StreetSmartArcMap.Layers
             var display = activeView.ScreenDisplay;
             var editor = ArcUtils.Editor as IEditLayers;
 
-            
-
             var layer = VectorLayer.GetLayer(editor.CurrentLayer);
             if (layer == null)
             {
-
                 var selection = (IEnumFeature)ArcUtils.ActiveView.FocusMap.FeatureSelection;
                 var f = selection.Next();
                 if (f != null)
@@ -585,7 +587,6 @@ namespace StreetSmartArcMap.Layers
                     return;
                 }
             }
-                
 
             var isNew = IsNewMeasurement(features);
 
@@ -629,7 +630,10 @@ namespace StreetSmartArcMap.Layers
                                     if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
                                     {
                                         // New measurement from Street Smart
-                                        sketch.FinishSketch();
+                                        if ((sketch.Geometry as Polyline).PointCount > 1)
+                                            sketch.FinishSketch();
+                                        else
+                                            ArcUtils.Editor.StopEditing(false);
                                     }
                                     else
                                     {
@@ -1237,7 +1241,7 @@ namespace StreetSmartArcMap.Layers
                                 if (_nextSelectionTimer == null)
                                 {
                                     var checkEvent = new AutoResetEvent(true);
-                                    const int timeOutTime = 1500; 
+                                    const int timeOutTime = 1500;
 
                                     var checkTimerCallBack = new TimerCallback(CheckTimerCallBack);
 

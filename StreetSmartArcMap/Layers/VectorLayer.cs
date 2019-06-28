@@ -925,13 +925,11 @@ namespace StreetSmartArcMap.Layers
 
                                 if (point != null)
                                 {
-                                    if (!HasZ)
-                                    {
-                                        point.Z = double.NaN;
-                                    }
+                                    ICoordinate pJson = HasZ
+                                        ? CoordinateFactory.Create(point.X, point.Y, point.Z)
+                                        : CoordinateFactory.Create(point.X, point.Y);
+                                    pointCollectionJson.Add(pJson);
                                 }
-                                ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y, point.Z);
-                                pointCollectionJson.Add(pJson);
                             }
 
                             var points = new List<IList<ICoordinate>> { pointCollectionJson };

@@ -312,7 +312,8 @@ namespace StreetSmartArcMap.DockableWindows
             }
             else
             {
-                args.Layer.IsVisibleInStreetSmart = true; // is this correct???
+                args.Layer.SetVisibility(args.Layer.IsVisibleInStreetSmart);
+//                args.Layer.IsVisibleInStreetSmart = true; // is this correct???
             }
         }
 

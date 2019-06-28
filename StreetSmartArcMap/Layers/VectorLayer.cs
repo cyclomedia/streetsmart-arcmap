@@ -38,6 +38,8 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 
+using IPoint = ESRI.ArcGIS.Geometry.IPoint;
+
 namespace StreetSmartArcMap.Layers
 {
     #region delegates
@@ -918,24 +920,17 @@ namespace StreetSmartArcMap.Layers
 
                         if (pointCollection != null)
                         {
-                            var pointCollectionJson = new List<ICoordinate>();
-                            for (int j = 0; j < pointCollection.PointCount; j++)
-                            {
-                                ESRI.ArcGIS.Geometry.IPoint point = pointCollection.Point[j];
-
-                                if (point != null)
-                                {
-                                    ICoordinate pJson = HasZ
-                                        ? CoordinateFactory.Create(point.X, point.Y, point.Z)
-                                        : CoordinateFactory.Create(point.X, point.Y);
-                                    pointCollectionJson.Add(pJson);
-                                }
-                            }
-
-                            var points = new List<IList<ICoordinate>> { pointCollectionJson };
-
                             if (TypeOfLayer == TypeOfLayer.Line)
                             {
+                                var pointCollectionJson = new List<ICoordinate>();
+                                for (int j = 0; j < pointCollection.PointCount; j++)
+                                {
+                                    IPoint point = pointCollection.Point[j];
+                                    AddPoint(pointCollectionJson, point);
+                                }
+
+                                var points = new List<IList<ICoordinate>> { pointCollectionJson };
+
                                 if (points.Count > 0)
                                 {
                                     var geomJson = GeoJsonFactory.CreateLineFeature(points.FirstOrDefault());
@@ -944,6 +939,48 @@ namespace StreetSmartArcMap.Layers
                             }
                             else if (TypeOfLayer == TypeOfLayer.Polygon)
                             {
+                                var points = new List<IList<ICoordinate>> ();
+                                var polygon = geometry as IPolygon4;
+
+                                if (polygon != null)
+                                {
+                                    IGeometryBag extRingGeomBag = polygon.ExteriorRingBag;
+                                    IGeometryCollection extRingGeomColl = extRingGeomBag as IGeometryCollection;
+
+                                    for (int l = 0; l < extRingGeomColl?.GeometryCount; l++)
+                                    {
+                                        var extPointCollectionJson = new List<ICoordinate>();
+                                        ESRI.ArcGIS.Geometry.IGeometry extRingGeom = extRingGeomColl.get_Geometry(l);
+                                        IPointCollection extRingPointColl = extRingGeom as IPointCollection;
+
+                                        for (int m = 0; m < extRingPointColl.PointCount; m++)
+                                        {
+                                            IPoint point = extRingPointColl.get_Point(m);
+                                            AddPoint(extPointCollectionJson, point);
+                                        }
+
+                                        points.Add(extPointCollectionJson);
+
+                                        IGeometryBag intRingGeomBag = polygon.get_InteriorRingBag(extRingGeom as IRing);
+                                        IGeometryCollection intRingGeomColl = intRingGeomBag as IGeometryCollection;
+
+                                        for (int n = 0; n < intRingGeomColl.GeometryCount; n++)
+                                        {
+                                            ESRI.ArcGIS.Geometry.IGeometry intRing = intRingGeomColl.get_Geometry(n);
+                                            IPointCollection intRingPointColl = intRing as IPointCollection;
+                                            var intPointCollectionJson = new List<ICoordinate>();
+
+                                            for (int o = 0; o < intRingPointColl.PointCount; o++)
+                                            {
+                                                IPoint point = intRingPointColl.get_Point(o);
+                                                AddPoint(intPointCollectionJson, point);
+                                            }
+
+                                            points.Add(intPointCollectionJson);
+                                        }
+                                    }
+                                }
+
                                 var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
                                 features.Features.Add(geomJson);
                             }
@@ -954,12 +991,9 @@ namespace StreetSmartArcMap.Layers
 
                             if (point != null)
                             {
-                                if (!HasZ)
-                                {
-                                    point.Z = double.NaN;
-                                }
-                                shapeVar = point;
-                                ICoordinate pJson = CoordinateFactory.Create(point.X, point.Y);
+                                ICoordinate pJson = HasZ
+                                    ? CoordinateFactory.Create(point.X, point.Y, point.Z)
+                                    : CoordinateFactory.Create(point.X, point.Y);
                                 var geomJson = GeoJsonFactory.CreatePointFeature(pJson);
                                 features.Features.Add(geomJson);
                             }
@@ -977,6 +1011,17 @@ namespace StreetSmartArcMap.Layers
                         }
                     }
                 }
+            }
+        }
+
+        private void AddPoint(List<ICoordinate> pointCollectionJson, IPoint point)
+        {
+            if (point != null)
+            {
+                ICoordinate pJson = HasZ
+                    ? CoordinateFactory.Create(point.X, point.Y, point.Z)
+                    : CoordinateFactory.Create(point.X, point.Y);
+                pointCollectionJson.Add(pJson);
             }
         }
 

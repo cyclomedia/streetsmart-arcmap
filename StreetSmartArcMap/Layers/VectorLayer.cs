@@ -116,7 +116,7 @@ namespace StreetSmartArcMap.Layers
 
         private static IList<ESRI.ArcGIS.Geodatabase.IFeature> _editFeatures;
         private static IList<VectorLayer> _layers;
-        private static Timer _editToolCheckTimer;
+        private static System.Windows.Forms.Timer _editToolCheckTimer;
         private static ICommandItem _beforeTool;
         private static readonly LogClient LogClient;
         private static readonly object LockObject;
@@ -1354,6 +1354,7 @@ namespace StreetSmartArcMap.Layers
 
                 if (_editToolCheckTimer != null)
                 {
+                    _editToolCheckTimer.Stop();
                     _editToolCheckTimer.Dispose();
                     _editToolCheckTimer = null;
                 }
@@ -1374,10 +1375,10 @@ namespace StreetSmartArcMap.Layers
 
                 if (_editToolCheckTimer == null)
                 {
-                    var checkEvent = new AutoResetEvent(true);
-                    var checkTimerCallBack = new TimerCallback(EditToolCheck);
                     const int checkTime = 1000;
-                    _editToolCheckTimer = new Timer(checkTimerCallBack, checkEvent, checkTime, checkTime);
+                    _editToolCheckTimer = new System.Windows.Forms.Timer {Interval = checkTime};
+                    _editToolCheckTimer.Tick+= EditToolCheck;
+                    _editToolCheckTimer.Start();
                 }
 
                 IEditor3 editor = ArcUtils.Editor;
@@ -1457,22 +1458,47 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         // Thread functions
         // =========================================================================
-        private static void EditToolCheck(object context)
+        private static void EditToolCheck(object sender, EventArgs e)
         {
             try
             {
                 lock (LockObject)
                 {
+                    IEditor3 editor = ArcUtils.Editor;
                     IApplication application = ArcMap.Application;
                     IActiveView activeView = ArcUtils.ActiveView;
 
-                    if ((application != null) && (activeView != null))
+                    if ((application != null) && (activeView != null) && (editor != null))
                     {
                         ICommandItem tool = application.CurrentTool;
 
                         if ((tool != null) && ((_beforeTool == null) || (_beforeTool.Name != tool.Name)))
                         {
-                            activeView.Refresh();
+                            _beforeTool = tool;
+                            var editLayers = editor as IEditLayers;
+
+                            if (editLayers != null)
+                            {
+                                ILayer currentLayer = editLayers.CurrentLayer;
+                                VectorLayer vectorLayer = (currentLayer == null) ? null : GetLayer(currentLayer);
+
+                                if ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart))
+                                {
+                                    ICommandItem editorMenu = application.Document.CommandBars.Find("Editor_EditTool");
+                                    string editorCategory = (editorMenu != null) ? editorMenu.Category : string.Empty;
+                                    ICommand command = tool.Command;
+                                    string category = tool.Category;
+
+                                    if (category == editorCategory)
+                                    {
+                                        UpdateEditGeometry(editor, command);
+                                    }
+                                }
+                                else
+                                {
+                                    SketchFinishedEvent?.Invoke();
+                                }
+                            }
                         }
                     }
                 }

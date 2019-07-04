@@ -450,17 +450,50 @@ namespace StreetSmartArcMap.Layers
                             break; // a polygon always has the starting/end point twice, so skip the end point label for polygons.
 
                         var point = points[i];
-                        var originPoint = new PointClass { X = point.X + offset, Y = point.Y + offset };
-                        var labelPoint = new PointClass { X = point.X + offset, Y = point.Y + offset / 2 };
-                        var labelText = (i + 1).ToString();
 
-                        display.SetSymbol(boxSymbol);
-                        display.DrawPolygon(GetLabelBox(display, originPoint));
+                        if (!point.IsEmpty)
+                        {
+                            var originPoint = new PointClass {X = point.X + offset, Y = point.Y + offset};
+                            var labelPoint = new PointClass {X = point.X + offset, Y = point.Y + offset / 2};
+                            var labelText = (i + 1).ToString();
 
-                        display.SetSymbol(textSymbol);
-                        display.DrawText(labelPoint, labelText);
+                            display.SetSymbol(boxSymbol);
+                            display.DrawPolygon(GetLabelBox(display, originPoint));
+
+                            display.SetSymbol(textSymbol);
+                            display.DrawText(labelPoint, labelText);
+                        }
                     }
                 }
+
+                int numberOfPoints = StreetSmartApiWrapper.Instance.GetNumberOfPoints();
+                const double distLine = 30.0;
+
+                for (int i = 0; i < numberOfPoints; i++)
+                {
+                    var observations = StreetSmartApiWrapper.Instance.GetObservations(i);
+
+                    if (observations != null)
+                    {
+                        foreach (var observation in observations)
+                        {
+                            double x = observation.Position?.X ?? 0.0;
+                            double y = observation.Position?.Y ?? 0.0;
+                            double xDir = observation.Direction?.X ?? 0.0;
+                            double yDir = observation.Direction?.Y ?? 0.0;
+
+                            RgbColor gray = new RgbColorClass {Red = Color.Gray.R, Green = Color.Gray.G, Blue = Color.Gray.B};
+                            ISymbol lineSymbol = new SimpleLineSymbolClass {Color = gray, Width = 1.25};
+                            display.SetSymbol(lineSymbol);
+
+                            var polylineClass = new PolylineClass();
+                            polylineClass.AddPoint(new PointClass {X = x + xDir * distLine, Y = y + yDir * distLine});
+                            polylineClass.AddPoint(new PointClass {X = x, Y = y});
+                            display.DrawPolyline(polylineClass);
+                        }
+                    }
+                }
+
                 display.FinishDrawing();
             }
         }
@@ -521,7 +554,7 @@ namespace StreetSmartArcMap.Layers
 
                 return newEditPoint;
             }
-            return null;
+            return new ESRI.ArcGIS.Geometry.Point();
         }
 
         private static Polyline ConvertToPolyline(List<ICoordinate> coords, bool withZ)

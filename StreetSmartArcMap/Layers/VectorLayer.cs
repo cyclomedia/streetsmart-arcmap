@@ -647,7 +647,7 @@ namespace StreetSmartArcMap.Layers
                             if (point != null)
                             {
                                 var newEditFeature = layer._featureClass.CreateFeature();
-                                newEditFeature.Shape = point;
+                                newEditFeature.Shape = point.IsEmpty ? null : point;
                                 newEditFeature.Store();
                             }
 

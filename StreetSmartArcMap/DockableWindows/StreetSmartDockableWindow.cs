@@ -90,7 +90,7 @@ namespace StreetSmartArcMap.DockableWindows
             API.OnViewingConeChanged += API_OnViewingConeChanged;
             API.OnVectorLayerChanged += API_OnVectorLayerChanged;
             API.OnMeasuremenChanged += API_OnMeasuremenChanged;
-            API.OnSelectedFeatureChanged += API_OnSelectedFeatureChanged;
+            //API.OnSelectedFeatureChanged += API_OnSelectedFeatureChanged;
             API.OnFeatureClicked += API_OnFeatureClicked;
 
             //VectorLayer.StartMeasurementEvent += VectorLayer_StartMeasurementEvent;
@@ -152,7 +152,8 @@ namespace StreetSmartArcMap.DockableWindows
                             var featureCursor = fc.Search(queryFilter, false);
                             var featureCount = fc.FeatureCount(queryFilter);
                             var shapeId = featureCursor.FindField(fc.ShapeFieldName);
-
+                            // deselect first
+                            ArcUtils.Map?.ClearSelection();
                             for (int i = 0; i < featureCount; i++)
                             {
                                 var feature = featureCursor.NextFeature();
@@ -170,22 +171,22 @@ namespace StreetSmartArcMap.DockableWindows
             }
         }
 
-        private void API_OnSelectedFeatureChanged(SelectedFeatureChangedEventArgs args)
-        {
-            if (InvokeRequired)
-            {
-                Invoke(new Action(() => API_OnSelectedFeatureChanged(args)));
-            }
-            else
-            {
-                //Deselect
-                if (args == null || args.FeatureInfo == null || string.IsNullOrWhiteSpace(args.FeatureInfo.LayerId))
-                {
-                    ArcUtils.Map?.ClearSelection();
-                    ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
-                }
-            }
-        }
+        //private void API_OnSelectedFeatureChanged(SelectedFeatureChangedEventArgs args)
+        //{
+        //    if (InvokeRequired)
+        //    {
+        //        Invoke(new Action(() => API_OnSelectedFeatureChanged(args)));
+        //    }
+        //    else
+        //    {
+        //        //Deselect
+        //        if (args == null || args.FeatureInfo == null || string.IsNullOrWhiteSpace(args.FeatureInfo.LayerId))
+        //        {
+        //            ArcUtils.Map?.ClearSelection();
+        //            ArcUtils.ActiveView?.ScreenDisplay?.Invalidate(ArcUtils.ActiveView.Extent, true, (short)esriScreenCache.esriNoScreenCache);
+        //        }
+        //    }
+        //}
 
         private void API_OnViewerChangeEvent(ViewersChangeEventArgs args)
         {
@@ -312,6 +313,7 @@ namespace StreetSmartArcMap.DockableWindows
             else
             {
                 args.Layer.IsVisibleInStreetSmart = true; // is this correct???
+                args.Layer.SetVisibility(args.Layer.IsVisibleInStreetSmart);
             }
         }
 

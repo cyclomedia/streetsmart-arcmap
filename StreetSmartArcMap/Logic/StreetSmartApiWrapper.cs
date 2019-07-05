@@ -523,6 +523,46 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
+        public int GetNumberOfPoints()
+        {
+            int result = 0;
+            var features = ActiveMeasurement?.Features;
+
+            if ((features?.Count ?? 0) == 1)
+            {
+                if (features?[0].Properties is IMeasurementProperties)
+                {
+                    var properties = (IMeasurementProperties) features[0].Properties;
+                    result = properties?.MeasureDetails?.Count ?? 0;
+                }
+            }
+
+            return result;
+        }
+
+        public IList<IResultDirection> GetObservations(int index)
+        {
+            IList<IResultDirection> result = null;
+            var features = ActiveMeasurement?.Features;
+
+            if ((features?.Count ?? 0) == 1)
+            {
+                if (features?[0].Properties is IMeasurementProperties)
+                {
+                    var properties = (IMeasurementProperties) features[0].Properties;
+                    IMeasureDetails details = properties?.MeasureDetails?.Count > index ? properties.MeasureDetails[index] : null;
+                    var detailsForwardIntersection = details?.Details as IDetailsForwardIntersection;
+
+                    if (detailsForwardIntersection != null)
+                    {
+                        result = detailsForwardIntersection.ResultDirections;
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public async Task CreateMeasurement(TypeOfLayer typeOfLayer)
         {
             var viewers = await StreetSmartAPI.GetViewers();

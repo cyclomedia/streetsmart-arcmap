@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddIns\StreetSmartExtension.cs" />
+    <Compile Include="Buttons\ArcGISAddin1.cs" />
     <Compile Include="Buttons\OpenSearchImageIdButton.cs" />
     <Compile Include="Buttons\OpenStreetSmartOptionsButton.cs" />
     <Compile Include="Buttons\StreetSmartRecordingsLayer.cs" />
@@ -329,6 +330,7 @@
     <AddInContent Include="install\natives_blob.bin" />
     <AddInContent Include="install\snapshot_blob.bin" />
     <AddInContent Include="install\v8_context_snapshot.bin" />
+    <EmbeddedResource Include="Doc\Street Smart for ArcMap User Manual.pdf" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -372,6 +374,9 @@
     <AddInContent Include="install\README.txt" />
     <AddInContent Include="install\swiftshader\libEGL.dll" />
     <AddInContent Include="install\swiftshader\libGLESv2.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\HelpButton.png" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>

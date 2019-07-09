@@ -6,7 +6,7 @@
   <Image>Images\StreetSmartArcMapAddin.png</Image>
   <Author></Author>
   <Company>CycloMedia</Company>
-  <Date>5/1/2019</Date>
+  <Date>4-7-2019</Date>
   <Targets>
     <Target name="Desktop" version="10.4" />
   </Targets>
@@ -28,14 +28,16 @@
         <Button id="CycloMedia_StreetSmartArcMap_StreetSmartRecordingsLayer" class="StreetSmartArcMap.Buttons.StreetSmartRecordingsLayer" message="" caption="Recent Recordings" tip="" category="CycloMedia" image="Images\StreetSmartRecordingsLayer.png" onDemand="false" />
         <Tool id="CycloMedia_StreetSmartArcMap_StreetSmartOpenLocation" class="StreetSmartArcMap.Tools.StreetSmartOpenLocation" message="" caption="Open the location in a Cyclorama" tip="" category="CycloMedia" image="Images\StreetSmartOpenLocation_2.png" onDemand="false" cursor="Images\StreetSmartOpenLocation.cur" />
         <Button id="CycloMedia_StreetSmartArcMap_OpenSearchImageIdButton" class="StreetSmartArcMap.Buttons.OpenSearchImageIdButton" message="" caption="Search by ImageId" tip="" category="CycloMedia" image="Images\CycloramaSearch.png" onDemand="false" />
+        <Button id="CycloMedia_StreetSmartArcMap_HelpButton" class="StreetSmartArcMap.Buttons.HelpButton" message="Help information about Street Smart for ArcMap" caption="Help information about Street Smart for ArcMap..." tip="Help information about Street Smart for ArcMap" category="CycloMedia" image="Images\HelpButton.png" onDemand="false" />
       </Commands>
       <Toolbars>
         <Toolbar id="StreetSmartArcMapToolbar" caption="Street Smart">
           <Items>
             <Button refID="CycloMedia_StreetSmartArcMap_OpenStreetSmartOptionsButton" />
             <Button refID="CycloMedia_StreetSmartArcMap_StreetSmartRecordingsLayer" />
-            <Tool refID="CycloMedia_StreetSmartArcMap_StreetSmartOpenLocation"/>
+            <Tool refID="CycloMedia_StreetSmartArcMap_StreetSmartOpenLocation" />
             <Button refID="CycloMedia_StreetSmartArcMap_OpenSearchImageIdButton" />
+            <Button refID="CycloMedia_StreetSmartArcMap_HelpButton" />
           </Items>
         </Toolbar>
       </Toolbars>

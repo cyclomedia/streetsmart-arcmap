@@ -101,7 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddIns\StreetSmartExtension.cs" />
-    <Compile Include="Buttons\ArcGISAddin1.cs" />
+    <Compile Include="Buttons\OpenStreetSmartHelpButton.cs" />
     <Compile Include="Buttons\OpenSearchImageIdButton.cs" />
     <Compile Include="Buttons\OpenStreetSmartOptionsButton.cs" />
     <Compile Include="Buttons\StreetSmartRecordingsLayer.cs" />

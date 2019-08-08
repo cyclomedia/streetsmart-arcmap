@@ -11,11 +11,11 @@ using StreetSmartArcMap.Logic.Utilities;
 
 namespace StreetSmartArcMap.Buttons
 {
-    public class HelpButton : ESRI.ArcGIS.Desktop.AddIns.Button
+    public class OpenStreetSmartHelpButton : ESRI.ArcGIS.Desktop.AddIns.Button
     {
         private Process _process;
 
-        public HelpButton()
+        public OpenStreetSmartHelpButton()
         {
             _process = null;
         }
@@ -94,6 +94,9 @@ namespace StreetSmartArcMap.Buttons
         protected override void OnUpdate()
         {
             Enabled = StreetSmartExtension.GetExtension()?.IsEnabled ?? false;
+
+            Caption = Properties.Resources.OpenStreetSmartHelpButtonCaption;
+            Tooltip = Properties.Resources.OpenStreetSmartHelpButtonTip;
         }
 
         private void ExitProcess(object sender, EventArgs e)

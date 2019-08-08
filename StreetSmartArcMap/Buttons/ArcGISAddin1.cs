@@ -93,8 +93,7 @@ namespace StreetSmartArcMap.Buttons
 
         protected override void OnUpdate()
         {
-            Enabled = StreetSmartExtension.GetExtension().IsEnabled;
-            Checked = CycloramaSearchForm.IsActive;
+            Enabled = StreetSmartExtension.GetExtension()?.IsEnabled ?? false;
         }
 
         private void ExitProcess(object sender, EventArgs e)

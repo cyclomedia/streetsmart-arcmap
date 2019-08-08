@@ -910,41 +910,48 @@ namespace StreetSmartArcMap.Logic
         public async Task Select(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
             var extension = StreetSmartExtension.GetExtension();
-            if (!extension.CommunicatingWithStreetSmart && StreetSmartAPI != null && feature != null && feature.HasOID)
+
+            if (extension != null)
             {
-                extension.CommunicatingWithStreetSmart = true;
-                try
+                if (!extension.CommunicatingWithStreetSmart && StreetSmartAPI != null && feature != null &&
+                    feature.HasOID)
                 {
-                    VectorLayer layer = VectorLayer.GetLayer(feature);
-                    if (layer != null)
+                    extension.CommunicatingWithStreetSmart = true;
+                    try
                     {
-                        VectorLayer vectorLayer = _vectorLayers.FirstOrDefault(v => v.Name == layer.Name);
-                        if (vectorLayer != null && AddVectorInChange(vectorLayer))
+                        VectorLayer layer = VectorLayer.GetLayer(feature);
+                        if (layer != null)
                         {
-                            var props = new Dictionary<string, string>();
-                            var fields = feature.Fields;
-                            for (int i = 0; i < fields.FieldCount; i++)
+                            VectorLayer vectorLayer = _vectorLayers.FirstOrDefault(v => v.Name == layer.Name);
+                            if (vectorLayer != null && AddVectorInChange(vectorLayer))
                             {
-                                var f = fields.Field[i];
-                                if (!f.Name.StartsWith("SHAPE", StringComparison.CurrentCultureIgnoreCase))
+                                var props = new Dictionary<string, string>();
+                                var fields = feature.Fields;
+                                for (int i = 0; i < fields.FieldCount; i++)
                                 {
-                                    props.Add(f.Name, feature.Value[i]?.ToString());
+                                    var f = fields.Field[i];
+                                    if (!f.Name.StartsWith("SHAPE", StringComparison.CurrentCultureIgnoreCase))
+                                    {
+                                        props.Add(f.Name, feature.Value[i]?.ToString());
+                                    }
                                 }
+
+                                var json = JsonFactory.Create(props);
+                                var viewers = await StreetSmartAPI.GetViewers();
+                                foreach (var viewer in viewers)
+                                {
+                                    var panoramaViewer = (IPanoramaViewer) viewer;
+                                    panoramaViewer.SetSelectedFeatureByProperties(json, vectorLayer.Overlay.Id);
+                                }
+
+                                RemoveVectorInchange(vectorLayer);
                             }
-                            var json = JsonFactory.Create(props);
-                            var viewers = await StreetSmartAPI.GetViewers();
-                            foreach (var viewer in viewers)
-                            {
-                                var panoramaViewer = (IPanoramaViewer)viewer;
-                                panoramaViewer.SetSelectedFeatureByProperties(json, vectorLayer.Overlay.Id);
-                            }
-                            RemoveVectorInchange(vectorLayer);
                         }
                     }
-                }
-                finally
-                {
-                    extension.CommunicatingWithStreetSmart = false;
+                    finally
+                    {
+                        extension.CommunicatingWithStreetSmart = false;
+                    }
                 }
             }
         }

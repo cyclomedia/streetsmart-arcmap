@@ -66,7 +66,7 @@ namespace StreetSmartArcMap.Objects
         public void Redraw()
         {
             StreetSmartExtension extension = StreetSmartExtension.GetExtension();
-            if (extension.InsideScale())
+            if (extension?.InsideScale() ?? false)
             {
                 if (_updateTimer == null)
                 {
@@ -87,7 +87,7 @@ namespace StreetSmartArcMap.Objects
                 int srs = int.Parse(config.ApiSRS.Substring(config.ApiSRS.IndexOf(":") + 1));
                 // empty views
                 var extension = StreetSmartExtension.GetExtension();
-                if (extension.InsideScale())
+                if (extension?.InsideScale() ?? false)
                 {
                     var displayTransformation = Display.DisplayTransformation;
                     Display.Filter = new TransparencyDisplayFilterClass { Transparency = Alpha };

@@ -830,7 +830,7 @@ namespace StreetSmartArcMap.Logic
             if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
             {
                 var viewer = sender as IPanoramaViewer;
-                var cone = await CreateCone(viewer);
+                // var cone = await CreateCone(viewer);
 
                 await InvokeOnViewingConeChanged(viewer);
             }

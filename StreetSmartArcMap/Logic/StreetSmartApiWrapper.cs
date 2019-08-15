@@ -666,9 +666,9 @@ namespace StreetSmartArcMap.Logic
                 if (StreetSmartAPI == null)
                 {
                     if (Config.UseDefaultStreetSmartLocation)
-                        StreetSmartAPI = StreetSmartAPIFactory.Create();
+                        StreetSmartAPI = StreetSmartAPIFactory.Create(null, true);
                     else
-                        StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse);
+                        StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse, null, true);
 
                     StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
                     StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;

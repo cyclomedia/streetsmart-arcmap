@@ -127,6 +127,9 @@ namespace StreetSmartArcMap.Layers
         private ILayer _layer;
         private bool _isVisibleInStreetSmart;
 
+        private static IEnvelope _oldEnvelope = null;
+        private static IEnvelope _newEnvelope = null;
+
         public IOverlay Overlay;
 
         private static string CurrentMeasurementID = "";
@@ -391,7 +394,7 @@ namespace StreetSmartArcMap.Layers
         {
             IDisplayTransformation dispTrans = display.DisplayTransformation;
 
-            double distance = dispTrans.FromPoints(8);
+            double distance = dispTrans.FromPoints(12);
 
             return (distance * 3) / 4;
         }
@@ -403,10 +406,10 @@ namespace StreetSmartArcMap.Layers
             var polygon = new PolygonClass();
 
             //TODO: STREET-2002
-            polygon.AddPoint(new PointClass { X = point.X - dispTrans.FromPoints(8), Y = point.Y - dispTrans.FromPoints(8) });
-            polygon.AddPoint(new PointClass { X = point.X + dispTrans.FromPoints(8), Y = point.Y - dispTrans.FromPoints(8) });
-            polygon.AddPoint(new PointClass { X = point.X + dispTrans.FromPoints(8), Y = point.Y + dispTrans.FromPoints(8) });
-            polygon.AddPoint(new PointClass { X = point.X - dispTrans.FromPoints(8), Y = point.Y + dispTrans.FromPoints(8) });
+            polygon.AddPoint(new PointClass { X = point.X - dispTrans.FromPoints(6), Y = point.Y - dispTrans.FromPoints(6) });
+            polygon.AddPoint(new PointClass { X = point.X + dispTrans.FromPoints(6), Y = point.Y - dispTrans.FromPoints(6) });
+            polygon.AddPoint(new PointClass { X = point.X + dispTrans.FromPoints(6), Y = point.Y + dispTrans.FromPoints(6) });
+            polygon.AddPoint(new PointClass { X = point.X - dispTrans.FromPoints(6), Y = point.Y + dispTrans.FromPoints(6) });
 
             polygon.Close();
 
@@ -415,86 +418,92 @@ namespace StreetSmartArcMap.Layers
 
         private static void AvEvents_AfterDraw(IDisplay display, esriViewDrawPhase phase)
         {
-            var sketch = ArcUtils.Editor as IEditSketch3;
-
-            if (sketch != null && sketch.Geometry != null)
+            if (phase == esriViewDrawPhase.esriViewForeground)
             {
-                display.StartDrawing(display.hDC, (short)esriScreenCache.esriNoScreenCache);
+                var sketch = ArcUtils.Editor as IEditSketch3;
 
-                var fontDisp = new stdole.StdFontClass
+                if (sketch != null && sketch.Geometry != null)
                 {
-                    Bold = true,
-                    Name = "Arial",
-                    Italic = false,
-                    Underline = false,
-                    Size = 8
-                };
+                    display.StartDrawing(display.hDC, (short) esriScreenCache.esriNoScreenCache);
 
-                var offset = GetLabelOffset(display);
-
-                RgbColor white = new RgbColorClass { Red = 255, Green = 255, Blue = 255 };
-                RgbColor black = new RgbColorClass { Red = 0, Green = 0, Blue = 0 };
-                ISymbol textSymbol = new TextSymbolClass { Font = fontDisp as stdole.IFontDisp, Color = black, };
-                display.SetSymbol(textSymbol);
-
-                ISimpleFillSymbol simpleFillSymbol = new SimpleFillSymbolClass { Color = white };
-                ISymbol boxSymbol = simpleFillSymbol as ISymbol;
-                boxSymbol.ROP2 = esriRasterOpCode.esriROPWhite;
-
-                var points = GetGeometryPoints(sketch.Geometry);
-                if (sketch.GeometryType != esriGeometryType.esriGeometryPoint) // a point always gives an invalid geometry in this scenario...
-                {
-                    for (int i = 0; i < points.Count; i++)
+                    var fontDisp = new stdole.StdFontClass
                     {
-                        if (sketch.GeometryType == esriGeometryType.esriGeometryPolygon && i == points.Count - 1)
-                            break; // a polygon always has the starting/end point twice, so skip the end point label for polygons.
+                        Bold = true,
+                        Name = "Arial",
+                        Italic = false,
+                        Underline = false,
+                        Size = 8
+                    };
 
-                        var point = points[i];
+                    var offset = GetLabelOffset(display);
 
-                        if (!point.IsEmpty)
+                    RgbColor white = new RgbColorClass {Red = 255, Green = 255, Blue = 255};
+                    RgbColor black = new RgbColorClass {Red = 0, Green = 0, Blue = 0};
+                    ISymbol textSymbol = new TextSymbolClass {Font = fontDisp as stdole.IFontDisp, Color = black,};
+                    display.SetSymbol(textSymbol);
+
+                    ISimpleFillSymbol simpleFillSymbol = new SimpleFillSymbolClass {Color = white};
+                    ISymbol boxSymbol = simpleFillSymbol as ISymbol;
+                    boxSymbol.ROP2 = esriRasterOpCode.esriROPWhite;
+
+                    var points = GetGeometryPoints(sketch.Geometry);
+                    if (sketch.GeometryType != esriGeometryType.esriGeometryPoint
+                    ) // a point always gives an invalid geometry in this scenario...
+                    {
+                        for (int i = 0; i < points.Count; i++)
                         {
-                            var originPoint = new PointClass {X = point.X + offset, Y = point.Y + offset};
-                            var labelPoint = new PointClass {X = point.X + offset, Y = point.Y + offset / 2};
-                            var labelText = (i + 1).ToString();
+                            if (sketch.GeometryType == esriGeometryType.esriGeometryPolygon && i == points.Count - 1)
+                                break; // a polygon always has the starting/end point twice, so skip the end point label for polygons.
 
-                            display.SetSymbol(boxSymbol);
-                            display.DrawPolygon(GetLabelBox(display, originPoint));
+                            var point = points[i];
 
-                            display.SetSymbol(textSymbol);
-                            display.DrawText(labelPoint, labelText);
+                            if (!point.IsEmpty)
+                            {
+                                var originPoint = new PointClass {X = point.X + offset, Y = point.Y + offset};
+                                var labelPoint = new PointClass {X = point.X + offset, Y = point.Y + offset / 2};
+                                var labelText = (i + 1).ToString();
+
+                                display.SetSymbol(boxSymbol);
+                                display.DrawPolygon(GetLabelBox(display, originPoint));
+
+                                display.SetSymbol(textSymbol);
+                                display.DrawText(labelPoint, labelText);
+                            }
                         }
                     }
-                }
 
-                int numberOfPoints = StreetSmartApiWrapper.Instance.GetNumberOfPoints();
-                const double distLine = 30.0;
+                    int numberOfPoints = StreetSmartApiWrapper.Instance.GetNumberOfPoints();
+                    const double distLine = 30.0;
 
-                for (int i = 0; i < numberOfPoints; i++)
-                {
-                    var observations = StreetSmartApiWrapper.Instance.GetObservations(i);
-
-                    if (observations != null)
+                    for (int i = 0; i < numberOfPoints; i++)
                     {
-                        foreach (var observation in observations)
+                        var observations = StreetSmartApiWrapper.Instance.GetObservations(i);
+
+                        if (observations != null)
                         {
-                            double x = observation.Position?.X ?? 0.0;
-                            double y = observation.Position?.Y ?? 0.0;
-                            double xDir = observation.Direction?.X ?? 0.0;
-                            double yDir = observation.Direction?.Y ?? 0.0;
+                            foreach (var observation in observations)
+                            {
+                                double x = observation.Position?.X ?? 0.0;
+                                double y = observation.Position?.Y ?? 0.0;
+                                double xDir = observation.Direction?.X ?? 0.0;
+                                double yDir = observation.Direction?.Y ?? 0.0;
 
-                            RgbColor gray = new RgbColorClass {Red = Color.Gray.R, Green = Color.Gray.G, Blue = Color.Gray.B};
-                            ISymbol lineSymbol = new SimpleLineSymbolClass {Color = gray, Width = 1.25};
-                            display.SetSymbol(lineSymbol);
+                                RgbColor gray = new RgbColorClass
+                                    {Red = Color.Gray.R, Green = Color.Gray.G, Blue = Color.Gray.B};
+                                ISymbol lineSymbol = new SimpleLineSymbolClass {Color = gray, Width = 1.25};
+                                display.SetSymbol(lineSymbol);
 
-                            var polylineClass = new PolylineClass();
-                            polylineClass.AddPoint(new PointClass {X = x + xDir * distLine, Y = y + yDir * distLine});
-                            polylineClass.AddPoint(new PointClass {X = x, Y = y});
-                            display.DrawPolyline(polylineClass);
+                                var polylineClass = new PolylineClass();
+                                polylineClass.AddPoint(
+                                    new PointClass {X = x + xDir * distLine, Y = y + yDir * distLine});
+                                polylineClass.AddPoint(new PointClass {X = x, Y = y});
+                                display.DrawPolyline(polylineClass);
+                            }
                         }
                     }
-                }
 
-                display.FinishDrawing();
+                    display.FinishDrawing();
+                }
             }
         }
 
@@ -1406,6 +1415,10 @@ namespace StreetSmartArcMap.Layers
                 LogClient.Info("On Sketch Modified");
                 _doSelection = true;
 
+                var avEvents = ArcUtils.ActiveViewEvents;
+                avEvents.AfterDraw -= AvEvents_AfterDraw;
+                avEvents.AfterDraw += AvEvents_AfterDraw;
+
                 if (_editToolCheckTimer == null)
                 {
                     const int checkTime = 1000;
@@ -1436,6 +1449,26 @@ namespace StreetSmartArcMap.Layers
 
                             if (!StreetSmartApiWrapper.Instance.BusyForMeasurement)
                                 SketchModifiedEvent?.Invoke(geometry);
+
+                            _oldEnvelope = _newEnvelope;
+                            var envelope = sketch.Geometry.Envelope;
+                            IActiveView activeView = ArcUtils.ActiveView;
+                            var display = activeView.ScreenDisplay;
+                            IDisplayTransformation dispTrans = display.DisplayTransformation;
+                            double size = dispTrans.FromPoints(14);
+
+                            _newEnvelope = new EnvelopeClass
+                            {
+                                XMin = envelope.XMin - size, XMax = envelope.XMax + size, YMin = envelope.YMin - size,
+                                YMax = envelope.YMax + size
+                            };
+
+                            if (_oldEnvelope != null)
+                            {
+                                display.Invalidate(_oldEnvelope, true, (short)esriScreenCache.esriNoScreenCache);
+                            }
+
+                            display.Invalidate(_newEnvelope, true, (short)esriScreenCache.esriNoScreenCache);
                         }
                     }
                 }

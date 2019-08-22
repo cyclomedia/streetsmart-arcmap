@@ -30,7 +30,7 @@ namespace StreetSmartArcMap.Buttons
             _logClient = new LogClient(typeof(StreetSmartRecordingsLayer));
             Checked = false;
             StreetSmartExtension extension = StreetSmartExtension.GetExtension();
-            CycloMediaGroupLayer groupLayer = extension.CycloMediaGroupLayer;
+            CycloMediaGroupLayer groupLayer = extension?.CycloMediaGroupLayer;
 
             if (groupLayer != null)
             {
@@ -115,11 +115,11 @@ namespace StreetSmartArcMap.Buttons
 
                 if (Checked)
                 {
-                    extension.RemoveLayer(LayerName);
+                    extension?.RemoveLayer(LayerName);
                 }
                 else
                 {
-                    extension.AddLayers(LayerName);
+                    extension?.AddLayers(LayerName);
                 }
             }
             catch (Exception ex)
@@ -135,7 +135,9 @@ namespace StreetSmartArcMap.Buttons
             Caption = Properties.Resources.StreetSmartRecordingsLayerButonCaption;
             Tooltip = Properties.Resources.StreetSmartRecordingsLayerButonTip;
 
-            Enabled = (ArcUtils.ActiveView != null && ArcUtils.Map != null && ArcUtils.SpatialReference != null);
+            bool enabled = StreetSmartExtension.GetExtension()?.IsEnabled ?? false;
+
+            Enabled = (enabled && ArcUtils.ActiveView != null && ArcUtils.Map != null && ArcUtils.SpatialReference != null);
         }
     }
 }

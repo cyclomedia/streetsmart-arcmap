@@ -170,6 +170,24 @@ namespace StreetSmartArcMap.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Help information about Street Smart for ArcMap.
+        /// </summary>
+        internal static string OpenStreetSmartHelpButtonCaption {
+            get {
+                return ResourceManager.GetString("OpenStreetSmartHelpButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help information about Street Smart for ArcMap....
+        /// </summary>
+        internal static string OpenStreetSmartHelpButtonTip {
+            get {
+                return ResourceManager.GetString("OpenStreetSmartHelpButtonTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Street Smart Options.
         /// </summary>
         internal static string OpenStreetSmartOptionsButtonCaption {

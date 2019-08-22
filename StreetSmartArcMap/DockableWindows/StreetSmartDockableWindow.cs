@@ -119,7 +119,7 @@ namespace StreetSmartArcMap.DockableWindows
             else
             {
                 var extension = StreetSmartExtension.GetExtension();
-                if (!extension.CommunicatingWithStreetSmart)
+                if (!(extension?.CommunicatingWithStreetSmart ?? true))
                 {
                     extension.CommunicatingWithStreetSmart = true;
                     try

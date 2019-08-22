@@ -455,7 +455,11 @@ namespace StreetSmartArcMap.Logic
                 try
                 {
                     BusyForMeasurement = true;
-                    StreetSmartAPI.SetActiveMeasurement(collection);
+
+                    if (collection.CRS.Type != CRSType.NotDefined)
+                    {
+                        StreetSmartAPI.SetActiveMeasurement(collection);
+                    }
                 }
                 finally
                 {
@@ -666,9 +670,9 @@ namespace StreetSmartArcMap.Logic
                 if (StreetSmartAPI == null)
                 {
                     if (Config.UseDefaultStreetSmartLocation)
-                        StreetSmartAPI = StreetSmartAPIFactory.Create();
+                        StreetSmartAPI = StreetSmartAPIFactory.Create(null, true);
                     else
-                        StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse);
+                        StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse, null, true);
 
                     StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
                     StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
@@ -870,9 +874,10 @@ namespace StreetSmartArcMap.Logic
         {
             switch (mapUnits)
             {
-                case esriUnits.esriFeet:
-                    distance = (int)Math.Round(distance * 3.280839895, 0);
-                    break;
+                // For now skip the conversion calculation, because it is not needed if Street Smart works in a feet coordinate system
+//                case esriUnits.esriFeet:
+//                    distance = (int)Math.Round(distance * 3.280839895, 0);
+//                    break;
 
                 default: break;
             }

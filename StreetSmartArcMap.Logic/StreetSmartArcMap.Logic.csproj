@@ -78,8 +78,8 @@
     <Reference Include="ESRI.ArcGIS.TrackingAnalyst">
       <HintPath>C:\Program Files (x86)\ArcGIS\DeveloperKit10.4\DotNet\ESRI.ArcGIS.TrackingAnalyst.dll</HintPath>
     </Reference>
-    <Reference Include="StreetSmart.WinForms, Version=19.5.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
-      <HintPath>..\packages\StreetSmart.WinForms.19.5.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
+    <Reference Include="StreetSmart.WinForms, Version=19.7.1.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
+      <HintPath>..\packages\StreetSmart.WinForms.19.7.1\lib\net452\StreetSmart.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

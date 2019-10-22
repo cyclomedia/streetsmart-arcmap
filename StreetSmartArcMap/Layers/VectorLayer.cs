@@ -483,21 +483,26 @@ namespace StreetSmartArcMap.Layers
                         {
                             foreach (var observation in observations)
                             {
-                                double x = observation.Position?.X ?? 0.0;
-                                double y = observation.Position?.Y ?? 0.0;
-                                double xDir = observation.Direction?.X ?? 0.0;
-                                double yDir = observation.Direction?.Y ?? 0.0;
+                                var obsPanorama = observation as IResultDirectionPanorama;
 
-                                RgbColor gray = new RgbColorClass
-                                    {Red = Color.Gray.R, Green = Color.Gray.G, Blue = Color.Gray.B};
-                                ISymbol lineSymbol = new SimpleLineSymbolClass {Color = gray, Width = 1.25};
-                                display.SetSymbol(lineSymbol);
+                                if (obsPanorama != null)
+                                {
+                                    double x = obsPanorama.Position?.X ?? 0.0;
+                                    double y = obsPanorama.Position?.Y ?? 0.0;
+                                    double xDir = obsPanorama.Direction?.X ?? 0.0;
+                                    double yDir = obsPanorama.Direction?.Y ?? 0.0;
 
-                                var polylineClass = new PolylineClass();
-                                polylineClass.AddPoint(
-                                    new PointClass {X = x + xDir * distLine, Y = y + yDir * distLine});
-                                polylineClass.AddPoint(new PointClass {X = x, Y = y});
-                                display.DrawPolyline(polylineClass);
+                                    RgbColor gray = new RgbColorClass
+                                        {Red = Color.Gray.R, Green = Color.Gray.G, Blue = Color.Gray.B};
+                                    ISymbol lineSymbol = new SimpleLineSymbolClass {Color = gray, Width = 1.25};
+                                    display.SetSymbol(lineSymbol);
+
+                                    var polylineClass = new PolylineClass();
+                                    polylineClass.AddPoint(
+                                        new PointClass {X = x + xDir * distLine, Y = y + yDir * distLine});
+                                    polylineClass.AddPoint(new PointClass {X = x, Y = y});
+                                    display.DrawPolyline(polylineClass);
+                                }
                             }
                         }
                     }

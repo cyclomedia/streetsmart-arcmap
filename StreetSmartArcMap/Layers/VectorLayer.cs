@@ -697,6 +697,12 @@ namespace StreetSmartArcMap.Layers
                             {
                                 LastEditedObject = -1;
                             }
+                            else if (LastEditedObject != -1)
+                            {
+                                var deleteFeature = layer._featureClass.GetFeature(LastEditedObject);
+                                deleteFeature.Delete();
+                                LastEditedObject = -1;
+                            }
 
                             LastEditedPointFeature = ((IMeasurementProperties)feature.Properties).Id;
                             break;

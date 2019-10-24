@@ -37,7 +37,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
-
+using IFeature = ESRI.ArcGIS.Geodatabase.IFeature;
 using IPoint = ESRI.ArcGIS.Geometry.IPoint;
 
 namespace StreetSmartArcMap.Layers
@@ -113,6 +113,9 @@ namespace StreetSmartArcMap.Layers
         public static event SketchFinishedDelegate SketchFinishedEvent;
 
         public IStyledLayerDescriptor Sld { get; private set; }
+
+        private static string LastEditedPointFeature = string.Empty;
+        private static int LastEditedObject = -1;
 
         private static IList<ESRI.ArcGIS.Geodatabase.IFeature> _editFeatures;
         private static IList<VectorLayer> _layers;
@@ -658,13 +661,44 @@ namespace StreetSmartArcMap.Layers
                         case GeometryType.Point: // always add a new point
                             var coord = feature.Geometry as ICoordinate;
                             var point = ConvertToPoint(coord, layer.HasZ);
-                            if (point != null)
+
+                            if (point != null && !point.IsEmpty)
                             {
-                                var newEditFeature = layer._featureClass.CreateFeature();
-                                newEditFeature.Shape = point.IsEmpty ? null : point;
-                                newEditFeature.Store();
+                                IFeature newEditFeature;
+
+                                if (LastEditedPointFeature != ((IMeasurementProperties) feature.Properties).Id)
+                                {
+                                    newEditFeature = layer._featureClass.CreateFeature();
+                                }
+                                else
+                                {
+                                    IEnumFeature editSelection = ArcUtils.Editor?.EditSelection;
+                                    editSelection?.Reset();
+                                    newEditFeature = editSelection.Next();
+                                }
+
+                                if (newEditFeature == null)
+                                {
+                                    newEditFeature = LastEditedObject != -1
+                                        ? layer._featureClass.GetFeature(LastEditedObject)
+                                        : layer._featureClass.CreateFeature();
+                                }
+
+                                if (newEditFeature != null)
+                                {
+                                    newEditFeature.Shape = point;
+                                    newEditFeature.Store();
+
+                                    LastEditedObject = newEditFeature.OID;
+                                    OnLayerChanged(layer);
+                                }
+                            }
+                            else if (LastEditedPointFeature != ((IMeasurementProperties)feature.Properties).Id)
+                            {
+                                LastEditedObject = -1;
                             }
 
+                            LastEditedPointFeature = ((IMeasurementProperties)feature.Properties).Id;
                             break;
 
                         case GeometryType.LineString:
@@ -816,7 +850,7 @@ namespace StreetSmartArcMap.Layers
             switch (TypeOfLayer)
             {
                 case TypeOfLayer.Point:
-                    return SLDFactory.CreateStylePoint(SymbolizerType.Circle, 10, color, 75, outline, 0);
+                    return SLDFactory.CreateStylePoint(SymbolizerType.Circle, 40, color, 75, outline, 0);
 
                 case TypeOfLayer.Line:
                     return SLDFactory.CreateStyleLine(color);
@@ -1287,7 +1321,7 @@ namespace StreetSmartArcMap.Layers
                     {
                         editSelection.Reset();
                         EditFeatures.Clear();
-                        ESRI.ArcGIS.Geodatabase.IFeature feature;
+                        IFeature feature;
 
                         while ((feature = editSelection.Next()) != null)
                         {

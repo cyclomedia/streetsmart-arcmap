@@ -87,6 +87,10 @@ namespace StreetSmartArcMap.Logic
 
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
+        private bool _inPointMeasurement = false;
+        private bool _inLineMeasurement = false;
+        private bool _inPolygonMeasurement = false;
+
         private bool Loading = false;
         private IPanoramaViewerOptions DefaultPanoramaOptions { get; set; }
         private IList<ViewerType> ViewerTypes { get; set; }
@@ -238,6 +242,13 @@ namespace StreetSmartArcMap.Logic
             {
                 Features = e.Value
             };
+
+            if (e.Value.Type == FeatureType.Unknown)
+            {
+                _inPointMeasurement = false;
+                _inLineMeasurement = false;
+                _inPolygonMeasurement = false;
+            }
 
             OnMeasuremenChanged?.Invoke(args);
         }
@@ -577,13 +588,13 @@ namespace StreetSmartArcMap.Logic
                 switch (typeOfLayer)
                 {
                     case TypeOfLayer.Point:
-                        CreatePointMeasurement(panoramaViewer);
+                        await CreatePointMeasurement(panoramaViewer);
                         break;
                     case TypeOfLayer.Line:
-                        CreateLineMeasurement(panoramaViewer);
+                        await CreateLineMeasurement(panoramaViewer);
                         break;
                     case TypeOfLayer.Polygon:
-                        CreatePolygonMeasurement(panoramaViewer);
+                        await CreatePolygonMeasurement(panoramaViewer);
                         break;
                     default:
                         break;
@@ -591,32 +602,39 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        public void CreatePointMeasurement(IPanoramaViewer viewer)
+        public async Task CreatePointMeasurement(IPanoramaViewer viewer)
         {
-            if (GlobeSpotterConfiguration.MeasurePoint)
+            if (GlobeSpotterConfiguration.MeasurePoint && !_inPointMeasurement)
             {
                 var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.Point);
-
-                StreetSmartAPI.StartMeasurementMode(viewer, options);
+                await StreetSmartAPI.StartMeasurementMode(viewer, options);
+                _inPointMeasurement = true;
+                _inLineMeasurement = false;
+                _inPolygonMeasurement = false;
             }
         }
 
-        public void CreateLineMeasurement(IPanoramaViewer viewer)
+        public async Task CreateLineMeasurement(IPanoramaViewer viewer)
         {
-            if (GlobeSpotterConfiguration.MeasureLine)
+            if (GlobeSpotterConfiguration.MeasureLine && !_inLineMeasurement)
             {
                 var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.LineString);
-                StreetSmartAPI.StartMeasurementMode(viewer, options);
+                await StreetSmartAPI.StartMeasurementMode(viewer, options);
+                _inPointMeasurement = false;
+                _inLineMeasurement = true;
+                _inPolygonMeasurement = false;
             }
         }
 
-        public void CreatePolygonMeasurement(IPanoramaViewer viewer)
+        public async Task CreatePolygonMeasurement(IPanoramaViewer viewer)
         {
-            if (GlobeSpotterConfiguration.MeasurePolygon)
+            if (GlobeSpotterConfiguration.MeasurePolygon && !_inPolygonMeasurement)
             {
                 var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.Polygon);
-
-                StreetSmartAPI.StartMeasurementMode(viewer, options);
+                await StreetSmartAPI.StartMeasurementMode(viewer, options);
+                _inPointMeasurement = false;
+                _inLineMeasurement = false;
+                _inPolygonMeasurement = true;
             }
         }
 
@@ -699,6 +717,9 @@ namespace StreetSmartArcMap.Logic
             if (await StreetSmartAPI.GetApiReadyState())
             {
                 StreetSmartAPI.StopMeasurementMode();
+                _inPointMeasurement = false;
+                _inLineMeasurement = false;
+                _inPolygonMeasurement = false;
             }
 
             VectorLayer.FinishMeasurement();

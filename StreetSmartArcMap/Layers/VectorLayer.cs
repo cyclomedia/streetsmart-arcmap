@@ -37,6 +37,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using IFeature = ESRI.ArcGIS.Geodatabase.IFeature;
 using IPoint = ESRI.ArcGIS.Geometry.IPoint;
 
@@ -647,7 +648,7 @@ namespace StreetSmartArcMap.Layers
             {
                 FinishMeasurement();
 
-                ArcUtils.Editor.StopEditing(true);
+                ArcUtils.Editor.StopEditing(false);
             }
 
             if (!StreetSmartApiWrapper.Instance.BusyForMeasurement)
@@ -697,7 +698,7 @@ namespace StreetSmartArcMap.Layers
                             {
                                 LastEditedObject = -1;
                             }
-                            else if (LastEditedObject != -1)
+                            else if (LastEditedObject != -1 && layer.TypeOfLayer == TypeOfLayer.Point)
                             {
                                 var deleteFeature = layer._featureClass.GetFeature(LastEditedObject);
                                 deleteFeature.Delete();
@@ -713,6 +714,9 @@ namespace StreetSmartArcMap.Layers
                             if (coords != null)
                             {
                                 var sketch = editor as IEditSketch3;
+                                IEnumFeature editSelection = ArcUtils.Editor?.EditSelection;
+                                editSelection?.Reset();
+                                var newEditFeature = editSelection.Next();
 
                                 if (isNew)
                                 {
@@ -720,7 +724,29 @@ namespace StreetSmartArcMap.Layers
                                     {
                                         // New measurement from Street Smart
                                         if ((sketch.Geometry as Polyline).PointCount > 1)
-                                            sketch.FinishSketch();
+                                        {
+                                            try
+                                            {
+                                                if (newEditFeature == null)
+                                                {
+                                                    newEditFeature = layer._featureClass.CreateFeature();
+                                                    newEditFeature.Shape = sketch.Geometry;
+                                                    newEditFeature.Store();
+                                                    OnLayerChanged(layer);
+                                                }
+                                                else if (LastEditedObject == newEditFeature.OID)
+                                                {
+                                                    newEditFeature.Shape = sketch.Geometry;
+                                                    newEditFeature.Store();
+                                                    OnLayerChanged(layer);
+                                                    sketch.RefreshSketch();
+                                                }
+                                            }
+                                            catch (Exception)
+                                            {
+                                                // do nothing
+                                            }
+                                        }
                                         else
                                             ArcUtils.Editor.StopEditing(false);
                                     }
@@ -733,6 +759,7 @@ namespace StreetSmartArcMap.Layers
                                 {
                                     sketch.Geometry = ConvertToPolyline(coords, layer.HasZ) as ESRI.ArcGIS.Geometry.IGeometry;
                                     sketch.RefreshSketch();
+                                    LastEditedObject = newEditFeature?.OID ?? -1;
                                 }
                             }
 
@@ -1310,6 +1337,11 @@ namespace StreetSmartArcMap.Layers
 
         private static async void OnSelectionChanged()
         {
+            await OnSelectionChanged(true);
+        }
+
+        private static async Task OnSelectionChanged(bool includeStart)
+        {
             try
             {
                 IApplication application = ArcMap.Application;
@@ -1333,7 +1365,7 @@ namespace StreetSmartArcMap.Layers
                         {
                             EditFeatures.Add(feature);
                         }
-                        if (EditFeatures.Count > 0 && !StreetSmartApiWrapper.Instance.BusyForMeasurement)
+                        if (EditFeatures.Count > 0 && !StreetSmartApiWrapper.Instance.BusyForMeasurement && includeStart)
                         {
                             await StreetSmartApiWrapper.Instance.CreateMeasurement(GetTypeOfLayer(EditFeatures[0].Shape.GeometryType));
 
@@ -1525,7 +1557,7 @@ namespace StreetSmartArcMap.Layers
             }
         }
 
-        private static void OnSketchFinished()
+        private static async void OnSketchFinished()
         {
             try
             {
@@ -1550,7 +1582,7 @@ namespace StreetSmartArcMap.Layers
                                 AvContentChanged();
                             }
 
-                            OnSelectionChanged();
+                            await OnSelectionChanged(false);
                         }
                     }
                 }

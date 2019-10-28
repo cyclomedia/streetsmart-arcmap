@@ -530,11 +530,11 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        private async void VectorLayer_SketchFinishedEvent()
+        private void VectorLayer_SketchFinishedEvent()
         {
             if (GlobeSpotterConfiguration.MeasurePermissions)
             {
-                await StopMeasurement();
+              // do nothing
             }
         }
 
@@ -688,7 +688,7 @@ namespace StreetSmartArcMap.Logic
                 if (StreetSmartAPI == null)
                 {
                     if (Config.UseDefaultStreetSmartLocation)
-                        StreetSmartAPI = StreetSmartAPIFactory.Create(null, true);
+                        StreetSmartAPI = StreetSmartAPIFactory.Create("https://streetsmart.cyclomedia.com/api/v19.7/api-dotnet.html", null, true);
                     else
                         StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse, null, true);
 

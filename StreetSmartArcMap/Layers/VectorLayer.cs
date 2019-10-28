@@ -648,7 +648,7 @@ namespace StreetSmartArcMap.Layers
             {
                 FinishMeasurement();
 
-                ArcUtils.Editor.StopEditing(false);
+                ArcUtils.Editor.StopEditing(true);
             }
 
             if (!StreetSmartApiWrapper.Instance.BusyForMeasurement)
@@ -883,7 +883,7 @@ namespace StreetSmartArcMap.Layers
             switch (TypeOfLayer)
             {
                 case TypeOfLayer.Point:
-                    return SLDFactory.CreateStylePoint(SymbolizerType.Circle, 40, color, 75, outline, 0);
+                    return SLDFactory.CreateStylePoint(SymbolizerType.Circle, 10, color, 75, outline, 0);
 
                 case TypeOfLayer.Line:
                     return SLDFactory.CreateStyleLine(color);

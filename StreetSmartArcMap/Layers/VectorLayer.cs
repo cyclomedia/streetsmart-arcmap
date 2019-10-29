@@ -646,7 +646,11 @@ namespace StreetSmartArcMap.Layers
             //Type is unknown when measurement is closed in Street Smart or a new one is started.
             if (features.Type == FeatureType.Unknown)
             {
-                FinishMeasurement();
+                var sketch = editor as IEditSketch3;
+                sketch.Geometry = null;
+                sketch.RefreshSketch();
+                OnLayerChanged(layer);
+                ArcUtils.ActiveView.Refresh();
 
                 ArcUtils.Editor.StopEditing(true);
             }
@@ -725,20 +729,27 @@ namespace StreetSmartArcMap.Layers
                                         // New measurement from Street Smart
                                         if ((sketch.Geometry as Polyline).PointCount > 1)
                                         {
+                                            var geometry = sketch.Geometry;
+
                                             try
                                             {
+                                                ((PolylineClass) geometry).ZAware = layer.HasZ;
+
                                                 if (newEditFeature == null)
                                                 {
                                                     newEditFeature = layer._featureClass.CreateFeature();
-                                                    newEditFeature.Shape = sketch.Geometry;
+                                                    newEditFeature.Shape = geometry;
                                                     newEditFeature.Store();
                                                     OnLayerChanged(layer);
+                                                    sketch.Geometry = null;
+                                                    sketch.RefreshSketch();
                                                 }
                                                 else if (LastEditedObject == newEditFeature.OID)
                                                 {
-                                                    newEditFeature.Shape = sketch.Geometry;
+                                                    newEditFeature.Shape = geometry;
                                                     newEditFeature.Store();
                                                     OnLayerChanged(layer);
+                                                    sketch.Geometry = null;
                                                     sketch.RefreshSketch();
                                                 }
                                             }
@@ -759,6 +770,8 @@ namespace StreetSmartArcMap.Layers
                                 {
                                     sketch.Geometry = ConvertToPolyline(coords, layer.HasZ) as ESRI.ArcGIS.Geometry.IGeometry;
                                     sketch.RefreshSketch();
+                                    ArcUtils.ActiveView.Refresh();
+
                                     LastEditedObject = newEditFeature?.OID ?? -1;
                                 }
                             }

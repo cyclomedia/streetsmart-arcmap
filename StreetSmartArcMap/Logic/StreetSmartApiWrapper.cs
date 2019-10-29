@@ -457,9 +457,14 @@ namespace StreetSmartArcMap.Logic
                         if (feature.Geometry.Type == GeometryType.Polygon)
                             count -= 1;
 
-                        for (int c = measurementProperties.MeasureDetails.Count; c < count; c++)
+                        for (int c = Math.Min(measurementProperties.MeasureDetails.Count, count); c < count; c++)
                         {
                             measurementProperties.MeasureDetails.Add(GeoJsonFactory.CreateMeasureDetails());
+                        }
+
+                        while (measurementProperties.MeasureDetails.Count > count)
+                        {
+                            measurementProperties.MeasureDetails.RemoveAt(count);
                         }
                     }
                 }

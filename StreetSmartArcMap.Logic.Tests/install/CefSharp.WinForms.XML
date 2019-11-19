@@ -307,14 +307,6 @@
             </summary>
             <value>The browser settings.</value>
         </member>
-        <member name="P:CefSharp.WinForms.ChromiumWebBrowser.ActivateBrowserOnCreation">
-            <summary>
-            Activates browser upon creation, the default value is false. Prior to version 73
-            the default behaviour was to activate browser on creation (Equivilent of setting this property to true).
-            To restore this behaviour set this value to true immediately after you create the <see cref="T:CefSharp.WinForms.ChromiumWebBrowser"/> instance.
-            https://bitbucket.org/chromiumembedded/cef/issues/1856/branch-2526-cef-activates-browser-window
-            </summary>
-        </member>
         <member name="P:CefSharp.WinForms.ChromiumWebBrowser.RequestContext">
             <summary>
             Gets or sets the request context.
@@ -432,9 +424,9 @@
             </summary>
             <value>The drag handler.</value>
         </member>
-        <member name="P:CefSharp.WinForms.ChromiumWebBrowser.ResourceRequestHandlerFactory">
+        <member name="P:CefSharp.WinForms.ChromiumWebBrowser.ResourceHandlerFactory">
             <summary>
-            Implement <see cref="T:CefSharp.IResourceRequestHandlerFactory" /> and control the loading of resources
+            Implement <see cref="T:CefSharp.IResourceHandlerFactory" /> and control the loading of resources
             </summary>
             <value>The resource handler factory.</value>
         </member>
@@ -522,11 +514,6 @@
             To access UI elements you'll need to Invoke/Dispatch onto the UI Thread.
             </summary>
         </member>
-        <member name="E:CefSharp.WinForms.ChromiumWebBrowser.JavascriptMessageReceived">
-            <summary>
-            Event handler that will get called when the message that originates from CefSharp.PostMessage
-            </summary>
-        </member>
         <member name="P:CefSharp.WinForms.ChromiumWebBrowser.CanGoForward">
             <summary>
             A flag that indicates whether the state of the control currently supports the GoForward action (true) or not (false).
@@ -585,14 +572,6 @@
             constructor overload instead. Using this constructor in code is unsupported and you may experience <see cref="T:System.NullReferenceException"/>'s
             when attempting to access some of the properties immediately after instantiation. 
             </summary>
-        </member>
-        <member name="M:CefSharp.WinForms.ChromiumWebBrowser.#ctor(CefSharp.Web.HtmlString,CefSharp.IRequestContext)">
-            <summary>
-            Initializes a new instance of the <see cref="T:CefSharp.WinForms.ChromiumWebBrowser"/> class.
-            </summary>
-            <param name="html">html string to be initially loaded in the browser.</param>
-            <param name="requestContext">Request context that will be used for this browser instance,
-            if null the Global Request Context will be used</param>
         </member>
         <member name="M:CefSharp.WinForms.ChromiumWebBrowser.#ctor(System.String,CefSharp.IRequestContext)">
             <summary>

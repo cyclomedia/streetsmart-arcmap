@@ -1069,6 +1069,13 @@
             Factory for creates a new instance of the API. API used to use and modify various StreetSmart components.
             </summary>
         </member>
+        <member name="M:StreetSmart.Common.Factories.StreetSmartAPIFactory.Initialize(StreetSmart.Common.Interfaces.API.IAPISettings,System.Boolean)">
+            <summary>
+            Initialize the api without creating an instance of it
+            </summary>
+            <param name="settings">The settings of CefSharp</param>
+            <param name="enableHighDPISupport">enableHighDPISupport, optional, default value = false</param>
+        </member>
         <member name="M:StreetSmart.Common.Factories.StreetSmartAPIFactory.Create(StreetSmart.Common.Interfaces.API.IAPISettings,System.Boolean)">
             <summary>
             Creates a new instance of the API. API used to use and modify various StreetSmart components.
@@ -3294,6 +3301,36 @@
             Depth std dev
             </summary>
         </member>
+        <member name="P:StreetSmart.Common.Interfaces.GeoJson.IRecordingInfo.RecordedAt">
+            <summary>
+            RecordedAt
+            </summary>
+        </member>
+        <member name="P:StreetSmart.Common.Interfaces.GeoJson.IRecordingInfo.Resolution">
+            <summary>
+            Resolution
+            </summary>
+        </member>
+        <member name="T:StreetSmart.Common.Interfaces.GeoJson.IResolution">
+            <summary>
+            Resolution
+            </summary>
+        </member>
+        <member name="P:StreetSmart.Common.Interfaces.GeoJson.IResolution.Width">
+            <summary>
+            Width
+            </summary>
+        </member>
+        <member name="P:StreetSmart.Common.Interfaces.GeoJson.IResolution.Stdev">
+            <summary>
+            Stdev
+            </summary>
+        </member>
+        <member name="P:StreetSmart.Common.Interfaces.GeoJson.IResolution.Error">
+            <summary>
+            Error
+            </summary>
+        </member>
         <member name="T:StreetSmart.Common.Interfaces.GeoJson.IResultDirection">
             <summary>
             Result direction of the observation
@@ -3482,6 +3519,11 @@
         <member name="P:StreetSmart.Common.Interfaces.GeoJson.IResultDirectionPanorama.CalculatedMethod">
             <summary>
             Calculated method
+            </summary>
+        </member>
+        <member name="P:StreetSmart.Common.Interfaces.GeoJson.IResultDirectionPanorama.Resolution">
+            <summary>
+            Resolution
             </summary>
         </member>
         <member name="T:StreetSmart.Common.Interfaces.GeoJson.IRotation">
@@ -3994,7 +4036,7 @@
         </member>
         <member name="P:StreetSmart.WinForms.Properties.Resources.StreetSmartLocation">
             <summary>
-              Looks up a localized string similar to https://streetsmart.cyclomedia.com/api/v19.15/api-dotnet.html.
+              Looks up a localized string similar to https://streetsmart.cyclomedia.com/api/v19.17/api-dotnet.html.
             </summary>
         </member>
         <member name="T:StreetSmart.WinForms.StreetSmartGUI">

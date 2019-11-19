@@ -780,24 +780,78 @@ namespace StreetSmartArcMap.Layers
 
                         case GeometryType.Polygon:
                             var polygon = feature.Geometry as StreetSmart.Common.Interfaces.GeoJson.IPolygon;
+
                             if (polygon != null)
                             {
                                 var sketch = editor as IEditSketch3;
-                                var newPolygon = new ESRI.ArcGIS.Geometry.Polygon();
+                                IEnumFeature editSelection = ArcUtils.Editor?.EditSelection;
+                                editSelection?.Reset();
+                                var newEditFeature = editSelection.Next();
 
-                                foreach (var coordinate in polygon[0])
+                                if (isNew)
                                 {
-                                    var pointInPolygon = ConvertToPoint(coordinate, layer.HasZ);
+                                    if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
+                                    {
+                                        // New measurement from Street Smart
+                                        if ((sketch.Geometry as Polyline).PointCount > 1)
+                                        {
+                                            var geometry = sketch.Geometry;
 
-                                    newPolygon.AddPoint(pointInPolygon);
+                                            try
+                                            {
+                                                ((PolygonClass) geometry).ZAware = layer.HasZ;
+
+                                                if (newEditFeature == null)
+                                                {
+                                                    newEditFeature = layer._featureClass.CreateFeature();
+                                                    newEditFeature.Shape = geometry;
+                                                    newEditFeature.Store();
+                                                    OnLayerChanged(layer);
+                                                    sketch.Geometry = null;
+                                                    sketch.RefreshSketch();
+                                                }
+                                                else if (LastEditedObject == newEditFeature.OID)
+                                                {
+                                                    newEditFeature.Shape = geometry;
+                                                    newEditFeature.Store();
+                                                    OnLayerChanged(layer);
+                                                    sketch.Geometry = null;
+                                                    sketch.RefreshSketch();
+                                                }
+                                            }
+                                            catch (Exception)
+                                            {
+                                                // do nothing
+                                            }
+                                        }
+                                        else
+                                            ArcUtils.Editor.StopEditing(false);
+                                    }
+                                    else
+                                    {
+                                        // New measurement from map
+                                    }
                                 }
-
-                                if (sketch != null && newPolygon.PointCount > 0)
+                                else
                                 {
-                                    (newPolygon as IZAware).ZAware = true;
+                                    var newPolygon = new ESRI.ArcGIS.Geometry.Polygon();
 
-                                    sketch.Geometry = (ESRI.ArcGIS.Geometry.IGeometry)newPolygon;
-                                    sketch.RefreshSketch();
+                                    foreach (var coordinate in polygon[0])
+                                    {
+                                        var pointInPolygon = ConvertToPoint(coordinate, layer.HasZ);
+                                        newPolygon.AddPoint(pointInPolygon);
+                                    }
+
+                                    if (sketch != null && newPolygon.PointCount > 0)
+                                    {
+                                        (newPolygon as IZAware).ZAware = true;
+                                        sketch.Geometry = (ESRI.ArcGIS.Geometry.IGeometry)newPolygon;
+                                        sketch.RefreshSketch();
+                                    }
+
+                                    ArcUtils.ActiveView.Refresh();
+
+                                    LastEditedObject = newEditFeature?.OID ?? -1;
                                 }
                             }
 
@@ -896,7 +950,7 @@ namespace StreetSmartArcMap.Layers
             switch (TypeOfLayer)
             {
                 case TypeOfLayer.Point:
-                    return SLDFactory.CreateStylePoint(SymbolizerType.Circle, 10, color, 75, outline, 0);
+                    return SLDFactory.CreateStylePoint(SymbolizerType.Circle, 15, color, 75, outline, 0);
 
                 case TypeOfLayer.Line:
                     return SLDFactory.CreateStyleLine(color);

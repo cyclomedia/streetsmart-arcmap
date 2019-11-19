@@ -48,9 +48,8 @@
       <HintPath>..\packages\Moq.4.10.1\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="StreetSmart.WinForms, Version=19.7.1.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
-      <HintPath>..\packages\StreetSmart.WinForms.19.7.1\lib\net452\StreetSmart.WinForms.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="StreetSmart.WinForms">
+      <HintPath>..\packages\StreetSmart.WinForms.19.15.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -157,7 +156,9 @@
     <None Include="install\natives_blob.bin" />
     <None Include="install\snapshot_blob.bin" />
     <None Include="install\v8_context_snapshot.bin" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />

@@ -427,14 +427,14 @@ namespace StreetSmartArcMap.Logic
             UpdateActiveMeasurement(geometries);
         }
 
-        public void UpdateActiveMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry)
+        public void UpdateActiveMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry, TypeOfLayer typeOfLayer = TypeOfLayer.None)
         {
             var geometries = new List<ESRI.ArcGIS.Geometry.IGeometry> { geometry };
 
-            UpdateActiveMeasurement(geometries);
+            UpdateActiveMeasurement(geometries, typeOfLayer);
         }
 
-        private void UpdateActiveMeasurement(IList<ESRI.ArcGIS.Geometry.IGeometry> geometries)
+        private void UpdateActiveMeasurement(IList<ESRI.ArcGIS.Geometry.IGeometry> geometries, TypeOfLayer typeOfLayer = TypeOfLayer.None)
         {
             if (GlobeSpotterConfiguration.MeasurePermissions && geometries != null && ActiveMeasurement != null)
             {
@@ -447,7 +447,7 @@ namespace StreetSmartArcMap.Logic
                     int count = 0;
 
                     if (i < geometries.Count)
-                        feature.Geometry = ConvertGeometry(geometries[i], ref count);
+                        feature.Geometry = ConvertGeometry(geometries[i], ref count, typeOfLayer);
                     else
                         feature.Geometry = GeoJsonFactory.CreatePointGeometry(null);
 
@@ -529,7 +529,9 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_SketchModifiedEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
         {
-            if (GlobeSpotterConfiguration.MeasurePermissions && geometry != null && !geometry.IsEmpty)
+            TypeOfLayer geometryType = VectorLayer.GetTypeOfLayer(geometry?.GeometryType ?? esriGeometryType.esriGeometryNull);
+
+            if (GlobeSpotterConfiguration.MeasurePermissions && geometry != null && (!geometry.IsEmpty || geometryType == TypeOfLayer.Line || geometryType == TypeOfLayer.Polygon))
             {
                 UpdateActiveMeasurement(geometry);
             }
@@ -1062,7 +1064,7 @@ namespace StreetSmartArcMap.Logic
             return null;
         }
 
-        public static StreetSmart.Common.Interfaces.GeoJson.IGeometry ConvertGeometry(ESRI.ArcGIS.Geometry.IGeometry geometry, ref int count)
+        public static StreetSmart.Common.Interfaces.GeoJson.IGeometry ConvertGeometry(ESRI.ArcGIS.Geometry.IGeometry geometry, ref int count, TypeOfLayer typeOfLayer)
         {
             if (geometry != null)
             {
@@ -1081,7 +1083,19 @@ namespace StreetSmartArcMap.Logic
                 }
             }
 
-            return null;
+            count = 0;
+
+            switch (typeOfLayer)
+            {
+                case TypeOfLayer.Point:
+                    return GeoJsonFactory.CreatePointGeometry(null);
+                case TypeOfLayer.Line:
+                    return GeoJsonFactory.CreateLineGeometry(new List<ICoordinate>());
+                case TypeOfLayer.Polygon:
+                    return GeoJsonFactory.CreatePolygonGeometry(new List<IList<ICoordinate>>());
+                default:
+                    return null;
+            }
         }
 
         public static ICoordinate ToCoordinate(ESRI.ArcGIS.Geometry.IPoint point, ref int count)

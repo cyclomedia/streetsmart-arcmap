@@ -126,6 +126,7 @@ namespace StreetSmartArcMap.Layers
         private static readonly object LockObject;
         private static bool _doSelection;
         private static Timer _nextSelectionTimer;
+        private static bool _fromSelection;
 
         private IFeatureClass _featureClass;
         private ILayer _layer;
@@ -154,6 +155,7 @@ namespace StreetSmartArcMap.Layers
             LogClient = new LogClient(typeof(VectorLayer));
             LockObject = new object();
             _doSelection = true;
+            _fromSelection = false;
         }
 
         #endregion constructor
@@ -735,8 +737,9 @@ namespace StreetSmartArcMap.Layers
                                             {
                                                 ((PolylineClass) geometry).ZAware = layer.HasZ;
 
-                                                if (newEditFeature == null)
+                                                if (!_fromSelection)
                                                 {
+                                                    _fromSelection = false;
                                                     newEditFeature = layer._featureClass.CreateFeature();
                                                     newEditFeature.Shape = geometry;
                                                     newEditFeature.Store();
@@ -746,6 +749,7 @@ namespace StreetSmartArcMap.Layers
                                                 }
                                                 else if (LastEditedObject == newEditFeature.OID)
                                                 {
+                                                    _fromSelection = false;
                                                     newEditFeature.Shape = geometry;
                                                     newEditFeature.Store();
                                                     OnLayerChanged(layer);
@@ -764,6 +768,11 @@ namespace StreetSmartArcMap.Layers
                                     else
                                     {
                                         // New measurement from map
+                                        sketch.Geometry = ConvertToPolyline(coords, layer.HasZ) as ESRI.ArcGIS.Geometry.IGeometry;
+                                        sketch.RefreshSketch();
+                                        ArcUtils.ActiveView.Refresh();
+
+                                        LastEditedObject = newEditFeature?.OID ?? -1;
                                     }
                                 }
                                 else
@@ -801,8 +810,9 @@ namespace StreetSmartArcMap.Layers
                                             {
                                                 ((PolygonClass) geometry).ZAware = layer.HasZ;
 
-                                                if (newEditFeature == null)
+                                                if (!_fromSelection)
                                                 {
+                                                    _fromSelection = false;
                                                     newEditFeature = layer._featureClass.CreateFeature();
                                                     newEditFeature.Shape = geometry;
                                                     newEditFeature.Store();
@@ -812,6 +822,7 @@ namespace StreetSmartArcMap.Layers
                                                 }
                                                 else if (LastEditedObject == newEditFeature.OID)
                                                 {
+                                                    _fromSelection = false;
                                                     newEditFeature.Shape = geometry;
                                                     newEditFeature.Store();
                                                     OnLayerChanged(layer);
@@ -830,6 +841,24 @@ namespace StreetSmartArcMap.Layers
                                     else
                                     {
                                         // New measurement from map
+                                        var newPolygon = new ESRI.ArcGIS.Geometry.Polygon();
+
+                                        foreach (var coordinate in polygon[0])
+                                        {
+                                            var pointInPolygon = ConvertToPoint(coordinate, layer.HasZ);
+                                            newPolygon.AddPoint(pointInPolygon);
+                                        }
+
+                                        if (sketch != null && newPolygon.PointCount > 0)
+                                        {
+                                            (newPolygon as IZAware).ZAware = true;
+                                            sketch.Geometry = (ESRI.ArcGIS.Geometry.IGeometry)newPolygon;
+                                            sketch.RefreshSketch();
+                                        }
+
+                                        ArcUtils.ActiveView.Refresh();
+
+                                        LastEditedObject = newEditFeature?.OID ?? -1;
                                     }
                                 }
                                 else
@@ -1404,6 +1433,7 @@ namespace StreetSmartArcMap.Layers
 
         private static async void OnSelectionChanged()
         {
+            _fromSelection = true;
             await OnSelectionChanged(true);
         }
 
@@ -1424,21 +1454,29 @@ namespace StreetSmartArcMap.Layers
 
                     if (editSelection != null)
                     {
+                        var editLayers = editor as IEditLayers;
                         editSelection.Reset();
                         EditFeatures.Clear();
                         IFeature feature;
+                        TypeOfLayer typeOfLayer = GetTypeOfLayer(editLayers?.CurrentLayer?.FeatureClass?.ShapeType ?? esriGeometryType.esriGeometryNull);
 
                         while ((feature = editSelection.Next()) != null)
                         {
-                            EditFeatures.Add(feature);
-                        }
-                        if (EditFeatures.Count > 0 && !StreetSmartApiWrapper.Instance.BusyForMeasurement && includeStart)
-                        {
-                            await StreetSmartApiWrapper.Instance.CreateMeasurement(GetTypeOfLayer(EditFeatures[0].Shape.GeometryType));
+                            typeOfLayer = GetTypeOfLayer(feature.Shape.GeometryType);
 
-                            if (EditFeatures.Count > 0 && !StreetSmartApiWrapper.Instance.BusyForMeasurement) //the await can remove the selection in between, so recheck to be sure.
+                            if (includeStart || typeOfLayer == TypeOfLayer.Point)
                             {
-                                StreetSmartApiWrapper.Instance.UpdateActiveMeasurement(EditFeatures[0].Shape);
+                                EditFeatures.Add(feature);
+                            }
+                        }
+
+                        if (!StreetSmartApiWrapper.Instance.BusyForMeasurement && ((EditFeatures.Count > 0 || typeOfLayer != TypeOfLayer.Point) && includeStart || typeOfLayer != TypeOfLayer.Point && !includeStart))
+                        {
+                            await StreetSmartApiWrapper.Instance.CreateMeasurement(typeOfLayer);
+
+                            if (!StreetSmartApiWrapper.Instance.BusyForMeasurement) //the await can remove the selection in between, so recheck to be sure.
+                            {
+                                StreetSmartApiWrapper.Instance.UpdateActiveMeasurement(EditFeatures.Count > 0 ? EditFeatures[0].Shape : null, typeOfLayer);
                             }
                         }
                         if (FeatureStartEditEvent != null)
@@ -1494,7 +1532,7 @@ namespace StreetSmartArcMap.Layers
             _nextSelectionTimer = null;
         }
 
-        private static void OnDeleteFeature(IObject obj)
+        private static async void OnDeleteFeature(IObject obj)
         {
             try
             {
@@ -1512,6 +1550,17 @@ namespace StreetSmartArcMap.Layers
 
                     if ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart))
                     {
+                        if (vectorLayer.TypeOfLayer == TypeOfLayer.Line ||
+                            vectorLayer.TypeOfLayer == TypeOfLayer.Polygon)
+                        {
+                            await OnSelectionChanged(false);
+                            var editor = ArcUtils.Editor as IEditLayers;
+                            var sketch = editor as IEditSketch3;
+                            sketch.Geometry = null;
+                            sketch.RefreshSketch();
+                            ArcUtils.ActiveView.Refresh();
+                        }
+
                         FeatureDeleteEvent(feature);
                         AvContentChanged();
                     }
@@ -1645,6 +1694,7 @@ namespace StreetSmartArcMap.Layers
                         {
                             if (SketchFinishedEvent != null)
                             {
+                                _fromSelection = false;
                                 SketchFinishedEvent();
                                 AvContentChanged();
                             }

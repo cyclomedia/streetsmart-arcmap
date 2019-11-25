@@ -747,9 +747,19 @@ namespace StreetSmartArcMap.Layers
                                                     sketch.Geometry = null;
                                                     sketch.RefreshSketch();
                                                 }
-                                                else if (LastEditedObject == newEditFeature.OID)
+                                                else if (LastEditedObject != -1 && LastEditedObject == (newEditFeature?.OID ?? -1))
                                                 {
                                                     _fromSelection = false;
+                                                    newEditFeature.Shape = geometry;
+                                                    newEditFeature.Store();
+                                                    OnLayerChanged(layer);
+                                                    sketch.Geometry = null;
+                                                    sketch.RefreshSketch();
+                                                }
+                                                else if (newEditFeature == null && LastEditedObject == -1)
+                                                {
+                                                    _fromSelection = false;
+                                                    newEditFeature = layer._featureClass.CreateFeature();
                                                     newEditFeature.Shape = geometry;
                                                     newEditFeature.Store();
                                                     OnLayerChanged(layer);
@@ -802,7 +812,7 @@ namespace StreetSmartArcMap.Layers
                                     if (sketch != null && sketch.Geometry != null && !sketch.Geometry.IsEmpty)
                                     {
                                         // New measurement from Street Smart
-                                        if ((sketch.Geometry as Polyline).PointCount > 1)
+                                        if ((sketch.Geometry as Polygon).PointCount > 1)
                                         {
                                             var geometry = sketch.Geometry;
 
@@ -820,9 +830,19 @@ namespace StreetSmartArcMap.Layers
                                                     sketch.Geometry = null;
                                                     sketch.RefreshSketch();
                                                 }
-                                                else if (LastEditedObject == newEditFeature.OID)
+                                                else if (LastEditedObject != -1 && LastEditedObject == (newEditFeature?.OID ?? -1))
                                                 {
                                                     _fromSelection = false;
+                                                    newEditFeature.Shape = geometry;
+                                                    newEditFeature.Store();
+                                                    OnLayerChanged(layer);
+                                                    sketch.Geometry = null;
+                                                    sketch.RefreshSketch();
+                                                }
+                                                else if (newEditFeature == null && LastEditedObject == -1)
+                                                {
+                                                    _fromSelection = false;
+                                                    newEditFeature = layer._featureClass.CreateFeature();
                                                     newEditFeature.Shape = geometry;
                                                     newEditFeature.Store();
                                                     OnLayerChanged(layer);

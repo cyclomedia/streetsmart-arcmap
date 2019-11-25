@@ -412,7 +412,7 @@ namespace StreetSmartArcMap.Logic
                     }
                     catch (Exception ex)
                     {
-                        throw ex;
+                       // throw ex;
                     }
                     finally
                     {
@@ -454,7 +454,7 @@ namespace StreetSmartArcMap.Logic
                     var measurementProperties = feature.Properties as IMeasurementProperties;
                     if (measurementProperties != null)
                     {
-                        if (feature.Geometry.Type == GeometryType.Polygon)
+                        if (feature.Geometry.Type == GeometryType.Polygon && count >= 2)
                             count -= 1;
 
                         for (int c = Math.Min(measurementProperties.MeasureDetails.Count, count); c < count; c++)
@@ -695,7 +695,7 @@ namespace StreetSmartArcMap.Logic
                 if (StreetSmartAPI == null)
                 {
                     if (Config.UseDefaultStreetSmartLocation)
-                        StreetSmartAPI = StreetSmartAPIFactory.Create(null, true);
+                        StreetSmartAPI = StreetSmartAPIFactory.Create("https://streetsmart-staging.cyclomedia.com/api/v19.18/api-dotnet.html", null, true);
                     else
                         StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse, null, true);
 

@@ -380,6 +380,10 @@
   <ItemGroup>
     <AddInContent Include="Images\HelpButton.png" />
   </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="install\Newtonsoft.Json.dll" />
+    <AddInContent Include="install\Newtonsoft.Json.xml" />
+  </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>
     <AddInTargetProduct>Desktop</AddInTargetProduct>

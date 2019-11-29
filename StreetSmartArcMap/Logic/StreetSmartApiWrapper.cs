@@ -695,7 +695,7 @@ namespace StreetSmartArcMap.Logic
                 if (StreetSmartAPI == null)
                 {
                     if (Config.UseDefaultStreetSmartLocation)
-                        StreetSmartAPI = StreetSmartAPIFactory.Create("https://streetsmart-staging.cyclomedia.com/api/v19.18/api-dotnet.html", null, true);
+                        StreetSmartAPI = StreetSmartAPIFactory.Create(null, true);
                     else
                         StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse, null, true);
 

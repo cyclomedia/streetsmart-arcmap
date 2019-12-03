@@ -301,7 +301,7 @@ namespace StreetSmartArcMap.Logic
             {
                 overlay.Visible = !StoredLayers.Instance.Get(overlay.Name);
 
-                viewer.ToggleOverlay(overlay);
+                (viewer as IPanoramaViewer)?.ToggleOverlay(overlay);
             }
 
             return true;

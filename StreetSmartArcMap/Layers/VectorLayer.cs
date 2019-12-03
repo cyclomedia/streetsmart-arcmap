@@ -686,9 +686,21 @@ namespace StreetSmartArcMap.Layers
 
                                 if (newEditFeature == null)
                                 {
-                                    newEditFeature = LastEditedObject != -1
-                                        ? layer._featureClass.GetFeature(LastEditedObject)
-                                        : layer._featureClass.CreateFeature();
+                                    if (LastEditedObject != -1)
+                                    {
+                                        try
+                                        {
+                                            newEditFeature = layer._featureClass.GetFeature(LastEditedObject);
+                                        }
+                                        catch (Exception)
+                                        {
+                                            newEditFeature = layer._featureClass.CreateFeature();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        newEditFeature = layer._featureClass.CreateFeature();
+                                    }
                                 }
 
                                 if (newEditFeature != null)
@@ -746,6 +758,7 @@ namespace StreetSmartArcMap.Layers
                                                     OnLayerChanged(layer);
                                                     sketch.Geometry = null;
                                                     sketch.RefreshSketch();
+                                                    ArcUtils.ActiveView.Refresh();
                                                 }
                                                 else if (LastEditedObject != -1 && LastEditedObject == (newEditFeature?.OID ?? -1))
                                                 {
@@ -755,6 +768,7 @@ namespace StreetSmartArcMap.Layers
                                                     OnLayerChanged(layer);
                                                     sketch.Geometry = null;
                                                     sketch.RefreshSketch();
+                                                    ArcUtils.ActiveView.Refresh();
                                                 }
                                                 else if (newEditFeature == null && LastEditedObject == -1)
                                                 {
@@ -765,6 +779,7 @@ namespace StreetSmartArcMap.Layers
                                                     OnLayerChanged(layer);
                                                     sketch.Geometry = null;
                                                     sketch.RefreshSketch();
+                                                    ArcUtils.ActiveView.Refresh();
                                                 }
                                             }
                                             catch (Exception)
@@ -818,7 +833,7 @@ namespace StreetSmartArcMap.Layers
 
                                             try
                                             {
-                                                ((PolygonClass) geometry).ZAware = layer.HasZ;
+                                                (geometry as IZAware).ZAware = layer.HasZ;
 
                                                 if (!_fromSelection)
                                                 {
@@ -829,6 +844,7 @@ namespace StreetSmartArcMap.Layers
                                                     OnLayerChanged(layer);
                                                     sketch.Geometry = null;
                                                     sketch.RefreshSketch();
+                                                    ArcUtils.ActiveView.Refresh();
                                                 }
                                                 else if (LastEditedObject != -1 && LastEditedObject == (newEditFeature?.OID ?? -1))
                                                 {
@@ -838,6 +854,7 @@ namespace StreetSmartArcMap.Layers
                                                     OnLayerChanged(layer);
                                                     sketch.Geometry = null;
                                                     sketch.RefreshSketch();
+                                                    ArcUtils.ActiveView.Refresh();
                                                 }
                                                 else if (newEditFeature == null && LastEditedObject == -1)
                                                 {
@@ -848,6 +865,7 @@ namespace StreetSmartArcMap.Layers
                                                     OnLayerChanged(layer);
                                                     sketch.Geometry = null;
                                                     sketch.RefreshSketch();
+                                                    ArcUtils.ActiveView.Refresh();
                                                 }
                                             }
                                             catch (Exception)
@@ -891,7 +909,7 @@ namespace StreetSmartArcMap.Layers
                                         newPolygon.AddPoint(pointInPolygon);
                                     }
 
-                                    if (sketch != null && newPolygon.PointCount > 0)
+                                    if (sketch != null && newPolygon.PointCount >= 0)
                                     {
                                         (newPolygon as IZAware).ZAware = true;
                                         sketch.Geometry = (ESRI.ArcGIS.Geometry.IGeometry)newPolygon;
@@ -1172,47 +1190,57 @@ namespace StreetSmartArcMap.Layers
                                 var points = new List<IList<ICoordinate>> ();
                                 var polygon = geometry as IPolygon4;
 
-                                if (polygon != null)
+                                try
                                 {
-                                    IGeometryBag extRingGeomBag = polygon.ExteriorRingBag;
-                                    IGeometryCollection extRingGeomColl = extRingGeomBag as IGeometryCollection;
-
-                                    for (int l = 0; l < extRingGeomColl?.GeometryCount; l++)
+                                    if (polygon != null)
                                     {
-                                        var extPointCollectionJson = new List<ICoordinate>();
-                                        ESRI.ArcGIS.Geometry.IGeometry extRingGeom = extRingGeomColl.get_Geometry(l);
-                                        IPointCollection extRingPointColl = extRingGeom as IPointCollection;
+                                        IGeometryBag extRingGeomBag = polygon.ExteriorRingBag;
+                                        IGeometryCollection extRingGeomColl = extRingGeomBag as IGeometryCollection;
 
-                                        for (int m = 0; m < extRingPointColl.PointCount; m++)
+                                        for (int l = 0; l < extRingGeomColl?.GeometryCount; l++)
                                         {
-                                            IPoint point = extRingPointColl.get_Point(m);
-                                            AddPoint(extPointCollectionJson, point);
-                                        }
+                                            var extPointCollectionJson = new List<ICoordinate>();
+                                            ESRI.ArcGIS.Geometry.IGeometry
+                                                extRingGeom = extRingGeomColl.get_Geometry(l);
+                                            IPointCollection extRingPointColl = extRingGeom as IPointCollection;
 
-                                        points.Add(extPointCollectionJson);
-
-                                        IGeometryBag intRingGeomBag = polygon.get_InteriorRingBag(extRingGeom as IRing);
-                                        IGeometryCollection intRingGeomColl = intRingGeomBag as IGeometryCollection;
-
-                                        for (int n = 0; n < intRingGeomColl.GeometryCount; n++)
-                                        {
-                                            ESRI.ArcGIS.Geometry.IGeometry intRing = intRingGeomColl.get_Geometry(n);
-                                            IPointCollection intRingPointColl = intRing as IPointCollection;
-                                            var intPointCollectionJson = new List<ICoordinate>();
-
-                                            for (int o = 0; o < intRingPointColl.PointCount; o++)
+                                            for (int m = 0; m < extRingPointColl.PointCount; m++)
                                             {
-                                                IPoint point = intRingPointColl.get_Point(o);
-                                                AddPoint(intPointCollectionJson, point);
+                                                IPoint point = extRingPointColl.get_Point(m);
+                                                AddPoint(extPointCollectionJson, point);
                                             }
 
-                                            points.Add(intPointCollectionJson);
+                                            points.Add(extPointCollectionJson);
+
+                                            IGeometryBag intRingGeomBag =
+                                                polygon.get_InteriorRingBag(extRingGeom as IRing);
+                                            IGeometryCollection intRingGeomColl = intRingGeomBag as IGeometryCollection;
+
+                                            for (int n = 0; n < intRingGeomColl.GeometryCount; n++)
+                                            {
+                                                ESRI.ArcGIS.Geometry.IGeometry
+                                                    intRing = intRingGeomColl.get_Geometry(n);
+                                                IPointCollection intRingPointColl = intRing as IPointCollection;
+                                                var intPointCollectionJson = new List<ICoordinate>();
+
+                                                for (int o = 0; o < intRingPointColl.PointCount; o++)
+                                                {
+                                                    IPoint point = intRingPointColl.get_Point(o);
+                                                    AddPoint(intPointCollectionJson, point);
+                                                }
+
+                                                points.Add(intPointCollectionJson);
+                                            }
                                         }
                                     }
-                                }
 
-                                var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
-                                features.Features.Add(geomJson);
+                                    var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
+                                    features.Features.Add(geomJson);
+                                }
+                                catch (Exception)
+                                {
+                                    // exception do nothing
+                                }
                             }
                         }
                         else

@@ -88,17 +88,13 @@ namespace StreetSmartArcMap.Objects
                 _mapPoint.Project(ArcUtils.SpatialReference);
             }
 
-            StreetSmartExtension extension = StreetSmartExtension.GetExtension();
-            if (extension?.InsideScale() ?? false)
+            if (_updateTimer == null)
             {
-                if (_updateTimer == null)
-                {
-                    StartRedraw();
-                }
-                else
-                {
-                    _toUpdate = true;
-                }
+                StartRedraw();
+            }
+            else
+            {
+                _toUpdate = true;
             }
         }
 
@@ -106,49 +102,47 @@ namespace StreetSmartArcMap.Objects
         {
             if (phase == esriViewDrawPhase.esriViewForeground)
             {
-                var extension = StreetSmartExtension.GetExtension();
-                if (extension?.InsideScale() ?? false)
+                var displayTransformation = Display.DisplayTransformation;
+                Display.Filter = new TransparencyDisplayFilterClass {Transparency = Alpha};
+                Display.StartDrawing(Display.hDC, (short) esriScreenCache.esriNoScreenCache);
+
+                if (!disposing && _mapPoint != null)
                 {
-                    var displayTransformation = Display.DisplayTransformation;
-                    Display.Filter = new TransparencyDisplayFilterClass { Transparency = Alpha };
-                    Display.StartDrawing(Display.hDC, (short)esriScreenCache.esriNoScreenCache);
-
-                    if (!disposing && _mapPoint != null)
+                    var symbol = new SimpleFillSymbol
                     {
-                        var symbol = new SimpleFillSymbol
+                        Color = Converter.ToRGBColor(Color),
+                        Style = esriSimpleFillStyle.esriSFSSolid,
+                        Outline = new SimpleLineSymbol()
                         {
-                            Color = Converter.ToRGBColor(Color),
-                            Style = esriSimpleFillStyle.esriSFSSolid,
-                            Outline = new SimpleLineSymbol()
-                            {
-                                Style = esriSimpleLineStyle.esriSLSNull
-                            }
-                        };
+                            Style = esriSimpleLineStyle.esriSLSNull
+                        }
+                    };
 
-                        int screenX, screenY;
-                        displayTransformation.FromMapPoint(_mapPoint, out screenX, out screenY);
+                    int screenX, screenY;
+                    displayTransformation.FromMapPoint(_mapPoint, out screenX, out screenY);
 
-                        double angleh = (Orientation.HFov ?? 0.0) * Math.PI / 360;
-                        double angle = (270 + (Orientation.Yaw ?? 0.0)) % 360 * Math.PI / 180;
-                        double angle1 = angle - angleh;
-                        double angle2 = angle + angleh;
+                    double angleh = (Orientation.HFov ?? 0.0) * Math.PI / 360;
+                    double angle = (270 + (Orientation.Yaw ?? 0.0)) % 360 * Math.PI / 180;
+                    double angle1 = angle - angleh;
+                    double angle2 = angle + angleh;
 
-                        var screenPoint1 = new WinPoint(screenX + (int)(coneSize * Math.Cos(angle1)), screenY + (int)(coneSize * Math.Sin(angle1)));
-                        var screenPoint2 = new WinPoint(screenX + (int)(coneSize * Math.Cos(angle2)), screenY + (int)(coneSize * Math.Sin(angle2)));
-                        var point1 = displayTransformation.ToMapPoint(screenPoint1.X, screenPoint1.Y);
-                        var point2 = displayTransformation.ToMapPoint(screenPoint2.X, screenPoint2.Y);
+                    var screenPoint1 = new WinPoint(screenX + (int) (coneSize * Math.Cos(angle1)),
+                        screenY + (int) (coneSize * Math.Sin(angle1)));
+                    var screenPoint2 = new WinPoint(screenX + (int) (coneSize * Math.Cos(angle2)),
+                        screenY + (int) (coneSize * Math.Sin(angle2)));
+                    var point1 = displayTransformation.ToMapPoint(screenPoint1.X, screenPoint1.Y);
+                    var point2 = displayTransformation.ToMapPoint(screenPoint2.X, screenPoint2.Y);
 
-                        var polygon = new Polygon();
-                        polygon.AddPoint(_mapPoint);
-                        polygon.AddPoint(point1);
-                        polygon.AddPoint(point2);
+                    var polygon = new Polygon();
+                    polygon.AddPoint(_mapPoint);
+                    polygon.AddPoint(point1);
+                    polygon.AddPoint(point2);
 
-                        Display.SetSymbol((ISymbol)symbol);
-                        Display.DrawPolygon((IGeometry)polygon);
-                    }
-
-                    Display.FinishDrawing();
+                    Display.SetSymbol((ISymbol) symbol);
+                    Display.DrawPolygon((IGeometry) polygon);
                 }
+
+                Display.FinishDrawing();
             }
         }
 

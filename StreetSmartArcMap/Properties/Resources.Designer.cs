@@ -143,7 +143,7 @@ namespace StreetSmartArcMap.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Login Successfully.
+        ///   Looks up a localized string similar to Login Successful.
         /// </summary>
         internal static string LoginSuccessfully {
             get {

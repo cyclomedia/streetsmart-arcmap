@@ -764,6 +764,8 @@ namespace StreetSmartArcMap.Logic
                 viewer.LayerVisibilityChange += Viewer_LayerVisibilityChange;
                 viewer.FeatureClick += Viewer_FeatureClick;
 
+                await OnShowLocationRequested(viewer);
+
                 await InvokeOnViewingConeChanged(viewer);
                 InvokeOnVectorLayerChanged();
             }
@@ -776,6 +778,33 @@ namespace StreetSmartArcMap.Logic
                 var viewer = sender as IPanoramaViewer;
                 IFeatureInfo featureInfo = e.Value;
                 await InvokeOnFeatureClicked(viewer, featureInfo);
+            }
+        }
+
+        public async Task OnShowLocationRequested(IPanoramaViewer viewer)
+        {
+            IRecording recording = await viewer.GetRecording();
+            ICoordinate coordinate = recording.XYZ;
+            var point = ArcUtils.ToMapPoint(coordinate.X ?? 0.0, coordinate.Y ?? 0.0, coordinate.Z ?? 0.0);
+
+            IActiveView activeView = ArcUtils.ActiveView;
+            IEnvelope envelope = activeView?.Extent;
+
+            if (point != null && envelope != null)
+            {
+                const double percent = 10.0;
+                double xBorder = (envelope.XMax - envelope.XMin) * percent / 100;
+                double yBorder = (envelope.YMax - envelope.YMin) * percent / 100;
+
+                bool inside = point.X > envelope.XMin + xBorder && point.X < envelope.XMax - xBorder &&
+                              point.Y > envelope.YMin + yBorder && point.Y < envelope.YMax - yBorder;
+
+                if (!inside)
+                {
+                    envelope.CenterAt(point);
+                    activeView.Extent = envelope;
+                    activeView.Refresh();
+                }
             }
         }
 
@@ -853,6 +882,7 @@ namespace StreetSmartArcMap.Logic
                 var viewer = sender as IPanoramaViewer;
 
                 await InvokeOnViewingConeChanged(viewer);
+                await OnShowLocationRequested(viewer);
                 InvokeOnVectorLayerChanged();
             }
         }

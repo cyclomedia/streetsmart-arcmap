@@ -56,6 +56,7 @@
             // 
             resources.ApplyResources(this.txtImageId, "txtImageId");
             this.txtImageId.Name = "txtImageId";
+            this.txtImageId.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtImageId_KeyDown);
             // 
             // lvResults
             // 

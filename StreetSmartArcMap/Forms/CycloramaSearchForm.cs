@@ -242,5 +242,13 @@ namespace StreetSmartArcMap.Forms
         {
             Close();
         }
+
+        private void txtImageId_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnFind_Click(sender, e);
+            }
+        }
     }
 }

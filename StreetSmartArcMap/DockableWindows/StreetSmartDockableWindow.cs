@@ -288,6 +288,10 @@ namespace StreetSmartArcMap.DockableWindows
                             ConePerViewerDict[viewerId] = cone;
                             cone.Redraw();
                         }
+                        else
+                        {
+                            _current.UpdateOrientation(cone.Orientation);
+                        }
                     }
                     else
                     {

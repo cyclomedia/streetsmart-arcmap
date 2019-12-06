@@ -1295,6 +1295,15 @@ namespace StreetSmartArcMap.Layers
             try
             {
                 DetectVectorLayers(false);
+
+                var avEvents = ArcUtils.ActiveViewEvents;
+
+                if (avEvents != null)
+                {
+                    avEvents.ItemAdded += AvItemAdded;
+                    avEvents.ItemDeleted += AvItemDeleted;
+                    avEvents.ContentsChanged += AvContentChanged;
+                }
             }
             catch (Exception ex)
             {
@@ -1391,7 +1400,9 @@ namespace StreetSmartArcMap.Layers
 
                         while (Layers.Count > i)
                         {
-                            if (Layers[i]._layer == featureLayer)
+                            var layer = Layers[i]._layer as IFeatureLayer;
+
+                            if (layer?.FeatureClass == featureLayer.FeatureClass)
                             {
                                 LayerRemoveEvent?.Invoke(Layers[i]);
 

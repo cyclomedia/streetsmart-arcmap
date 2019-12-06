@@ -1029,6 +1029,7 @@ namespace StreetSmartArcMap.Logic
         {
             try
             {
+                VectorLayer.DetectVectorLayers(false);
                 RequestQuery = query;
 
                 if (!Initialised)

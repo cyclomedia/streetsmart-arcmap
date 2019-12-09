@@ -710,6 +710,7 @@ namespace StreetSmartArcMap.Layers
 
                                     LastEditedObject = newEditFeature.OID;
                                     OnLayerChanged(layer);
+                                    ArcUtils.ActiveView.Refresh();
                                 }
                             }
                             else if (LastEditedPointFeature != ((IMeasurementProperties)feature.Properties).Id)
@@ -1460,7 +1461,7 @@ namespace StreetSmartArcMap.Layers
             }
         }
 
-        private static void OnChangeFeature(IObject obj)
+        private static async void OnChangeFeature(IObject obj)
         {
             try
             {
@@ -1480,6 +1481,7 @@ namespace StreetSmartArcMap.Layers
                     {
                         FeatureUpdateEditEvent(feature);
                         AvContentChanged();
+                        await OnSelectionChanged(true);
                     }
                 }
             }
@@ -1529,7 +1531,7 @@ namespace StreetSmartArcMap.Layers
                             }
                         }
 
-                        if (!StreetSmartApiWrapper.Instance.BusyForMeasurement && ((EditFeatures.Count > 0 || typeOfLayer != TypeOfLayer.Point) && includeStart || typeOfLayer != TypeOfLayer.Point && !includeStart))
+                        if (!StreetSmartApiWrapper.Instance.BusyForMeasurement && ((EditFeatures.Count > 0 || typeOfLayer != TypeOfLayer.Point) && includeStart || !includeStart))
                         {
                             await StreetSmartApiWrapper.Instance.CreateMeasurement(typeOfLayer);
 
@@ -1609,16 +1611,12 @@ namespace StreetSmartArcMap.Layers
 
                     if ((vectorLayer != null) && (vectorLayer.IsVisibleInStreetSmart))
                     {
-                        if (vectorLayer.TypeOfLayer == TypeOfLayer.Line ||
-                            vectorLayer.TypeOfLayer == TypeOfLayer.Polygon)
-                        {
-                            await OnSelectionChanged(false);
-                            var editor = ArcUtils.Editor as IEditLayers;
-                            var sketch = editor as IEditSketch3;
-                            sketch.Geometry = null;
-                            sketch.RefreshSketch();
-                            ArcUtils.ActiveView.Refresh();
-                        }
+                        await OnSelectionChanged(false);
+                        var editor = ArcUtils.Editor as IEditLayers;
+                        var sketch = editor as IEditSketch3;
+                        sketch.Geometry = null;
+                        sketch.RefreshSketch();
+                        ArcUtils.ActiveView.Refresh();
 
                         FeatureDeleteEvent(feature);
                         AvContentChanged();

@@ -85,9 +85,9 @@
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="StreetSmart.WinForms, Version=19.18.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
+    <Reference Include="StreetSmart.WinForms, Version=19.19.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\StreetSmart.WinForms.19.18.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
+      <HintPath>..\packages\StreetSmart.WinForms.19.19.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

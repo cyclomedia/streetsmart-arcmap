@@ -31,6 +31,7 @@ namespace StreetSmartArcMap.Objects
         public Color Color { get; set; }
         private bool _toUpdate { get; set; }
         private System.Threading.Timer _updateTimer { get; set; }
+        private ESRI.ArcGIS.Geometry.Point _mapPoint = null;
 
         public bool Equals(ViewingCone other)
         {
@@ -40,20 +41,23 @@ namespace StreetSmartArcMap.Objects
             }
             if (this.ViewerId == other.ViewerId && this.ImageId == other.ImageId && this.Coordinate.X == other.Coordinate.X && this.Coordinate.Y == other.Coordinate.Y)
             {
-                double epsilon = 1.0;
-                // treat a small orientation change as equal
-                if (Math.Abs(Orientation.HFov.Value - other.Orientation.HFov.Value) < epsilon && Math.Abs(Orientation.Yaw.Value - other.Orientation.Yaw.Value) < epsilon)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
             else
             {
                 return false;
+            }
+        }
+
+        public void UpdateOrientation(IOrientation orientation)
+        {
+            double epsilon = 1.0;
+
+            // treat a small orientation change as equal
+            if (!(Math.Abs(Orientation.HFov.Value - orientation.HFov.Value) < epsilon && Math.Abs(Orientation.Yaw.Value - orientation.Yaw.Value) < epsilon))
+            {
+                Orientation = orientation;
+                Redraw();
             }
         }
 
@@ -65,17 +69,32 @@ namespace StreetSmartArcMap.Objects
 
         public void Redraw()
         {
-            StreetSmartExtension extension = StreetSmartExtension.GetExtension();
-            if (extension?.InsideScale() ?? false)
+            if (_mapPoint == null)
             {
-                if (_updateTimer == null)
+                var config = Configuration.Configuration.Instance;
+                int srs = int.Parse(config.ApiSRS.Substring(config.ApiSRS.IndexOf(":") + 1));
+
+                lock (Coordinate)
                 {
-                    StartRedraw();
+                    _mapPoint = new ESRI.ArcGIS.Geometry.Point()
+                    {
+                        X = Coordinate.X.Value,
+                        Y = Coordinate.Y.Value,
+                        Z = Coordinate.Z.Value,
+                        SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs)
+                    };
                 }
-                else
-                {
-                    _toUpdate = true;
-                }
+
+                _mapPoint.Project(ArcUtils.SpatialReference);
+            }
+
+            if (_updateTimer == null)
+            {
+                StartRedraw();
+            }
+            else
+            {
+                _toUpdate = true;
             }
         }
 
@@ -83,66 +102,47 @@ namespace StreetSmartArcMap.Objects
         {
             if (phase == esriViewDrawPhase.esriViewForeground)
             {
-                var config = Configuration.Configuration.Instance;
-                int srs = int.Parse(config.ApiSRS.Substring(config.ApiSRS.IndexOf(":") + 1));
-                // empty views
-                var extension = StreetSmartExtension.GetExtension();
-                if (extension?.InsideScale() ?? false)
+                var displayTransformation = Display.DisplayTransformation;
+                Display.Filter = new TransparencyDisplayFilterClass {Transparency = Alpha};
+                Display.StartDrawing(Display.hDC, (short) esriScreenCache.esriNoScreenCache);
+
+                if (!disposing && _mapPoint != null)
                 {
-                    var displayTransformation = Display.DisplayTransformation;
-                    Display.Filter = new TransparencyDisplayFilterClass { Transparency = Alpha };
-                    Display.StartDrawing(Display.hDC, (short)esriScreenCache.esriNoScreenCache);
-
-                    if (!disposing)
+                    var symbol = new SimpleFillSymbol
                     {
-                        ESRI.ArcGIS.Geometry.Point mappoint;
-                        lock (Coordinate)
+                        Color = Converter.ToRGBColor(Color),
+                        Style = esriSimpleFillStyle.esriSFSSolid,
+                        Outline = new SimpleLineSymbol()
                         {
-                            mappoint = new ESRI.ArcGIS.Geometry.Point()
-                            {
-                                X = Coordinate.X.Value,
-                                Y = Coordinate.Y.Value,
-                                Z = Coordinate.Z.Value,
-                                SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs)
-                            };
+                            Style = esriSimpleLineStyle.esriSLSNull
                         }
-                        // Project the API SRS to the current map SRS.
-                        mappoint.Project(ArcUtils.SpatialReference);
+                    };
 
-                        var symbol = new SimpleFillSymbol()
-                        {
-                            Color = Converter.ToRGBColor(Color),
-                            Style = esriSimpleFillStyle.esriSFSSolid,
-                            Outline = new SimpleLineSymbol()
-                            {
-                                Style = esriSimpleLineStyle.esriSLSNull
-                            }
-                        };
+                    int screenX, screenY;
+                    displayTransformation.FromMapPoint(_mapPoint, out screenX, out screenY);
 
-                        int screenX, screenY;
-                        displayTransformation.FromMapPoint(mappoint, out screenX, out screenY);
+                    double angleh = (Orientation.HFov ?? 0.0) * Math.PI / 360;
+                    double angle = (270 + (Orientation.Yaw ?? 0.0)) % 360 * Math.PI / 180;
+                    double angle1 = angle - angleh;
+                    double angle2 = angle + angleh;
 
-                        double angleh = (Orientation.HFov ?? 0.0) * Math.PI / 360;
-                        double angle = (270 + (Orientation.Yaw ?? 0.0)) % 360 * Math.PI / 180;
-                        double angle1 = angle - angleh;
-                        double angle2 = angle + angleh;
+                    var screenPoint1 = new WinPoint(screenX + (int) (coneSize * Math.Cos(angle1)),
+                        screenY + (int) (coneSize * Math.Sin(angle1)));
+                    var screenPoint2 = new WinPoint(screenX + (int) (coneSize * Math.Cos(angle2)),
+                        screenY + (int) (coneSize * Math.Sin(angle2)));
+                    var point1 = displayTransformation.ToMapPoint(screenPoint1.X, screenPoint1.Y);
+                    var point2 = displayTransformation.ToMapPoint(screenPoint2.X, screenPoint2.Y);
 
-                        var screenPoint1 = new WinPoint(screenX + (int)(coneSize * Math.Cos(angle1)), screenY + (int)(coneSize * Math.Sin(angle1)));
-                        var screenPoint2 = new WinPoint(screenX + (int)(coneSize * Math.Cos(angle2)), screenY + (int)(coneSize * Math.Sin(angle2)));
-                        var point1 = displayTransformation.ToMapPoint(screenPoint1.X, screenPoint1.Y);
-                        var point2 = displayTransformation.ToMapPoint(screenPoint2.X, screenPoint2.Y);
+                    var polygon = new Polygon();
+                    polygon.AddPoint(_mapPoint);
+                    polygon.AddPoint(point1);
+                    polygon.AddPoint(point2);
 
-                        var polygon = new Polygon();
-                        polygon.AddPoint(mappoint);
-                        polygon.AddPoint(point1);
-                        polygon.AddPoint(point2);
-
-                        Display.SetSymbol((ISymbol)symbol);
-                        Display.DrawPolygon((IGeometry)polygon);
-                    }
-
-                    Display.FinishDrawing();
+                    Display.SetSymbol((ISymbol) symbol);
+                    Display.DrawPolygon((IGeometry) polygon);
                 }
+
+                Display.FinishDrawing();
             }
         }
 
@@ -155,31 +155,16 @@ namespace StreetSmartArcMap.Objects
                 {
                     var display = activeView.ScreenDisplay;
                     IDisplayTransformation dispTrans = display.DisplayTransformation;
-                    double coneSizeh = (double) coneSize / 2 + 10;
-                    double size = dispTrans.FromPoints(coneSizeh);
-                    var config = Configuration.Configuration.Instance;
-                    int srs = int.Parse(config.ApiSRS.Substring(config.ApiSRS.IndexOf(":") + 1));
-                    ESRI.ArcGIS.Geometry.Point mappoint;
 
-                    lock (Coordinate)
-                    {
-                        mappoint = new ESRI.ArcGIS.Geometry.Point()
-                        {
-                            X = Coordinate.X.Value,
-                            Y = Coordinate.Y.Value,
-                            Z = Coordinate.Z.Value,
-                            SpatialReference = new SpatialReferenceEnvironmentClass().CreateSpatialReference(srs)
-                        };
-                    }
-
-                    mappoint.Project(ArcUtils.SpatialReference);
-                    double x = mappoint.X;
-                    double y = mappoint.Y;
-                    double xmin = x - size;
-                    double xmax = x + size;
-                    double ymin = y - size;
-                    double ymax = y + size;
-                    IEnvelope envelope = new EnvelopeClass { XMin = xmin, XMax = xmax, YMin = ymin, YMax = ymax };
+                    int screenX, screenY;
+                    dispTrans.FromMapPoint(_mapPoint, out screenX, out screenY);
+                    int xmin = screenX - coneSize;
+                    int xmax = screenX + coneSize;
+                    int ymin = screenY - coneSize;
+                    int ymax = screenY + coneSize;
+                    IPoint mapPoint1 = dispTrans.ToMapPoint(xmin, ymin);
+                    IPoint mapPoint2 = dispTrans.ToMapPoint(xmax, ymax);
+                    IEnvelope envelope = new EnvelopeClass { XMin = mapPoint1.X, XMax = mapPoint2.X, YMin = mapPoint1.Y, YMax = mapPoint2.Y };
                     display.Invalidate(envelope, true, (short) esriScreenCache.esriNoScreenCache);
 
                     if (_toUpdate)

@@ -157,6 +157,9 @@
   <data name="OpenStreetSmartOptionsButtonTip" xml:space="preserve">
     <value>Ouvrir les options StreetSmart</value>
   </data>
+  <data name="OverlayDrawDistance" xml:space="preserve">
+    <value>Superposition de la distance de dessin ({0})</value>
+  </data>
   <data name="StreetSmartOpenLocationButtonCaption" xml:space="preserve">
     <value>Ouvrir la position dans un Cyclorama</value>
   </data>

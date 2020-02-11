@@ -188,6 +188,15 @@ namespace StreetSmartArcMap.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Overlay draw distance ({0}).
+        /// </summary>
+        internal static string OverlayDrawDistance {
+            get {
+                return ResourceManager.GetString("OverlayDrawDistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open the location in a cyclorama.
         /// </summary>
         internal static string StreetSmartOpenLocationButtonCaption {

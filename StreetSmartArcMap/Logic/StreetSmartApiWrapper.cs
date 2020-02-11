@@ -868,15 +868,6 @@ namespace StreetSmartArcMap.Logic
 
         public void SetOverlayDrawDistance(int distance, esriUnits mapUnits)
         {
-            switch (mapUnits)
-            {
-                case esriUnits.esriFeet:
-                    distance = (int)Math.Round(distance * 3.280839895, 0);
-                    break;
-
-                default: break;
-            }
-
             if (!Initialised)
             { // wait until initialised
                 RequestOverlay = true;

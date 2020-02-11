@@ -38,6 +38,8 @@ namespace StreetSmartArcMap.Forms
 
         private bool _mssgBoxShow;
 
+        private SpatialReference _previousSelectedSRS;
+
         public StreetSmartConfigurationForm()
         {
             InitializeComponent();
@@ -142,7 +144,15 @@ namespace StreetSmartArcMap.Forms
 
         private void LoadGeneralSettings()
         {
-            nudOverlayDrawDistance.Value = Config.OverlayDrawDistanceInMeters;
+            var selectedSRS = (SpatialReference)cbCycloramaSRS.SelectedItem;
+            switch (selectedSRS.Units)
+            {
+                case "ft":
+                    nudOverlayDrawDistance.Maximum = (decimal)Math.Round((double)nudOverlayDrawDistance.Maximum * 3.280839895, 0);
+                    nudOverlayDrawDistance.Value = (decimal)Math.Round(Config.OverlayDrawDistanceInMeters * 3.280839895, 0);
+                    break;
+                default: break;
+            }
         }
 
         private void LoadCulture()
@@ -270,7 +280,7 @@ namespace StreetSmartArcMap.Forms
             Config.DefaultRecordingSrs = selectedRecordingSRS?.SRSName ?? Config.DefaultRecordingSrs;
 
             var overlayDrawDistance = (int)nudOverlayDrawDistance.Value;
-            if (overlayDrawDistance > -1 && overlayDrawDistance < 101)
+            if (overlayDrawDistance > -1 && overlayDrawDistance <  nudOverlayDrawDistance.Maximum + 1)
             {
                 Config.OverlayDrawDistanceInMeters = overlayDrawDistance;
                 StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(overlayDrawDistance, ArcMap.Document.FocusMap.MapUnits);
@@ -425,6 +435,34 @@ namespace StreetSmartArcMap.Forms
             else
             {
                 txtAPIStreetSmartLocation.Enabled = true;
+            }
+        }
+
+        private void cbCycloramaSRS_SelectedValueChanged(object sender, EventArgs e)
+        {
+            setOverlayDrawDistanceValues();
+        }
+
+        private void setOverlayDrawDistanceValues()
+        {
+            var selectedSRS = (SpatialReference)cbCycloramaSRS.SelectedItem;
+
+            if (_previousSelectedSRS == null || selectedSRS.Units != _previousSelectedSRS.Units)
+            {
+                switch (selectedSRS.Units)
+                {
+                    case "ft":
+                        nudOverlayDrawDistance.Maximum = (decimal)Math.Round((double)nudOverlayDrawDistance.Maximum * 3.280839895, 0);
+                        nudOverlayDrawDistance.Value = (decimal)Math.Round((double)nudOverlayDrawDistance.Value * 3.280839895, 0);
+                        break;
+                    case "m":
+                        nudOverlayDrawDistance.Value = (decimal)Math.Round((double)nudOverlayDrawDistance.Value / 3.280839895, 0);
+                        nudOverlayDrawDistance.Maximum = 100;
+                        break;
+                    default: break;
+                }
+                lblOverlayDrawDistance.Text = string.Format(Properties.Resources.OverlayDrawDistance, selectedSRS.Units);
+                _previousSelectedSRS = selectedSRS;
             }
         }
     }

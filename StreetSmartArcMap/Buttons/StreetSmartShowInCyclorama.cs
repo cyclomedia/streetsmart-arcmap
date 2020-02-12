@@ -83,7 +83,7 @@ namespace StreetSmartArcMap.Buttons
             {
                 StreetSmartExtension extension = StreetSmartExtension.GetExtension();
                 IApplication application = ArcMap.Application;
-                Enabled = ((application != null) && extension.Enabled);
+                Enabled = ((application != null) && (extension?.Enabled ?? false));
 
                 if (application != null)
                 {
@@ -100,7 +100,7 @@ namespace StreetSmartArcMap.Buttons
                             if (selectedItem != null)
                             {
                                 _vectorLayer = VectorLayer.GetLayer(selectedItem);
-                                CycloMediaGroupLayer cycloMediaGroupLayer = extension.CycloMediaGroupLayer;
+                                CycloMediaGroupLayer cycloMediaGroupLayer = extension?.CycloMediaGroupLayer;
                                 _cycloMediaLayer = (cycloMediaGroupLayer == null) ? null : cycloMediaGroupLayer.GetLayer(selectedItem);
 
                                 if (_cycloMediaLayer != null)

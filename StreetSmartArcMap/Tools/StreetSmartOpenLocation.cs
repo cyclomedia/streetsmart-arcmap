@@ -83,7 +83,7 @@ namespace StreetSmartArcMap.Tools
                         if ((recording.IsAuthorized == null) || ((bool)recording.IsAuthorized))
                         {
                             var extension = StreetSmartExtension.GetExtension();
-                            extension.ShowStreetSmart();
+                            extension?.ShowStreetSmart();
 
                             await StreetSmartApiWrapper.Instance.Open(Configuration.Configuration.Instance.ApiSRS, imageId, (keyPressed == Keys.ShiftKey));
 
@@ -141,7 +141,17 @@ namespace StreetSmartArcMap.Tools
                 var enabled = Enabled;
                 
                 var extension = StreetSmartExtension.GetExtension();
-                Enabled = ((ArcMap.Application != null) && extension.Enabled && extension.CycloMediaGroupLayer != null && extension.CycloMediaGroupLayer.Layers.Any(l => l is RecordingLayer));
+
+                if (extension != null)
+                {
+                    Enabled = ((ArcMap.Application != null) && extension.Enabled &&
+                               extension.CycloMediaGroupLayer != null &&
+                               extension.CycloMediaGroupLayer.Layers.Any(l => l is RecordingLayer));
+                }
+                else
+                {
+                    Enabled = false;
+                }
 
                 if (enabled && !Enabled)
                     OnDeactivate();
@@ -188,7 +198,7 @@ namespace StreetSmartArcMap.Tools
             string result = string.Empty;
             var extension = StreetSmartExtension.GetExtension();
 
-            if (extension.InsideScale())
+            if (extension?.InsideScale() ?? false)
             {
                 int x = arg.X;
                 int y = arg.Y;

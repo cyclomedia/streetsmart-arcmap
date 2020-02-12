@@ -77,6 +77,7 @@ namespace StreetSmartArcMap.Layers
         private List<XElement> _addData;
         private Thread _getDataThread;
         private Thread _refreshDataThread;
+        private Thread _refreshDataThread2;
         private bool _isVisibleInGlobespotter;
 
         #endregion members
@@ -292,6 +293,16 @@ namespace StreetSmartArcMap.Layers
                 avEvents.ViewRefreshed += OnViewRefreshed;
                 avEvents.ContentsChanged += OnContentChanged;
                 avEvents.ItemDeleted += OnItemDeleted;
+                avEvents.AfterDraw += OnAfterDraw;
+            }
+        }
+
+        public void OnAfterDraw(IDisplay adisplay, esriViewDrawPhase phase)
+        {
+            if (phase == esriViewDrawPhase.esriViewGeoSelection)
+            {
+                _refreshDataThread2 = new Thread(DrawLayer);
+                _refreshDataThread2.Start();
             }
         }
 
@@ -585,6 +596,7 @@ namespace StreetSmartArcMap.Layers
                 avEvents.ViewRefreshed -= OnViewRefreshed;
                 avEvents.ContentsChanged -= OnContentChanged;
                 avEvents.ItemDeleted -= OnItemDeleted;
+                avEvents.AfterDraw -= OnAfterDraw;
             }
         }
 
@@ -1049,17 +1061,25 @@ namespace StreetSmartArcMap.Layers
                     }
                 }
 
-                IActiveView view = ArcUtils.ActiveView;
-                IScreenDisplay display = view.ScreenDisplay;
-                display.StartDrawing(display.hDC, (short)esriScreenCache.esriNoScreenCache);
-                ITrackCancel cancel = new TrackCancelClass();
-                Layer.Draw(esriDrawPhase.esriDPGeography, display, cancel);
-                display.FinishDrawing();
+                DrawLayer();
                 //Viewer.Redraw();
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(ex.Message, "CycloMediaLayer.RefreshDataWfs");
+            }
+        }
+
+        private void DrawLayer()
+        {
+            lock (_getDataLock)
+            {
+                IActiveView view = ArcUtils.ActiveView;
+                IScreenDisplay display = view.ScreenDisplay;
+                display.StartDrawing(display.hDC, (short) esriScreenCache.esriNoScreenCache);
+                ITrackCancel cancel = new TrackCancelClass();
+                Layer.Draw(esriDrawPhase.esriDPGeography, display, cancel);
+                display.FinishDrawing();
             }
         }
 

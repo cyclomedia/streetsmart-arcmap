@@ -143,13 +143,19 @@
     <value>Login Failed</value>
   </data>
   <data name="LoginSuccessfully" xml:space="preserve">
-    <value>Login Successfully</value>
+    <value>Login Successful</value>
   </data>
   <data name="OpenSearchImageButtonCaption" xml:space="preserve">
     <value>Search by Image ID</value>
   </data>
   <data name="OpenSearchImageButtonTip" xml:space="preserve">
     <value>Search by ImageId</value>
+  </data>
+  <data name="OpenStreetSmartHelpButtonCaption" xml:space="preserve">
+    <value>Help information about Street Smart for ArcMap</value>
+  </data>
+  <data name="OpenStreetSmartHelpButtonTip" xml:space="preserve">
+    <value>Help information about Street Smart for ArcMap...</value>
   </data>
   <data name="OpenStreetSmartOptionsButtonCaption" xml:space="preserve">
     <value>Open Street Smart Options</value>

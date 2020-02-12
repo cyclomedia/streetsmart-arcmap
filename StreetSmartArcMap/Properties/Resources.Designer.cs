@@ -143,7 +143,7 @@ namespace StreetSmartArcMap.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Login Successfully.
+        ///   Looks up a localized string similar to Login Successful.
         /// </summary>
         internal static string LoginSuccessfully {
             get {
@@ -166,6 +166,24 @@ namespace StreetSmartArcMap.Properties {
         internal static string OpenSearchImageButtonTip {
             get {
                 return ResourceManager.GetString("OpenSearchImageButtonTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help information about Street Smart for ArcMap.
+        /// </summary>
+        internal static string OpenStreetSmartHelpButtonCaption {
+            get {
+                return ResourceManager.GetString("OpenStreetSmartHelpButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help information about Street Smart for ArcMap....
+        /// </summary>
+        internal static string OpenStreetSmartHelpButtonTip {
+            get {
+                return ResourceManager.GetString("OpenStreetSmartHelpButtonTip", resourceCulture);
             }
         }
         

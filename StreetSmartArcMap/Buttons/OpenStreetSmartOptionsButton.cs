@@ -43,7 +43,7 @@ namespace StreetSmartArcMap.Buttons
         {
 
 
-            Enabled = StreetSmartExtension.GetExtension().IsEnabled;
+            Enabled = StreetSmartExtension.GetExtension()?.IsEnabled ?? false;
             Checked = StreetSmartConfigurationForm.IsActive();
 
             Caption = Properties.Resources.OpenStreetSmartOptionsButtonCaption;

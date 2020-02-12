@@ -151,6 +151,12 @@
   <data name="OpenSearchImageButtonTip" xml:space="preserve">
     <value>Rechercher par Id Image</value>
   </data>
+  <data name="OpenStreetSmartHelpButtonCaption" xml:space="preserve">
+    <value>Informations d'aide sur Street Smart for ArcMap</value>
+  </data>
+  <data name="OpenStreetSmartHelpButtonTip" xml:space="preserve">
+    <value>Informations d'aide sur Street Smart for ArcMap...</value>
+  </data>
   <data name="OpenStreetSmartOptionsButtonCaption" xml:space="preserve">
     <value>Ouvrir les options StreetSmart</value>
   </data>

@@ -128,34 +128,39 @@ namespace StreetSmartArcMap.Forms
         private async void lvResults_DoubleClick(object sender, EventArgs e)
         {
             var extension = StreetSmartExtension.GetExtension();
-            extension.ShowStreetSmart();
 
-            foreach (ListViewItem selectedItem in lvResults.SelectedItems)
+            if (extension != null)
             {
-                var tag = selectedItem.Tag as object[];
+                extension.ShowStreetSmart();
 
-                if ((tag != null) && (tag.Length >= 2) && (selectedItem.SubItems.Count >= 1))
+                foreach (ListViewItem selectedItem in lvResults.SelectedItems)
                 {
-                    var feature = tag[0] as IFeature;
-                    var cycloMediaLayer = tag[1] as CycloMediaLayer;
-                    IActiveView activeView = ArcUtils.ActiveView;
-                    ListViewItem.ListViewSubItem item = selectedItem.SubItems[0];
+                    var tag = selectedItem.Tag as object[];
 
-                    if ((feature != null) && (cycloMediaLayer != null) && (activeView != null) && (item != null))
+                    if ((tag != null) && (tag.Length >= 2) && (selectedItem.SubItems.Count >= 1))
                     {
-                        var point = feature.Shape as IPoint;
+                        var feature = tag[0] as IFeature;
+                        var cycloMediaLayer = tag[1] as CycloMediaLayer;
+                        IActiveView activeView = ArcUtils.ActiveView;
+                        ListViewItem.ListViewSubItem item = selectedItem.SubItems[0];
 
-                        if (point != null)
+                        if ((feature != null) && (cycloMediaLayer != null) && (activeView != null) && (item != null))
                         {
-                            string imageId = item.Text;
-                            await StreetSmartApiWrapper.Instance.Open(Configuration.Configuration.Instance.ApiSRS, imageId, ModifierKeys == Keys.Shift);
-                        }
+                            var point = feature.Shape as IPoint;
 
-                        //Zoom to location on map
-                        IEnvelope envelope = activeView.Extent;
-                        envelope.CenterAt(point);
-                        activeView.Extent = envelope;
-                        activeView.Refresh();
+                            if (point != null)
+                            {
+                                string imageId = item.Text;
+                                await StreetSmartApiWrapper.Instance.Open(Configuration.Configuration.Instance.ApiSRS,
+                                    imageId, ModifierKeys == Keys.Shift);
+                            }
+
+                            //Zoom to location on map
+                            IEnvelope envelope = activeView.Extent;
+                            envelope.CenterAt(point);
+                            activeView.Extent = envelope;
+                            activeView.Refresh();
+                        }
                     }
                 }
             }
@@ -166,19 +171,22 @@ namespace StreetSmartArcMap.Forms
             Web web = Web.Instance;
             string imageId = txtImageId.Text.Trim();
             StreetSmartExtension extension = StreetSmartExtension.GetExtension();
-            CycloMediaGroupLayer groupLayer = extension.CycloMediaGroupLayer;
-            IList<CycloMediaLayer> layers = groupLayer.Layers;
+            CycloMediaGroupLayer groupLayer = extension?.CycloMediaGroupLayer;
+            IList<CycloMediaLayer> layers = groupLayer?.Layers;
 
-            foreach (var layer in layers)
+            if (layers != null)
             {
-                try
+                foreach (var layer in layers)
                 {
-                    List<XElement> featureMemberElements = web.GetByImageId(imageId, layer);
-                    e.Result = featureMemberElements;
-                }
-                catch (Exception)
-                {
-                    e.Cancel = true;
+                    try
+                    {
+                        List<XElement> featureMemberElements = web.GetByImageId(imageId, layer);
+                        e.Result = featureMemberElements;
+                    }
+                    catch (Exception)
+                    {
+                        e.Cancel = true;
+                    }
                 }
             }
         }
@@ -193,27 +201,32 @@ namespace StreetSmartArcMap.Forms
                 {
                     string imageId = txtImageId.Text.Trim();
                     StreetSmartExtension extension = StreetSmartExtension.GetExtension();
-                    CycloMediaGroupLayer groupLayer = extension.CycloMediaGroupLayer;
-                    IList<CycloMediaLayer> layers = groupLayer.Layers;
+                    CycloMediaGroupLayer groupLayer = extension?.CycloMediaGroupLayer;
+                    IList<CycloMediaLayer> layers = groupLayer?.Layers;
 
-                    foreach (var layer in layers)
+                    if (layers != null)
                     {
-                        if (layer.IsVisible)
+                        foreach (var layer in layers)
                         {
-                            layer.SaveFeatureMembers(featureMemberElements, null);
-                            IMappedFeature mappedFeature = layer.GetLocationInfo(imageId);
-                            var recording = mappedFeature as Recording;
-
-                            if (recording != null)
+                            if (layer.IsVisible)
                             {
-                                DateTime? recordedAt = recording.RecordedAt;
-                                string recordedAtString = (recordedAt == null) ? string.Empty : ((DateTime)recordedAt).ToString(CultureInfo.InvariantCulture);
+                                layer.SaveFeatureMembers(featureMemberElements, null);
+                                IMappedFeature mappedFeature = layer.GetLocationInfo(imageId);
+                                var recording = mappedFeature as Recording;
 
-                                string imageIdString = recording.ImageId;
-                                IFeature feature = layer.GetFeature(imageId);
-                                var items = new[] { imageIdString, recordedAtString };
-                                var listViewItem = new ListViewItem(items) { Tag = new object[] { feature, layer } };
-                                lvResults.Items.Add(listViewItem);
+                                if (recording != null)
+                                {
+                                    DateTime? recordedAt = recording.RecordedAt;
+                                    string recordedAtString = (recordedAt == null)
+                                        ? string.Empty
+                                        : ((DateTime) recordedAt).ToString(CultureInfo.InvariantCulture);
+
+                                    string imageIdString = recording.ImageId;
+                                    IFeature feature = layer.GetFeature(imageId);
+                                    var items = new[] {imageIdString, recordedAtString};
+                                    var listViewItem = new ListViewItem(items) {Tag = new object[] {feature, layer}};
+                                    lvResults.Items.Add(listViewItem);
+                                }
                             }
                         }
                     }
@@ -228,6 +241,14 @@ namespace StreetSmartArcMap.Forms
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void txtImageId_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnFind_Click(sender, e);
+            }
         }
     }
 }

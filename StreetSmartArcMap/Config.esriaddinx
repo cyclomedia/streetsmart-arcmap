@@ -1,12 +1,14 @@
 ﻿<ESRI.Configuration xmlns="http://schemas.esri.com/Desktop/AddIns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Street Smart for ArcMap</Name>
   <AddInID>{ffb838b9-7a85-4470-b88c-62d3b8bbd64c}</AddInID>
-  <Description>Street Smart for ArcMap</Description>
-  <Version>1.0.0.0</Version>
+  <Description>Street Smart for ArcMap
+Copyright © CycloMedia Technology 2019
+  </Description>
+  <Version>1.2.1</Version>
   <Image>Images\StreetSmartArcMapAddin.png</Image>
-  <Author></Author>
+  <Author>CycloMedia</Author>
   <Company>CycloMedia</Company>
-  <Date>4-7-2019</Date>
+  <Date>18-12-2019</Date>
   <Targets>
     <Target name="Desktop" version="10.4" />
   </Targets>
@@ -28,7 +30,7 @@
         <Button id="CycloMedia_StreetSmartArcMap_StreetSmartRecordingsLayer" class="StreetSmartArcMap.Buttons.StreetSmartRecordingsLayer" message="" caption="Recent Recordings" tip="" category="CycloMedia" image="Images\StreetSmartRecordingsLayer.png" onDemand="false" />
         <Tool id="CycloMedia_StreetSmartArcMap_StreetSmartOpenLocation" class="StreetSmartArcMap.Tools.StreetSmartOpenLocation" message="" caption="Open the location in a Cyclorama" tip="" category="CycloMedia" image="Images\StreetSmartOpenLocation_2.png" onDemand="false" cursor="Images\StreetSmartOpenLocation.cur" />
         <Button id="CycloMedia_StreetSmartArcMap_OpenSearchImageIdButton" class="StreetSmartArcMap.Buttons.OpenSearchImageIdButton" message="" caption="Search by ImageId" tip="" category="CycloMedia" image="Images\CycloramaSearch.png" onDemand="false" />
-        <Button id="CycloMedia_StreetSmartArcMap_HelpButton" class="StreetSmartArcMap.Buttons.HelpButton" message="Help information about Street Smart for ArcMap" caption="Help information about Street Smart for ArcMap..." tip="Help information about Street Smart for ArcMap" category="CycloMedia" image="Images\HelpButton.png" onDemand="false" />
+        <Button id="CycloMedia_StreetSmartArcMap_HelpButton" class="StreetSmartArcMap.Buttons.OpenStreetSmartHelpButton" message="" caption="Help information about Street Smart for ArcMap..." tip="" category="CycloMedia" image="Images\HelpButton.png" onDemand="false" />
       </Commands>
       <Toolbars>
         <Toolbar id="StreetSmartArcMapToolbar" caption="Street Smart">

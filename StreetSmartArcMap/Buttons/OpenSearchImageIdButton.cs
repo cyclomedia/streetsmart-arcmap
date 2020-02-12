@@ -40,7 +40,7 @@ namespace StreetSmartArcMap.Buttons
 
         protected override void OnUpdate()
         {
-            Enabled = StreetSmartExtension.GetExtension().IsEnabled;
+            Enabled = StreetSmartExtension.GetExtension()?.IsEnabled ?? false;
             Checked = CycloramaSearchForm.IsActive;
 
             Caption = Properties.Resources.OpenSearchImageButtonCaption;

@@ -87,6 +87,10 @@ namespace StreetSmartArcMap.Logic
 
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
+        private bool _inPointMeasurement = false;
+        private bool _inLineMeasurement = false;
+        private bool _inPolygonMeasurement = false;
+
         private bool Loading = false;
         private IPanoramaViewerOptions DefaultPanoramaOptions { get; set; }
         private IList<ViewerType> ViewerTypes { get; set; }
@@ -239,6 +243,13 @@ namespace StreetSmartArcMap.Logic
                 Features = e.Value
             };
 
+            if (e.Value.Type == FeatureType.Unknown)
+            {
+                _inPointMeasurement = false;
+                _inLineMeasurement = false;
+                _inPolygonMeasurement = false;
+            }
+
             OnMeasuremenChanged?.Invoke(args);
         }
 
@@ -290,7 +301,7 @@ namespace StreetSmartArcMap.Logic
             {
                 overlay.Visible = !StoredLayers.Instance.Get(overlay.Name);
 
-                viewer.ToggleOverlay(overlay);
+                (viewer as IPanoramaViewer)?.ToggleOverlay(overlay);
             }
 
             return true;
@@ -401,7 +412,7 @@ namespace StreetSmartArcMap.Logic
                     }
                     catch (Exception ex)
                     {
-                        throw ex;
+                       // throw ex;
                     }
                     finally
                     {
@@ -416,14 +427,14 @@ namespace StreetSmartArcMap.Logic
             UpdateActiveMeasurement(geometries);
         }
 
-        public void UpdateActiveMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry)
+        public void UpdateActiveMeasurement(ESRI.ArcGIS.Geometry.IGeometry geometry, TypeOfLayer typeOfLayer = TypeOfLayer.None)
         {
             var geometries = new List<ESRI.ArcGIS.Geometry.IGeometry> { geometry };
 
-            UpdateActiveMeasurement(geometries);
+            UpdateActiveMeasurement(geometries, typeOfLayer);
         }
 
-        private void UpdateActiveMeasurement(IList<ESRI.ArcGIS.Geometry.IGeometry> geometries)
+        private void UpdateActiveMeasurement(IList<ESRI.ArcGIS.Geometry.IGeometry> geometries, TypeOfLayer typeOfLayer = TypeOfLayer.None)
         {
             if (GlobeSpotterConfiguration.MeasurePermissions && geometries != null && ActiveMeasurement != null)
             {
@@ -436,26 +447,35 @@ namespace StreetSmartArcMap.Logic
                     int count = 0;
 
                     if (i < geometries.Count)
-                        feature.Geometry = ConvertGeometry(geometries[i], ref count);
+                        feature.Geometry = ConvertGeometry(geometries[i], ref count, typeOfLayer);
                     else
                         feature.Geometry = GeoJsonFactory.CreatePointGeometry(null);
 
                     var measurementProperties = feature.Properties as IMeasurementProperties;
                     if (measurementProperties != null)
                     {
-                        if (feature.Geometry.Type == GeometryType.Polygon)
+                        if (feature.Geometry.Type == GeometryType.Polygon && count >= 2)
                             count -= 1;
 
-                        for (int c = measurementProperties.MeasureDetails.Count; c < count; c++)
+                        for (int c = Math.Min(measurementProperties.MeasureDetails.Count, count); c < count; c++)
                         {
                             measurementProperties.MeasureDetails.Add(GeoJsonFactory.CreateMeasureDetails());
+                        }
+
+                        while (measurementProperties.MeasureDetails.Count > count)
+                        {
+                            measurementProperties.MeasureDetails.RemoveAt(count);
                         }
                     }
                 }
                 try
                 {
                     BusyForMeasurement = true;
-                    StreetSmartAPI.SetActiveMeasurement(collection);
+
+                    if (collection.CRS.Type != CRSType.NotDefined)
+                    {
+                        StreetSmartAPI.SetActiveMeasurement(collection);
+                    }
                 }
                 finally
                 {
@@ -509,17 +529,19 @@ namespace StreetSmartArcMap.Logic
 
         private void VectorLayer_SketchModifiedEvent(ESRI.ArcGIS.Geometry.IGeometry geometry)
         {
-            if (GlobeSpotterConfiguration.MeasurePermissions && geometry != null && !geometry.IsEmpty)
+            TypeOfLayer geometryType = VectorLayer.GetTypeOfLayer(geometry?.GeometryType ?? esriGeometryType.esriGeometryNull);
+
+            if (GlobeSpotterConfiguration.MeasurePermissions && geometry != null && (!geometry.IsEmpty || geometryType == TypeOfLayer.Line || geometryType == TypeOfLayer.Polygon))
             {
                 UpdateActiveMeasurement(geometry);
             }
         }
 
-        private async void VectorLayer_SketchFinishedEvent()
+        private void VectorLayer_SketchFinishedEvent()
         {
             if (GlobeSpotterConfiguration.MeasurePermissions)
             {
-                await StopMeasurement();
+              // do nothing
             }
         }
 
@@ -573,13 +595,13 @@ namespace StreetSmartArcMap.Logic
                 switch (typeOfLayer)
                 {
                     case TypeOfLayer.Point:
-                        CreatePointMeasurement(panoramaViewer);
+                        await CreatePointMeasurement(panoramaViewer);
                         break;
                     case TypeOfLayer.Line:
-                        CreateLineMeasurement(panoramaViewer);
+                        await CreateLineMeasurement(panoramaViewer);
                         break;
                     case TypeOfLayer.Polygon:
-                        CreatePolygonMeasurement(panoramaViewer);
+                        await CreatePolygonMeasurement(panoramaViewer);
                         break;
                     default:
                         break;
@@ -587,32 +609,39 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        public void CreatePointMeasurement(IPanoramaViewer viewer)
+        public async Task CreatePointMeasurement(IPanoramaViewer viewer)
         {
-            if (GlobeSpotterConfiguration.MeasurePoint)
+            if (GlobeSpotterConfiguration.MeasurePoint && !_inPointMeasurement)
             {
                 var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.Point);
-
-                StreetSmartAPI.StartMeasurementMode(viewer, options);
+                await StreetSmartAPI.StartMeasurementMode(viewer, options);
+                _inPointMeasurement = true;
+                _inLineMeasurement = false;
+                _inPolygonMeasurement = false;
             }
         }
 
-        public void CreateLineMeasurement(IPanoramaViewer viewer)
+        public async Task CreateLineMeasurement(IPanoramaViewer viewer)
         {
-            if (GlobeSpotterConfiguration.MeasureLine)
+            if (GlobeSpotterConfiguration.MeasureLine && !_inLineMeasurement)
             {
                 var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.LineString);
-                StreetSmartAPI.StartMeasurementMode(viewer, options);
+                await StreetSmartAPI.StartMeasurementMode(viewer, options);
+                _inPointMeasurement = false;
+                _inLineMeasurement = true;
+                _inPolygonMeasurement = false;
             }
         }
 
-        public void CreatePolygonMeasurement(IPanoramaViewer viewer)
+        public async Task CreatePolygonMeasurement(IPanoramaViewer viewer)
         {
-            if (GlobeSpotterConfiguration.MeasurePolygon)
+            if (GlobeSpotterConfiguration.MeasurePolygon && !_inPolygonMeasurement)
             {
                 var options = MeasurementOptionsFactory.Create(MeasurementGeometryType.Polygon);
-
-                StreetSmartAPI.StartMeasurementMode(viewer, options);
+                await StreetSmartAPI.StartMeasurementMode(viewer, options);
+                _inPointMeasurement = false;
+                _inLineMeasurement = false;
+                _inPolygonMeasurement = true;
             }
         }
 
@@ -666,9 +695,9 @@ namespace StreetSmartArcMap.Logic
                 if (StreetSmartAPI == null)
                 {
                     if (Config.UseDefaultStreetSmartLocation)
-                        StreetSmartAPI = StreetSmartAPIFactory.Create();
+                        StreetSmartAPI = StreetSmartAPIFactory.Create(null, true);
                     else
-                        StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse);
+                        StreetSmartAPI = StreetSmartAPIFactory.Create(Config.StreetSmartLocationToUse, null, true);
 
                     StreetSmartAPI.APIReady += StreetSmartAPI_APIReady;
                     StreetSmartAPI.ViewerRemoved += StreetSmartAPI_ViewerRemoved;
@@ -695,6 +724,9 @@ namespace StreetSmartArcMap.Logic
             if (await StreetSmartAPI.GetApiReadyState())
             {
                 StreetSmartAPI.StopMeasurementMode();
+                _inPointMeasurement = false;
+                _inLineMeasurement = false;
+                _inPolygonMeasurement = false;
             }
 
             VectorLayer.FinishMeasurement();
@@ -732,6 +764,8 @@ namespace StreetSmartArcMap.Logic
                 viewer.LayerVisibilityChange += Viewer_LayerVisibilityChange;
                 viewer.FeatureClick += Viewer_FeatureClick;
 
+                await OnShowLocationRequested(viewer);
+
                 await InvokeOnViewingConeChanged(viewer);
                 InvokeOnVectorLayerChanged();
             }
@@ -744,6 +778,33 @@ namespace StreetSmartArcMap.Logic
                 var viewer = sender as IPanoramaViewer;
                 IFeatureInfo featureInfo = e.Value;
                 await InvokeOnFeatureClicked(viewer, featureInfo);
+            }
+        }
+
+        public async Task OnShowLocationRequested(IPanoramaViewer viewer)
+        {
+            IRecording recording = await viewer.GetRecording();
+            ICoordinate coordinate = recording.XYZ;
+            var point = ArcUtils.ToMapPoint(coordinate.X ?? 0.0, coordinate.Y ?? 0.0, coordinate.Z ?? 0.0);
+
+            IActiveView activeView = ArcUtils.ActiveView;
+            IEnvelope envelope = activeView?.Extent;
+
+            if (point != null && envelope != null)
+            {
+                const double percent = 10.0;
+                double xBorder = (envelope.XMax - envelope.XMin) * percent / 100;
+                double yBorder = (envelope.YMax - envelope.YMin) * percent / 100;
+
+                bool inside = point.X > envelope.XMin + xBorder && point.X < envelope.XMax - xBorder &&
+                              point.Y > envelope.YMin + yBorder && point.Y < envelope.YMax - yBorder;
+
+                if (!inside)
+                {
+                    envelope.CenterAt(point);
+                    activeView.Extent = envelope;
+                    activeView.Refresh();
+                }
             }
         }
 
@@ -821,6 +882,7 @@ namespace StreetSmartArcMap.Logic
                 var viewer = sender as IPanoramaViewer;
 
                 await InvokeOnViewingConeChanged(viewer);
+                await OnShowLocationRequested(viewer);
                 InvokeOnVectorLayerChanged();
             }
         }
@@ -830,7 +892,7 @@ namespace StreetSmartArcMap.Logic
             if (sender != null && sender is IPanoramaViewer && StreetSmartAPI != null)
             {
                 var viewer = sender as IPanoramaViewer;
-                var cone = await CreateCone(viewer);
+                // var cone = await CreateCone(viewer);
 
                 await InvokeOnViewingConeChanged(viewer);
             }
@@ -901,41 +963,48 @@ namespace StreetSmartArcMap.Logic
         public async Task Select(ESRI.ArcGIS.Geodatabase.IFeature feature)
         {
             var extension = StreetSmartExtension.GetExtension();
-            if (!extension.CommunicatingWithStreetSmart && StreetSmartAPI != null && feature != null && feature.HasOID)
+
+            if (extension != null)
             {
-                extension.CommunicatingWithStreetSmart = true;
-                try
+                if (!extension.CommunicatingWithStreetSmart && StreetSmartAPI != null && feature != null &&
+                    feature.HasOID)
                 {
-                    VectorLayer layer = VectorLayer.GetLayer(feature);
-                    if (layer != null)
+                    extension.CommunicatingWithStreetSmart = true;
+                    try
                     {
-                        VectorLayer vectorLayer = _vectorLayers.FirstOrDefault(v => v.Name == layer.Name);
-                        if (vectorLayer != null && AddVectorInChange(vectorLayer))
+                        VectorLayer layer = VectorLayer.GetLayer(feature);
+                        if (layer != null)
                         {
-                            var props = new Dictionary<string, string>();
-                            var fields = feature.Fields;
-                            for (int i = 0; i < fields.FieldCount; i++)
+                            VectorLayer vectorLayer = _vectorLayers.FirstOrDefault(v => v.Name == layer.Name);
+                            if (vectorLayer != null && AddVectorInChange(vectorLayer))
                             {
-                                var f = fields.Field[i];
-                                if (!f.Name.StartsWith("SHAPE", StringComparison.CurrentCultureIgnoreCase))
+                                var props = new Dictionary<string, string>();
+                                var fields = feature.Fields;
+                                for (int i = 0; i < fields.FieldCount; i++)
                                 {
-                                    props.Add(f.Name, feature.Value[i]?.ToString());
+                                    var f = fields.Field[i];
+                                    if (!f.Name.StartsWith("SHAPE", StringComparison.CurrentCultureIgnoreCase))
+                                    {
+                                        props.Add(f.Name, feature.Value[i]?.ToString());
+                                    }
                                 }
+
+                                var json = JsonFactory.Create(props);
+                                var viewers = await StreetSmartAPI.GetViewers();
+                                foreach (var viewer in viewers)
+                                {
+                                    var panoramaViewer = (IPanoramaViewer) viewer;
+                                    panoramaViewer.SetSelectedFeatureByProperties(json, vectorLayer.Overlay.Id);
+                                }
+
+                                RemoveVectorInchange(vectorLayer);
                             }
-                            var json = JsonFactory.Create(props);
-                            var viewers = await StreetSmartAPI.GetViewers();
-                            foreach (var viewer in viewers)
-                            {
-                                var panoramaViewer = (IPanoramaViewer)viewer;
-                                panoramaViewer.SetSelectedFeatureByProperties(json, vectorLayer.Overlay.Id);
-                            }
-                            RemoveVectorInchange(vectorLayer);
                         }
                     }
-                }
-                finally
-                {
-                    extension.CommunicatingWithStreetSmart = false;
+                    finally
+                    {
+                        extension.CommunicatingWithStreetSmart = false;
+                    }
                 }
             }
         }
@@ -950,6 +1019,7 @@ namespace StreetSmartArcMap.Logic
         {
             try
             {
+                VectorLayer.DetectVectorLayers(false);
                 RequestQuery = query;
 
                 if (!Initialised)
@@ -1015,7 +1085,7 @@ namespace StreetSmartArcMap.Logic
             return null;
         }
 
-        public static StreetSmart.Common.Interfaces.GeoJson.IGeometry ConvertGeometry(ESRI.ArcGIS.Geometry.IGeometry geometry, ref int count)
+        public static StreetSmart.Common.Interfaces.GeoJson.IGeometry ConvertGeometry(ESRI.ArcGIS.Geometry.IGeometry geometry, ref int count, TypeOfLayer typeOfLayer)
         {
             if (geometry != null)
             {
@@ -1034,7 +1104,19 @@ namespace StreetSmartArcMap.Logic
                 }
             }
 
-            return null;
+            count = 0;
+
+            switch (typeOfLayer)
+            {
+                case TypeOfLayer.Point:
+                    return GeoJsonFactory.CreatePointGeometry(null);
+                case TypeOfLayer.Line:
+                    return GeoJsonFactory.CreateLineGeometry(new List<ICoordinate>());
+                case TypeOfLayer.Polygon:
+                    return GeoJsonFactory.CreatePolygonGeometry(new List<IList<ICoordinate>>());
+                default:
+                    return null;
+            }
         }
 
         public static ICoordinate ToCoordinate(ESRI.ArcGIS.Geometry.IPoint point, ref int count)

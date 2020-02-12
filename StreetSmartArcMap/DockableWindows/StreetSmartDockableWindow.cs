@@ -98,6 +98,7 @@ namespace StreetSmartArcMap.DockableWindows
             this.Controls.Add(API.StreetSmartGUI);
             IDocumentEvents_Event docEvents = (IDocumentEvents_Event)ArcMap.Document;
             docEvents.MapsChanged += DocEvents_MapsChanged;
+            docEvents.CloseDocument += DocEvents_CloseDocument;
         }
 
         private void StreetSmartDockableWindow_VisibleChanged(object sender, EventArgs e)
@@ -119,7 +120,7 @@ namespace StreetSmartArcMap.DockableWindows
             else
             {
                 var extension = StreetSmartExtension.GetExtension();
-                if (!extension.CommunicatingWithStreetSmart)
+                if (!(extension?.CommunicatingWithStreetSmart ?? true))
                 {
                     extension.CommunicatingWithStreetSmart = true;
                     try
@@ -288,6 +289,10 @@ namespace StreetSmartArcMap.DockableWindows
                             ConePerViewerDict[viewerId] = cone;
                             cone.Redraw();
                         }
+                        else
+                        {
+                            _current.UpdateOrientation(cone.Orientation);
+                        }
                     }
                     else
                     {
@@ -352,6 +357,11 @@ namespace StreetSmartArcMap.DockableWindows
         private void DocEvents_MapsChanged()
         {
             API.SetOverlayDrawDistance(Config.OverlayDrawDistanceInMeters, ArcMap.Document.FocusMap.DistanceUnits);
+        }
+
+        private void DocEvents_CloseDocument()
+        {
+            SetVisibility(false);
         }
 
         #endregion Event handlers

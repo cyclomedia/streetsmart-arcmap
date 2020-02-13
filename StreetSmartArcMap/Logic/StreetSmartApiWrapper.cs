@@ -930,16 +930,6 @@ namespace StreetSmartArcMap.Logic
 
         public void SetOverlayDrawDistance(int distance, esriUnits mapUnits)
         {
-            switch (mapUnits)
-            {
-                // For now skip the conversion calculation, because it is not needed if Street Smart works in a feet coordinate system
-//                case esriUnits.esriFeet:
-//                    distance = (int)Math.Round(distance * 3.280839895, 0);
-//                    break;
-
-                default: break;
-            }
-
             if (!Initialised)
             { // wait until initialised
                 RequestOverlay = true;

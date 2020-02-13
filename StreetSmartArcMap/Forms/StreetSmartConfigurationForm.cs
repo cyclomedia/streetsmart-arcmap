@@ -38,6 +38,8 @@ namespace StreetSmartArcMap.Forms
 
         private bool _mssgBoxShow;
 
+        private SpatialReference _previousSelectedSRS;
+
         public StreetSmartConfigurationForm()
         {
             InitializeComponent();
@@ -56,6 +58,13 @@ namespace StreetSmartArcMap.Forms
 
             SetAbout();
             SetAgreement();
+
+            var selectedSrs = (SpatialReference)cbCycloramaSRS.SelectedItem;
+            string units = selectedSrs?.Units ?? string.Empty;
+
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(StreetSmartConfigurationForm));
+            resources.ApplyResources(lblOverlayDrawDistance, "lblOverlayDrawDistance");
+            lblOverlayDrawDistance.Text = string.Format(lblOverlayDrawDistance.Text, units);
         }
 
         private void reloadSettings()
@@ -142,7 +151,23 @@ namespace StreetSmartArcMap.Forms
 
         private void LoadGeneralSettings()
         {
-            nudOverlayDrawDistance.Value = Config.OverlayDrawDistanceInMeters;
+            var selectedSRS = (SpatialReference) cbCycloramaSRS.SelectedItem;
+
+            if (selectedSRS != null)
+            {
+                switch (selectedSRS.Units)
+                {
+                    case "ft":
+                        nudOverlayDrawDistance.Maximum = (decimal) Math.Round((double) nudOverlayDrawDistance.Maximum * 3.280839895, 0);
+                        nudOverlayDrawDistance.Value =
+                            (decimal) Math.Round(Config.OverlayDrawDistanceInMeters * 3.280839895, 0);
+                        break;
+                    case "m":
+                        nudOverlayDrawDistance.Value = Config.OverlayDrawDistanceInMeters;
+                        break;
+                    default: break;
+                }
+            }
         }
 
         private void LoadCulture()
@@ -269,7 +294,13 @@ namespace StreetSmartArcMap.Forms
             var selectedRecordingSRS = (SpatialReference)cbRecordingsSRS.SelectedItem;
             Config.DefaultRecordingSrs = selectedRecordingSRS?.SRSName ?? Config.DefaultRecordingSrs;
 
-            var overlayDrawDistance = (int)nudOverlayDrawDistance.Value;
+            var overlayDrawDistance = (int) nudOverlayDrawDistance.Value;
+
+            if ((selectedSRS?.Units ?? string.Empty) == "ft")
+            {
+                overlayDrawDistance = (int) Math.Round(overlayDrawDistance / 3.280839895, 0);
+            }
+
             if (overlayDrawDistance > -1 && overlayDrawDistance < 101)
             {
                 Config.OverlayDrawDistanceInMeters = overlayDrawDistance;
@@ -426,6 +457,43 @@ namespace StreetSmartArcMap.Forms
             {
                 txtAPIStreetSmartLocation.Enabled = true;
             }
+        }
+
+        private void cbCycloramaSRS_SelectedValueChanged(object sender, EventArgs e)
+        {
+            setOverlayDrawDistanceValues();
+        }
+
+        private void setOverlayDrawDistanceValues()
+        {
+            var selectedSRS = (SpatialReference) cbCycloramaSRS.SelectedItem;
+
+            if (_previousSelectedSRS == null || selectedSRS.Units != _previousSelectedSRS.Units)
+            {
+                switch (selectedSRS.Units)
+                {
+                    case "ft":
+                        nudOverlayDrawDistance.Maximum = (decimal) Math.Round((double) nudOverlayDrawDistance.Maximum * 3.280839895, 0);
+                        nudOverlayDrawDistance.Value =
+                            (decimal) Math.Round((double) nudOverlayDrawDistance.Value * 3.280839895, 0);
+                        break;
+                    case "m":
+                        if (_previousSelectedSRS != null)
+                        {
+                            nudOverlayDrawDistance.Value =
+                                (decimal) Math.Round((double) nudOverlayDrawDistance.Value / 3.280839895, 0);
+                            nudOverlayDrawDistance.Maximum =
+                                (decimal) Math.Round((double) nudOverlayDrawDistance.Maximum / 3.280839895, 0);
+                        }
+
+                        break;
+                    default: break;
+                }
+
+                _previousSelectedSRS = selectedSRS;
+            }
+
+            LoadResources();
         }
     }
 }

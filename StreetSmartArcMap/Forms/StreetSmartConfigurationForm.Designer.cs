@@ -46,7 +46,7 @@
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.lblPassword = new System.Windows.Forms.Label();
             this.grGeneral = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblOverlayDrawDistance = new System.Windows.Forms.Label();
             this.nudOverlayDrawDistance = new System.Windows.Forms.NumericUpDown();
             this.grCoordinateSystems = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -218,15 +218,15 @@
             // grGeneral
             // 
             resources.ApplyResources(this.grGeneral, "grGeneral");
-            this.grGeneral.Controls.Add(this.label2);
+            this.grGeneral.Controls.Add(this.lblOverlayDrawDistance);
             this.grGeneral.Controls.Add(this.nudOverlayDrawDistance);
             this.grGeneral.Name = "grGeneral";
             this.grGeneral.TabStop = false;
             // 
-            // label2
+            // lblOverlayDrawDistance
             // 
-            resources.ApplyResources(this.label2, "label2");
-            this.label2.Name = "label2";
+            resources.ApplyResources(this.lblOverlayDrawDistance, "lblOverlayDrawDistance");
+            this.lblOverlayDrawDistance.Name = "lblOverlayDrawDistance";
             // 
             // nudOverlayDrawDistance
             // 
@@ -273,6 +273,7 @@
             this.cbCycloramaSRS.FormattingEnabled = true;
             this.cbCycloramaSRS.Name = "cbCycloramaSRS";
             this.cbCycloramaSRS.Sorted = true;
+            this.cbCycloramaSRS.SelectedValueChanged += new System.EventHandler(this.cbCycloramaSRS_SelectedValueChanged);
             // 
             // tbConfiguration
             // 
@@ -528,7 +529,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cbRecordingsSRS;
         private System.Windows.Forms.GroupBox grGeneral;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblOverlayDrawDistance;
         private System.Windows.Forms.NumericUpDown nudOverlayDrawDistance;
         private System.Windows.Forms.GroupBox grLogin;
         private System.Windows.Forms.Button btnLogin;

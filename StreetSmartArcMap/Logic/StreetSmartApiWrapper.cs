@@ -42,6 +42,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using IPoint = ESRI.ArcGIS.Geometry.IPoint;
+
 namespace StreetSmartArcMap.Logic
 {
     public delegate void ViewersChangeEventDelegate(ViewersChangeEventArgs args);
@@ -792,18 +794,16 @@ namespace StreetSmartArcMap.Logic
 
             if (point != null && envelope != null)
             {
-                const double percent = 10.0;
-                double xBorder = (envelope.XMax - envelope.XMin) * percent / 100;
-                double yBorder = (envelope.YMax - envelope.YMin) * percent / 100;
-
-                bool inside = point.X > envelope.XMin + xBorder && point.X < envelope.XMax - xBorder &&
-                              point.Y > envelope.YMin + yBorder && point.Y < envelope.YMax - yBorder;
-
-                if (!inside)
+                if (InsideDistance(point, envelope, 1000.0))
                 {
-                    envelope.CenterAt(point);
-                    activeView.Extent = envelope;
-                    activeView.Refresh();
+                    bool inside = insidePercent(point, envelope, 10.0);
+
+                    if (!inside)
+                    {
+                        envelope.CenterAt(point);
+                        activeView.Extent = envelope;
+                        activeView.Refresh();
+                    }
                 }
             }
         }
@@ -817,6 +817,28 @@ namespace StreetSmartArcMap.Logic
         //        await InvokeOnSelectedFeatureChanged(viewer, featureInfo);
         //    }
         //}
+
+        private bool insidePercent(IPoint point, IEnvelope envelope, double percent)
+        {
+            double xBorder = (envelope.XMax - envelope.XMin) * percent / 100;
+            double yBorder = (envelope.YMax - envelope.YMin) * percent / 100;
+
+            return point.X > envelope.XMin + xBorder && point.X < envelope.XMax - xBorder &&
+                          point.Y > envelope.YMin + yBorder && point.Y < envelope.YMax - yBorder;
+        }
+
+        private bool InsideDistance(IPoint point, IEnvelope envelope, double percent)
+        {
+            double xBorder = (envelope.XMax - envelope.XMin) * percent / 100;
+            double yBorder = (envelope.YMax - envelope.YMin) * percent / 100;
+
+            double xMax = envelope.XMax + xBorder;
+            double yMax = envelope.YMax + yBorder;
+            double xMin = envelope.XMin - xBorder;
+            double yMin = envelope.YMin - yBorder;
+
+            return point.X < xMax && point.X > xMin && point.Y > yMin && point.Y < yMax;
+        }
 
         private void Viewer_LayerVisibilityChange(object sender, IEventArgs<StreetSmart.Common.Interfaces.Data.ILayerInfo> e)
         {

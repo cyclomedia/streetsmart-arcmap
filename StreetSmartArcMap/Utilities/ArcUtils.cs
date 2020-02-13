@@ -498,8 +498,8 @@ namespace StreetSmartArcMap.Utilities
         public static IPoint ToMapPoint(double x, double y, double z)
         {
             Configuration.Configuration config = Configuration.Configuration.Instance;
-            SpatialReference spatRel = config.SpatialReference;
-            ISpatialReference gsSpatialReference = (spatRel == null) ? SpatialReference : spatRel.SpatialRef;
+            SpatialReference spatRel = SpatialReferences.Instance.GetItem(config.ApiSRS);
+            ISpatialReference gsSpatialReference = (spatRel == null) ? SpatialReference : spatRel.ToSpatialReference();
             IPoint point = new ESRI.ArcGIS.Geometry.Point { X = x, Y = y, Z = z, SpatialReference = gsSpatialReference };
             point.Project(SpatialReference);
             return point;

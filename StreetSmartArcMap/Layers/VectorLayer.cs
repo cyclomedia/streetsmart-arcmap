@@ -1327,8 +1327,12 @@ namespace StreetSmartArcMap.Layers
 
                 while (Layers.Count >= 1)
                 {
-                    AvItemDeleted(Layers[0]);
-                    Layers.RemoveAt(0);
+                    bool deleted = AvDoItemDeleted(Layers[0]._layer);
+
+                    if (!deleted)
+                    {
+                        Layers.RemoveAt(0);
+                    }
                 }
             }
             catch (Exception ex)
@@ -1389,6 +1393,13 @@ namespace StreetSmartArcMap.Layers
 
         private static void AvItemDeleted(object item)
         {
+            AvDoItemDeleted(item);
+        }
+
+        private static bool AvDoItemDeleted(object item)
+        {
+            bool result = false;
+
             try
             {
                 if (item != null)
@@ -1408,6 +1419,7 @@ namespace StreetSmartArcMap.Layers
                                 LayerRemoveEvent?.Invoke(Layers[i]);
 
                                 Layers.RemoveAt(i);
+                                result = true;
                             }
                             else
                             {
@@ -1421,6 +1433,8 @@ namespace StreetSmartArcMap.Layers
             {
                 Trace.WriteLine(ex.Message, "VectorLayer.AvItemDeleted");
             }
+
+            return result;
         }
 
         private static void AvContentChanged()

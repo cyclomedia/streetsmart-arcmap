@@ -67,70 +67,7 @@ namespace StreetSmartArcMap.Client
             {
                 if (_spatialReference == null)
                 {
-                    if (string.IsNullOrEmpty(SRSName))
-                    {
-                        _spatialReference = null;
-                    }
-                    else
-                    {
-                        int srs;
-                        string strsrs = SRSName.Replace("EPSG:", string.Empty);
-
-                        if (int.TryParse(strsrs, out srs))
-                        {
-                            ISpatialReferenceFactory3 spatialRefFactory = (ISpatialReferenceFactory3)new SpatialReferenceEnvironment();
-
-                            try
-                            {
-                                _spatialReference = spatialRefFactory.CreateProjectedCoordinateSystem(srs);
-                            }
-                            catch (ArgumentException)
-                            {
-                                try
-                                {
-                                    _spatialReference = spatialRefFactory.CreateGeographicCoordinateSystem(srs);
-                                }
-                                catch (ArgumentException)
-                                {
-                                    if (string.IsNullOrEmpty(CompatibleSRSNames))
-                                    {
-                                        _spatialReference = null;
-                                    }
-                                    else
-                                    {
-                                        strsrs = CompatibleSRSNames.Replace("EPSG:", string.Empty);
-
-                                        if (int.TryParse(strsrs, out srs))
-                                        {
-                                            try
-                                            {
-                                                _spatialReference = spatialRefFactory.CreateProjectedCoordinateSystem(srs);
-                                            }
-                                            catch (ArgumentException)
-                                            {
-                                                try
-                                                {
-                                                    _spatialReference = spatialRefFactory.CreateGeographicCoordinateSystem(srs);
-                                                }
-                                                catch (ArgumentException)
-                                                {
-                                                    _spatialReference = null;
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            _spatialReference = null;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            _spatialReference = null;
-                        }
-                    }
+                    _spatialReference = ToSpatialReference();
                 }
 
                 if (_spatialReference != null)
@@ -178,6 +115,77 @@ namespace StreetSmartArcMap.Client
 
                 return _spatialReference;
             }
+        }
+
+        public ISpatialReference ToSpatialReference()
+        {
+            if (string.IsNullOrEmpty(SRSName))
+            {
+                _spatialReference = null;
+            }
+            else
+            {
+                int srs;
+                string strsrs = SRSName.Replace("EPSG:", string.Empty);
+
+                if (int.TryParse(strsrs, out srs))
+                {
+                    ISpatialReferenceFactory3 spatialRefFactory =
+                        (ISpatialReferenceFactory3) new SpatialReferenceEnvironment();
+
+                    try
+                    {
+                        _spatialReference = spatialRefFactory.CreateProjectedCoordinateSystem(srs);
+                    }
+                    catch (ArgumentException)
+                    {
+                        try
+                        {
+                            _spatialReference = spatialRefFactory.CreateGeographicCoordinateSystem(srs);
+                        }
+                        catch (ArgumentException)
+                        {
+                            if (string.IsNullOrEmpty(CompatibleSRSNames))
+                            {
+                                _spatialReference = null;
+                            }
+                            else
+                            {
+                                strsrs = CompatibleSRSNames.Replace("EPSG:", string.Empty);
+
+                                if (int.TryParse(strsrs, out srs))
+                                {
+                                    try
+                                    {
+                                        _spatialReference = spatialRefFactory.CreateProjectedCoordinateSystem(srs);
+                                    }
+                                    catch (ArgumentException)
+                                    {
+                                        try
+                                        {
+                                            _spatialReference = spatialRefFactory.CreateGeographicCoordinateSystem(srs);
+                                        }
+                                        catch (ArgumentException)
+                                        {
+                                            _spatialReference = null;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    _spatialReference = null;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    _spatialReference = null;
+                }
+            }
+
+            return _spatialReference;
         }
 
         [XmlIgnore]

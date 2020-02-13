@@ -58,6 +58,13 @@ namespace StreetSmartArcMap.Forms
 
             SetAbout();
             SetAgreement();
+
+            var selectedSrs = (SpatialReference)cbCycloramaSRS.SelectedItem;
+            string units = selectedSrs?.Units ?? string.Empty;
+
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(StreetSmartConfigurationForm));
+            resources.ApplyResources(lblOverlayDrawDistance, "lblOverlayDrawDistance");
+            lblOverlayDrawDistance.Text = string.Format(lblOverlayDrawDistance.Text, units);
         }
 
         private void reloadSettings()
@@ -144,14 +151,22 @@ namespace StreetSmartArcMap.Forms
 
         private void LoadGeneralSettings()
         {
-            var selectedSRS = (SpatialReference)cbCycloramaSRS.SelectedItem;
-            switch (selectedSRS.Units)
+            var selectedSRS = (SpatialReference) cbCycloramaSRS.SelectedItem;
+
+            if (selectedSRS != null)
             {
-                case "ft":
-                    nudOverlayDrawDistance.Maximum = (decimal)Math.Round((double)nudOverlayDrawDistance.Maximum * 3.280839895, 0);
-                    nudOverlayDrawDistance.Value = (decimal)Math.Round(Config.OverlayDrawDistanceInMeters * 3.280839895, 0);
-                    break;
-                default: break;
+                switch (selectedSRS.Units)
+                {
+                    case "ft":
+                        nudOverlayDrawDistance.Maximum = (decimal) Math.Round((double) nudOverlayDrawDistance.Maximum * 3.280839895, 0);
+                        nudOverlayDrawDistance.Value =
+                            (decimal) Math.Round(Config.OverlayDrawDistanceInMeters * 3.280839895, 0);
+                        break;
+                    case "m":
+                        nudOverlayDrawDistance.Value = Config.OverlayDrawDistanceInMeters;
+                        break;
+                    default: break;
+                }
             }
         }
 
@@ -279,8 +294,14 @@ namespace StreetSmartArcMap.Forms
             var selectedRecordingSRS = (SpatialReference)cbRecordingsSRS.SelectedItem;
             Config.DefaultRecordingSrs = selectedRecordingSRS?.SRSName ?? Config.DefaultRecordingSrs;
 
-            var overlayDrawDistance = (int)nudOverlayDrawDistance.Value;
-            if (overlayDrawDistance > -1 && overlayDrawDistance <  nudOverlayDrawDistance.Maximum + 1)
+            var overlayDrawDistance = (int) nudOverlayDrawDistance.Value;
+
+            if ((selectedSRS?.Units ?? string.Empty) == "ft")
+            {
+                overlayDrawDistance = (int) Math.Round(overlayDrawDistance / 3.280839895, 0);
+            }
+
+            if (overlayDrawDistance > -1 && overlayDrawDistance < 101)
             {
                 Config.OverlayDrawDistanceInMeters = overlayDrawDistance;
                 StreetSmartApiWrapper.Instance.SetOverlayDrawDistance(overlayDrawDistance, ArcMap.Document.FocusMap.MapUnits);
@@ -445,25 +466,34 @@ namespace StreetSmartArcMap.Forms
 
         private void setOverlayDrawDistanceValues()
         {
-            var selectedSRS = (SpatialReference)cbCycloramaSRS.SelectedItem;
+            var selectedSRS = (SpatialReference) cbCycloramaSRS.SelectedItem;
 
             if (_previousSelectedSRS == null || selectedSRS.Units != _previousSelectedSRS.Units)
             {
                 switch (selectedSRS.Units)
                 {
                     case "ft":
-                        nudOverlayDrawDistance.Maximum = (decimal)Math.Round((double)nudOverlayDrawDistance.Maximum * 3.280839895, 0);
-                        nudOverlayDrawDistance.Value = (decimal)Math.Round((double)nudOverlayDrawDistance.Value * 3.280839895, 0);
+                        nudOverlayDrawDistance.Maximum = (decimal) Math.Round((double) nudOverlayDrawDistance.Maximum * 3.280839895, 0);
+                        nudOverlayDrawDistance.Value =
+                            (decimal) Math.Round((double) nudOverlayDrawDistance.Value * 3.280839895, 0);
                         break;
                     case "m":
-                        nudOverlayDrawDistance.Value = (decimal)Math.Round((double)nudOverlayDrawDistance.Value / 3.280839895, 0);
-                        nudOverlayDrawDistance.Maximum = 100;
+                        if (_previousSelectedSRS != null)
+                        {
+                            nudOverlayDrawDistance.Value =
+                                (decimal) Math.Round((double) nudOverlayDrawDistance.Value / 3.280839895, 0);
+                            nudOverlayDrawDistance.Maximum =
+                                (decimal) Math.Round((double) nudOverlayDrawDistance.Maximum / 3.280839895, 0);
+                        }
+
                         break;
                     default: break;
                 }
-                lblOverlayDrawDistance.Text = string.Format(Properties.Resources.OverlayDrawDistance, selectedSRS.Units);
+
                 _previousSelectedSRS = selectedSRS;
             }
+
+            LoadResources();
         }
     }
 }

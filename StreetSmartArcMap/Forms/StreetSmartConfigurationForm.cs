@@ -278,12 +278,15 @@ namespace StreetSmartArcMap.Forms
 
         private void Save()
         {
+            bool change = false;
             string message = null;
 
             if (!VerifyConfiguration(out message) && MessageBox.Show($"{message} {Properties.Resources.ConfigurationAsk}", Properties.Resources.Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
             {
                 return;
             }
+
+            change = Config.ApiUsername != txtUsername.Text || Config.ApiPassword != txtPassword.Text;
 
             Config.ApiUsername = txtUsername.Text;
             Config.ApiPassword = txtPassword.Text;
@@ -292,6 +295,7 @@ namespace StreetSmartArcMap.Forms
             Config.ApiSRS = selectedSRS?.SRSName ?? Config.ApiSRS;
 
             var selectedRecordingSRS = (SpatialReference)cbRecordingsSRS.SelectedItem;
+            change = selectedRecordingSRS?.SRSName != Config.DefaultRecordingSrs || change;
             Config.DefaultRecordingSrs = selectedRecordingSRS?.SRSName ?? Config.DefaultRecordingSrs;
 
             var overlayDrawDistance = (int) nudOverlayDrawDistance.Value;
@@ -310,25 +314,44 @@ namespace StreetSmartArcMap.Forms
             var selectedCulture = (CultureInfo)cbCulture.SelectedItem;
             Config.Culture = selectedCulture?.Name ?? Config.Culture;
 
+            change = Config.UseDefaultBaseUrl != chUseDefaultConfigurationUrl.Checked ||
+                     Config.BaseUrl != txtAPIConfigurationUrl.Text || change;
             Config.UseDefaultBaseUrl = chUseDefaultConfigurationUrl.Checked;
             Config.BaseUrl = txtAPIConfigurationUrl.Text;
 
             Config.UseDefaultStreetSmartLocation = chUseDefaultStreetSmartLocation.Checked;
             Config.StreetSmartLocation = txtAPIStreetSmartLocation.Text;
 
+            change = Config.UseProxyServer != ckUseProxyServer.Checked || change;
             Config.UseProxyServer = ckUseProxyServer.Checked;
+            change = Config.ProxyUseDefaultCredentials != ckUseDefaultProxyCredentials.Checked || change;
             Config.ProxyUseDefaultCredentials = ckUseDefaultProxyCredentials.Checked;
+
+            change = Config.ProxyAddress != txtProxyAddress.Text || change;
             Config.ProxyAddress = txtProxyAddress.Text;
+            change = Config.ProxyDomain != txtProxyDomain.Text || change;
             Config.ProxyDomain = txtProxyDomain.Text;
             var port = 0;
-            Config.ProxyPort = int.TryParse(txtProxyPort.Text, out port)?port:0;
+
+            change = Config.ProxyPort != (int.TryParse(txtProxyPort.Text, out port) ? port : 0) || change;
+            Config.ProxyPort = int.TryParse(txtProxyPort.Text, out port) ? port : 0;
+
+            change = Config.ProxyUsername != txtProxyUsername.Text || change;
             Config.ProxyUsername = txtProxyUsername.Text;
+            change = Config.ProxyPassword != txtProxyPassword.Text || change;
             Config.ProxyPassword = txtProxyPassword.Text;
+            change = Config.BypassProxyOnLocal != ckBypassProxyOnLocal.Checked || change;
             Config.BypassProxyOnLocal = ckBypassProxyOnLocal.Checked;
 
             Config.Save();
 
             FormStyling.SetStyling(this);
+
+            if (change)
+            {
+                MessageBox.Show(Properties.Resources.RestartArcMap, Properties.Resources.Title,
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void txtUsername_KeyUp(object sender, KeyEventArgs e)

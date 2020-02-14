@@ -163,6 +163,9 @@
   <data name="OpenStreetSmartOptionsButtonTip" xml:space="preserve">
     <value>Open the Street Smart options window</value>
   </data>
+  <data name="RestartArcMap" xml:space="preserve">
+    <value>Restart ArcMap for the changes to take effect</value>
+  </data>
   <data name="StreetSmartOpenLocationButtonCaption" xml:space="preserve">
     <value>Open the location in a cyclorama</value>
   </data>

@@ -647,7 +647,7 @@ namespace StreetSmartArcMap.Logic
             }
         }
 
-        private async Task DeinitApi()
+        private void RemoveEvents()
         {
             VectorLayer.LayerAddEvent -= VectorLayer_LayerAddEvent;
             VectorLayer.LayerRemoveEvent -= VectorLayer_LayerRemoveEvent;
@@ -663,8 +663,6 @@ namespace StreetSmartArcMap.Logic
             VectorLayer.SketchCreateEvent -= VectorLayer_SketchCreateEvent;
             VectorLayer.SketchModifiedEvent -= VectorLayer_SketchModifiedEvent;
             VectorLayer.SketchFinishedEvent -= VectorLayer_SketchFinishedEvent;
-
-            await StreetSmartAPI.Destroy(ApiOptions);
         }
 
         #endregion private functions
@@ -678,8 +676,12 @@ namespace StreetSmartArcMap.Logic
                 //Destroy if existing
                 if (Initialised)
                 {
+                    RemoveEvents();
+                    var viewers = await StreetSmartAPI.GetViewers();
+                    RequestOpen = viewers.Count >= 1;
+
                     Initialised = false;
-                    await DeinitApi();
+                    await StreetSmartAPI.Destroy(ApiOptions);
                     await InitApi(options);
                 }
             }

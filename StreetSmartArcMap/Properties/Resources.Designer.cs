@@ -206,6 +206,15 @@ namespace StreetSmartArcMap.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restart ArcMap for the changes to take effect.
+        /// </summary>
+        internal static string RestartArcMap {
+            get {
+                return ResourceManager.GetString("RestartArcMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open the location in a cyclorama.
         /// </summary>
         internal static string StreetSmartOpenLocationButtonCaption {

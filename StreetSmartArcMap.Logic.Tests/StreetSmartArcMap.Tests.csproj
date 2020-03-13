@@ -49,7 +49,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="StreetSmart.WinForms">
-      <HintPath>..\packages\StreetSmart.WinForms.19.19.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
+      <HintPath>..\packages\StreetSmart.WinForms.20.1.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

@@ -760,7 +760,6 @@ namespace StreetSmartArcMap.Logic
 
                 viewer.ToggleButtonEnabled(PanoramaViewerButtons.ZoomIn, false);
                 viewer.ToggleButtonEnabled(PanoramaViewerButtons.ZoomOut, false);
-                viewer.ToggleButtonEnabled(PanoramaViewerButtons.Measure, false);
 
                 viewer.ImageChange += Viewer_ImageChange;
                 viewer.ViewChange += Viewer_ViewChange;

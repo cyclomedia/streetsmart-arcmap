@@ -1240,7 +1240,25 @@ namespace StreetSmartArcMap.Layers
                                 }
                                 catch (Exception)
                                 {
-                                    // exception do nothing
+                                    try
+                                    {
+                                        var polygonCollection = geometry as IPointCollection4;
+                                        var extPointCollectionJson = new List<ICoordinate>();
+
+                                        for (int p = 0; p < polygonCollection.PointCount; p++)
+                                        {
+                                            IPoint point = polygonCollection.get_Point(p);
+                                            AddPoint(extPointCollectionJson, point);
+                                        }
+
+                                        points.Add(extPointCollectionJson);
+                                        var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
+                                        features.Features.Add(geomJson);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        // do nothing
+                                    }
                                 }
                             }
                         }

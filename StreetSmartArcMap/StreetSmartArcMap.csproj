@@ -85,9 +85,9 @@
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="StreetSmart.WinForms, Version=19.19.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
+    <Reference Include="StreetSmart.WinForms, Version=20.2.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\StreetSmart.WinForms.19.19.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
+      <HintPath>..\packages\StreetSmart.WinForms.20.2.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -144,8 +144,10 @@
     <Compile Include="Forms\StreetSmartConfigurationForm.Designer.cs">
       <DependentUpon>StreetSmartConfigurationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="HistoricalLayerArgs.cs" />
     <Compile Include="Layers\CycloMediaGroupLayer.cs" />
     <Compile Include="Layers\CycloMediaLayer.cs" />
+    <Compile Include="Layers\HistoricalLayer.cs" />
     <Compile Include="Layers\RecordingLayer.cs" />
     <Compile Include="Layers\TypeOfLayer.cs" />
     <Compile Include="Layers\VectorLayer.cs" />
@@ -331,6 +333,7 @@
     <AddInContent Include="install\snapshot_blob.bin" />
     <AddInContent Include="install\v8_context_snapshot.bin" />
     <EmbeddedResource Include="Doc\Street Smart for ArcMap User Manual.pdf" />
+    <None Include="install\Demo.WinForms.exe.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -381,8 +384,9 @@
     <AddInContent Include="Images\HelpButton.png" />
   </ItemGroup>
   <ItemGroup>
-    <AddInContent Include="install\Newtonsoft.Json.dll" />
-    <AddInContent Include="install\Newtonsoft.Json.xml" />
+    <Content Include="install\Demo.WinForms.exe" />
+    <Content Include="install\Newtonsoft.Json.dll" />
+    <Content Include="install\Newtonsoft.Json.xml" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>

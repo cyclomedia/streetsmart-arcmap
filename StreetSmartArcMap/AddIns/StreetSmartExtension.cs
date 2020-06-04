@@ -230,8 +230,21 @@ namespace StreetSmartArcMap.AddIns
         {
             CycloMediaGroupLayer?.RemoveLayer(name);
 
-            CycloMediaGroupLayer?.Dispose();
-            CycloMediaGroupLayer = null;
+            if (!(CycloMediaGroupLayer?.ContainsLayers ?? true))
+            {
+                CycloMediaGroupLayer?.Dispose();
+                CycloMediaGroupLayer = null;
+            }
+            else if (CycloMediaGroupLayer != null)
+            {
+                foreach (var layer in CycloMediaGroupLayer.Layers)
+                {
+                    layer.Visible = true;
+                    layer.IsVisible = true;
+                }
+
+                CycloMediaGroupLayer.Refresh();
+            }
         }
 
         public void RemoveLayers()

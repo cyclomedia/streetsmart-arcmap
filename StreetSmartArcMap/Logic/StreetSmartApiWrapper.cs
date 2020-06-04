@@ -52,6 +52,7 @@ namespace StreetSmartArcMap.Logic
     public delegate void SelectedFeatureChangeEventDelegate(SelectedFeatureChangedEventArgs args);
     public delegate void FeatureClickEventDelegate(FeatureClickEventArgs args);
     public delegate void MeasuremenChangeEventDelegate(MeasuremenChangeEventArgs args);
+    public delegate void HistoricalLayerDelegate(HistoricalLayerArgs args);
 
     public class StreetSmartApiWrapper
     {
@@ -92,6 +93,9 @@ namespace StreetSmartArcMap.Logic
         private bool _inPointMeasurement = false;
         private bool _inLineMeasurement = false;
         private bool _inPolygonMeasurement = false;
+
+        private bool _dateRangeChanged = false;
+        private int _currentYear = DateTime.Today.Year;
 
         private bool Loading = false;
         private IPanoramaViewerOptions DefaultPanoramaOptions { get; set; }
@@ -141,7 +145,8 @@ namespace StreetSmartArcMap.Logic
         public MeasuremenChangeEventDelegate OnMeasuremenChanged;
         public SelectedFeatureChangeEventDelegate OnSelectedFeatureChanged;
         public FeatureClickEventDelegate OnFeatureClicked;
-        
+        public HistoricalLayerDelegate OnHistoricalLayerChanged;
+
         #endregion Events
 
         #region private functions
@@ -745,6 +750,11 @@ namespace StreetSmartArcMap.Logic
                 var id = await viewer.GetId();
                 viewerIds.Add(id);
             }
+
+            if (viewers.Count == 0)
+            {
+                await ChangeDateRange(null);
+            }
             //viewers.
             // TODO: remove viewing cone of the removed viewers!
             OnViewerChangeEvent?.Invoke(new ViewersChangeEventArgs() { Viewers = viewerIds });
@@ -766,12 +776,20 @@ namespace StreetSmartArcMap.Logic
                 //viewer.FeatureSelectionChange += Viewer_FeatureSelectionChange;
                 viewer.LayerVisibilityChange += Viewer_LayerVisibilityChange;
                 viewer.FeatureClick += Viewer_FeatureClick;
+                viewer.TimeTravelChange += Viewer_TimeTravelChange;
 
                 await OnShowLocationRequested(viewer);
 
                 await InvokeOnViewingConeChanged(viewer);
                 InvokeOnVectorLayerChanged();
+                await ChangeDateRange(viewer);
             }
+        }
+
+        private void Viewer_TimeTravelChange(object sender, IEventArgs<ITimeTravelInfo> e)
+        {
+            _currentYear = e.Value.Date.Year;
+            _dateRangeChanged = true;
         }
 
         private async void Viewer_FeatureClick(object sender, IEventArgs<IFeatureInfo> e)
@@ -907,6 +925,56 @@ namespace StreetSmartArcMap.Logic
                 await InvokeOnViewingConeChanged(viewer);
                 await OnShowLocationRequested(viewer);
                 InvokeOnVectorLayerChanged();
+                await ChangeDateRange(viewer);
+            }
+        }
+
+        private async Task ChangeDateRange(IPanoramaViewer viewer)
+        {
+            StreetSmartExtension extension = StreetSmartExtension.GetExtension();
+            CycloMediaGroupLayer groupLayer = extension.CycloMediaGroupLayer;
+            bool historicalLayerEnabled = groupLayer.HistoricalLayerEnabled;
+
+            if (_dateRangeChanged || historicalLayerEnabled)
+            {
+                if (viewer == null)
+                {
+                    OnHistoricalLayerChanged.Invoke(new HistoricalLayerArgs { Added = false });
+                }
+                else
+                {
+                    IRecording recording = await viewer.GetRecording();
+
+                    if (recording.ExpiredAt == null)
+                    {
+                        if (historicalLayerEnabled)
+                        {
+                            OnHistoricalLayerChanged.Invoke(new HistoricalLayerArgs {Added = false});
+                        }
+                    }
+                    else
+                    {
+                        foreach (var layer in groupLayer.AllLayers)
+                        {
+                            if (layer.UseDateRange)
+                            {
+                                layer.Year = _currentYear;
+
+                                if (historicalLayerEnabled)
+                                {
+                                    layer.Refresh();
+                                }
+                            }
+                        }
+
+                        if (!historicalLayerEnabled)
+                        {
+                            OnHistoricalLayerChanged.Invoke(new HistoricalLayerArgs {Added = true});
+                        }
+                    }
+                }
+
+                _dateRangeChanged = false;
             }
         }
 

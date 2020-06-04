@@ -144,8 +144,10 @@
     <Compile Include="Forms\StreetSmartConfigurationForm.Designer.cs">
       <DependentUpon>StreetSmartConfigurationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="HistoricalLayerArgs.cs" />
     <Compile Include="Layers\CycloMediaGroupLayer.cs" />
     <Compile Include="Layers\CycloMediaLayer.cs" />
+    <Compile Include="Layers\HistoricalLayer.cs" />
     <Compile Include="Layers\RecordingLayer.cs" />
     <Compile Include="Layers\TypeOfLayer.cs" />
     <Compile Include="Layers\VectorLayer.cs" />

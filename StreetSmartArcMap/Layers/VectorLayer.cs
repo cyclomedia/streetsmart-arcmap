@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for Cycloramas
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1240,7 +1240,25 @@ namespace StreetSmartArcMap.Layers
                                 }
                                 catch (Exception)
                                 {
-                                    // exception do nothing
+                                    try
+                                    {
+                                        var polygonCollection = geometry as IPointCollection4;
+                                        var extPointCollectionJson = new List<ICoordinate>();
+
+                                        for (int p = 0; p < polygonCollection.PointCount; p++)
+                                        {
+                                            IPoint point = polygonCollection.get_Point(p);
+                                            AddPoint(extPointCollectionJson, point);
+                                        }
+
+                                        points.Add(extPointCollectionJson);
+                                        var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
+                                        features.Features.Add(geomJson);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        // do nothing
+                                    }
                                 }
                             }
                         }

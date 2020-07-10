@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for Cycloramas
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -156,6 +156,7 @@ namespace StreetSmartArcMap.Layers
             LockObject = new object();
             _doSelection = true;
             _fromSelection = false;
+            FromStopEditing = false;
         }
 
         #endregion constructor
@@ -170,6 +171,8 @@ namespace StreetSmartArcMap.Layers
         public bool ContentsChanged { get; private set; }
         public string Name => _layer != null ? _layer.Name : string.Empty;
         public bool IsVisible => _layer != null && _layer.Visible;
+
+        public static bool FromStopEditing { get; private set; }
 
         public TypeOfLayer TypeOfLayer => GetTypeOfLayer(_featureClass.ShapeType);
         public ISpatialReference SpatialReference => GeometryDef.SpatialReference;
@@ -1240,7 +1243,25 @@ namespace StreetSmartArcMap.Layers
                                 }
                                 catch (Exception)
                                 {
-                                    // exception do nothing
+                                    try
+                                    {
+                                        var polygonCollection = geometry as IPointCollection4;
+                                        var extPointCollectionJson = new List<ICoordinate>();
+
+                                        for (int p = 0; p < polygonCollection.PointCount; p++)
+                                        {
+                                            IPoint point = polygonCollection.get_Point(p);
+                                            AddPoint(extPointCollectionJson, point);
+                                        }
+
+                                        points.Add(extPointCollectionJson);
+                                        var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
+                                        features.Features.Add(geomJson);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        // do nothing
+                                    }
                                 }
                             }
                         }
@@ -1458,6 +1479,7 @@ namespace StreetSmartArcMap.Layers
 
         private static void OnStartEditing()
         {
+            FromStopEditing = false;
             LogClient.Info("On StartEditing");
 
             ArcUtils.Editor?.Map?.ClearSelection();
@@ -1654,6 +1676,7 @@ namespace StreetSmartArcMap.Layers
 
                 if (StopEditEvent != null)
                 {
+                    FromStopEditing = true;
                     StopEditEvent();
                     AvContentChanged();
                 }

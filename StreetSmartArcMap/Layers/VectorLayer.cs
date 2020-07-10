@@ -156,6 +156,7 @@ namespace StreetSmartArcMap.Layers
             LockObject = new object();
             _doSelection = true;
             _fromSelection = false;
+            FromStopEditing = false;
         }
 
         #endregion constructor
@@ -170,6 +171,8 @@ namespace StreetSmartArcMap.Layers
         public bool ContentsChanged { get; private set; }
         public string Name => _layer != null ? _layer.Name : string.Empty;
         public bool IsVisible => _layer != null && _layer.Visible;
+
+        public static bool FromStopEditing { get; private set; }
 
         public TypeOfLayer TypeOfLayer => GetTypeOfLayer(_featureClass.ShapeType);
         public ISpatialReference SpatialReference => GeometryDef.SpatialReference;
@@ -1476,6 +1479,7 @@ namespace StreetSmartArcMap.Layers
 
         private static void OnStartEditing()
         {
+            FromStopEditing = false;
             LogClient.Info("On StartEditing");
 
             ArcUtils.Editor?.Map?.ClearSelection();
@@ -1672,6 +1676,7 @@ namespace StreetSmartArcMap.Layers
 
                 if (StopEditEvent != null)
                 {
+                    FromStopEditing = true;
                     StopEditEvent();
                     AvContentChanged();
                 }

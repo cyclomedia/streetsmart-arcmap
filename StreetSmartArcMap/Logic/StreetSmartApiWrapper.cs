@@ -728,14 +728,16 @@ namespace StreetSmartArcMap.Logic
 
         public async Task StopMeasurement()
         {
-            ActiveMeasurement = null;
-
             if (await StreetSmartAPI.GetApiReadyState())
             {
-                StreetSmartAPI.StopMeasurementMode();
-                _inPointMeasurement = false;
-                _inLineMeasurement = false;
-                _inPolygonMeasurement = false;
+                if (VectorLayer.FromStopEditing)
+                {
+                    ActiveMeasurement = null;
+                    StreetSmartAPI.StopMeasurementMode();
+                    _inPointMeasurement = false;
+                    _inLineMeasurement = false;
+                    _inPolygonMeasurement = false;
+                }
             }
 
             VectorLayer.FinishMeasurement();

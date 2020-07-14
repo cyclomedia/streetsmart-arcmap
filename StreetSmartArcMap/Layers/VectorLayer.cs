@@ -708,10 +708,12 @@ namespace StreetSmartArcMap.Layers
 
                                 if (newEditFeature != null)
                                 {
+                                    ArcUtils.Editor.StartOperation();
                                     newEditFeature.Shape = point;
                                     newEditFeature.Store();
-
                                     LastEditedObject = newEditFeature.OID;
+                                    ArcUtils.Editor.StopOperation($"Point layer: {LastEditedObject}");
+
                                     OnLayerChanged(layer);
                                     ArcUtils.ActiveView.Refresh();
                                 }

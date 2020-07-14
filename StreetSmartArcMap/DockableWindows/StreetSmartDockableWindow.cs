@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for StreetSmart
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -90,6 +90,7 @@ namespace StreetSmartArcMap.DockableWindows
             API.OnViewingConeChanged += API_OnViewingConeChanged;
             API.OnVectorLayerChanged += API_OnVectorLayerChanged;
             API.OnMeasuremenChanged += API_OnMeasuremenChanged;
+            API.OnHistoricalLayerChanged += API_OnHistoryLayerChanged;
             //API.OnSelectedFeatureChanged += API_OnSelectedFeatureChanged;
             API.OnFeatureClicked += API_OnFeatureClicked;
 
@@ -319,6 +320,28 @@ namespace StreetSmartArcMap.DockableWindows
             {
                 args.Layer.IsVisibleInStreetSmart = true; // is this correct???
                 args.Layer.SetVisibility(args.Layer.IsVisibleInStreetSmart);
+            }
+        }
+
+        private void API_OnHistoryLayerChanged(HistoricalLayerArgs args)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => API_OnHistoryLayerChanged(args)));
+            }
+            else
+            {
+                StreetSmartExtension extension = StreetSmartExtension.GetExtension();
+                string layerName = "Historical Recordings";
+
+                if (args.Added)
+                {
+                    extension.AddLayers(layerName);
+                }
+                else
+                {
+                    extension.RemoveLayer(layerName);
+                }
             }
         }
 

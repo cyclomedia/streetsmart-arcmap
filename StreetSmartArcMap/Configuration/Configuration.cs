@@ -74,7 +74,7 @@ namespace StreetSmartArcMap.Configuration
         [XmlIgnore()]
         public string StreetSmartLocationToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.ApiUrl}" : StreetSmartLocation;
         [XmlIgnore()]
-        public string SpatialReferencesUrlToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.SpatialReferencesUrl}" : $"{StreetSmartLocation.ToLower().Replace("/api-dotnet.html", string.Empty)}{Urls.SpatialReferencesUrl}";
+        public string SpatialReferencesUrlToUse => $"{BaseUrlToUse}{Urls.SpatialReferencesUrl}";
 
 
         [XmlIgnore()]

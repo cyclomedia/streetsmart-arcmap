@@ -40,7 +40,7 @@ namespace StreetSmartArcMap.Client
         /// <summary>
         /// The spatialreferences url
         /// </summary>
-        public static string SpatialReferencesUrl = "/assets/srs/SpatialReference.xml";
+        public static string SpatialReferencesUrl = "/spatialreferences/SpatialReferences.xml";
         /// <summary>
         /// The API Url
         /// </summary>

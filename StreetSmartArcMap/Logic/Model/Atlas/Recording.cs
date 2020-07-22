@@ -287,7 +287,7 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                     break;
 
                 case "HasDepthMap":
-                    result = HasDepthMap.ToString();
+                    result = HasDepthMap?.ToString() ?? "False";
                     break;
             }
 

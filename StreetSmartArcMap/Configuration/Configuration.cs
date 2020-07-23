@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for StreetSmart
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -74,7 +74,7 @@ namespace StreetSmartArcMap.Configuration
         [XmlIgnore()]
         public string StreetSmartLocationToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.ApiUrl}" : StreetSmartLocation;
         [XmlIgnore()]
-        public string SpatialReferencesUrlToUse => UseDefaultStreetSmartLocation || string.IsNullOrWhiteSpace(StreetSmartLocation) ? $"{Urls.ApiBaseUrl}{Urls.SpatialReferencesUrl}" : $"{StreetSmartLocation.ToLower().Replace("/api-dotnet.html", string.Empty)}{Urls.SpatialReferencesUrl}";
+        public string SpatialReferencesUrlToUse => $"{BaseUrlToUse}{Urls.SpatialReferencesUrl}";
 
 
         [XmlIgnore()]

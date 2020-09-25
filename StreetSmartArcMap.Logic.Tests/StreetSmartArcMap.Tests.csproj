@@ -48,9 +48,9 @@
       <HintPath>..\packages\Moq.4.13.1\lib\net45\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="StreetSmart.WinForms, Version=20.6.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
+    <Reference Include="StreetSmart.WinForms, Version=20.8.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\StreetSmart.WinForms.20.2.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
+      <HintPath>..\packages\StreetSmart.WinForms.20.8.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

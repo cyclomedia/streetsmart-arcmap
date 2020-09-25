@@ -670,66 +670,71 @@ namespace StreetSmartArcMap.Layers
                     {
                         case GeometryType.Point: // always add a new point
                             var coord = feature.Geometry as ICoordinate;
-                            var point = ConvertToPoint(coord, layer.HasZ);
 
-                            if (point != null && !point.IsEmpty)
+                            if (layer != null)
                             {
-                                IFeature newEditFeature;
+                                var point = ConvertToPoint(coord, layer.HasZ);
 
-                                if (LastEditedPointFeature != ((IMeasurementProperties) feature.Properties).Id)
+                                if (point != null && !point.IsEmpty)
                                 {
-                                    newEditFeature = layer._featureClass.CreateFeature();
-                                }
-                                else
-                                {
-                                    IEnumFeature editSelection = ArcUtils.Editor?.EditSelection;
-                                    editSelection?.Reset();
-                                    newEditFeature = editSelection.Next();
-                                }
+                                    IFeature newEditFeature;
 
-                                if (newEditFeature == null)
-                                {
-                                    if (LastEditedObject != -1)
+                                    if (LastEditedPointFeature != ((IMeasurementProperties) feature.Properties).Id)
                                     {
-                                        try
+                                        newEditFeature = layer._featureClass.CreateFeature();
+                                    }
+                                    else
+                                    {
+                                        IEnumFeature editSelection = ArcUtils.Editor?.EditSelection;
+                                        editSelection?.Reset();
+                                        newEditFeature = editSelection.Next();
+                                    }
+
+                                    if (newEditFeature == null)
+                                    {
+                                        if (LastEditedObject != -1)
                                         {
-                                            newEditFeature = layer._featureClass.GetFeature(LastEditedObject);
+                                            try
+                                            {
+                                                newEditFeature = layer._featureClass.GetFeature(LastEditedObject);
+                                            }
+                                            catch (Exception)
+                                            {
+                                                newEditFeature = layer._featureClass.CreateFeature();
+                                            }
                                         }
-                                        catch (Exception)
+                                        else
                                         {
                                             newEditFeature = layer._featureClass.CreateFeature();
                                         }
                                     }
-                                    else
+
+                                    if (newEditFeature != null)
                                     {
-                                        newEditFeature = layer._featureClass.CreateFeature();
+                                        ArcUtils.Editor.StartOperation();
+                                        newEditFeature.Shape = point;
+                                        newEditFeature.Store();
+                                        LastEditedObject = newEditFeature.OID;
+                                        ArcUtils.Editor.StopOperation($"Point layer: {LastEditedObject}");
+
+                                        OnLayerChanged(layer);
+                                        ArcUtils.ActiveView.Refresh();
                                     }
                                 }
-
-                                if (newEditFeature != null)
+                                else if (LastEditedPointFeature != ((IMeasurementProperties) feature.Properties).Id)
                                 {
-                                    ArcUtils.Editor.StartOperation();
-                                    newEditFeature.Shape = point;
-                                    newEditFeature.Store();
-                                    LastEditedObject = newEditFeature.OID;
-                                    ArcUtils.Editor.StopOperation($"Point layer: {LastEditedObject}");
-
-                                    OnLayerChanged(layer);
-                                    ArcUtils.ActiveView.Refresh();
+                                    LastEditedObject = -1;
                                 }
-                            }
-                            else if (LastEditedPointFeature != ((IMeasurementProperties)feature.Properties).Id)
-                            {
-                                LastEditedObject = -1;
-                            }
-                            else if (LastEditedObject != -1 && layer.TypeOfLayer == TypeOfLayer.Point)
-                            {
-                                var deleteFeature = layer._featureClass.GetFeature(LastEditedObject);
-                                deleteFeature.Delete();
-                                LastEditedObject = -1;
+                                else if (LastEditedObject != -1 && layer.TypeOfLayer == TypeOfLayer.Point)
+                                {
+                                    var deleteFeature = layer._featureClass.GetFeature(LastEditedObject);
+                                    deleteFeature.Delete();
+                                    LastEditedObject = -1;
+                                }
+
+                                LastEditedPointFeature = ((IMeasurementProperties) feature.Properties).Id;
                             }
 
-                            LastEditedPointFeature = ((IMeasurementProperties)feature.Properties).Id;
                             break;
 
                         case GeometryType.LineString:

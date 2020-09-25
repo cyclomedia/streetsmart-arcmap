@@ -425,13 +425,13 @@ namespace StreetSmartArcMap.Layers
             return polygon;
         }
 
-        private static void AvEvents_AfterDraw(IDisplay display, esriViewDrawPhase phase)
+        private static async void AvEvents_AfterDraw(IDisplay display, esriViewDrawPhase phase)
         {
             if (phase == esriViewDrawPhase.esriViewForeground)
             {
                 var sketch = ArcUtils.Editor as IEditSketch3;
 
-                if (sketch != null && sketch.Geometry != null)
+                if (sketch != null && sketch.Geometry != null && await StreetSmartApiWrapper.Instance.HasOpenViewers())
                 {
                     display.StartDrawing(display.hDC, (short) esriScreenCache.esriNoScreenCache);
 

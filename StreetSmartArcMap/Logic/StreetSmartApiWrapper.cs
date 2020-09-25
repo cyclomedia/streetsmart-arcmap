@@ -275,6 +275,11 @@ namespace StreetSmartArcMap.Logic
             return recordings;
         }
 
+        public async Task<bool> HasOpenViewers()
+        {
+            return StreetSmartAPI != null && (await StreetSmartAPI.GetViewers()).Count >= 1;
+        }
+
         private async Task<bool> TryAddVectorLayerAsync(VectorLayer layer)
         {
             var recordings = await GetRecordings();

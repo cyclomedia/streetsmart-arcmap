@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for Cycloramas
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -110,6 +110,7 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
         public bool? IsAuthorized { get; private set; }
         public DateTime? ExpiredAt { get; private set; }
         public bool? HasDepthMap { get; set; }
+        public int? Year { get; set; }
 
         #endregion properties
 
@@ -168,6 +169,7 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                 XElement isAuthorizedElement = mappedFeatureElement.Element(Namespaces.AtlasNs + "isAuthorized");
                 XElement expiredAtElement = mappedFeatureElement.Element(Namespaces.AtlasNs + "expiredAt");
                 XElement hasDepthMapElement = mappedFeatureElement.Element(Namespaces.AtlasNs + "hasDepthMap");
+                XElement hasYearElement = mappedFeatureElement.Element(Namespaces.AtlasNs + "year");
 
                 ExpiredAt = (expiredAtElement == null) ? (DateTime?)null : DateTime.Parse(expiredAtElement.Value.Trim());
                 Id = (mappedFeatureAttribute == null) ? null : mappedFeatureAttribute.Value.Trim();
@@ -184,6 +186,7 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                 Images = (imagesElement == null) ? new Images() : new Images(imagesElement);
                 IsAuthorized = (isAuthorizedElement == null) ? (bool?)null : bool.Parse(isAuthorizedElement.Value.Trim());
                 HasDepthMap = (hasDepthMapElement == null) ? (bool?)null : bool.Parse(hasDepthMapElement.Value.Trim());
+                Year = (hasYearElement == null) ? (int?) null : int.Parse(hasYearElement.Value.Trim());
 
                 ProductType = (prodTypeElement == null)
                                 ? ProductType.None
@@ -267,7 +270,9 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                     break;
 
                 case "Year":
-                    if (RecordedAt != null)
+                    result = Year;
+
+                    if (Year == null && RecordedAt != null)
                     {
                         var thisDateTime = (DateTime)RecordedAt;
                         result = thisDateTime.Year;
@@ -287,7 +292,7 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                     break;
 
                 case "HasDepthMap":
-                    result = HasDepthMap.ToString();
+                    result = HasDepthMap?.ToString() ?? "False";
                     break;
             }
 
@@ -362,7 +367,7 @@ namespace StreetSmartArcMap.Logic.Model.Atlas
                         break;
 
                     case "Year":
-                        // empty
+                        Year = (int?) item;
                         break;
 
                     case "PIP":

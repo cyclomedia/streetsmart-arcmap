@@ -425,13 +425,21 @@ namespace StreetSmartArcMap.Layers
             return polygon;
         }
 
+        private static bool IsStreetSmartVisible()
+        {
+            var dockWindowManager = ArcMap.Application as IDockableWindowManager;
+            ESRI.ArcGIS.esriSystem.UID windowId = new ESRI.ArcGIS.esriSystem.UIDClass { Value = "Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" };
+            IDockableWindow window = dockWindowManager.GetDockableWindow(windowId);
+            return window.IsVisible();
+        }
+
         private static async void AvEvents_AfterDraw(IDisplay display, esriViewDrawPhase phase)
         {
             if (phase == esriViewDrawPhase.esriViewForeground)
             {
                 var sketch = ArcUtils.Editor as IEditSketch3;
 
-                if (sketch != null && sketch.Geometry != null && await StreetSmartApiWrapper.Instance.HasOpenViewers())
+                if (sketch != null && sketch.Geometry != null && await StreetSmartApiWrapper.Instance.HasOpenViewers() && IsStreetSmartVisible())
                 {
                     display.StartDrawing(display.hDC, (short) esriScreenCache.esriNoScreenCache);
 

@@ -4,13 +4,13 @@
   <Description>Street Smart for ArcMap
 Copyright © CycloMedia Technology 2019 - 2020
   </Description>
-  <Version>1.5.0</Version>
+  <Version>1.5.1</Version>
   <Image>Images\StreetSmartArcMapAddin.png</Image>
   <Author>CycloMedia</Author>
   <Company>CycloMedia</Company>
-  <Date>25-9-2020</Date>
+  <Date>16-2-2021</Date>
   <Targets>
-    <Target name="Desktop" version="10.4" />
+    <Target name="Desktop" version="10.6" />
   </Targets>
   <AddIn language="CLR" library="StreetSmartArcMap.dll" namespace="StreetSmartArcMap.AddIns">
     <ArcMap>

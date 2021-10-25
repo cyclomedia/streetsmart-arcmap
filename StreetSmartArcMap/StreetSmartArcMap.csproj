@@ -83,7 +83,7 @@
     </Reference>
     <Reference Include="StreetSmart.WinForms, Version=21.1.0.0, Culture=neutral, PublicKeyToken=36693220ff736801, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\StreetSmart.WinForms.21.1.0\lib\net452\StreetSmart.WinForms.dll</HintPath>
+      <HintPath>install\StreetSmart.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -266,11 +266,6 @@
     <AddInContent Include="Images\GsCycloMediaOptions.png" />
   </ItemGroup>
   <ItemGroup>
-    <AddInContent Include="install\cef.pak" />
-    <AddInContent Include="install\cef_100_percent.pak" />
-    <AddInContent Include="install\cef_200_percent.pak" />
-    <AddInContent Include="install\cef_extensions.pak" />
-    <AddInContent Include="install\devtools_resources.pak" />
     <AddInContent Include="install\icudtl.dat" />
     <AddInContent Include="install\locales\am.pak" />
     <AddInContent Include="install\locales\ar.pak" />
@@ -325,16 +320,15 @@
     <AddInContent Include="install\locales\vi.pak" />
     <AddInContent Include="install\locales\zh-CN.pak" />
     <AddInContent Include="install\locales\zh-TW.pak" />
-    <AddInContent Include="install\natives_blob.bin" />
     <AddInContent Include="install\snapshot_blob.bin" />
     <AddInContent Include="install\v8_context_snapshot.bin" />
     <EmbeddedResource Include="Doc\Street Smart for ArcMap User Manual.pdf" />
-    <None Include="install\Demo.WinForms.exe.config" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <AddInContent Include="install\chrome_100_percent.pak" />
+    <AddInContent Include="install\chrome_200_percent.pak" />
   </ItemGroup>
   <ItemGroup>
+    <AddInContent Include="install\resources.pak" />
+    <AddInContent Include="install\vk_swiftshader_icd.json" />
     <None Include="Resources\Agreement.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -365,8 +359,6 @@
     <AddInContent Include="install\CefSharp.Core.xml" />
     <AddInContent Include="install\CefSharp.dll" />
     <AddInContent Include="install\CefSharp.WinForms.dll" />
-    <AddInContent Include="install\CefSharp.WinForms.XML" />
-    <AddInContent Include="install\CefSharp.XML" />
     <AddInContent Include="install\chrome_elf.dll" />
     <AddInContent Include="install\d3dcompiler_47.dll" />
     <AddInContent Include="install\libcef.dll" />
@@ -380,9 +372,21 @@
     <AddInContent Include="Images\HelpButton.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="install\Demo.WinForms.exe" />
-    <Content Include="install\Newtonsoft.Json.dll" />
-    <Content Include="install\Newtonsoft.Json.xml" />
+    <AddInContent Include="install\CefSharp.Core.Runtime.dll" />
+    <AddInContent Include="install\CefSharp.Core.Runtime.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="install\LICENSE.txt" />
+    <AddInContent Include="install\Newtonsoft.Json.dll" />
+    <AddInContent Include="install\Newtonsoft.Json.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="install\StreetSmart.WinForms.dll" />
+    <AddInContent Include="install\StreetSmart.WinForms.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="install\vk_swiftshader.dll" />
+    <AddInContent Include="install\vulkan-1.dll" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>

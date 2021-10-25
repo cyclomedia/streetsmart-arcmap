@@ -110,7 +110,6 @@ namespace StreetSmartArcMap.Logic
         private string RequestSRS { get; set; }
         private readonly IList<VectorLayer> _vectorLayers;
         private readonly IList<VectorLayer> _vectorLayerInChange;
-        private readonly LogClient _logClient;
         private bool _screenPointAdded;
         private bool _mapPointAdded;
         private IFeatureCollection ActiveMeasurement { get; set; }
@@ -422,7 +421,7 @@ namespace StreetSmartArcMap.Logic
                         if (layer.IsVisibleInStreetSmart && await TryAddVectorLayerAsync(layer))
                             _vectorLayers.Add(layer);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                        // throw ex;
                     }

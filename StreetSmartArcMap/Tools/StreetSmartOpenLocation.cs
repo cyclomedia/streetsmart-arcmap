@@ -36,12 +36,10 @@ namespace StreetSmartArcMap.Tools
     public class StreetSmartOpenLocation : ESRI.ArcGIS.Desktop.AddIns.Tool
     {
         private Cursor _thisCursor;
-        private readonly LogClient _logClient;
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
         public StreetSmartOpenLocation()
         {
-            _logClient = new LogClient(typeof(StreetSmartOpenLocation));
             Config.SetCulture();
         }
 
@@ -100,7 +98,6 @@ namespace StreetSmartArcMap.Tools
             }
             catch (Exception ex)
             {
-                _logClient.Error("StreetSmartOpenLocation.OnMouseUp", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "StreetSmartOpenLocation.OnMouseUp");
             }
 
@@ -158,7 +155,6 @@ namespace StreetSmartArcMap.Tools
             }
             catch (Exception ex)
             {
-                _logClient.Error("StreetSmartOpenLocation.OnUpdate", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "StreetSmartOpenLocation.OnUpdate");
             }
 
@@ -176,7 +172,6 @@ namespace StreetSmartArcMap.Tools
             }
             catch (Exception ex)
             {
-                _logClient.Error("StreetSmartOpenLocation.OnMouseMove", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "StreetSmartOpenLocation.OnMouseMove");
             }
 

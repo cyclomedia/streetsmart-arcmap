@@ -21,13 +21,10 @@ namespace StreetSmartArcMap.Buttons
         private const string MenuItem = "esriArcMapUI.MxAddDataMenu";
         private const string CommandItem = "CycloMedia_StreetSmartArcMap_StreetSmartRecordingsLayer";
 
-        private readonly LogClient _logClient;
-
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
 
         public StreetSmartRecordingsLayer()
         {
-            _logClient = new LogClient(typeof(StreetSmartRecordingsLayer));
             Checked = false;
             StreetSmartExtension extension = StreetSmartExtension.GetExtension();
             CycloMediaGroupLayer groupLayer = extension?.CycloMediaGroupLayer;
@@ -69,7 +66,6 @@ namespace StreetSmartArcMap.Buttons
             }
             catch (Exception ex)
             {
-                _logClient.Error("StreetSmartRecordingsLayer.CycloMediaLayerAdded", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "StreetSmartRecordingsLayer.CycloMediaLayerAdded");
             }
         }
@@ -85,7 +81,6 @@ namespace StreetSmartArcMap.Buttons
             }
             catch (Exception ex)
             {
-                _logClient.Error("StreetSmartRecordingsLayer.CycloMediaLayerRemoved", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "StreetSmartRecordingsLayer.CycloMediaRemoved");
             }
         }
@@ -124,8 +119,6 @@ namespace StreetSmartArcMap.Buttons
             }
             catch (Exception ex)
             {
-                _logClient.Error("StreetSmartRecordingsLayer.OnClick", ex.Message, ex);
-
                 MessageBox.Show(ex.Message, Properties.Resources.ErrorIntegration);
             }
         }

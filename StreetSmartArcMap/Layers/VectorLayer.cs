@@ -122,7 +122,6 @@ namespace StreetSmartArcMap.Layers
         private static IList<VectorLayer> _layers;
         private static System.Windows.Forms.Timer _editToolCheckTimer;
         private static ICommandItem _beforeTool;
-        private static readonly LogClient LogClient;
         private static readonly object LockObject;
         private static bool _doSelection;
         private static Timer _nextSelectionTimer;
@@ -152,7 +151,6 @@ namespace StreetSmartArcMap.Layers
         {
             _editToolCheckTimer = null;
             _beforeTool = null;
-            LogClient = new LogClient(typeof(VectorLayer));
             LockObject = new object();
             _doSelection = true;
             _fromSelection = false;
@@ -1495,7 +1493,6 @@ namespace StreetSmartArcMap.Layers
         private static void OnStartEditing()
         {
             FromStopEditing = false;
-            LogClient.Info("On StartEditing");
 
             ArcUtils.Editor?.Map?.ClearSelection();
         }
@@ -1517,7 +1514,6 @@ namespace StreetSmartArcMap.Layers
             try
             {
                 var feature = obj as ESRI.ArcGIS.Geodatabase.IFeature;
-                LogClient.Info(string.Format("On Change Feature: {0}", ((feature != null) ? feature.Class.AliasName : string.Empty)));
 
                 if ((FeatureUpdateEditEvent != null) && (feature != null))
                 {
@@ -1538,7 +1534,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnChangeFeature", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnChangeFeature");
             }
         }
@@ -1558,7 +1553,6 @@ namespace StreetSmartArcMap.Layers
                 string name = tool.Name;
 
                 IEditor3 editor = ArcUtils.Editor;
-                LogClient.Info("On Selection Changed");
 
                 if (editor != null)
                 {
@@ -1633,7 +1627,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnSelectionChanged", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnSelectionChanged");
             }
         }
@@ -1649,7 +1642,6 @@ namespace StreetSmartArcMap.Layers
             try
             {
                 var feature = obj as ESRI.ArcGIS.Geodatabase.IFeature;
-                LogClient.Info(string.Format("On Delete Feature: {0}", ((feature != null) ? feature.Class.AliasName : string.Empty)));
 
                 if (FeatureDeleteEvent != null && feature != null)
                 {
@@ -1676,7 +1668,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnDeleteFeature", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnDeleteFeature");
             }
         }
@@ -1685,7 +1676,6 @@ namespace StreetSmartArcMap.Layers
         {
             try
             {
-                LogClient.Info(string.Format("On Stop Editing: {0}", save));
                 EditFeatures.Clear();
                 _doSelection = true;
 
@@ -1705,7 +1695,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnStopEditing", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnStopEditing");
             }
         }
@@ -1714,7 +1703,6 @@ namespace StreetSmartArcMap.Layers
         {
             try
             {
-                LogClient.Info("On Sketch Modified");
                 _doSelection = true;
 
                 var avEvents = ArcUtils.ActiveViewEvents;
@@ -1777,7 +1765,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnSketchModified", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnSketchModified");
             }
         }
@@ -1787,7 +1774,6 @@ namespace StreetSmartArcMap.Layers
             try
             {
                 IEditor3 editor = ArcUtils.Editor;
-                LogClient.Info("On Sketch Finished");
                 _doSelection = true;
 
                 if (editor != null)
@@ -1815,7 +1801,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnSketchFinished", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnSketchFinished");
             }
         }

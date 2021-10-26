@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for StreetSmart
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -135,7 +135,7 @@ namespace StreetSmartArcMap.Client
             {
                 string postItem = string.Format(_ci, cycloMediaLayer.WfsRequest, epsgCode, envelope.XMin, envelope.YMin,
                                                 envelope.XMax,
-                                                envelope.YMax, DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:00-00:00"));
+                                                envelope.YMax, cycloMediaLayer.Year);
                 var xml = (string)PostRequest(Config.RecordingsServiceUrlToUse, GetXmlCallback, postItem, XmlConfig);
                 result = ParseXml(xml, (Namespaces.GmlNs + "featureMembers"));
             }

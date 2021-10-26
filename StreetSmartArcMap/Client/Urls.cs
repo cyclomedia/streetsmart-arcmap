@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for StreetSmart
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,7 @@ namespace StreetSmartArcMap.Client
         /// <summary>
         /// The spatialreferences url
         /// </summary>
-        public static string SpatialReferencesUrl = "/assets/srs/SpatialReference.xml";
+        public static string SpatialReferencesUrl = "/spatialreferences/SpatialReferences.xml";
         /// <summary>
         /// The API Url
         /// </summary>

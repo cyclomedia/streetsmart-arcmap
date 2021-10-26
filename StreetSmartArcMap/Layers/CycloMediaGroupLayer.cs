@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for Cycloramas
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -53,6 +53,9 @@ namespace StreetSmartArcMap.Layers
         // Properties
         // =========================================================================
         public string Name { get { return "CycloMedia"; } }
+
+        public bool InitComplete { get; }
+
         public IGroupLayer GroupLayer
         {
             get { return _groupLayer ?? (_groupLayer = GetGroupLayer()); }
@@ -63,7 +66,7 @@ namespace StreetSmartArcMap.Layers
             get
             {
                 return _allLayers ?? (_allLayers = new List<CycloMediaLayer>
-               {new RecordingLayer(this)});
+               {new RecordingLayer(this), new HistoricalLayer(this)});
             }
         }
 
@@ -101,6 +104,7 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         public CycloMediaGroupLayer()
         {
+            InitComplete = false;
             CreateWorkspace();
             CreateLayers();
             var avEvents = ArcUtils.ActiveViewEvents;
@@ -109,6 +113,8 @@ namespace StreetSmartArcMap.Layers
             {
                 avEvents.ContentsChanged += OnContentChanged;
             }
+
+            InitComplete = true;
         }
 
         #endregion constructor
@@ -491,25 +497,30 @@ namespace StreetSmartArcMap.Layers
 
             if (refreshLayer != null)
             {
-                IMxDocument document = ArcUtils.MxDocument;
-                IActiveView activeView = ArcUtils.ActiveView;
+                Refresh();
+            }
+        }
 
-                if (document != null)
+        public void Refresh()
+        {
+            IMxDocument document = ArcUtils.MxDocument;
+            IActiveView activeView = ArcUtils.ActiveView;
+
+            if (document != null)
+            {
+                // ReSharper disable UseIndexedProperty
+                IContentsView contentView = document.get_ContentsView(0);
+                // ReSharper restore UseIndexedProperty
+
+                if (contentView != null)
                 {
-                    // ReSharper disable UseIndexedProperty
-                    IContentsView contentView = document.get_ContentsView(0);
-                    // ReSharper restore UseIndexedProperty
-
-                    if (contentView != null)
-                    {
-                        contentView.Refresh(_groupLayer);
-                    }
+                    contentView.Refresh(_groupLayer);
                 }
+            }
 
-                if (activeView != null)
-                {
-                    activeView.Refresh();
-                }
+            if (activeView != null)
+            {
+                activeView.Refresh();
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for Cycloramas
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -101,10 +101,14 @@ namespace StreetSmartArcMap.Layers
         public bool Visible { get; set; }
         public bool IsRemoved { get; set; }
 
+        public int Year { get; set; }
+
         public ILayer Layer
         {
             get { return _layer ?? (_layer = GetLayer()); }
         }
+
+        public bool InitComplete => _cycloMediaGroupLayer?.InitComplete ?? false;
 
         public IGeometryDef GeometryDef
         {
@@ -204,6 +208,7 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         protected CycloMediaLayer(CycloMediaGroupLayer layer)
         {
+            Year = 0;
             _getDataLock = new object();
             _addData = null;
             _getDataThread = null;
@@ -316,6 +321,19 @@ namespace StreetSmartArcMap.Layers
             }
 
             Remove();
+        }
+
+        public void TurnRecordingLayerOn()
+        {
+            foreach (var layer in _cycloMediaGroupLayer.Layers)
+            {
+                if (!layer.UseDateRange)
+                {
+                    layer.IsVisible = true;
+                    layer.Visible = true;
+                    layer.Refresh();
+                }
+            }
         }
 
         public void Refresh()
@@ -564,6 +582,11 @@ namespace StreetSmartArcMap.Layers
             }
         }
 
+        public void RemoveFromGroup()
+        {
+            _cycloMediaGroupLayer.RemoveLayer(Name);
+        }
+
         public virtual DateTime? GetDate()
         {
             return null;
@@ -583,6 +606,7 @@ namespace StreetSmartArcMap.Layers
         // =========================================================================
         protected virtual void Remove()
         {
+            Year = 0;
             var avEvents = ArcUtils.ActiveViewEvents;
             IsRemoved = true;
 

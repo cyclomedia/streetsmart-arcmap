@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for StreetSmart
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,14 +39,11 @@ namespace StreetSmartArcMap.Buttons
         private CycloMediaLayer _cycloMediaLayer;
         private VectorLayer _vectorLayer;
 
-        private readonly LogClient _logClient;
         private Configuration.Configuration Config => Configuration.Configuration.Instance;
         #endregion members
 
         public StreetSmartShowInCyclorama()
         {
-            _logClient = new LogClient(typeof(StreetSmartShowInCyclorama));
-
             Config.SetCulture();
 
             Caption = Properties.Resources.StreetSmartShowInCycloramaButtonCaption;
@@ -58,7 +55,6 @@ namespace StreetSmartArcMap.Buttons
             try
             {
                 Checked = !Checked;
-                _logClient.Info(string.Format("Show cyclorama: {0}", Checked));
 
                 if (_cycloMediaLayer != null)
                 {
@@ -72,7 +68,6 @@ namespace StreetSmartArcMap.Buttons
             }
             catch (Exception ex)
             {
-                _logClient.Error("StreetSmartShowInCyclorama.OnClick", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "StreetSmartShowInCyclorama.OnClick");
             }
         }
@@ -122,7 +117,6 @@ namespace StreetSmartArcMap.Buttons
             }
             catch (Exception ex)
             {
-                _logClient.Error("StreetSmartShowInCyclorama.OnUpdate", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "StreetSmartShowInCyclorama.OnUpdate");
             }
             Caption = Properties.Resources.StreetSmartShowInCycloramaButtonCaption;

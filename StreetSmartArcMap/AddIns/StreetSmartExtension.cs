@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for StreetSmart
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -230,8 +230,21 @@ namespace StreetSmartArcMap.AddIns
         {
             CycloMediaGroupLayer?.RemoveLayer(name);
 
-            CycloMediaGroupLayer?.Dispose();
-            CycloMediaGroupLayer = null;
+            if (!(CycloMediaGroupLayer?.ContainsLayers ?? true))
+            {
+                CycloMediaGroupLayer?.Dispose();
+                CycloMediaGroupLayer = null;
+            }
+            else if (CycloMediaGroupLayer != null)
+            {
+                foreach (var layer in CycloMediaGroupLayer.Layers)
+                {
+                    layer.Visible = true;
+                    layer.IsVisible = true;
+                }
+
+                CycloMediaGroupLayer.Refresh();
+            }
         }
 
         public void RemoveLayers()

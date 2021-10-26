@@ -1,6 +1,6 @@
 ﻿/*
  * Integration in ArcMap for Cycloramas
- * Copyright (c) 2019, CycloMedia, All rights reserved.
+ * Copyright (c) 2019 - 2020, CycloMedia, All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -122,7 +122,6 @@ namespace StreetSmartArcMap.Layers
         private static IList<VectorLayer> _layers;
         private static System.Windows.Forms.Timer _editToolCheckTimer;
         private static ICommandItem _beforeTool;
-        private static readonly LogClient LogClient;
         private static readonly object LockObject;
         private static bool _doSelection;
         private static Timer _nextSelectionTimer;
@@ -152,10 +151,10 @@ namespace StreetSmartArcMap.Layers
         {
             _editToolCheckTimer = null;
             _beforeTool = null;
-            LogClient = new LogClient(typeof(VectorLayer));
             LockObject = new object();
             _doSelection = true;
             _fromSelection = false;
+            FromStopEditing = false;
         }
 
         #endregion constructor
@@ -170,6 +169,8 @@ namespace StreetSmartArcMap.Layers
         public bool ContentsChanged { get; private set; }
         public string Name => _layer != null ? _layer.Name : string.Empty;
         public bool IsVisible => _layer != null && _layer.Visible;
+
+        public static bool FromStopEditing { get; private set; }
 
         public TypeOfLayer TypeOfLayer => GetTypeOfLayer(_featureClass.ShapeType);
         public ISpatialReference SpatialReference => GeometryDef.SpatialReference;
@@ -422,13 +423,21 @@ namespace StreetSmartArcMap.Layers
             return polygon;
         }
 
-        private static void AvEvents_AfterDraw(IDisplay display, esriViewDrawPhase phase)
+        private static bool IsStreetSmartVisible()
+        {
+            var dockWindowManager = ArcMap.Application as IDockableWindowManager;
+            ESRI.ArcGIS.esriSystem.UID windowId = new ESRI.ArcGIS.esriSystem.UIDClass { Value = "Cyclomedia_StreetSmartArcMap_DockableWindows_StreetSmartDockableWindow" };
+            IDockableWindow window = dockWindowManager.GetDockableWindow(windowId);
+            return window.IsVisible();
+        }
+
+        private static async void AvEvents_AfterDraw(IDisplay display, esriViewDrawPhase phase)
         {
             if (phase == esriViewDrawPhase.esriViewForeground)
             {
                 var sketch = ArcUtils.Editor as IEditSketch3;
 
-                if (sketch != null && sketch.Geometry != null)
+                if (sketch != null && sketch.Geometry != null && await StreetSmartApiWrapper.Instance.HasOpenViewers() && IsStreetSmartVisible())
                 {
                     display.StartDrawing(display.hDC, (short) esriScreenCache.esriNoScreenCache);
 
@@ -667,64 +676,71 @@ namespace StreetSmartArcMap.Layers
                     {
                         case GeometryType.Point: // always add a new point
                             var coord = feature.Geometry as ICoordinate;
-                            var point = ConvertToPoint(coord, layer.HasZ);
 
-                            if (point != null && !point.IsEmpty)
+                            if (layer != null)
                             {
-                                IFeature newEditFeature;
+                                var point = ConvertToPoint(coord, layer.HasZ);
 
-                                if (LastEditedPointFeature != ((IMeasurementProperties) feature.Properties).Id)
+                                if (point != null && !point.IsEmpty)
                                 {
-                                    newEditFeature = layer._featureClass.CreateFeature();
-                                }
-                                else
-                                {
-                                    IEnumFeature editSelection = ArcUtils.Editor?.EditSelection;
-                                    editSelection?.Reset();
-                                    newEditFeature = editSelection.Next();
-                                }
+                                    IFeature newEditFeature;
 
-                                if (newEditFeature == null)
-                                {
-                                    if (LastEditedObject != -1)
+                                    if (LastEditedPointFeature != ((IMeasurementProperties) feature.Properties).Id)
                                     {
-                                        try
+                                        newEditFeature = layer._featureClass.CreateFeature();
+                                    }
+                                    else
+                                    {
+                                        IEnumFeature editSelection = ArcUtils.Editor?.EditSelection;
+                                        editSelection?.Reset();
+                                        newEditFeature = editSelection.Next();
+                                    }
+
+                                    if (newEditFeature == null)
+                                    {
+                                        if (LastEditedObject != -1)
                                         {
-                                            newEditFeature = layer._featureClass.GetFeature(LastEditedObject);
+                                            try
+                                            {
+                                                newEditFeature = layer._featureClass.GetFeature(LastEditedObject);
+                                            }
+                                            catch (Exception)
+                                            {
+                                                newEditFeature = layer._featureClass.CreateFeature();
+                                            }
                                         }
-                                        catch (Exception)
+                                        else
                                         {
                                             newEditFeature = layer._featureClass.CreateFeature();
                                         }
                                     }
-                                    else
+
+                                    if (newEditFeature != null)
                                     {
-                                        newEditFeature = layer._featureClass.CreateFeature();
+                                        ArcUtils.Editor.StartOperation();
+                                        newEditFeature.Shape = point;
+                                        newEditFeature.Store();
+                                        LastEditedObject = newEditFeature.OID;
+                                        ArcUtils.Editor.StopOperation($"Point layer: {LastEditedObject}");
+
+                                        OnLayerChanged(layer);
+                                        ArcUtils.ActiveView.Refresh();
                                     }
                                 }
-
-                                if (newEditFeature != null)
+                                else if (LastEditedPointFeature != ((IMeasurementProperties) feature.Properties).Id)
                                 {
-                                    newEditFeature.Shape = point;
-                                    newEditFeature.Store();
-
-                                    LastEditedObject = newEditFeature.OID;
-                                    OnLayerChanged(layer);
-                                    ArcUtils.ActiveView.Refresh();
+                                    LastEditedObject = -1;
                                 }
-                            }
-                            else if (LastEditedPointFeature != ((IMeasurementProperties)feature.Properties).Id)
-                            {
-                                LastEditedObject = -1;
-                            }
-                            else if (LastEditedObject != -1 && layer.TypeOfLayer == TypeOfLayer.Point)
-                            {
-                                var deleteFeature = layer._featureClass.GetFeature(LastEditedObject);
-                                deleteFeature.Delete();
-                                LastEditedObject = -1;
+                                else if (LastEditedObject != -1 && layer.TypeOfLayer == TypeOfLayer.Point)
+                                {
+                                    var deleteFeature = layer._featureClass.GetFeature(LastEditedObject);
+                                    deleteFeature.Delete();
+                                    LastEditedObject = -1;
+                                }
+
+                                LastEditedPointFeature = ((IMeasurementProperties) feature.Properties).Id;
                             }
 
-                            LastEditedPointFeature = ((IMeasurementProperties)feature.Properties).Id;
                             break;
 
                         case GeometryType.LineString:
@@ -1240,7 +1256,25 @@ namespace StreetSmartArcMap.Layers
                                 }
                                 catch (Exception)
                                 {
-                                    // exception do nothing
+                                    try
+                                    {
+                                        var polygonCollection = geometry as IPointCollection4;
+                                        var extPointCollectionJson = new List<ICoordinate>();
+
+                                        for (int p = 0; p < polygonCollection.PointCount; p++)
+                                        {
+                                            IPoint point = polygonCollection.get_Point(p);
+                                            AddPoint(extPointCollectionJson, point);
+                                        }
+
+                                        points.Add(extPointCollectionJson);
+                                        var geomJson = GeoJsonFactory.CreatePolygonFeature(points);
+                                        features.Features.Add(geomJson);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        // do nothing
+                                    }
                                 }
                             }
                         }
@@ -1458,7 +1492,7 @@ namespace StreetSmartArcMap.Layers
 
         private static void OnStartEditing()
         {
-            LogClient.Info("On StartEditing");
+            FromStopEditing = false;
 
             ArcUtils.Editor?.Map?.ClearSelection();
         }
@@ -1480,7 +1514,6 @@ namespace StreetSmartArcMap.Layers
             try
             {
                 var feature = obj as ESRI.ArcGIS.Geodatabase.IFeature;
-                LogClient.Info(string.Format("On Change Feature: {0}", ((feature != null) ? feature.Class.AliasName : string.Empty)));
 
                 if ((FeatureUpdateEditEvent != null) && (feature != null))
                 {
@@ -1501,7 +1534,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnChangeFeature", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnChangeFeature");
             }
         }
@@ -1521,7 +1553,6 @@ namespace StreetSmartArcMap.Layers
                 string name = tool.Name;
 
                 IEditor3 editor = ArcUtils.Editor;
-                LogClient.Info("On Selection Changed");
 
                 if (editor != null)
                 {
@@ -1596,7 +1627,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnSelectionChanged", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnSelectionChanged");
             }
         }
@@ -1612,7 +1642,6 @@ namespace StreetSmartArcMap.Layers
             try
             {
                 var feature = obj as ESRI.ArcGIS.Geodatabase.IFeature;
-                LogClient.Info(string.Format("On Delete Feature: {0}", ((feature != null) ? feature.Class.AliasName : string.Empty)));
 
                 if (FeatureDeleteEvent != null && feature != null)
                 {
@@ -1639,7 +1668,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnDeleteFeature", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnDeleteFeature");
             }
         }
@@ -1648,12 +1676,12 @@ namespace StreetSmartArcMap.Layers
         {
             try
             {
-                LogClient.Info(string.Format("On Stop Editing: {0}", save));
                 EditFeatures.Clear();
                 _doSelection = true;
 
                 if (StopEditEvent != null)
                 {
+                    FromStopEditing = true;
                     StopEditEvent();
                     AvContentChanged();
                 }
@@ -1667,7 +1695,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnStopEditing", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnStopEditing");
             }
         }
@@ -1676,7 +1703,6 @@ namespace StreetSmartArcMap.Layers
         {
             try
             {
-                LogClient.Info("On Sketch Modified");
                 _doSelection = true;
 
                 var avEvents = ArcUtils.ActiveViewEvents;
@@ -1739,7 +1765,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnSketchModified", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnSketchModified");
             }
         }
@@ -1749,7 +1774,6 @@ namespace StreetSmartArcMap.Layers
             try
             {
                 IEditor3 editor = ArcUtils.Editor;
-                LogClient.Info("On Sketch Finished");
                 _doSelection = true;
 
                 if (editor != null)
@@ -1777,7 +1801,6 @@ namespace StreetSmartArcMap.Layers
             }
             catch (Exception ex)
             {
-                LogClient.Error("VectorLayer.OnSketchFinished", ex.Message, ex);
                 Trace.WriteLine(ex.Message, "VectorLayer.OnSketchFinished");
             }
         }
